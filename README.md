@@ -15,7 +15,9 @@
 ## Installation
 
 - from source 
+```
 git clone repo
 cd reactome2py
-python setup.py install 
+python setup.py install
+```
 
