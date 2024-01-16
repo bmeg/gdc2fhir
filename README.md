@@ -17,7 +17,7 @@
 - from source 
 ```
 git clone repo
-cd reactome2py
+cd gdc2fhir
 python setup.py install
 ```
 
