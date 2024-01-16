@@ -1,9 +1,9 @@
 {
     "version": "1.0.0",
     "metadata": {
-        "name": "Mapping Schema for GDC Case Entities to FHIR",
+        "name": "GDC case entity to FHIR Mapping",
         "category": "case",
-        "description": "Mapping GDC case entities, properties, and relations to FHIR. GDC case the collection of all data related to a specific subject in the context of a specific project.",
+        "description": "Mapping GDC case entities, properties, and relations to FHIR. GDC case is the collection of all data related to a specific subject in the context of a specific project.",
         "versions": [
             {
                 "source_version": ""
@@ -105,7 +105,14 @@
                 "category": "",
                 "type": "",
                 "structure": "",
-                "has_parent": false
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
             },
             "destination": {
                 "name": "",
@@ -115,7 +122,2124 @@
                 "module": "",
                 "type": "",
                 "structure": "",
-                "has_parent": false
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.project_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.age_at_index",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.days_to_birth",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.name",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.program.dbgap_accession_number",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.submitter_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.primary_site",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "sample_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "samples",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "exposures",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "index_date",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.year_of_birth",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.disease_type",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.race",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "disease_type",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.program.name",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "aliquot_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "tissue_source_site.tissue_source_site_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.releasable",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.created_datetime",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.program",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "days_to_consent",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.cause_of_death_source",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "created_datetime",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.gender",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.country_of_residence_at_enrollment",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.occupation_duration_years",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "tissue_source_site",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.demographic_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "slide_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "tissue_source_site.name",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.days_to_death",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_sample_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "analyte_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "days_to_lost_to_followup",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "updated_datetime",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.year_of_death",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_analyte_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "lost_to_followup",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.released",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.file_size",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.age_is_obfuscated",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "tissue_source_site.bcr_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "consent_type",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.vital_status",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.cause_of_death",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "portion_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "diagnosis_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.program.program_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "family_histories",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.state",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "state",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_portion_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.file_count",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.experimental_strategies",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.weeks_gestation_at_birth",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "tissue_source_site.code",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.state",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.ethnicity",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_diagnosis_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_aliquot_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_slide_ids",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.updated_datetime",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.premature_at_birth",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "primary_site",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "tissue_source_site.project",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project.dbgap_accession_number",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.data_categories",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true,
+                "content_annotations": [
+                    {
+                        "value": "",
+                        "annotation_type": "",
+                        "annotation_url": ""
+                    }
+                ]
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
             }
         }
     ]
