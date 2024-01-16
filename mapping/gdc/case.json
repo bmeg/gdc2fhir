@@ -1,0 +1,122 @@
+{
+    "version": "1.0.0",
+    "metadata": {
+        "name": "Mapping Schema for GDC Case Entities to FHIR",
+        "category": "case",
+        "description": "Mapping GDC case entities, properties, and relations to FHIR. GDC case the collection of all data related to a specific subject in the context of a specific project.",
+        "versions": [
+            {
+                "source_version": ""
+            },
+            {
+                "destination_version": ""
+            }
+        ],
+        "resource_links": [
+            "https://gdc.cancer.gov/about-gdc/gdc-overview",
+            "https://github.com/NCI-GDC/gdcdictionary/tree/develop",
+            "https://www.hl7.org/fhir/overview.html",
+            "https://github.com/nazrulworld/fhir.resources"
+        ]
+    },
+    "obj_keys": [
+        "case_id",
+        "submitter_id",
+        "project.project_id",
+        "demographic.age_at_index",
+        "demographic.days_to_birth",
+        "project.name",
+        "project.program.dbgap_accession_number",
+        "demographic.submitter_id",
+        "project.primary_site",
+        "sample_ids",
+        "samples",
+        "exposures",
+        "index_date",
+        "demographic.year_of_birth",
+        "demographic",
+        "project.disease_type",
+        "demographic.race",
+        "disease_type",
+        "project.program.name",
+        "aliquot_ids",
+        "diagnoses",
+        "tissue_source_site.tissue_source_site_id",
+        "project.releasable",
+        "demographic.created_datetime",
+        "project.program",
+        "days_to_consent",
+        "demographic.cause_of_death_source",
+        "created_datetime",
+        "demographic.gender",
+        "demographic.country_of_residence_at_enrollment",
+        "demographic.occupation_duration_years",
+        "summary",
+        "tissue_source_site",
+        "demographic.demographic_id",
+        "slide_ids",
+        "tissue_source_site.name",
+        "demographic.days_to_death",
+        "submitter_sample_ids",
+        "analyte_ids",
+        "days_to_lost_to_followup",
+        "updated_datetime",
+        "demographic.year_of_death",
+        "submitter_analyte_ids",
+        "lost_to_followup",
+        "project.released",
+        "summary.file_size",
+        "demographic.age_is_obfuscated",
+        "tissue_source_site.bcr_id",
+        "consent_type",
+        "demographic.vital_status",
+        "demographic.cause_of_death",
+        "portion_ids",
+        "diagnosis_ids",
+        "project.program.program_id",
+        "family_histories",
+        "project.state",
+        "state",
+        "submitter_portion_ids",
+        "summary.file_count",
+        "summary.experimental_strategies",
+        "demographic.weeks_gestation_at_birth",
+        "tissue_source_site.code",
+        "demographic.state",
+        "demographic.ethnicity",
+        "submitter_diagnosis_ids",
+        "submitter_aliquot_ids",
+        "submitter_slide_ids",
+        "demographic.updated_datetime",
+        "demographic.premature_at_birth",
+        "primary_site",
+        "tissue_source_site.project",
+        "project.dbgap_accession_number",
+        "summary.data_categories",
+        "project"
+    ],
+    "mappings": [
+        {
+            "source": {
+                "name": "case_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": false
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": false
+            }
+        }
+    ]
+}
