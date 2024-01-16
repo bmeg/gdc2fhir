@@ -1,0 +1,460 @@
+{
+    "version": "1.0.0",
+    "metadata": {
+        "name": "GDC project entity to FHIR Mapping",
+        "category": "administrative",
+        "description": "Mapping GDC project entities, properties, and relations to FHIR. GDC project is any specifically defined piece of work that is undertaken or attempted to meet a single requirement. (NCIt C47885)",
+        "versions": [
+            {
+                "source_version": ""
+            },
+            {
+                "destination_version": ""
+            }
+        ],
+        "resource_links": [
+            "https://gdc.cancer.gov/about-gdc/gdc-overview",
+            "https://www.hl7.org/fhir/overview.html"
+        ]
+    },
+    "obj_keys": [
+        "project_id",
+        "dbgap_accession_number",
+        "disease_type",
+        "primary_site",
+        "released",
+        "state",
+        "program.dbgap_accession_number",
+        "program.name",
+        "program.program_id",
+        "summary.case_count",
+        "summary.file_count",
+        "summary.file_size",
+        "summary.data_categories.case_count",
+        "summary.data_categories.data_category",
+        "summary.data_categories.file_count",
+        "summary.experimental_strategies.case_count",
+        "summary.experimental_strategies.experimental_strategy",
+        "summary.experimental_strategies.file_count"
+    ],
+    "mappings": [
+        {
+            "source": {
+                "name": "project",
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
+                "definition": "The dbgap accession number for the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
+                "category": "administrative",
+                "type": "entity",
+                "structure": "is_parent",
+                "has_parent": false
+            },
+            "destination": {
+                "name": "ResearchStudy",
+                "url": "https://build.fhir.org/researchstudy.html",
+                "definition": "A scientific study of nature that sometimes includes processes involved in health and disease. For example, clinical trials are research studies that involve people. These studies may be related to new ways to screen, prevent, diagnose, and treat disease. They may also study certain outcomes and certain groups of people by looking at data collected in the past or future.",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html",
+                "module": "Administration",
+                "type": "DomainResource",
+                "structure": "is_both",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "dbgap_accession_number",
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
+                "definition": "The dbgap accession number for the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
+                "category": "",
+                "type": "property",
+                "structure": "is_child",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "disease_type",
+                "url": "https://gdc.cancer.gov/about-gdc/gdc-overview",
+                "definition": "Disease type information",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "primary_site",
+                "url": "",
+                "definition": "Primary site information",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "project_id",
+                "url": "",
+                "definition": "ID of the project",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "released",
+                "url": "",
+                "definition": "Released information",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "state",
+                "url": "",
+                "definition": "State information",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "program.dbgap_accession_number",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "program.name",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "program.program_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.case_count",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.file_count",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.file_size",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.data_categories.case_count",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.data_categories.data_category",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.data_categories.file_count",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.experimental_strategies.case_count",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.experimental_strategies.experimental_strategy",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        },
+        {
+            "source": {
+                "name": "summary.experimental_strategies.file_count",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": "",
+                "structure": "",
+                "has_parent": true
+            }
+        }
+    ]
+}
