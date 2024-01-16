@@ -14,7 +14,9 @@
         ],
         "resource_links": [
             "https://gdc.cancer.gov/about-gdc/gdc-overview",
-            "https://www.hl7.org/fhir/overview.html"
+            "https://github.com/NCI-GDC/gdcdictionary/tree/develop",
+            "https://www.hl7.org/fhir/overview.html",
+            "https://github.com/nazrulworld/fhir.resources"
         ]
     },
     "obj_keys": [
@@ -85,8 +87,8 @@
         {
             "source": {
                 "name": "disease_type",
-                "url": "https://gdc.cancer.gov/about-gdc/gdc-overview",
-                "definition": "Disease type information",
+                "url": "",
+                "definition": "",
                 "definition_url": "",
                 "category": "",
                 "type": "",
@@ -108,7 +110,7 @@
             "source": {
                 "name": "primary_site",
                 "url": "",
-                "definition": "Primary site information",
+                "definition": "",
                 "definition_url": "",
                 "category": "",
                 "type": "",
@@ -130,7 +132,7 @@
             "source": {
                 "name": "project_id",
                 "url": "",
-                "definition": "ID of the project",
+                "definition": "",
                 "definition_url": "",
                 "category": "",
                 "type": "",
@@ -138,9 +140,9 @@
                 "has_parent": true
             },
             "destination": {
-                "name": "",
+                "name": "ResearchStudy.identifier",
                 "url": "",
-                "definition": "",
+                "definition": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "definition_url": "",
                 "module": "",
                 "type": "",
@@ -152,7 +154,7 @@
             "source": {
                 "name": "released",
                 "url": "",
-                "definition": "Released information",
+                "definition": "",
                 "definition_url": "",
                 "category": "",
                 "type": "",
@@ -174,7 +176,7 @@
             "source": {
                 "name": "state",
                 "url": "",
-                "definition": "State information",
+                "definition": "",
                 "definition_url": "",
                 "category": "",
                 "type": "",
