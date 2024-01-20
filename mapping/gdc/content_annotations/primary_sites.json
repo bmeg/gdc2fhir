@@ -1,0 +1,644 @@
+[
+    {
+        "value": "Accessory sinuses",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "oncology_url": "",
+        "sctid": "2095001"
+    },
+    {
+        "value": "Adrenal gland",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "23451007"
+    },
+    {
+        "value": "Anus and anal canal",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "53505006"
+    },
+    {
+        "value": "Base of tongue",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "21974007"
+    },
+    {
+        "value": "Bladder",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "89837001"
+    },
+    {
+        "value": "Bones, joints and articular cartilage of limbs",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Bones, joints and articular cartilage of other and unspecified sites",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "128530007"
+    },
+    {
+        "value": "Brain",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "12738006"
+    },
+    {
+        "value": "Breast",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "76752008"
+    },
+    {
+        "value": "Bronchus and lung",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "39607008"
+    },
+    {
+        "value": "Cervix uteri",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "71252005"
+    },
+    {
+        "value": "Colon",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "71854001"
+    },
+    {
+        "value": "Connective, subcutaneous and other soft tissues",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "21793004"
+    },
+    {
+        "value": "Corpus uteri",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "23952005"
+    },
+    {
+        "value": "Esophagus",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Eye and adnexa",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Floor of mouth",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Gallbladder",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Gum",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Heart, mediastinum, and pleura",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Hematopoietic and reticuloendothelial systems",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Hypopharynx",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Kidney",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Larynx",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Lip",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Liver and intrahepatic bile ducts",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Lymph nodes",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Meninges",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Nasal cavity and middle ear",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Nasopharynx",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Oropharynx",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and ill-defined digestive organs",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and ill-defined sites",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and ill-defined sites in lip, oral cavity and pharynx",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and ill-defined sites within respiratory system and intrathoracic organs",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and unspecified female genital organs",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and unspecified major salivary glands",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and unspecified male genital organs",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and unspecified parts of biliary tract",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and unspecified parts of mouth",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and unspecified parts of tongue",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other and unspecified urinary organs",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Other endocrine glands and related structures",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Ovary",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Palate",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Pancreas",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Parotid gland",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Penis",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Peripheral nerves and autonomic nervous system",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Placenta",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Prostate gland",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Pyriform sinus",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Rectosigmoid junction",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Rectum",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Renal pelvis",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Retroperitoneum and peritoneum",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Skin",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Small intestine",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Spinal cord, cranial nerves, and other parts of central nervous system",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Stomach",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Testis",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Thymus",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Thyroid gland",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Tonsil",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Trachea",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Ureter",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Uterus, NOS",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Vagina",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Vulva",
+        "definition": "",
+        "definition_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": ""
+    },
+    {
+        "value": "Unknown",
+        "definition": "Not known, not observed, not recorded, or refused.",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998"
+    },
+    {
+        "value": "Not Reported",
+        "definition": "Not provided or available.",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234"
+    },
+    {
+        "value": "Not Applicable",
+        "definition": "Determination of a value is not relevant in the current context.",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C48660",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C48660"
+    }
+]

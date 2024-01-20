@@ -1,26 +1,50 @@
 {
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "1.0.0",
     "metadata": {
-        "name": "GDC project entity to FHIR Mapping",
+        "title": "Project",
         "category": "administrative",
+        "type": "object",
+        "downloadable": false,
         "description": "Mapping GDC project entities, properties, and relations to FHIR. GDC project is any specifically defined piece of work that is undertaken or attempted to meet a single requirement. (NCIt C47885)",
         "versions": [
             {
-                "source_version": ""
+                "source_version": "1",
+                "data_release": "Data Release 39.0 - December 04, 2023",
+                "commit": "023da73eee3c17608db1a9903c82852428327b88",
+                "status": "OK",
+                "tag": "5.0.6"
             },
             {
-                "destination_version": ""
+                "destination_version": "v6.0.0"
             }
         ],
         "resource_links": [
             "https://gdc.cancer.gov/about-gdc/gdc-overview",
-            "https://github.com/NCI-GDC/gdcdictionary/tree/develop",
-            "https://www.hl7.org/fhir/overview.html",
-            "https://github.com/nazrulworld/fhir.resources"
+            "https://www.hl7.org/fhir/overview.html"
         ]
     },
+    "obj_mapping": {
+        "source": {
+            "name": "project",
+            "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
+            "description": "The dbgap accession number for the project.",
+            "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
+            "category": "administrative",
+            "type": "entity",
+            "required": true
+        },
+        "destination": {
+            "name": "ResearchStudy",
+            "url": "https://build.fhir.org/researchstudy.html",
+            "definition": "A scientific study of nature that sometimes includes processes involved in health and disease. For example, clinical trials are research studies that involve people. These studies may be related to new ways to screen, prevent, diagnose, and treat disease. They may also study certain outcomes and certain groups of people by looking at data collected in the past or future.",
+            "definition_url": "https://build.fhir.org/researchstudy-definitions.html",
+            "module": "Administration",
+            "type": "DomainResource"
+        }
+    },
     "obj_keys": [
-        "project_id",
+        "id",
         "dbgap_accession_number",
         "disease_type",
         "primary_site",
@@ -39,29 +63,40 @@
         "summary.experimental_strategies.experimental_strategy",
         "summary.experimental_strategies.file_count"
     ],
-    "mappings": [
-        {
-            "source": {
-                "name": "project",
-                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
-                "definition": "The dbgap accession number for the project.",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
-                "category": "administrative",
-                "type": "entity",
-                "structure": "is_parent",
-                "has_parent": false
-            },
-            "destination": {
-                "name": "ResearchStudy",
-                "url": "https://build.fhir.org/researchstudy.html",
-                "definition": "A scientific study of nature that sometimes includes processes involved in health and disease. For example, clinical trials are research studies that involve people. These studies may be related to new ways to screen, prevent, diagnose, and treat disease. They may also study certain outcomes and certain groups of people by looking at data collected in the past or future.",
-                "definition_url": "https://build.fhir.org/researchstudy-definitions.html",
-                "module": "Administration",
-                "type": "DomainResource",
-                "structure": "is_both",
-                "has_parent": true
-            }
+    "required": [
+        "code",
+        "name",
+        "state",
+        "programs",
+        "dbgap_accession_number"
+    ],
+    "unique_keys": [
+        [
+            "id"
+        ],
+        [
+            "code"
+        ]
+    ],
+    "source_key_aliases": {
+        "id": "project_id"
+    },
+    "destination_key_aliases": {
+        "ResearchStudy.condition": [
+            "Observation",
+            "Condition"
+        ],
+        "Observation.bodySite": "Condition.bodySite"
+    },
+    "destination_key_hierarchy": {
+        "ResearchStudy.partOf.name": {
+            "ResearchStudy.name" : {}
         },
+        "ResearchStudy.partOf.identifier": {
+            "ResearchStudy.identifier": {}
+        }
+    },
+    "mappings": [
         {
             "source": {
                 "name": "dbgap_accession_number",
@@ -69,9 +104,7 @@
                 "definition": "The dbgap accession number for the project.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
                 "category": "property",
-                "type": "string",
-                "structure": "is_child",
-                "has_parent": true
+                "type": "string"
             },
             "destination": {
                 "name": "Coding.code",
@@ -79,9 +112,7 @@
                 "definition": "a code from the coding scheme that identifies the security label and code is a value from the code system",
                 "definition_url": "https://build.fhir.org/security-labels.html#rsl",
                 "module": "DataTypes",
-                "type": "string",
-                "structure": "is_child",
-                "has_parent": true
+                "type": "string"
             }
         },
         {
@@ -92,28 +123,15 @@
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project&anchor=disease_type",
                 "category": "property",
                 "type": "string",
-                "structure": "is_both",
-                "has_parent": true,
-                "content_annotations": [ //there are ~40+ combinations of disease_types we demo one
-                    {
-                        "value": "Adenomas and Adenocarcinomas",
-                        "description": "A common cancer characterized by the presence of malignant glandular cells. Morphologically, adenocarcinomas are classified according to the growth pattern (e.g., papillary, alveolar) or according to the secreting product (e.g., mucinous, serous). Representative examples of adenocarcinoma are ductal and lobular breast carcinoma, lung adenocarcinoma, renal cell carcinoma, hepatocellular carcinoma (hepatoma), colon adenocarcinoma, and prostate adenocarcinoma.",
-                        "CDE_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
-                        "annotation_type": "ICD-O string",
-                        "annotation_url": "https://gdc.cancer.gov/about-gdc/contributed-genomic-data-cancer-research/foundation-medicine/foundation-medicine",
-                        "ontology_url": "http://purl.obolibrary.org/obo/MONDO_0004970"
-                    }
-                ]
+                "enum": "@content_annotations/disease_types.json"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "ResearchStudy.condition",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
+                "definition": "The condition that is the focus of the study. For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
+                "module": "Administration",
+                "type": "CodeableConcept"
             }
         },
         {
@@ -124,40 +142,25 @@
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project&anchor=primary_site",
                 "category": "property",
                 "type": "string",
-                "structure": "is_both",
-                "has_parent": true,
-                "content_annotations": [ //there are more than one primary_site we demo one
-                    {
-                        "value": "Breast",
-                        "description": "A carcinoma arising from the breast, most commonly the terminal ductal-lobular unit. It is the most common malignant tumor in females. Risk factors include country of birth, family history, menstrual and reproductive history, fibrocystic disease and epithelial hyperplasia, exogenous estrogens, contraceptive agents, and ionizing radiation. The vast majority of breast carcinomas are adenocarcinomas (ductal or lobular). Breast carcinoma spreads by direct invasion, by the lymphatic route, and by the blood vessel route. The most common site of lymph node involvement is the axilla.",
-                        "CDE_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161019%20and%20ver_nr=1.0",
-                        "annotation_type": "ICD-O string",
-                        "annotation_url": "https://gdc.cancer.gov/about-gdc/contributed-genomic-data-cancer-research/foundation-medicine/foundation-medicine",
-                        "ontology_url": "http://purl.obolibrary.org/obo/NCIT_C4872"
-                    }
-                ]
+                "enum": "@content_annotations/primary_sites.json"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "Observation.bodySite",
+                "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
+                "definition": "Indicates the body structure on the subject's body where the observation was made (i.e. the target site).",
+                "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
+                "module": "Diagnostics",
+                "type": "CodeableConcept"
             }
         },
         {
             "source": {
-                "name": "project_id",
+                "name": "id",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
                 "definition": "Unique key of entity",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
                 "category": "administrative",
-                "type": "unique key",
-                "structure": "is_child",
-                "has_parent": true
+                "type": "unique key"
             },
             "destination": {
                 "name": "ResearchStudy.identifier",
@@ -165,75 +168,62 @@
                 "definition": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.identifier",
                 "module": "Administration",
-                "type": "Identifier",
-                "structure": "is_child",
-                "has_parent": true
+                "type": "Identifier"
             }
         },
         {
             "source": {
                 "name": "released",
-                "url": "",
-                "definition": "Boolean indicating release status of project",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
+                "definition": "To release a project is to tell the GDC to include all submitted entities in the next GDC index.",
+                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
+                "category": "property",
+                "type": "boolean"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "ResearchStudy.progressStatus.actual",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.progressStatus.actual",
+                "definition": "An indication of whether or not the date is a known date when the state changed or will change. A value of true indicates a known date. A value of false indicates an estimated date.",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.progressStatus.actual",
+                "module": "Administration",
+                "type": "boolean"
             }
         },
         {
             "source": {
                 "name": "state",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
+                "definition": "The possible states a project can be in.  All but `open` are equivalent to some type of locked state.",
+                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
+                "category": "property",
+                "type": "string",
+                "enum": ["open", "review", "submitted", "processing", "processed", "closed", "legacy"]
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "ResearchStudy.progressStatus.state",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.progressStatus.state",
+                "definition": "Label for status or state (e.g. recruitment status).",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.progressStatus.state",
+                "module": "Administration",
+                "type": "CodeableConcept"
             }
         },
         {
             "source": {
                 "name": "program.dbgap_accession_number",
-                "url": "",
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&anchor=dbgap_accession_number",
                 "definition": "The dbgap accession number provided for the program.",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&anchor=dbgap_accession_number",
+                "category": "property",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "Coding.code",
+                "url": "https://build.fhir.org/datatypes-definitions.html",
+                "definition": "a code from the coding scheme that identifies the security label and code is a value from the code system",
+                "definition_url": "https://build.fhir.org/datatypes-definitions.html",
+                "module": "DataTypes",
+                "type": "string"
             }
         },
         {
@@ -243,19 +233,15 @@
                 "definition": "Links to this entity - Indicates that the project is logically part of the indicated program name.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&_top=1",
                 "category": "administrative",
-                "type": "unique key",
-                "structure": "is_child",
-                "has_parent": true
+                "type": "unique key"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "ResearchStudy.partOf.name",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.partOf",
+                "definition": "Name for this study (computer friendly).",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "module": "Administration",
+                "type": "string"
             }
         },
         {
@@ -265,19 +251,15 @@
                 "definition": "Links to this entity - Indicates that the project is logically part of the indicated program id.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&_top=1",
                 "category": "administrative",
-                "type": "unique key",
-                "structure": "is_child",
-                "has_parent": true
+                "type": "unique key"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "ResearchStudy.partOf.identifier",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.partOf",
+                "definition": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.identifier",
+                "module": "Administration",
+                "type": "Identifier"
             }
         },
         {
@@ -287,9 +269,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -297,9 +277,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -309,9 +287,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -319,9 +295,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -331,9 +305,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -341,9 +313,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -353,9 +323,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -363,9 +331,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -375,9 +341,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -385,9 +349,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -397,9 +359,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -407,9 +367,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -419,19 +377,15 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "Observation.valueQuantity",
+                "url": "https://build.fhir.org/datatypes-definitions.html#Quantity.value",
+                "definition": "The value of the measured amount. The value includes an implicit precision in the presentation of the value.",
+                "definition_url": "https://build.fhir.org/datatypes-definitions.html#Quantity.value",
+                "module": "Quantity",
+                "type": "decimal"
             }
         },
         {
@@ -441,9 +395,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -451,9 +403,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -463,9 +413,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -473,9 +421,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         }
     ]

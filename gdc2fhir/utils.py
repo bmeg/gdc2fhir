@@ -1,4 +1,5 @@
 import json
+import requests
 
 
 def extract_keys(data, parent_key=None, keys=None):
@@ -40,41 +41,65 @@ def get_key_hierarchy(json_path):
                 extracted_keys = extract_keys(json_data)
                 extracted_keys_list.extend(extracted_keys)
             except json.JSONDecodeError as e:
-                print(f"Error decoding JSON: {e}")
+                print("Error decoding JSON: {}".format(e))
 
     return extracted_keys_list
 
 
 JSON_SCHEMA = {
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "",
     "metadata": {
-        "name": "",
+        "title": "",
         "category": "",
+        "type": "",
+        "downloadable": False,
         "description": "",
-        "versions": [{"source_version": ""}, {"destination_version": ""}],
+        "versions": [
+            {
+                "source_version": ""
+            },
+            {
+                "destination_version": ""
+            }
+        ],
         "resource_links": []
     },
+    "obj_mapping": {
+        "source": {
+            "name": "",
+            "url": "",
+            "description": "",
+            "definition_url": "",
+            "category": "",
+            "type": ""
+        },
+        "destination": {
+            "name": "",
+            "url": "",
+            "definition": "",
+            "definition_url": "",
+            "module": "",
+            "type": ""
+        }
+    },
     "obj_keys": [],
+    "required": [],
+    "unique_keys": [],
+    "source_key_aliases": {},
+    "destination_key_aliases": {},
+    "destination_key_hierarchy": {},
     "mappings": []
 }
 
-PROJECT_MAPPING_TEMPLATE = {
+MAPPING_TEMPLATE = {
     "source": {
         "name": "",
         "url": "",
         "definition": "",
         "definition_url": "",
         "category": "",
-        "type": "",
-        "structure": "",
-        "has_parent": True,
-        "content_annotations": [
-            {
-                "value": "",
-                "annotation_type": "",
-                "annotation_url": ""
-            }
-        ]
+        "type": ""
     },
     "destination": {
         "name": "",
@@ -82,89 +107,116 @@ PROJECT_MAPPING_TEMPLATE = {
         "definition": "",
         "definition_url": "",
         "module": "",
-        "type": "",
-        "structure": "",
-        "has_parent": True
-    }
-}
-
-CASE_MAPPING_TEMPLATE = {
-    "source": {
-        "name": "",
-        "url": "",
-        "definition": "",
-        "definition_url": "",
-        "category": "",
-        "type": "",
-        "structure": "",
-        "has_parent": True,
-        "content_annotations": [
-            {
-                "value": "",
-                "annotation_type": "",
-                "annotation_url": ""
-            }
-        ]
-    },
-    "destination": {
-        "name": "",
-        "url": "",
-        "definition": "",
-        "definition_url": "",
-        "module": "",
-        "type": "",
-        "structure": "",
-        "has_parent": True
+        "type": ""
     }
 }
 
 
-def create_mapping(mapping_template, key, has_parent=True):
+def create_mapping(mapping_template, key):
     """
-    Creates a new mapping based on the provided template and modifies it via parameters passed
+    Creates a mapping for a given key based on the template.
 
     :param mapping_template: Template for the mapping structure
-    :param key: Source key to be used in mapping
-    :param has_parent: Boolean indicating whether key has a parent. Default is true
-    :return: Modified mapping template
+    :param key: Key to be included in the mapping
+    :return: Mapping for the key
     """
-    mapping = mapping_template.copy()
+    mapping = json.loads(mapping_template)
     mapping["source"]["name"] = key
-    mapping["source"]["has_parent"] = has_parent
     return mapping
 
 
-def initialize_json_schema(keys, mapping_template, out_path, has_parent=True, source_version="", destination_version="", json_schema=JSON_SCHEMA,
-                           json_schema_version="1.0.0"):
+def initialize_json_schema(keys, out_path, mapping_template=json.dumps(MAPPING_TEMPLATE),
+                           json_schema=json.dumps(JSON_SCHEMA), source_version="",
+                           destination_version="", json_schema_version="1.0.0"):
     """
     Generates an empty schema json file with all source keys of interest to be mapped to destination keys.
 
-    :param keys: List of keys to be included
-    :param mapping_template: A template for mapping ex. GDC case or project
-    :param out_path: Path to save json schema
-    :param has_parent: Boolean indicating whether key has a parent. Default is true
-    :param source_version: Version of source data dictionary
-    :param destination_version: Version of destination data dictionary
-    :param json_schema: Json schema template
-    :param json_schema_version: Version of this json schema template Default is 1.0.0 and follows semantic versioning.
+    :param keys: List of keys to be included in the schema
+    :param out_path: Output file path for the generated schema
+    :param mapping_template: Template for the mapping structure
+    :param json_schema: JSON schema template
+    :param source_version: Source version for the schema
+    :param destination_version: Destination version for the schema
+    :param json_schema_version: Version of the JSON schema
     :return: Initial empty schema json file with all source keys to be mapped
     """
+    mappings = [create_mapping(mapping_template, key) for key in keys]
 
-    mappings = [create_mapping(mapping_template, key, has_parent) for key in keys]
+    if json_schema is None:
+        json_schema = {"version": json_schema_version, "metadata": {"versions": [{"source_version": source_version,
+                                                                                  "destination_version": destination_version}]}}
+    else:
+        try:
+            json_schema = json.loads(json_schema)
+        except json.JSONDecodeError as e:
+            print("Error decoding JSON schema: {}".format(e))
+            return None
 
-    json_schema["version"] = json_schema_version
-    json_schema["metadata"]["versions"][0]["source_version"] = source_version
-    json_schema["metadata"]["versions"][1]["destination_version"] = destination_version
-    json_schema["obj_keys"] = keys
     json_schema["mappings"] = mappings
 
-    json_output = json.dumps(json_schema, indent=4)
+    with open(out_path, 'w') as json_file:
+        json.dump(json_schema, json_file, indent=4)
 
-    try:
-        json.loads(json_output)
-    except json.JSONDecodeError as e:
-        print(f"JSON is not valid. Error: {e}")
+    return json_schema
 
-    with open(out_path, "w") as output_file:
-        output_file.write(json_output)
+
+def gdc_data_dict(entity_name):
+    """
+    Fetches data dictionary for a specified entity from GDC API.
+    TODO: pass version - or get data dict from python client
+
+    :param entity_name: Name of GDC entity ex. project, case, file, annotation
+    :return: Json schema data dictionary for the entity - none if error occurs
+    """
+    api_url = f"https://api.gdc.cancer.gov/v0/submission/_dictionary/{entity_name}"
+    response = requests.get(api_url)
+
+    if response.status_code == 200:
+        entity_data = response.json()
+        return entity_data
+    else:
+        print(f"Error: Unable to fetch data for entity {entity_name}. Status code: {response.status_code}")
+        return None
+
+
+case_dict = gdc_data_dict("case")
+primary_sites = case_dict['properties']['primary_site']['enum']
+disease_types = case_dict['properties']['disease_type']['enum']
+
+
+def initialize_content_annotations(annot_enum, out_path):
+    """
+    Generates the initial list dictionary of content annotations to annotate
+
+    :param annot_enum: List of annotations strings
+    :param out_path: File path for the generated JSON.
+    :return: List of dictionaries with each content annotation name as value's key
+    """
+    obj_list = []
+
+    for item in annot_enum:
+        content_annotation = {
+            "value": item,
+            "definition": "",
+            "definition_url": "",
+            "annotation_type": "caDSR",
+            "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0", 
+            "ontology_url": "",
+            "sctid": ""
+        }
+        obj_list.append(content_annotation)
+
+    jr = json.dumps(obj_list, indent=4)
+
+    if out_path:
+        with open(out_path, "w") as output_file:
+            output_file.write(jr)
+
+
+def gdc_api_version_data_info(api_version="v0"):
+    api_url = f"https://api.gdc.cancer.gov/{api_version}/status"
+    response = requests.get(api_url)
+
+    if response.status_code == 200:
+        return response.json()
 

@@ -1,26 +1,49 @@
 {
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "1.0.0",
     "metadata": {
-        "name": "GDC case entity to FHIR Mapping",
+        "title": "Case",
         "category": "case",
+        "type": "object",
+        "downloadable": false,
         "description": "Mapping GDC case entities, properties, and relations to FHIR. GDC case is the collection of all data related to a specific subject in the context of a specific project.",
         "versions": [
             {
-                "source_version": ""
+                "source_version": "1",
+                "data_release": "Data Release 39.0 - December 04, 2023",
+                "commit": "023da73eee3c17608db1a9903c82852428327b88",
+                "status": "OK",
+                "tag": "5.0.6"
             },
             {
-                "destination_version": ""
+                "destination_version": "v6.0.0"
             }
         ],
         "resource_links": [
             "https://gdc.cancer.gov/about-gdc/gdc-overview",
-            "https://github.com/NCI-GDC/gdcdictionary/tree/develop",
-            "https://www.hl7.org/fhir/overview.html",
-            "https://github.com/nazrulworld/fhir.resources"
+            "https://www.hl7.org/fhir/overview.html"
         ]
     },
+    "obj_mapping": {
+        "source": {
+            "name": "case",
+            "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+            "definition": "The collection of all data related to a specific subject in the context of a specific project.",
+            "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+            "category": "case",
+            "type": "entity"
+        },
+        "destination": {
+            "name": "Observation",
+            "url": "https://build.fhir.org/observation-definitions.html#Observation",
+            "definition": "Measurements and simple assertions made about a patient, device or other subject.",
+            "definition_url": "https://build.fhir.org/observation-definitions.html#Observation",
+            "module": "Diagnostics",
+            "type": "DomainResource"
+        }
+    },
     "obj_keys": [
-        "case_id",
+        "id",
         "submitter_id",
         "project.project_id",
         "demographic.age_at_index",
@@ -95,111 +118,77 @@
         "summary.data_categories",
         "project"
     ],
+    "unique_keys": [
+        [
+            "id"
+        ],
+        [
+            "project_id",
+            "submitter_id"
+        ]
+    ],
+    "required": [
+        "submitter_id",
+        "disease_type",
+        "primary_site"
+    ],
+    "source_key_aliases": {
+        "id": "case_id"
+    },
+    "destination_key_aliases": {
+        "ResearchStudy.condition": [
+            "Observation",
+            "Condition"
+        ],
+        "Observation.bodySite": "Condition.bodySite"
+    },
+    "destination_key_hierarchy": {},
     "mappings": [
         {
             "source": {
-                "name": "case_id",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "name": "id",
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+                "definition": "Unique key of entity",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+                "category": "case",
+                "type": "unique key"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "Observation.identifier",
+                "url": "https://build.fhir.org/observation-definitions.html#Observation.identifier",
+                "definition": "A unique identifier assigned to this observation.",
+                "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.identifier",
+                "module": "Diagnostics",
+                "type": "Identifier"
             }
         },
         {
             "source": {
-                "name": "submitter_id",
-                "url": "",
+                "name": "primary_site",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
                 "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "category": "property",
+                "type": "string",
+                "enum": "@content_annotations/primary_sites.json"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
-            }
-        },
-        {
-            "source": {
-                "name": "project.project_id",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
-            },
-            "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "Observation.bodysite",
+                "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
+                "definition": "Indicates the site on the subject's body where the observation was made (i.e. the target site).",
+                "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
+                "module": "Diagnostics",
+                "type": "Reference(BodyStructure)"
             }
         },
         {
             "source": {
                 "name": "demographic.age_at_index",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=age_at_index",
+                "definition": "The patient's age (in years) on the reference or anchor date used during date obfuscation.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=age_at_index",
+                "category": "property",
+                "type": "integer"
             },
             "destination": {
                 "name": "",
@@ -207,28 +196,17 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
             "source": {
                 "name": "demographic.days_to_birth",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=days_to_birth",
+                "definition": "Number of days between the date used for index and the date from a person's date of birth represented as a calculated negative number of days.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=days_to_birth",
+                "category": "property",
+                "type": "integer"
             },
             "destination": {
                 "name": "",
@@ -237,8 +215,7 @@
                 "definition_url": "",
                 "module": "",
                 "type": "",
-                "structure": "",
-                "has_parent": true
+                "structure": ""
             }
         },
         {
@@ -248,16 +225,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -265,9 +233,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -277,16 +243,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -294,9 +251,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -306,16 +261,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -323,9 +269,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -336,15 +280,7 @@
                 "definition_url": "",
                 "category": "",
                 "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "enum": "@content_annotations/primary_sites.json"
             },
             "destination": {
                 "name": "",
@@ -352,9 +288,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -364,16 +298,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -381,9 +306,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -393,16 +316,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -410,9 +324,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -422,16 +334,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -439,9 +342,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -451,16 +352,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -468,28 +360,17 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
             "source": {
                 "name": "demographic.year_of_birth",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=year_of_birth",
+                "definition": "Numeric value to represent the calendar year in which an individual was born.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=year_of_birth",
+                "category": "property",
+                "type": "integer"
             },
             "destination": {
                 "name": "",
@@ -497,28 +378,17 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
             "source": {
                 "name": "demographic",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic",
+                "definition": "Data for the characterization of the patient by means of segmenting the population (e.g., characterization by age, sex, or race).",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic",
+                "category": "clinical",
+                "type": "entity"
             },
             "destination": {
                 "name": "",
@@ -526,9 +396,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -538,16 +406,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -555,28 +414,18 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
             "source": {
                 "name": "demographic.race",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
+                "definition": "An arbitrary classification of a taxonomic group that is a division of a species. It usually arises as a consequence of geographical isolation within a species and is characterized by shared heredity, physical attributes and behavior, and in the case of humans, by common history, nationality, or geographic distribution. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
+                "category": "property",
+                "type": "string",
+                "enum": ["american indian or alaska native", "asian", "black or african american", "native hawaiian or other pacific islander", "white", "other", "Unknown", "not reported", "not allowed to collect"]
             },
             "destination": {
                 "name": "",
@@ -584,38 +433,26 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
             "source": {
                 "name": "disease_type",
                 "url": "",
-                "definition": "",
+                "definition": "The text term used to describe the type of malignant disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).",
                 "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "category": "property",
+                "type": "string",
+                "enum": "@content_annotations/disease_types.json"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "name": "ResearchStudy.condition",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
+                "definition": "The condition that is the focus of the study. For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
+                "module": "Administration",
+                "type": "CodeableConcept"
             }
         },
         {
@@ -625,16 +462,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -642,9 +470,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -654,16 +480,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -671,9 +488,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -683,16 +498,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -700,9 +506,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -712,16 +516,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -729,9 +524,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -741,16 +534,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -758,9 +542,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -770,16 +552,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -787,9 +560,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -799,16 +570,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -816,28 +578,17 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
             "source": {
                 "name": "days_to_consent",
                 "url": "",
-                "definition": "",
+                "definition": "Number of days between the date used for index and the date the subject consent was obtained for participation in the study.",
                 "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "category": "property",
+                "type": "integer"
             },
             "destination": {
                 "name": "",
@@ -845,9 +596,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -857,16 +606,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -874,9 +614,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -886,16 +624,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -903,9 +632,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -915,16 +642,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -932,9 +650,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -944,16 +660,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -961,9 +668,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -973,16 +678,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -990,9 +686,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1002,16 +696,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1019,28 +704,17 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
             "source": {
                 "name": "tissue_source_site",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=tissue_source_site",
+                "definition": "A clinical site that collects and provides patient samples and clinical metadata for research use. (NCIt C103264)",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=tissue_source_site",
+                "category": "administrative",
+                "type": "entity"
             },
             "destination": {
                 "name": "",
@@ -1048,9 +722,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1060,16 +732,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1077,9 +740,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1089,16 +750,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1106,9 +758,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1118,16 +768,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1135,9 +776,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1147,16 +786,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1164,9 +794,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1176,16 +804,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1193,9 +812,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1205,16 +822,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1222,9 +830,25 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
+            }
+        },
+        {
+            "source": {
+                "name": "project.project_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": ""
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": ""
             }
         },
         {
@@ -1234,16 +858,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1251,9 +866,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1263,16 +876,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1280,9 +884,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1292,16 +894,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1309,9 +902,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1321,16 +912,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1338,9 +920,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1350,16 +930,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1367,9 +938,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1379,16 +948,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1396,9 +956,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1408,16 +966,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1425,9 +974,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1437,16 +984,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1454,9 +992,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1466,16 +1002,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1483,9 +1010,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1495,16 +1020,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1512,9 +1028,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1524,16 +1038,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1541,9 +1046,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1553,16 +1056,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1570,9 +1064,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1582,16 +1074,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1599,9 +1082,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1611,16 +1092,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1628,9 +1100,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1640,16 +1110,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1657,9 +1118,25 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_id",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "category": "",
+                "type": ""
+            },
+            "destination": {
+                "name": "",
+                "url": "",
+                "definition": "",
+                "definition_url": "",
+                "module": "",
+                "type": ""
             }
         },
         {
@@ -1669,16 +1146,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1686,9 +1154,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1698,16 +1164,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1715,9 +1172,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1727,16 +1182,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1744,9 +1190,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1756,16 +1200,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1773,9 +1208,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1785,16 +1218,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1802,9 +1226,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1814,16 +1236,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1831,9 +1244,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1843,16 +1254,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1860,9 +1262,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1872,16 +1272,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1889,9 +1280,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1901,16 +1290,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1918,9 +1298,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1930,16 +1308,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1947,9 +1316,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1959,16 +1326,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -1976,9 +1334,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -1988,16 +1344,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -2005,9 +1352,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -2017,16 +1362,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -2034,9 +1370,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -2046,16 +1380,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -2063,9 +1388,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -2075,16 +1398,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -2092,38 +1406,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
-            }
-        },
-        {
-            "source": {
-                "name": "primary_site",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
-            },
-            "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -2133,16 +1416,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -2150,9 +1424,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -2162,16 +1434,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -2179,9 +1442,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -2191,16 +1452,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -2208,9 +1460,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         },
         {
@@ -2220,16 +1470,7 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true,
-                "content_annotations": [
-                    {
-                        "value": "",
-                        "annotation_type": "",
-                        "annotation_url": ""
-                    }
-                ]
+                "type": ""
             },
             "destination": {
                 "name": "",
@@ -2237,9 +1478,7 @@
                 "definition": "",
                 "definition_url": "",
                 "module": "",
-                "type": "",
-                "structure": "",
-                "has_parent": true
+                "type": ""
             }
         }
     ]
