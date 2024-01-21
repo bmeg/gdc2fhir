@@ -123,7 +123,7 @@
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project&anchor=disease_type",
                 "category": "property",
                 "type": "string",
-                "enum": "@content_annotations/disease_types.json"
+                "content_annotation": "@content_annotations/case/disease_types.json"
             },
             "destination": {
                 "name": "ResearchStudy.condition",
@@ -142,7 +142,7 @@
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project&anchor=primary_site",
                 "category": "property",
                 "type": "string",
-                "enum": "@content_annotations/primary_sites.json"
+                "content_annotation": "@content_annotations/case/primary_sites.json"
             },
             "destination": {
                 "name": "Observation.bodySite",

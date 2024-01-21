@@ -170,7 +170,7 @@
                 "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
                 "category": "property",
                 "type": "string",
-                "enum": "@content_annotations/primary_sites.json"
+                "content_annotation": "@content_annotations/case/primary_sites.json"
             },
             "destination": {
                 "name": "Observation.bodysite",
@@ -280,7 +280,7 @@
                 "definition_url": "",
                 "category": "",
                 "type": "",
-                "enum": "@content_annotations/primary_sites.json"
+                "content_annotation": "@content_annotations/case/primary_sites.json"
             },
             "destination": {
                 "name": "",
@@ -425,7 +425,7 @@
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
                 "category": "property",
                 "type": "string",
-                "enum": ["american indian or alaska native", "asian", "black or african american", "native hawaiian or other pacific islander", "white", "other", "Unknown", "not reported", "not allowed to collect"]
+                "content_annotation": "@content_annotations/demographic/race.json"
             },
             "destination": {
                 "name": "",
@@ -444,7 +444,7 @@
                 "definition_url": "",
                 "category": "property",
                 "type": "string",
-                "enum": "@content_annotations/disease_types.json"
+                "content_annotation": "@content_annotations/case/disease_types.json"
             },
             "destination": {
                 "name": "ResearchStudy.condition",
@@ -1125,7 +1125,7 @@
             "source": {
                 "name": "submitter_id",
                 "url": "",
-                "definition": "",
+                "definition": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "definition_url": "",
                 "category": "",
                 "type": ""
@@ -1308,7 +1308,8 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": ""
+                "type": "",
+                "content_annotation": "@content_annotations/demographic/ethnicity.json"
             },
             "destination": {
                 "name": "",

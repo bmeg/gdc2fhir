@@ -179,6 +179,8 @@ def gdc_data_dict(entity_name):
         return None
 
 
+demographic_dict = gdc_data_dict("demographic")
+project_dict = gdc_data_dict("project")
 case_dict = gdc_data_dict("case")
 primary_sites = case_dict['properties']['primary_site']['enum']
 disease_types = case_dict['properties']['disease_type']['enum']
@@ -199,10 +201,10 @@ def initialize_content_annotations(annot_enum, out_path):
             "value": item,
             "definition": "",
             "definition_url": "",
-            "annotation_type": "caDSR",
-            "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0", 
-            "ontology_url": "",
-            "sctid": ""
+            "annotation_type": "",
+            "annotation_url": ""
+            # "ontology_url": "",
+            # "sctid": ""
         }
         obj_list.append(content_annotation)
 
@@ -220,3 +222,42 @@ def gdc_api_version_data_info(api_version="v0"):
     if response.status_code == 200:
         return response.json()
 
+
+def generate_content_annotations(data, out_path):
+    """
+
+    :param data: GDC data dictionary containing enum values and definitions.
+    :param out_path: File path for annotations.
+    """
+    annotations = []
+
+    for enum_value in data['enum']:
+        if enum_value in data['enumDef']:
+            enum_data = data['enumDef'][enum_value]
+            definition = enum_data.get('description', 'No description available')
+            term_url = enum_data['termDef'].get('term_url', '')
+
+            annotations.append({
+                "value": enum_value,
+                "definition": definition,
+                "definition_url": term_url,
+                "annotation_type": enum_data['termDef'].get('source', ''),
+                "annotation_url": term_url
+            })
+        else:
+            annotations.append({
+                "value": enum_value,
+                "definition": '',
+                "definition_url": '',
+                "annotation_type": '',
+                "annotation_url": ''
+            })
+
+    with open(out_path, 'w', encoding='utf-8') as file:
+        json.dump(annotations, file, indent=4)
+
+
+generate_content_annotations(demographic_dict['properties']['race'], "content_annotations/demographic/race.json")
+generate_content_annotations(demographic_dict['properties']['ethnicity'], "content_annotations/demographic/ethnicity.json")
+generate_content_annotations(case_dict['properties']['disease_type'], "content_annotations/case/disease_type.json")
+generate_content_annotations(case_dict['properties']['primary_site'], "content_annotations/case/primary_site.json")

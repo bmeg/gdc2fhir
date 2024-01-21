@@ -1,0 +1,44 @@
+[
+    {
+        "value": "hispanic or latino",
+        "definition": "A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin, regardless of race. The term, \"Spanish origin,\" can be used in addition to \"Hispanic or Latino.\" (OMB)",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17459",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17459"
+    },
+    {
+        "value": "not hispanic or latino",
+        "definition": "A person not of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin, regardless of race.",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C41222",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C41222"
+    },
+    {
+        "value": "Unknown",
+        "definition": "Not known, not observed, not recorded, or refused.",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998"
+    },
+    {
+        "value": "unknown",
+        "definition": "Not known, not observed, not recorded, or refused.",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998"
+    },
+    {
+        "value": "not reported",
+        "definition": "Not provided or available.",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234"
+    },
+    {
+        "value": "not allowed to collect",
+        "definition": "An indicator that specifies that a collection event was not permitted.",
+        "definition_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C141478",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C141478"
+    }
+]
