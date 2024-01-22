@@ -90,7 +90,7 @@
     },
     "destination_key_hierarchy": {
         "ResearchStudy.partOf.name": {
-            "ResearchStudy.name" : {}
+            "ResearchStudy.name": {}
         },
         "ResearchStudy.partOf.identifier": {
             "ResearchStudy.identifier": {}
@@ -197,7 +197,15 @@
                 "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
                 "category": "property",
                 "type": "string",
-                "enum": ["open", "review", "submitted", "processing", "processed", "closed", "legacy"]
+                "enum": [
+                    "open",
+                    "review",
+                    "submitted",
+                    "processing",
+                    "processed",
+                    "closed",
+                    "legacy"
+                ]
             },
             "destination": {
                 "name": "ResearchStudy.progressStatus.state",
@@ -265,9 +273,9 @@
         {
             "source": {
                 "name": "summary.case_count",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
+                "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "definition": "The number of cases in the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
                 "category": "administrative",
                 "type": "integer"
             },
@@ -283,11 +291,11 @@
         {
             "source": {
                 "name": "summary.file_count",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "definition": "The number of files of the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer"
             },
             "destination": {
                 "name": "Extension.value[x]",
@@ -338,18 +346,31 @@
             "source": {
                 "name": "summary.data_categories.data_category",
                 "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
-                "definition": "Total number of type(s) of data available in the project.",
+                "definition": "Types of data available in the project.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
                 "category": "administrative",
-                "type": "integer"
+                "type": "string",
+                "enum": [
+                    "sequencing reads",
+                    "structural variation",
+                    "transcriptome profiling",
+                    "simple nucleotide variation",
+                    "clinical",
+                    "biospecimen",
+                    "copy number variation",
+                    "dna methylation",
+                    "somatic structural variation",
+                    "proteome profiling",
+                    "combined nucleotide variation"
+                ]
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Extension.value[x]",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "definition": "Type of data within data categories available in the project",
+                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Extensibility",
+                "type": "string"
             }
         },
         {
@@ -395,15 +416,29 @@
                 "definition": "All unique experimental strategies used for molecular characterization of the cancer in the project.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
                 "category": "administrative",
-                "type": ""
+                "type": "string",
+                "enum": [
+                    "RNA-Seq",
+                    "WXS",
+                    "WGS",
+                    "miRNA-Seq",
+                    "Methylation Array",
+                    "Genotyping Array",
+                    "Tissue Slide",
+                    "Diagnostic Slide",
+                    "Reverse Phase Protein Array",
+                    "ATAC-Seq",
+                    "Targeted Sequencing",
+                    "scRNA-Seq"
+                ]
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "GenomicStudy.analysis.changeType",
+                "url": "https://hl7.org/fhir/genomicstudy-definitions.html#GenomicStudy.analysis.changeType",
+                "definition": "GenomicStudy.analysis.changeType",
+                "definition_url": "https://hl7.org/fhir/genomicstudy-definitions.html#GenomicStudy.analysis.changeType",
+                "module": "Diagnostics",
+                "type": "CodeableConcept"
             }
         },
         {
