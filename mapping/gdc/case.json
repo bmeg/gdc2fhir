@@ -166,7 +166,7 @@
             "source": {
                 "name": "primary_site",
                 "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
-                "definition": "",
+                "definition": "The text term used to describe the primary site of disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O). This categorization groups cases into general categories. Reference tissue_or_organ_of_origin on the diagnosis node for more specific primary sites of disease.",
                 "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
                 "category": "property",
                 "type": "string",
@@ -187,16 +187,16 @@
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=age_at_index",
                 "definition": "The patient's age (in years) on the reference or anchor date used during date obfuscation.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=age_at_index",
-                "category": "property",
+                "category": "clinical",
                 "type": "integer"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Patient.Extension.value",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "definition": "Value of extension",
+                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Foundation",
+                "type": "integer"
             }
         },
         {
@@ -205,90 +205,89 @@
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=days_to_birth",
                 "definition": "Number of days between the date used for index and the date from a person's date of birth represented as a calculated negative number of days.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=days_to_birth",
-                "category": "property",
+                "category": "clinical",
                 "type": "integer"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": "",
-                "structure": ""
+                "name": "Patient.Extension.value",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "definition": "Value of extension",
+                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Foundation",
+                "type": "integer"
             }
         },
         {
             "source": {
                 "name": "project.name",
                 "url": "",
-                "definition": "",
+                "definition": "GDC project name",
                 "definition_url": "",
-                "category": "",
-                "type": ""
+                "category": "administrative",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "ResearchStudy.name",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "definition": "Name for this study (computer friendly).",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "module": "Administration",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "project.program.dbgap_accession_number",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&anchor=dbgap_accession_number",
+                "definition": "The dbgap accession number provided for the program.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&anchor=dbgap_accession_number",
+                "category": "administrative",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "ResearchStudy.ResearchStudy.partOf.Coding.code",
+                "url": "https://build.fhir.org/datatypes-definitions.html",
+                "definition": "a code from the coding scheme that identifies the security label and code is a value from the code system",
+                "definition_url": "https://build.fhir.org/datatypes-definitions.html",
+                "module": "DataTypes",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "demographic.submitter_id",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
+                "definition": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
+                "category": "clinical",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "ResearchSubject.identifier",
+                "url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
+                "definition": "Identifiers assigned to this research subject for a study.",
+                "definition_url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
+                "module": "Administration",
+                "type": "code"
             }
         },
         {
             "source": {
                 "name": "project.primary_site",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "definition": "The text term used to describe the primary site of disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O). This categorization groups cases into general categories. Reference tissue_or_organ_of_origin on the diagnosis node for more specific primary sites of disease.",
+                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "category": "administrative",
+                "type": "string",
                 "content_annotation": "@content_annotations/case/primary_sites.json"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "ResearchStudy.Observation.bodySite",
+                "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
+                "definition": "Indicates the body structure on the subject's body where the observation was made (i.e. the target site).",
+                "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
+                "module": "Diagnostics",
+                "type": "CodeableConcept"
             }
         },
         {
@@ -301,12 +300,12 @@
                 "type": ""
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Specimen.identifier",
+                "url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
+                "definition": "Id for specimen.",
+                "definition_url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
+                "module": "Diagnostics",
+                "type": "Identifier"
             }
         },
         {
@@ -330,19 +329,19 @@
         {
             "source": {
                 "name": "exposures",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=exposure",
+                "definition": "Clinically relevant patient information not immediately resulting from genetic predispositions.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=exposure",
+                "category": "clinical",
+                "type": "entity"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "ObservationDefinition",
+                "url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
+                "definition": "Set of definitional characteristics for a kind of observation or measurement produced or consumed by an orderable health care service.",
+                "definition_url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
+                "module": "Administration",
+                "type": "MetadataResource"
             }
         },
         {
@@ -369,16 +368,16 @@
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=year_of_birth",
                 "definition": "Numeric value to represent the calendar year in which an individual was born.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=year_of_birth",
-                "category": "property",
+                "category": "clinical",
                 "type": "integer"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Patient.birthDate",
+                "url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
+                "definition": "The date of birth for the individual",
+                "definition_url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
+                "module": "Administration",
+                "type": "date"
             }
         },
         {
@@ -391,12 +390,12 @@
                 "type": "entity"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Patient",
+                "url": "https://build.fhir.org/patient-definitions.html",
+                "definition": "Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
+                "definition_url": "https://build.fhir.org/patient-definitions.html",
+                "module": "Administration",
+                "type": "DomainResource"
             }
         },
         {
@@ -406,10 +405,11 @@
                 "definition": "",
                 "definition_url": "",
                 "category": "",
-                "type": ""
+                "type": "",
+                "content_annotation": "@content_annotations/case/disease_types.json"
             },
             "destination": {
-                "name": "",
+                "name": "ResearchStudy.condition",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -423,26 +423,26 @@
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
                 "definition": "An arbitrary classification of a taxonomic group that is a division of a species. It usually arises as a consequence of geographical isolation within a species and is characterized by shared heredity, physical attributes and behavior, and in the case of humans, by common history, nationality, or geographic distribution. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
                 "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
-                "category": "property",
-                "type": "string",
+                "category": "clinical",
+                "type": "Race Category Text",
                 "content_annotation": "@content_annotations/demographic/race.json"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Patient.Extension:extension.USCoreRaceExtension",
+                "url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-race.profile.json.html",
+                "definition": "Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality. The race codes used to represent these concepts are based upon the CDC Race and Ethnicity Code Set Version 1.0 which includes over 900 concepts for representing race and ethnicity of which 921 reference race. The race concepts are grouped by and pre-mapped to the 5 OMB race categories.",
+                "definition_url": "http://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-race-definitions.html#diff_Extension",
+                "module": "Extension",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "disease_type",
-                "url": "",
+                "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
                 "definition": "The text term used to describe the type of malignant disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).",
-                "definition_url": "",
-                "category": "property",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+                "category": "case",
                 "type": "string",
                 "content_annotation": "@content_annotations/case/disease_types.json"
             },
@@ -459,18 +459,18 @@
             "source": {
                 "name": "project.program.name",
                 "url": "",
-                "definition": "",
+                "definition": "Unique Key - program name",
                 "definition_url": "",
                 "category": "",
                 "type": ""
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "ResearchStudy.ResearchStudy.partOf.name",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "definition": "Name for this study (computer friendly).",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "module": "Administration",
+                "type": "string"
             }
         },
         {
@@ -909,7 +909,7 @@
             "source": {
                 "name": "submitter_analyte_ids",
                 "url": "",
-                "definition": "",
+                "definition": "Unique key(s) to identify the analyte(s)",
                 "definition_url": "",
                 "category": "",
                 "type": ""
@@ -1304,20 +1304,20 @@
         {
             "source": {
                 "name": "demographic.ethnicity",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": "",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
+                "definition": "An individual's self-described social and cultural grouping, specifically whether an individual describes themselves as Hispanic or Latino. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
+                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
+                "category": "clinical",
+                "type": "Ethnic Group Category Text",
                 "content_annotation": "@content_annotations/demographic/ethnicity.json"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Patient.Extension:extension.USCoreEthnicity",
+                "url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
+                "definition": "Returns patients with an ethnicity extension matching the specified code.",
+                "definition_url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
+                "module": "Extensibility",
+                "type": "string"
             }
         },
         {
