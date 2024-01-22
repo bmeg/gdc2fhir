@@ -268,16 +268,16 @@
                 "url": "",
                 "definition": "",
                 "definition_url": "",
-                "category": "",
-                "type": ""
+                "category": "administrative",
+                "type": "integer"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "ResearchStudy.recruitment.actualNumber",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.recruitment.actualNumber",
+                "definition": "Actual total number of participants enrolled in study",
+                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.recruitment.actualNumber",
+                "module": "Administration",
+                "type": "unsignedInt"
             }
         },
         {
@@ -290,58 +290,58 @@
                 "type": ""
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Extension.value[x]",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "definition": "Value of extension",
+                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Extensibility",
+                "type": "unsignedInt"
             }
         },
         {
             "source": {
                 "name": "summary.file_size",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Data_Submission_Walkthrough/",
+                "definition": "summary of total size of the data file(s) (object) in bytes.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Submission_Portal/Users_Guide/Data_Submission_Walkthrough/",
+                "category": "administrative",
+                "type": "integer"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Extension.value[x]",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "definition": "Value of extension",
+                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Extensibility",
+                "type": "unsignedInt"
             }
         },
         {
             "source": {
                 "name": "summary.data_categories.case_count",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "definition": "Total number of case(s) within the type(s) of data available in the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Extension.value[x]",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "definition": "Value of extension",
+                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Extensibility",
+                "type": "unsignedInt"
             }
         },
         {
             "source": {
                 "name": "summary.data_categories.data_category",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "definition": "Total number of type(s) of data available in the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer"
             },
             "destination": {
                 "name": "",
@@ -355,29 +355,29 @@
         {
             "source": {
                 "name": "summary.data_categories.file_count",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "definition": "Total number of files within the type(s) of data available in the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Extension.value[x]",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "definition": "Value of extension",
+                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Extensibility",
+                "type": "unsignedInt"
             }
         },
         {
             "source": {
                 "name": "summary.experimental_strategies.case_count",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "definition": "Total number of cases in experimental strategies used for molecular characterization of the cancer.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer"
             },
             "destination": {
                 "name": "Observation.valueQuantity",
@@ -391,10 +391,10 @@
         {
             "source": {
                 "name": "summary.experimental_strategies.experimental_strategy",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
+                "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "definition": "All unique experimental strategies used for molecular characterization of the cancer in the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
                 "type": ""
             },
             "destination": {
@@ -409,19 +409,19 @@
         {
             "source": {
                 "name": "summary.experimental_strategies.file_count",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "definition": "Total number of files within the experimental strategies used for molecular characterization of the cancer in the project.",
+                "definition_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer"
             },
             "destination": {
-                "name": "",
-                "url": "",
-                "definition": "",
-                "definition_url": "",
-                "module": "",
-                "type": ""
+                "name": "Extension.value[x]",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "definition": "Value of extension",
+                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Extensibility",
+                "type": "unsignedInt"
             }
         }
     ]
