@@ -127,11 +127,12 @@
             "submitter_id"
         ]
     ],
-    "required": [
+    "source_key_required": [
         "submitter_id",
         "disease_type",
         "primary_site"
     ],
+    "destination_key_required" : [],
     "source_key_aliases": {
         "id": "case_id"
     },
@@ -142,7 +143,6 @@
         ],
         "Observation.bodySite": "Condition.bodySite"
     },
-    "destination_key_hierarchy": {},
     "mappings": [
         {
             "source": {
@@ -155,6 +155,7 @@
             },
             "destination": {
                 "name": "Observation.identifier",
+                "title": "Business Identifier for observation",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.identifier",
                 "definition": "A unique identifier assigned to this observation.",
                 "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.identifier",
@@ -174,6 +175,7 @@
             },
             "destination": {
                 "name": "Observation.bodysite",
+                "title": "",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
                 "definition": "Indicates the site on the subject's body where the observation was made (i.e. the target site).",
                 "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
@@ -192,6 +194,7 @@
             },
             "destination": {
                 "name": "Patient.Extension.value",
+                "title": "",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "definition": "Value of extension",
                 "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
@@ -210,6 +213,7 @@
             },
             "destination": {
                 "name": "Patient.Extension.value",
+                "title": "",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "definition": "Value of extension",
                 "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
@@ -228,6 +232,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.name",
+                "title": "",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
                 "definition": "Name for this study (computer friendly).",
                 "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
@@ -246,6 +251,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.ResearchStudy.partOf.Coding.code",
+                "title": "",
                 "url": "https://build.fhir.org/datatypes-definitions.html",
                 "definition": "a code from the coding scheme that identifies the security label and code is a value from the code system",
                 "definition_url": "https://build.fhir.org/datatypes-definitions.html",
@@ -264,6 +270,7 @@
             },
             "destination": {
                 "name": "ResearchSubject.identifier",
+                "title": "",
                 "url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
                 "definition": "Identifiers assigned to this research subject for a study.",
                 "definition_url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
@@ -283,6 +290,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.Observation.bodySite",
+                "title": "",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
                 "definition": "Indicates the body structure on the subject's body where the observation was made (i.e. the target site).",
                 "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
@@ -301,6 +309,7 @@
             },
             "destination": {
                 "name": "Specimen.identifier",
+                "title": "",
                 "url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
                 "definition": "Id for specimen.",
                 "definition_url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
@@ -319,6 +328,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -337,6 +347,7 @@
             },
             "destination": {
                 "name": "ObservationDefinition",
+                "title": "",
                 "url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
                 "definition": "Set of definitional characteristics for a kind of observation or measurement produced or consumed by an orderable health care service.",
                 "definition_url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
@@ -355,6 +366,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -373,6 +385,7 @@
             },
             "destination": {
                 "name": "Patient.birthDate",
+                "title": "",
                 "url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
                 "definition": "The date of birth for the individual",
                 "definition_url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
@@ -391,6 +404,7 @@
             },
             "destination": {
                 "name": "Patient",
+                "title": "",
                 "url": "https://build.fhir.org/patient-definitions.html",
                 "definition": "Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
                 "definition_url": "https://build.fhir.org/patient-definitions.html",
@@ -410,6 +424,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.condition",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -429,6 +444,7 @@
             },
             "destination": {
                 "name": "Patient.Extension:extension.USCoreRaceExtension",
+                "title": "",
                 "url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-race.profile.json.html",
                 "definition": "Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality. The race codes used to represent these concepts are based upon the CDC Race and Ethnicity Code Set Version 1.0 which includes over 900 concepts for representing race and ethnicity of which 921 reference race. The race concepts are grouped by and pre-mapped to the 5 OMB race categories.",
                 "definition_url": "http://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-race-definitions.html#diff_Extension",
@@ -448,6 +464,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.condition",
+                "title": "",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
                 "definition": "The condition that is the focus of the study. For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
                 "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
@@ -466,6 +483,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.ResearchStudy.partOf.name",
+                "title": "",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
                 "definition": "Name for this study (computer friendly).",
                 "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
@@ -484,6 +502,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -502,6 +521,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -520,6 +540,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -538,6 +559,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -556,6 +578,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -574,6 +597,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -592,6 +616,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -610,6 +635,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -628,6 +654,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -646,6 +673,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -664,6 +692,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -682,6 +711,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -700,6 +730,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -718,6 +749,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -736,6 +768,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -754,6 +787,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -772,6 +806,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -790,6 +825,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -808,6 +844,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -826,6 +863,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -844,6 +882,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -862,6 +901,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -880,6 +920,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -898,6 +939,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -916,6 +958,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -934,6 +977,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -952,6 +996,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -970,6 +1015,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -988,6 +1034,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1006,6 +1053,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1024,6 +1072,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1042,6 +1091,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1060,6 +1110,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1078,6 +1129,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1096,6 +1148,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1114,6 +1167,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1132,6 +1186,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1150,6 +1205,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1168,6 +1224,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1186,6 +1243,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1204,6 +1262,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1222,6 +1281,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1240,6 +1300,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1258,6 +1319,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1276,6 +1338,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1294,6 +1357,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1313,6 +1377,7 @@
             },
             "destination": {
                 "name": "Patient.Extension:extension.USCoreEthnicity",
+                "title": "",
                 "url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
                 "definition": "Returns patients with an ethnicity extension matching the specified code.",
                 "definition_url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
@@ -1331,6 +1396,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1349,6 +1415,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1367,6 +1434,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1385,6 +1453,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1403,6 +1472,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1421,6 +1491,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1439,6 +1510,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1457,6 +1529,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",
@@ -1475,6 +1548,7 @@
             },
             "destination": {
                 "name": "",
+                "title": "",
                 "url": "",
                 "definition": "",
                 "definition_url": "",

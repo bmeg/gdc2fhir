@@ -1,5 +1,11 @@
 import json
 import requests
+from fhir.resources.patient import Patient
+from fhir.resources.documentreference import DocumentReference
+from fhir.resources.coding import Coding
+# TODO: import fhir classes to get schema
+# DocumentReference.schema()
+# TODO: OOP vs. utility
 
 
 def extract_keys(data, parent_key=None, keys=None):
@@ -76,6 +82,7 @@ JSON_SCHEMA = {
         },
         "destination": {
             "name": "",
+            "title": "",
             "url": "",
             "definition": "",
             "definition_url": "",
@@ -84,11 +91,12 @@ JSON_SCHEMA = {
         }
     },
     "obj_keys": [],
-    "required": [],
+    "source_key_required": [],
+    "destination_key_required": [],
     "unique_keys": [],
     "source_key_aliases": {},
     "destination_key_aliases": {},
-    "destination_key_hierarchy": {},
+    # "destination_key_hierarchy": {},
     "mappings": []
 }
 
@@ -178,7 +186,7 @@ def gdc_data_dict(entity_name):
         print(f"Error: Unable to fetch data for entity {entity_name}. Status code: {response.status_code}")
         return None
 
-
+# TODO: remove use-cases
 demographic_dict = gdc_data_dict("demographic")
 project_dict = gdc_data_dict("project")
 case_dict = gdc_data_dict("case")
@@ -257,7 +265,24 @@ def generate_content_annotations(data, out_path):
         json.dump(annotations, file, indent=4)
 
 
+# TODO: remove use-cases
 generate_content_annotations(demographic_dict['properties']['race'], "content_annotations/demographic/race.json")
 generate_content_annotations(demographic_dict['properties']['ethnicity'], "content_annotations/demographic/ethnicity.json")
 generate_content_annotations(case_dict['properties']['disease_type'], "content_annotations/case/disease_type.json")
 generate_content_annotations(case_dict['properties']['primary_site'], "content_annotations/case/primary_site.json")
+
+
+# 1 - fetch schema from FHIR
+# ex. Coding.schema()['properties']['code']['description']
+# 2- add function to extract element_required for all destination keys required
+# 3 - pull out FHIR hierarchy from enum_reference_types ex.
+"""
+{'title': 'Part of larger study',
+ 'description': 'A larger research study of which this particular study is a component or step.',
+ 'element_property': True,
+ 'enum_reference_types': ['ResearchStudy'],
+ 'type': 'array',
+ 'items': {'type': 'Reference'}}
+"""
+# 4 - map node relation based on uppercase classes ex. extention for patient etc.
+
