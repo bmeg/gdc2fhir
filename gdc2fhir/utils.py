@@ -3,9 +3,17 @@ import requests
 from fhir.resources.patient import Patient
 from fhir.resources.documentreference import DocumentReference
 from fhir.resources.coding import Coding
-# TODO: import fhir classes to get schema
-# DocumentReference.schema()
+from fhir.resources.observation import Observation
+from fhir.resources.extension import Extension
+from fhir.resources.researchstudy import ResearchStudy
 # TODO: OOP vs. utility
+
+Coding.schema()['properties']['code']['description']
+Patient.schema()['properties']
+DocumentReference.schema()['properties']
+Observation.schema()['properties']
+Extension.schema()['properties']
+ResearchStudy.schema()['properties']
 
 
 def extract_keys(data, parent_key=None, keys=None):
@@ -76,7 +84,7 @@ JSON_SCHEMA = {
             "name": "",
             "url": "",
             "description": "",
-            "definition_url": "",
+            "description_url": "",
             "category": "",
             "type": ""
         },
@@ -84,8 +92,8 @@ JSON_SCHEMA = {
             "name": "",
             "title": "",
             "url": "",
-            "definition": "",
-            "definition_url": "",
+            "description": "",
+            "description_url": "",
             "module": "",
             "type": ""
         }
@@ -96,7 +104,6 @@ JSON_SCHEMA = {
     "unique_keys": [],
     "source_key_aliases": {},
     "destination_key_aliases": {},
-    # "destination_key_hierarchy": {},
     "mappings": []
 }
 
@@ -104,16 +111,16 @@ MAPPING_TEMPLATE = {
     "source": {
         "name": "",
         "url": "",
-        "definition": "",
-        "definition_url": "",
+        "description": "",
+        "description_url": "",
         "category": "",
         "type": ""
     },
     "destination": {
         "name": "",
         "url": "",
-        "definition": "",
-        "definition_url": "",
+        "description": "",
+        "description_url": "",
         "module": "",
         "type": ""
     }
@@ -168,6 +175,7 @@ def initialize_json_schema(keys, out_path, mapping_template=json.dumps(MAPPING_T
     return json_schema
 
 
+# TODO: other methods vs API get call data fetch
 def gdc_data_dict(entity_name):
     """
     Fetches data dictionary for a specified entity from GDC API.
@@ -185,6 +193,7 @@ def gdc_data_dict(entity_name):
     else:
         print(f"Error: Unable to fetch data for entity {entity_name}. Status code: {response.status_code}")
         return None
+
 
 # TODO: remove use-cases
 demographic_dict = gdc_data_dict("demographic")
@@ -207,8 +216,8 @@ def initialize_content_annotations(annot_enum, out_path):
     for item in annot_enum:
         content_annotation = {
             "value": item,
-            "definition": "",
-            "definition_url": "",
+            "description": "",
+            "description_url": "",
             "annotation_type": "",
             "annotation_url": ""
             # "ontology_url": "",
@@ -247,16 +256,16 @@ def generate_content_annotations(data, out_path):
 
             annotations.append({
                 "value": enum_value,
-                "definition": definition,
-                "definition_url": term_url,
+                "description": definition,
+                "description_url": term_url,
                 "annotation_type": enum_data['termDef'].get('source', ''),
                 "annotation_url": term_url
             })
         else:
             annotations.append({
                 "value": enum_value,
-                "definition": '',
-                "definition_url": '',
+                "description": '',
+                "description_url": '',
                 "annotation_type": '',
                 "annotation_url": ''
             })

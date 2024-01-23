@@ -7,22 +7,19 @@ setup(
     version=__version__,
     description="Mapping GDC's schema to Ellrot's lab FHIR schema.",
     long_description=open('README.md').read(),
-    # url='',
+    url='https://github.com/bmeg/gdc2fhir',
     author='https://ellrottlab.org/',  
     packages=find_packages(),
-    """
     entry_points={
-        'console_scripts': []
+        'console_scripts': ['gdc2fhir = gdc2fhir.__main__:main']
     },
     install_requires=[
-        x,
-        y,
-        z,
+        'requests',
+        'fhir-resources>=7.1.0'
     ],
-    """
     tests_require=['pytest'],
     classifiers=[
-        # 'Development Status :: 3 - Alpha',
+        'Development Status :: 3 - Alpha',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.9',
         'License :: OSI Approved :: MIT License',

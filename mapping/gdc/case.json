@@ -28,16 +28,16 @@
         "source": {
             "name": "case",
             "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
-            "definition": "The collection of all data related to a specific subject in the context of a specific project.",
-            "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+            "description": "The collection of all data related to a specific subject in the context of a specific project.",
+            "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
             "category": "case",
             "type": "entity"
         },
         "destination": {
             "name": "Observation",
             "url": "https://build.fhir.org/observation-definitions.html#Observation",
-            "definition": "Measurements and simple assertions made about a patient, device or other subject.",
-            "definition_url": "https://build.fhir.org/observation-definitions.html#Observation",
+            "description": "Measurements and simple assertions made about a patient, device or other subject.",
+            "description_url": "https://build.fhir.org/observation-definitions.html#Observation",
             "module": "Diagnostics",
             "type": "DomainResource"
         }
@@ -148,8 +148,8 @@
             "source": {
                 "name": "id",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
-                "definition": "Unique key of entity",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+                "description": "Unique key of entity",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
                 "category": "case",
                 "type": "unique key"
             },
@@ -157,8 +157,8 @@
                 "name": "Observation.identifier",
                 "title": "Business Identifier for observation",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.identifier",
-                "definition": "A unique identifier assigned to this observation.",
-                "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.identifier",
+                "description": "A unique identifier assigned to this observation.",
+                "description_url": "https://build.fhir.org/observation-definitions.html#Observation.identifier",
                 "module": "Diagnostics",
                 "type": "Identifier"
             }
@@ -167,8 +167,8 @@
             "source": {
                 "name": "primary_site",
                 "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
-                "definition": "The text term used to describe the primary site of disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O). This categorization groups cases into general categories. Reference tissue_or_organ_of_origin on the diagnosis node for more specific primary sites of disease.",
-                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "description": "The text term used to describe the primary site of disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O). This categorization groups cases into general categories. Reference tissue_or_organ_of_origin on the diagnosis node for more specific primary sites of disease.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
                 "category": "property",
                 "type": "string",
                 "content_annotation": "@content_annotations/case/primary_sites.json"
@@ -177,8 +177,8 @@
                 "name": "Observation.bodysite",
                 "title": "",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
-                "definition": "Indicates the site on the subject's body where the observation was made (i.e. the target site).",
-                "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
+                "description": "Indicates the site on the subject's body where the observation was made (i.e. the target site).",
+                "description_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
                 "module": "Diagnostics",
                 "type": "Reference(BodyStructure)"
             }
@@ -187,8 +187,8 @@
             "source": {
                 "name": "demographic.age_at_index",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=age_at_index",
-                "definition": "The patient's age (in years) on the reference or anchor date used during date obfuscation.",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=age_at_index",
+                "description": "The patient's age (in years) on the reference or anchor date used during date obfuscation.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=age_at_index",
                 "category": "clinical",
                 "type": "integer"
             },
@@ -196,8 +196,8 @@
                 "name": "Patient.Extension.value",
                 "title": "",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "definition": "Value of extension",
-                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "description": "Value of extension",
+                "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Foundation",
                 "type": "integer"
             }
@@ -206,8 +206,8 @@
             "source": {
                 "name": "demographic.days_to_birth",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=days_to_birth",
-                "definition": "Number of days between the date used for index and the date from a person's date of birth represented as a calculated negative number of days.",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=days_to_birth",
+                "description": "Number of days between the date used for index and the date from a person's date of birth represented as a calculated negative number of days.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=days_to_birth",
                 "category": "clinical",
                 "type": "integer"
             },
@@ -215,8 +215,8 @@
                 "name": "Patient.Extension.value",
                 "title": "",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "definition": "Value of extension",
-                "definition_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "description": "Value of extension",
+                "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Foundation",
                 "type": "integer"
             }
@@ -225,8 +225,8 @@
             "source": {
                 "name": "project.name",
                 "url": "",
-                "definition": "GDC project name",
-                "definition_url": "",
+                "description": "GDC project name",
+                "description_url": "",
                 "category": "administrative",
                 "type": "string"
             },
@@ -234,8 +234,8 @@
                 "name": "ResearchStudy.name",
                 "title": "",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
-                "definition": "Name for this study (computer friendly).",
-                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "description": "Name for this study (computer friendly).",
+                "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
                 "module": "Administration",
                 "type": "string"
             }
@@ -244,8 +244,8 @@
             "source": {
                 "name": "project.program.dbgap_accession_number",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&anchor=dbgap_accession_number",
-                "definition": "The dbgap accession number provided for the program.",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&anchor=dbgap_accession_number",
+                "description": "The dbgap accession number provided for the program.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&anchor=dbgap_accession_number",
                 "category": "administrative",
                 "type": "string"
             },
@@ -253,8 +253,8 @@
                 "name": "ResearchStudy.ResearchStudy.partOf.Coding.code",
                 "title": "",
                 "url": "https://build.fhir.org/datatypes-definitions.html",
-                "definition": "a code from the coding scheme that identifies the security label and code is a value from the code system",
-                "definition_url": "https://build.fhir.org/datatypes-definitions.html",
+                "description": "a code from the coding scheme that identifies the security label and code is a value from the code system",
+                "description_url": "https://build.fhir.org/datatypes-definitions.html",
                 "module": "DataTypes",
                 "type": "string"
             }
@@ -263,8 +263,8 @@
             "source": {
                 "name": "demographic.submitter_id",
                 "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
-                "definition": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
-                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
                 "category": "clinical",
                 "type": "string"
             },
@@ -272,8 +272,8 @@
                 "name": "ResearchSubject.identifier",
                 "title": "",
                 "url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
-                "definition": "Identifiers assigned to this research subject for a study.",
-                "definition_url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
+                "description": "Identifiers assigned to this research subject for a study.",
+                "description_url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
                 "module": "Administration",
                 "type": "code"
             }
@@ -282,8 +282,8 @@
             "source": {
                 "name": "project.primary_site",
                 "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
-                "definition": "The text term used to describe the primary site of disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O). This categorization groups cases into general categories. Reference tissue_or_organ_of_origin on the diagnosis node for more specific primary sites of disease.",
-                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "description": "The text term used to describe the primary site of disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O). This categorization groups cases into general categories. Reference tissue_or_organ_of_origin on the diagnosis node for more specific primary sites of disease.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
                 "category": "administrative",
                 "type": "string",
                 "content_annotation": "@content_annotations/case/primary_sites.json"
@@ -292,8 +292,8 @@
                 "name": "ResearchStudy.Observation.bodySite",
                 "title": "",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
-                "definition": "Indicates the body structure on the subject's body where the observation was made (i.e. the target site).",
-                "definition_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
+                "description": "Indicates the body structure on the subject's body where the observation was made (i.e. the target site).",
+                "description_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
                 "module": "Diagnostics",
                 "type": "CodeableConcept"
             }
@@ -302,8 +302,8 @@
             "source": {
                 "name": "sample_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -311,8 +311,8 @@
                 "name": "Specimen.identifier",
                 "title": "",
                 "url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
-                "definition": "Id for specimen.",
-                "definition_url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
+                "description": "Id for specimen.",
+                "description_url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
                 "module": "Diagnostics",
                 "type": "Identifier"
             }
@@ -321,8 +321,8 @@
             "source": {
                 "name": "samples",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -330,8 +330,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -340,8 +340,8 @@
             "source": {
                 "name": "exposures",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=exposure",
-                "definition": "Clinically relevant patient information not immediately resulting from genetic predispositions.",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=exposure",
+                "description": "Clinically relevant patient information not immediately resulting from genetic predispositions.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=exposure",
                 "category": "clinical",
                 "type": "entity"
             },
@@ -349,8 +349,8 @@
                 "name": "ObservationDefinition",
                 "title": "",
                 "url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
-                "definition": "Set of definitional characteristics for a kind of observation or measurement produced or consumed by an orderable health care service.",
-                "definition_url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
+                "description": "Set of definitional characteristics for a kind of observation or measurement produced or consumed by an orderable health care service.",
+                "description_url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
                 "module": "Administration",
                 "type": "MetadataResource"
             }
@@ -359,8 +359,8 @@
             "source": {
                 "name": "index_date",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -368,8 +368,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -378,8 +378,8 @@
             "source": {
                 "name": "demographic.year_of_birth",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=year_of_birth",
-                "definition": "Numeric value to represent the calendar year in which an individual was born.",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=year_of_birth",
+                "description": "Numeric value to represent the calendar year in which an individual was born.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=year_of_birth",
                 "category": "clinical",
                 "type": "integer"
             },
@@ -387,8 +387,8 @@
                 "name": "Patient.birthDate",
                 "title": "",
                 "url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
-                "definition": "The date of birth for the individual",
-                "definition_url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
+                "description": "The date of birth for the individual",
+                "description_url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
                 "module": "Administration",
                 "type": "date"
             }
@@ -397,8 +397,8 @@
             "source": {
                 "name": "demographic",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic",
-                "definition": "Data for the characterization of the patient by means of segmenting the population (e.g., characterization by age, sex, or race).",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic",
+                "description": "Data for the characterization of the patient by means of segmenting the population (e.g., characterization by age, sex, or race).",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic",
                 "category": "clinical",
                 "type": "entity"
             },
@@ -406,8 +406,8 @@
                 "name": "Patient",
                 "title": "",
                 "url": "https://build.fhir.org/patient-definitions.html",
-                "definition": "Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
-                "definition_url": "https://build.fhir.org/patient-definitions.html",
+                "description": "Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
+                "description_url": "https://build.fhir.org/patient-definitions.html",
                 "module": "Administration",
                 "type": "DomainResource"
             }
@@ -416,8 +416,8 @@
             "source": {
                 "name": "project.disease_type",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": "",
                 "content_annotation": "@content_annotations/case/disease_types.json"
@@ -426,8 +426,8 @@
                 "name": "ResearchStudy.condition",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -436,8 +436,8 @@
             "source": {
                 "name": "demographic.race",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
-                "definition": "An arbitrary classification of a taxonomic group that is a division of a species. It usually arises as a consequence of geographical isolation within a species and is characterized by shared heredity, physical attributes and behavior, and in the case of humans, by common history, nationality, or geographic distribution. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
+                "description": "An arbitrary classification of a taxonomic group that is a division of a species. It usually arises as a consequence of geographical isolation within a species and is characterized by shared heredity, physical attributes and behavior, and in the case of humans, by common history, nationality, or geographic distribution. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
                 "category": "clinical",
                 "type": "Race Category Text",
                 "content_annotation": "@content_annotations/demographic/race.json"
@@ -446,8 +446,8 @@
                 "name": "Patient.Extension:extension.USCoreRaceExtension",
                 "title": "",
                 "url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-race.profile.json.html",
-                "definition": "Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality. The race codes used to represent these concepts are based upon the CDC Race and Ethnicity Code Set Version 1.0 which includes over 900 concepts for representing race and ethnicity of which 921 reference race. The race concepts are grouped by and pre-mapped to the 5 OMB race categories.",
-                "definition_url": "http://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-race-definitions.html#diff_Extension",
+                "description": "Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality. The race codes used to represent these concepts are based upon the CDC Race and Ethnicity Code Set Version 1.0 which includes over 900 concepts for representing race and ethnicity of which 921 reference race. The race concepts are grouped by and pre-mapped to the 5 OMB race categories.",
+                "description_url": "http://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-race-definitions.html#diff_Extension",
                 "module": "Extension",
                 "type": "string"
             }
@@ -456,8 +456,8 @@
             "source": {
                 "name": "disease_type",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
-                "definition": "The text term used to describe the type of malignant disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+                "description": "The text term used to describe the type of malignant disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
                 "category": "case",
                 "type": "string",
                 "content_annotation": "@content_annotations/case/disease_types.json"
@@ -466,8 +466,8 @@
                 "name": "ResearchStudy.condition",
                 "title": "",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
-                "definition": "The condition that is the focus of the study. For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
-                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
+                "description": "The condition that is the focus of the study. For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
+                "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
                 "module": "Administration",
                 "type": "CodeableConcept"
             }
@@ -476,8 +476,8 @@
             "source": {
                 "name": "project.program.name",
                 "url": "",
-                "definition": "Unique Key - program name",
-                "definition_url": "",
+                "description": "Unique Key - program name",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -485,8 +485,8 @@
                 "name": "ResearchStudy.ResearchStudy.partOf.name",
                 "title": "",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
-                "definition": "Name for this study (computer friendly).",
-                "definition_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "description": "Name for this study (computer friendly).",
+                "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
                 "module": "Administration",
                 "type": "string"
             }
@@ -495,8 +495,8 @@
             "source": {
                 "name": "aliquot_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -504,8 +504,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -514,8 +514,8 @@
             "source": {
                 "name": "diagnoses",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -523,8 +523,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -533,8 +533,8 @@
             "source": {
                 "name": "tissue_source_site.tissue_source_site_id",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -542,8 +542,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -552,8 +552,8 @@
             "source": {
                 "name": "project.releasable",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -561,8 +561,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -571,8 +571,8 @@
             "source": {
                 "name": "demographic.created_datetime",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -580,8 +580,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -590,8 +590,8 @@
             "source": {
                 "name": "project.program",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -599,8 +599,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -609,8 +609,8 @@
             "source": {
                 "name": "days_to_consent",
                 "url": "",
-                "definition": "Number of days between the date used for index and the date the subject consent was obtained for participation in the study.",
-                "definition_url": "",
+                "description": "Number of days between the date used for index and the date the subject consent was obtained for participation in the study.",
+                "description_url": "",
                 "category": "property",
                 "type": "integer"
             },
@@ -618,8 +618,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -628,8 +628,8 @@
             "source": {
                 "name": "demographic.cause_of_death_source",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -637,8 +637,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -647,8 +647,8 @@
             "source": {
                 "name": "created_datetime",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -656,8 +656,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -666,8 +666,8 @@
             "source": {
                 "name": "demographic.gender",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -675,8 +675,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -685,8 +685,8 @@
             "source": {
                 "name": "demographic.country_of_residence_at_enrollment",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -694,8 +694,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -704,8 +704,8 @@
             "source": {
                 "name": "demographic.occupation_duration_years",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -713,8 +713,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -723,8 +723,8 @@
             "source": {
                 "name": "summary",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -732,8 +732,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -742,8 +742,8 @@
             "source": {
                 "name": "tissue_source_site",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=tissue_source_site",
-                "definition": "A clinical site that collects and provides patient samples and clinical metadata for research use. (NCIt C103264)",
-                "definition_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=tissue_source_site",
+                "description": "A clinical site that collects and provides patient samples and clinical metadata for research use. (NCIt C103264)",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=tissue_source_site",
                 "category": "administrative",
                 "type": "entity"
             },
@@ -751,8 +751,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -761,8 +761,8 @@
             "source": {
                 "name": "demographic.demographic_id",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -770,8 +770,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -780,8 +780,8 @@
             "source": {
                 "name": "slide_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -789,8 +789,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -799,8 +799,8 @@
             "source": {
                 "name": "tissue_source_site.name",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -808,8 +808,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -818,8 +818,8 @@
             "source": {
                 "name": "demographic.days_to_death",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -827,8 +827,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -837,8 +837,8 @@
             "source": {
                 "name": "submitter_sample_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -846,8 +846,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -856,8 +856,8 @@
             "source": {
                 "name": "analyte_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -865,8 +865,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -875,8 +875,8 @@
             "source": {
                 "name": "project.project_id",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -884,8 +884,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -894,8 +894,8 @@
             "source": {
                 "name": "days_to_lost_to_followup",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -903,8 +903,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -913,8 +913,8 @@
             "source": {
                 "name": "updated_datetime",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -922,8 +922,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -932,8 +932,8 @@
             "source": {
                 "name": "demographic.year_of_death",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -941,8 +941,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -951,8 +951,8 @@
             "source": {
                 "name": "submitter_analyte_ids",
                 "url": "",
-                "definition": "Unique key(s) to identify the analyte(s)",
-                "definition_url": "",
+                "description": "Unique key(s) to identify the analyte(s)",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -960,8 +960,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -970,8 +970,8 @@
             "source": {
                 "name": "lost_to_followup",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -979,8 +979,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -989,8 +989,8 @@
             "source": {
                 "name": "project.released",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -998,8 +998,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1008,8 +1008,8 @@
             "source": {
                 "name": "summary.file_size",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1017,8 +1017,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1027,8 +1027,8 @@
             "source": {
                 "name": "demographic.age_is_obfuscated",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1036,8 +1036,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1046,8 +1046,8 @@
             "source": {
                 "name": "tissue_source_site.bcr_id",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1055,8 +1055,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1065,8 +1065,8 @@
             "source": {
                 "name": "consent_type",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1074,8 +1074,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1084,8 +1084,8 @@
             "source": {
                 "name": "demographic.vital_status",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1093,8 +1093,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1103,8 +1103,8 @@
             "source": {
                 "name": "demographic.cause_of_death",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1112,8 +1112,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1122,8 +1122,8 @@
             "source": {
                 "name": "portion_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1131,8 +1131,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1141,8 +1141,8 @@
             "source": {
                 "name": "diagnosis_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1150,8 +1150,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1160,8 +1160,8 @@
             "source": {
                 "name": "project.program.program_id",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1169,8 +1169,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1179,8 +1179,8 @@
             "source": {
                 "name": "submitter_id",
                 "url": "",
-                "definition": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
-                "definition_url": "",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1188,8 +1188,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1198,8 +1198,8 @@
             "source": {
                 "name": "family_histories",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1207,8 +1207,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1217,8 +1217,8 @@
             "source": {
                 "name": "project.state",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1226,8 +1226,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1236,8 +1236,8 @@
             "source": {
                 "name": "state",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1245,8 +1245,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1255,8 +1255,8 @@
             "source": {
                 "name": "submitter_portion_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1264,8 +1264,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1274,8 +1274,8 @@
             "source": {
                 "name": "summary.file_count",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1283,8 +1283,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1293,8 +1293,8 @@
             "source": {
                 "name": "summary.experimental_strategies",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1302,8 +1302,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1312,8 +1312,8 @@
             "source": {
                 "name": "demographic.weeks_gestation_at_birth",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1321,8 +1321,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1331,8 +1331,8 @@
             "source": {
                 "name": "tissue_source_site.code",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1340,8 +1340,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1350,8 +1350,8 @@
             "source": {
                 "name": "demographic.state",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1359,8 +1359,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1369,8 +1369,8 @@
             "source": {
                 "name": "demographic.ethnicity",
                 "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
-                "definition": "An individual's self-described social and cultural grouping, specifically whether an individual describes themselves as Hispanic or Latino. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
-                "definition_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
+                "description": "An individual's self-described social and cultural grouping, specifically whether an individual describes themselves as Hispanic or Latino. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
                 "category": "clinical",
                 "type": "Ethnic Group Category Text",
                 "content_annotation": "@content_annotations/demographic/ethnicity.json"
@@ -1379,8 +1379,8 @@
                 "name": "Patient.Extension:extension.USCoreEthnicity",
                 "title": "",
                 "url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
-                "definition": "Returns patients with an ethnicity extension matching the specified code.",
-                "definition_url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
+                "description": "Returns patients with an ethnicity extension matching the specified code.",
+                "description_url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
                 "module": "Extensibility",
                 "type": "string"
             }
@@ -1389,8 +1389,8 @@
             "source": {
                 "name": "submitter_diagnosis_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1398,8 +1398,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1408,8 +1408,8 @@
             "source": {
                 "name": "submitter_aliquot_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1417,8 +1417,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1427,8 +1427,8 @@
             "source": {
                 "name": "submitter_slide_ids",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1436,8 +1436,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1446,8 +1446,8 @@
             "source": {
                 "name": "demographic.updated_datetime",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1455,8 +1455,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1465,8 +1465,8 @@
             "source": {
                 "name": "demographic.premature_at_birth",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1474,8 +1474,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1484,8 +1484,8 @@
             "source": {
                 "name": "tissue_source_site.project",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1493,8 +1493,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1503,8 +1503,8 @@
             "source": {
                 "name": "project.dbgap_accession_number",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1512,8 +1512,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1522,8 +1522,8 @@
             "source": {
                 "name": "summary.data_categories",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1531,8 +1531,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
@@ -1541,8 +1541,8 @@
             "source": {
                 "name": "project",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "category": "",
                 "type": ""
             },
@@ -1550,8 +1550,8 @@
                 "name": "",
                 "title": "",
                 "url": "",
-                "definition": "",
-                "definition_url": "",
+                "description": "",
+                "description_url": "",
                 "module": "",
                 "type": ""
             }
