@@ -169,18 +169,18 @@
                 "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
                 "description": "The text term used to describe the primary site of disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O). This categorization groups cases into general categories. Reference tissue_or_organ_of_origin on the diagnosis node for more specific primary sites of disease.",
                 "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
-                "category": "property",
+                "category": "case",
                 "type": "string",
                 "content_annotation": "@content_annotations/case/primary_sites.json"
             },
             "destination": {
                 "name": "Observation.bodysite",
-                "title": "",
+                "title": "Observed body part",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
                 "description": "Indicates the site on the subject's body where the observation was made (i.e. the target site).",
                 "description_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
                 "module": "Diagnostics",
-                "type": "Reference(BodyStructure)"
+                "type": "CodeableConcept"
             }
         },
         {
@@ -193,10 +193,10 @@
                 "type": "integer"
             },
             "destination": {
-                "name": "Patient.Extension.value",
-                "title": "",
+                "name": "Patient.Extension.valueInteger",
+                "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Value of extension",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Foundation",
                 "type": "integer"
@@ -212,10 +212,10 @@
                 "type": "integer"
             },
             "destination": {
-                "name": "Patient.Extension.value",
-                "title": "",
+                "name": "Patient.Extension.valueInteger",
+                "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Value of extension",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Foundation",
                 "type": "integer"
@@ -232,7 +232,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.name",
-                "title": "",
+                "title": "Name for this study (computer friendly)",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
                 "description": "Name for this study (computer friendly).",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
@@ -251,9 +251,9 @@
             },
             "destination": {
                 "name": "ResearchStudy.ResearchStudy.partOf.Coding.code",
-                "title": "",
+                "title": "Symbol in syntax defined by the system",
                 "url": "https://build.fhir.org/datatypes-definitions.html",
-                "description": "a code from the coding scheme that identifies the security label and code is a value from the code system",
+                "description": "A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).",
                 "description_url": "https://build.fhir.org/datatypes-definitions.html",
                 "module": "DataTypes",
                 "type": "string"
@@ -270,7 +270,7 @@
             },
             "destination": {
                 "name": "ResearchSubject.identifier",
-                "title": "",
+                "title": "Business Identifier for research subject in a study",
                 "url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
                 "description": "Identifiers assigned to this research subject for a study.",
                 "description_url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
@@ -290,7 +290,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.Observation.bodySite",
-                "title": "",
+                "title": "Observed body part",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
                 "description": "Indicates the body structure on the subject's body where the observation was made (i.e. the target site).",
                 "description_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
@@ -309,7 +309,7 @@
             },
             "destination": {
                 "name": "Specimen.identifier",
-                "title": "",
+                "title": "External Identifier",
                 "url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
                 "description": "Id for specimen.",
                 "description_url": "https://build.fhir.org/specimen-definitions.html#Specimen.identifier",
@@ -327,13 +327,13 @@
                 "type": ""
             },
             "destination": {
-                "name": "",
-                "title": "",
-                "url": "",
-                "description": "",
-                "description_url": "",
-                "module": "",
-                "type": ""
+                "name": "Specimen",
+                "title": "Specimen",
+                "url": "https://build.fhir.org/specimen-definitions.html#Specimen",
+                "description": "Sample for analysis. A sample to be used for analysis.",
+                "description_url": "https://build.fhir.org/specimen-definitions.html#Specimen",
+                "module": "Diagnostics",
+                "type": "DomainResource"
             }
         },
         {
@@ -347,7 +347,7 @@
             },
             "destination": {
                 "name": "ObservationDefinition",
-                "title": "",
+                "title": "ObservationDefinition",
                 "url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
                 "description": "Set of definitional characteristics for a kind of observation or measurement produced or consumed by an orderable health care service.",
                 "description_url": "https://build.fhir.org/observationdefinition-definitions.html#ObservationDefinition",
@@ -385,7 +385,7 @@
             },
             "destination": {
                 "name": "Patient.birthDate",
-                "title": "",
+                "title": "The date of birth for the individual",
                 "url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
                 "description": "The date of birth for the individual",
                 "description_url": "https://www.hl7.org/fhir/patient-definitions.html#Patient.birthDate",
@@ -404,7 +404,7 @@
             },
             "destination": {
                 "name": "Patient",
-                "title": "",
+                "title": "Patient",
                 "url": "https://build.fhir.org/patient-definitions.html",
                 "description": "Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
                 "description_url": "https://build.fhir.org/patient-definitions.html",
@@ -424,12 +424,12 @@
             },
             "destination": {
                 "name": "ResearchStudy.condition",
-                "title": "",
-                "url": "",
-                "description": "",
-                "description_url": "",
-                "module": "",
-                "type": ""
+                "title": "Condition being studied",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
+                "description": "The condition that is the focus of the study. For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
+                "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
+                "module": "Administration",
+                "type": "CodeableConcept"
             }
         },
         {
