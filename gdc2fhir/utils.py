@@ -5,7 +5,8 @@ from fhir.resources.documentreference import DocumentReference
 from fhir.resources.coding import Coding
 from fhir.resources.observation import Observation
 from fhir.resources.extension import Extension
-from fhir.resources.researchstudy import ResearchStudy
+from fhir.resources.researchstudy import ResearchStudy, ResearchStudyRecruitment, ResearchStudyProgressStatus
+from fhir.resources.genomics import GenomicStudyAnalysis
 # TODO: OOP vs. utility
 
 Coding.schema()['properties']['code']['description']
@@ -14,6 +15,7 @@ DocumentReference.schema()['properties']
 Observation.schema()['properties']
 Extension.schema()['properties']
 ResearchStudy.schema()['properties']
+GenomicStudyAnalysis.schema()['properties']['changeType']
 
 
 def extract_keys(data, parent_key=None, keys=None):

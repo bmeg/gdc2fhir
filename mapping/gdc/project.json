@@ -36,7 +36,7 @@
         },
         "destination": {
             "name": "ResearchStudy",
-            "title": "",
+            "title": "ResearchStudy",
             "url": "https://build.fhir.org/researchstudy.html",
             "description": "A scientific study of nature that sometimes includes processes involved in health and disease. For example, clinical trials are research studies that involve people. These studies may be related to new ways to screen, prevent, diagnose, and treat disease. They may also study certain outcomes and certain groups of people by looking at data collected in the past or future.",
             "description_url": "https://build.fhir.org/researchstudy-definitions.html",
@@ -71,7 +71,7 @@
         "programs",
         "dbgap_accession_number"
     ],
-    "destination_key_required" : [],
+    "destination_key_required": [],
     "unique_keys": [
         [
             "id"
@@ -122,7 +122,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.condition",
-                "title": "",
+                "title": "Condition being studied",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
                 "description": "The condition that is the focus of the study. For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
@@ -142,7 +142,7 @@
             },
             "destination": {
                 "name": "Observation.bodySite",
-                "title": "",
+                "title": "Observed body part",
                 "url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
                 "description": "Indicates the body structure on the subject's body where the observation was made (i.e. the target site).",
                 "description_url": "https://build.fhir.org/observation-definitions.html#Observation.bodySite",
@@ -161,7 +161,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.identifier",
-                "title": "",
+                "title": "Business Identifier for study",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.identifier",
                 "description": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.identifier",
@@ -180,7 +180,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.progressStatus.actual",
-                "title": "",
+                "title": "Actual if true else anticipated",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.progressStatus.actual",
                 "description": "An indication of whether or not the date is a known date when the state changed or will change. A value of true indicates a known date. A value of false indicates an estimated date.",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.progressStatus.actual",
@@ -208,7 +208,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.progressStatus.state",
-                "title": "",
+                "title": "Label for status or state (e.g. recruitment status)",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.progressStatus.state",
                 "description": "Label for status or state (e.g. recruitment status).",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.progressStatus.state",
@@ -227,9 +227,9 @@
             },
             "destination": {
                 "name": "Coding.code",
-                "title": "",
+                "title": "Symbol in syntax defined by the system",
                 "url": "https://build.fhir.org/datatypes-definitions.html",
-                "description": "a code from the coding scheme that identifies the security label and code is a value from the code system",
+                "description": "A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).",
                 "description_url": "https://build.fhir.org/datatypes-definitions.html",
                 "module": "DataTypes",
                 "type": "string"
@@ -246,7 +246,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.partOf.ResearchStudy.name",
-                "title": "",
+                "title": "Name for this study (computer friendly).",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.partOf",
                 "description": "Name for this study (computer friendly).",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
@@ -265,7 +265,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.partOf.ResearchStudy.identifier",
-                "title": "",
+                "title": "Business Identifier for study",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.partOf",
                 "description": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.identifier",
@@ -284,12 +284,12 @@
             },
             "destination": {
                 "name": "ResearchStudy.recruitment.actualNumber",
-                "title": "",
+                "title": "Actual total number of participants enrolled in study",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.recruitment.actualNumber",
                 "description": "Actual total number of participants enrolled in study",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.recruitment.actualNumber",
                 "module": "Administration",
-                "type": "unsignedInt"
+                "type": "integer"
             }
         },
         {
@@ -302,10 +302,10 @@
                 "type": "integer"
             },
             "destination": {
-                "name": "Extension.value[x]",
-                "title": "",
+                "name": "Extension.valueUnsignedInt",
+                "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Value of extension",
+                "description": "Type of data within data categories available in the project.",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Extensibility",
                 "type": "unsignedInt"
@@ -321,10 +321,10 @@
                 "type": "integer"
             },
             "destination": {
-                "name": "Extension.value[x]",
-                "title": "",
+                "name": "Extension.valueUnsignedInt",
+                "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Value of extension",
+                "description": "Type of data within data categories available in the project.",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Extensibility",
                 "type": "unsignedInt"
@@ -343,7 +343,7 @@
                 "name": "Extension.valueUnsignedInt",
                 "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "'Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Extensibility",
                 "type": "unsignedInt"
@@ -372,10 +372,10 @@
                 ]
             },
             "destination": {
-                "name": "Extension.value[x]",
-                "title": "",
+                "name": "Extension.valueString",
+                "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Type of data within data categories available in the project",
+                "description": "Type of data within data categories available in the project.",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Extensibility",
                 "type": "string"
@@ -391,10 +391,10 @@
                 "type": "integer"
             },
             "destination": {
-                "name": "Extension.value[x]",
-                "title": "",
+                "name": "Extension.valueUnsignedInt",
+                "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Value of extension",
+                "description": "Type of data within data categories available in the project.",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Extensibility",
                 "type": "unsignedInt"
@@ -411,9 +411,9 @@
             },
             "destination": {
                 "name": "Observation.valueQuantity",
-                "title": "",
+                "title": "Actual result",
                 "url": "https://build.fhir.org/datatypes-definitions.html#Quantity.value",
-                "description": "The value of the measured amount. The value includes an implicit precision in the presentation of the value.",
+                "description": "The information determined as a result of making the observation, if the information has a simple value.",
                 "description_url": "https://build.fhir.org/datatypes-definitions.html#Quantity.value",
                 "module": "Quantity",
                 "type": "decimal"
@@ -444,9 +444,9 @@
             },
             "destination": {
                 "name": "GenomicStudy.analysis.changeType",
-                "title": "",
+                "title": "Type of the genomic changes studied in the analysis (e.g., DNA, RNA, or AA change)",
                 "url": "https://hl7.org/fhir/genomicstudy-definitions.html#GenomicStudy.analysis.changeType",
-                "description": "GenomicStudy.analysis.changeType",
+                "description": "Type of the genomic changes studied in the analysis, e.g., DNA, RNA, or amino acid change.",
                 "description_url": "https://hl7.org/fhir/genomicstudy-definitions.html#GenomicStudy.analysis.changeType",
                 "module": "Diagnostics",
                 "type": "CodeableConcept"
@@ -462,10 +462,10 @@
                 "type": "integer"
             },
             "destination": {
-                "name": "Extension.value[x]",
-                "title": "",
+                "name": "Extension.valueUnsignedInt",
+                "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Value of extension",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Extensibility",
                 "type": "unsignedInt"
