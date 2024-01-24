@@ -41,6 +41,15 @@ def extract_keys(data, parent_key=None, keys=None):
             current_key = key if parent_key is None else f"{parent_key}.{key}"
             keys.append(current_key)
             extract_keys(value, parent_key=current_key, keys=keys)
+    elif isinstance(data, list):
+        for index, item in enumerate(data):
+            if isinstance(item, dict):
+                current_key = f"{parent_key}" if parent_key is not None else str(index)
+                keys.append(current_key)
+                extract_keys(item, parent_key=current_key, keys=keys)
+            else:
+                current_key = f"{parent_key}" if parent_key is not None else ""
+                keys.append(current_key)
 
     return keys
 

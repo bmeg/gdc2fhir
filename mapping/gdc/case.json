@@ -31,7 +31,7 @@
             "description": "The collection of all data related to a specific subject in the context of a specific project.",
             "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
             "category": "case",
-            "type": "entity"
+            "type": "object"
         },
         "destination": {
             "name": "Observation",
@@ -224,9 +224,9 @@
         {
             "source": {
                 "name": "project.name",
-                "url": "",
-                "description": "GDC project name",
-                "description_url": "",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
+                "description": "Display name for the project",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
                 "category": "administrative",
                 "type": "string"
             },
@@ -301,11 +301,11 @@
         {
             "source": {
                 "name": "sample_ids",
-                "url": "",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/sample",
+                "description": "list of sample ids - A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/sample",
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
                 "name": "Specimen.identifier",
@@ -320,11 +320,11 @@
         {
             "source": {
                 "name": "samples",
-                "url": "",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/sample",
+                "description": "List of samples - Any material sample taken from a biological entity for testing, diagnostic, propagation, treatment or research purposes, including a sample obtained from a living organism or taken from the biological object after halting of all its life functions. Biospecimen can contain one or more components including but not limited to cellular molecules, cells, tissues, organs, body fluids, embryos, and body excretory products.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/sample",
+                "category": "biospecimen",
+                "type": "object"
             },
             "destination": {
                 "name": "Specimen",
@@ -343,7 +343,7 @@
                 "description": "Clinically relevant patient information not immediately resulting from genetic predispositions.",
                 "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=exposure",
                 "category": "clinical",
-                "type": "entity"
+                "type": "object"
             },
             "destination": {
                 "name": "ObservationDefinition",
@@ -358,11 +358,20 @@
         {
             "source": {
                 "name": "index_date",
-                "url": "",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "description": "The text term used to describe the reference or anchor date used when for date obfuscation, where a single date is obscurred by creating one or more date ranges in relation to this date.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "category": "case",
+                "type": "string",
+                "enum": [
+                    "Diagnosis",
+                    "First Patient Visit",
+                    "First Treatment",
+                    "Initial Genomic Sequencing",
+                    "Recurrence",
+                    "Sample Procurement",
+                    "Study Enrollment"
+                    ]
             },
             "destination": {
                 "name": "",
@@ -400,7 +409,7 @@
                 "description": "Data for the characterization of the patient by means of segmenting the population (e.g., characterization by age, sex, or race).",
                 "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic",
                 "category": "clinical",
-                "type": "entity"
+                "type": "object"
             },
             "destination": {
                 "name": "Patient",
@@ -415,11 +424,11 @@
         {
             "source": {
                 "name": "project.disease_type",
-                "url": "",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": "",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "description": "The text term used to describe the type of malignant disease, as categorized by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O)",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
+                "category": "case",
+                "type": "string",
                 "content_annotation": "@content_annotations/case/disease_types.json"
             },
             "destination": {
@@ -443,13 +452,13 @@
                 "content_annotation": "@content_annotations/demographic/race.json"
             },
             "destination": {
-                "name": "Patient.Extension:extension.USCoreRaceExtension",
-                "title": "",
+                "name": "Patient.Extension.extension:USCoreRaceExtension",
+                "title": "'Additional content defined by implementations",
                 "url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-race.profile.json.html",
                 "description": "Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality. The race codes used to represent these concepts are based upon the CDC Race and Ethnicity Code Set Version 1.0 which includes over 900 concepts for representing race and ethnicity of which 921 reference race. The race concepts are grouped by and pre-mapped to the 5 OMB race categories.",
                 "description_url": "http://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-race-definitions.html#diff_Extension",
                 "module": "Extension",
-                "type": "string"
+                "type": "Extension"
             }
         },
         {
@@ -464,7 +473,7 @@
             },
             "destination": {
                 "name": "ResearchStudy.condition",
-                "title": "",
+                "title": "Condition being studied",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
                 "description": "The condition that is the focus of the study. For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.condition",
@@ -475,15 +484,15 @@
         {
             "source": {
                 "name": "project.program.name",
-                "url": "",
-                "description": "Unique Key - program name",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/program",
+                "description": "Full name/title of the program.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/program",
+                "category": "administrative",
+                "type": "string"
             },
             "destination": {
                 "name": "ResearchStudy.ResearchStudy.partOf.name",
-                "title": "",
+                "title": "Name for this study (computer friendly).",
                 "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
                 "description": "Name for this study (computer friendly).",
                 "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
@@ -501,7 +510,7 @@
                 "type": ""
             },
             "destination": {
-                "name": "",
+                "name": "Specimen.identifier",
                 "title": "",
                 "url": "",
                 "description": "",
@@ -745,7 +754,7 @@
                 "description": "A clinical site that collects and provides patient samples and clinical metadata for research use. (NCIt C103264)",
                 "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=tissue_source_site",
                 "category": "administrative",
-                "type": "entity"
+                "type": "object"
             },
             "destination": {
                 "name": "",
@@ -1377,12 +1386,12 @@
             },
             "destination": {
                 "name": "Patient.Extension:extension.USCoreEthnicity",
-                "title": "",
+                "title": "Additional content defined by implementations",
                 "url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
-                "description": "Returns patients with an ethnicity extension matching the specified code.",
+                "description": "Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality. The race codes used to represent these concepts are based upon the CDC Race and Ethnicity Code Set Version 1.0 which includes over 900 concepts for representing race and ethnicity of which 921 reference race. The race concepts are grouped by and pre-mapped to the 5 OMB race categories.",
                 "description_url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
-                "module": "Extensibility",
-                "type": "string"
+                "module": "Extension",
+                "type": "Extension"
             }
         },
         {

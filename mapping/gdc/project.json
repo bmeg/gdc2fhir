@@ -31,7 +31,7 @@
             "description": "The dbgap accession number for the project.",
             "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=project",
             "category": "administrative",
-            "type": "entity",
+            "type": "object",
             "required": true
         },
         "destination": {
@@ -239,7 +239,7 @@
             "source": {
                 "name": "program.name",
                 "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&_top=1",
-                "description": "Links to this entity - Indicates that the project is logically part of the indicated program name.",
+                "description": "Full name/title of the program.",
                 "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=program&_top=1",
                 "category": "administrative",
                 "type": "unique key"
