@@ -1,5 +1,6 @@
 import json
 import requests
+from bs4 import BeautifulSoup
 from fhir.resources.patient import Patient
 from fhir.resources.documentreference import DocumentReference
 from fhir.resources.coding import Coding
@@ -22,6 +23,41 @@ ResearchStudy.schema()['properties']
 GenomicStudyAnalysis.schema()['properties']['changeType']
 ResearchSubject.schema()['properties']
 Specimen.schema()['properties']['identifier']
+
+
+def get_field_text(table):
+    """
+    Gets text of td tags of an xml table
+
+    :param table: xml data in an html table
+    :return: list of GDC fields
+    """
+    fields = []
+    rows = table.find_all("td", recursive=True)
+    for td in rows:
+        fields.append(td.get_text())
+    return fields
+
+
+def gdc_available_fields():
+    """
+    Fetch available fields via GDC site
+
+    :return: Dictionary of project, case, and file fields
+    """
+    response = requests.get("https://docs.gdc.cancer.gov/API/Users_Guide/Appendix_A_Available_Fields/")
+
+    if response.status_code == 200:
+        html_content = response.content.decode("utf-8")
+
+        soup = BeautifulSoup(html_content, 'lxml')
+        field_tables = soup.find_all("table", recursive=True)
+        project_fields = get_field_text(field_tables[0])
+        case_fields = get_field_text(field_tables[1])
+        file_fields = get_field_text(field_tables[2])
+        return {"project_fields": project_fields, "case_fields": case_fields, "file_fields": file_fields}
+    else:
+        print(f"Failed to retrieve data. Status code: {response.status_code}")
 
 
 def extract_keys(data, parent_key=None, keys=None):
@@ -99,7 +135,6 @@ JSON_SCHEMA = {
     "obj_mapping": {
         "source": {
             "name": "",
-            "url": "",
             "description": "",
             "description_url": "",
             "category": "",
@@ -108,7 +143,6 @@ JSON_SCHEMA = {
         "destination": {
             "name": "",
             "title": "",
-            "url": "",
             "description": "",
             "description_url": "",
             "module": "",
@@ -127,7 +161,6 @@ JSON_SCHEMA = {
 MAPPING_TEMPLATE = {
     "source": {
         "name": "",
-        "url": "",
         "description": "",
         "description_url": "",
         "category": "",
@@ -135,7 +168,6 @@ MAPPING_TEMPLATE = {
     },
     "destination": {
         "name": "",
-        "url": "",
         "description": "",
         "description_url": "",
         "module": "",
@@ -173,16 +205,11 @@ def initialize_json_schema(keys, out_path, mapping_template=json.dumps(MAPPING_T
     :return: Initial empty schema json file with all source keys to be mapped
     """
     mappings = [create_mapping(mapping_template, key) for key in keys]
+    json_meta = {"version": json_schema_version, "metadata": {
+        "versions": [{"source_version": source_version, "destination_version": destination_version}]}, "obj_keys": keys}
 
-    if json_schema is None:
-        json_schema = {"version": json_schema_version, "metadata": {"versions": [{"source_version": source_version,
-                                                                                  "destination_version": destination_version}]}}
-    else:
-        try:
-            json_schema = json.loads(json_schema)
-        except json.JSONDecodeError as e:
-            print("Error decoding JSON schema: {}".format(e))
-            return None
+    json_schema = json.loads(json_schema)
+    json_schema.update(json_meta)
 
     json_schema["mappings"] = mappings
 
@@ -313,22 +340,6 @@ def update_values(schema, name, mapping_key="source", new_values=None):
             if key in mapping_key:
                 if mapping_dict[key]['name'] == name:
                     mapping_dict[key].update(new_values)
-                    print(schema['mappings'][i])
-
+                    # print(schema['mappings'][i])
     return schema
-
-
-# 1 - fetch schema from FHIR
-# ex. Coding.schema()['properties']['code']['description']
-# 2- add function to extract element_required for all destination keys required
-# 3 - pull out FHIR hierarchy from enum_reference_types ex.
-"""
-{'title': 'Part of larger study',
- 'description': 'A larger research study of which this particular study is a component or step.',
- 'element_property': True,
- 'enum_reference_types': ['ResearchStudy'],
- 'type': 'array',
- 'items': {'type': 'Reference'}}
-"""
-# 4 - map node relation based on uppercase classes ex. extention for patient etc.
 

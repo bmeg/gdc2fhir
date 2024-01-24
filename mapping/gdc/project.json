@@ -46,6 +46,7 @@
     },
     "obj_keys": [
         "id",
+        "name",
         "dbgap_accession_number",
         "disease_type",
         "primary_site",
@@ -91,6 +92,25 @@
         "Observation.bodySite": "Condition.bodySite"
     },
     "mappings": [
+        {
+            "source": {
+                "name": "name",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
+                "description": "Display name for the project",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/project",
+                "category": "administrative",
+                "type": "string"
+            },
+            "destination": {
+                "name": "ResearchStudy.name",
+                "title": "Name for this study (computer friendly)",
+                "url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "description": "Name for this study (computer friendly).",
+                "description_url": "https://build.fhir.org/researchstudy-definitions.html#ResearchStudy.name",
+                "module": "Administration",
+                "type": "string"
+            }
+        },
         {
             "source": {
                 "name": "dbgap_accession_number",
