@@ -298,6 +298,26 @@ generate_content_annotations(case_dict['properties']['disease_type'], "content_a
 generate_content_annotations(case_dict['properties']['primary_site'], "content_annotations/case/primary_site.json")
 
 
+def update_values(schema, name, mapping_key="source", new_values=None):
+    """
+    Updates values of source or destination keys
+
+    :param schema: Json schema to be updated
+    :param name: name of source or destination dictionary to be updated
+    :param mapping_key: source of destination
+    :param new_values: Dictionary with key and values to be updated
+    :return: updated schema
+    """
+    for i, mapping_dict in enumerate(schema['mappings']):
+        for key in mapping_dict:
+            if key in mapping_key:
+                if mapping_dict[key]['name'] == name:
+                    mapping_dict[key].update(new_values)
+                    print(schema['mappings'][i])
+
+    return schema
+
+
 # 1 - fetch schema from FHIR
 # ex. Coding.schema()['properties']['code']['description']
 # 2- add function to extract element_required for all destination keys required
