@@ -1,63 +1,4 @@
 import json
-import requests
-from bs4 import BeautifulSoup
-from fhir.resources.patient import Patient
-from fhir.resources.documentreference import DocumentReference
-from fhir.resources.coding import Coding
-from fhir.resources.observation import Observation
-from fhir.resources.observationdefinition import ObservationDefinition
-from fhir.resources.extension import Extension
-from fhir.resources.researchstudy import ResearchStudy, ResearchStudyRecruitment, ResearchStudyProgressStatus
-from fhir.resources.genomics import GenomicStudyAnalysis
-from fhir.resources.researchsubject import ResearchSubject
-from fhir.resources.specimen import Specimen
-
-# TODO: OOP vs. utility
-
-Coding.schema()['properties']['code']['description']
-Patient.schema()['properties']
-DocumentReference.schema()['properties']
-Observation.schema()['properties']
-Extension.schema()['properties']
-ResearchStudy.schema()['properties']
-GenomicStudyAnalysis.schema()['properties']['changeType']
-ResearchSubject.schema()['properties']
-Specimen.schema()['properties']['identifier']
-
-
-def get_field_text(table):
-    """
-    Gets text of td tags of an xml table
-
-    :param table: xml data in an html table
-    :return: list of GDC fields
-    """
-    fields = []
-    rows = table.find_all("td", recursive=True)
-    for td in rows:
-        fields.append(td.get_text())
-    return fields
-
-
-def gdc_available_fields():
-    """
-    Fetch available fields via GDC site
-
-    :return: Dictionary of project, case, and file fields
-    """
-    response = requests.get("https://docs.gdc.cancer.gov/API/Users_Guide/Appendix_A_Available_Fields/")
-
-    if response.status_code == 200:
-        html_content = response.content.decode("utf-8")
-
-        soup = BeautifulSoup(html_content, 'lxml')
-        field_tables = soup.find_all("table", recursive=True)
-        project_fields = get_field_text(field_tables[0])
-        case_fields = get_field_text(field_tables[1])
-        file_fields = get_field_text(field_tables[2])
-        return {"project_fields": project_fields, "case_fields": case_fields, "file_fields": file_fields}
-    else:
-        print(f"Failed to retrieve data. Status code: {response.status_code}")
 
 
 def extract_keys(data, parent_key=None, keys=None):
@@ -219,34 +160,6 @@ def initialize_json_schema(keys, out_path, mapping_template=json.dumps(MAPPING_T
     return json_schema
 
 
-# TODO: other methods vs API get call data fetch
-def gdc_data_dict(entity_name):
-    """
-    Fetches data dictionary for a specified entity from GDC API.
-    TODO: pass version - or get data dict from python client
-
-    :param entity_name: Name of GDC entity ex. project, case, file, annotation
-    :return: Json schema data dictionary for the entity - none if error occurs
-    """
-    api_url = f"https://api.gdc.cancer.gov/v0/submission/_dictionary/{entity_name}"
-    response = requests.get(api_url)
-
-    if response.status_code == 200:
-        entity_data = response.json()
-        return entity_data
-    else:
-        print(f"Error: Unable to fetch data for entity {entity_name}. Status code: {response.status_code}")
-        return None
-
-
-# TODO: remove use-cases
-demographic_dict = gdc_data_dict("demographic")
-project_dict = gdc_data_dict("project")
-case_dict = gdc_data_dict("case")
-primary_sites = case_dict['properties']['primary_site']['enum']
-disease_types = case_dict['properties']['disease_type']['enum']
-
-
 def initialize_content_annotations(annot_enum, out_path):
     """
     Generates the initial list dictionary of content annotations to annotate
@@ -274,14 +187,6 @@ def initialize_content_annotations(annot_enum, out_path):
     if out_path:
         with open(out_path, "w") as output_file:
             output_file.write(jr)
-
-
-def gdc_api_version_data_info(api_version="v0"):
-    api_url = f"https://api.gdc.cancer.gov/{api_version}/status"
-    response = requests.get(api_url)
-
-    if response.status_code == 200:
-        return response.json()
 
 
 def generate_content_annotations(data, out_path):
@@ -317,12 +222,13 @@ def generate_content_annotations(data, out_path):
     with open(out_path, 'w', encoding='utf-8') as file:
         json.dump(annotations, file, indent=4)
 
-
+"""
 # TODO: remove use-cases
 generate_content_annotations(demographic_dict['properties']['race'], "content_annotations/demographic/race.json")
 generate_content_annotations(demographic_dict['properties']['ethnicity'], "content_annotations/demographic/ethnicity.json")
 generate_content_annotations(case_dict['properties']['disease_type'], "content_annotations/case/disease_type.json")
 generate_content_annotations(case_dict['properties']['primary_site'], "content_annotations/case/primary_site.json")
+"""
 
 
 def update_values(schema, name, mapping_key="source", new_values=None):
