@@ -2,28 +2,45 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "1.0.0",
     "metadata": {
+        "title": "File",
+        "category": "data_file",
+        "type": "object",
+        "downloadable": true,
+        "description": "Mapping GDC file to FHIR. GDC file is a set of related records (either written or electronic) kept together. (NCIt C42883)",
         "versions": [
             {
                 "source_version": "1",
-                "destination_version": "v6.0.0"
+                "data_release": "Data Release 39.0 - December 04, 2023",
+                "commit": "023da73eee3c17608db1a9903c82852428327b88",
+                "status": "OK",
+                "tag": "5.0.6"
+            },
+            {
+                "destination_version": "5.0.0"
             }
+        ],
+        "resource_links": [
+            "https://gdc.cancer.gov/about-gdc/gdc-overview",
+            "https://www.hl7.org/fhir/overview.html"
         ]
     },
     "obj_mapping": {
         "source": {
-            "name": "",
-            "description": "",
-            "description_url": "",
-            "category": "",
-            "type": ""
+            "name": "file",
+            "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
+            "description": "A set of related records (either written or electronic) kept together. (NCIt C42883)",
+            "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
+            "category": "data_file",
+            "type": "object"
         },
         "destination": {
-            "name": "",
+            "name": "DocumentReference",
             "title": "",
-            "description": "",
-            "description_url": "",
-            "module": "",
-            "type": ""
+            "url": "https://build.fhir.org/documentreference-definitions.html",
+            "description": "A reference to a document of any kind for any purpose. While the term \u201cdocument\u201d implies a more narrow focus, for this resource this \"document\" encompasses any serialized object with a mime-type, it includes formal patient-centric documents (CDA), clinical notes, scanned paper, non-patient specific documents like policy text, as well as a photo, video, or audio recording acquired or used in healthcare. The DocumentReference resource provides metadata about the document so that the document can be discovered and managed. The actual content may be inline base64 encoded data or provided by direct reference.",
+            "description_url": "https://build.fhir.org/documentreference-definitions.html",
+            "module": "Diagnostics",
+            "type": "DomainResource"
         }
     },
     "obj_keys": [
@@ -547,10 +564,26 @@
         "metadata_files.type",
         "metadata_files.updated_datetime"
     ],
-    "source_key_required": [],
+    "source_key_required": [
+        "submitter_id",
+        "file_name",
+        "file_size",
+        "md5sum",
+        "state"
+    ],
     "destination_key_required": [],
-    "unique_keys": [],
-    "source_key_aliases": {},
+    "unique_keys": [
+        [
+            "id"
+        ],
+        [
+            "project_id",
+            "submitter_id"
+        ]
+    ],
+    "source_key_aliases": {
+        "id": "file_id"
+    },
     "destination_key_aliases": {},
     "mappings": [
         {
@@ -700,33 +733,39 @@
         {
             "source": {
                 "name": "file_name",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "description": "The name (or part of a name) of a file (of any type).",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
+                "category": "data_file",
+                "type": "string",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "DocumentReference.content.Attachment.title",
+                "description": "A label or set of text to display in place of the data.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Attachment",
+                "type": "string",
+                "title": "Label to display in place of the data",
+                "url": ""
             }
         },
         {
             "source": {
                 "name": "file_size",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "description": "The size of the data file (object) in bytes.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
+                "category": "data_file",
+                "type": "integer",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file"
             },
             "destination": {
-                "name": "",
-                "description": "",
-                "description_url": "",
-                "module": "",
-                "type": ""
+                "name": "DocumentReference.content.Attachment.size",
+                "description": "The number of bytes of data that make up this attachment (before base64 encoding, if that is done).",
+                "description_url": "https://build.fhir.org/datatypes-definitions.html#Attachment.size",
+                "module": "Attachment",
+                "type": "integer64",
+                "title": "Number of bytes of content (if url provided)",
+                "url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.content.attachment"
             }
         },
         {
@@ -748,17 +787,20 @@
         {
             "source": {
                 "name": "md5sum",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "description": "The 128-bit hash value expressed as a 32 digit hexadecimal number (in lower case) used as a file's digital fingerprint.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
+                "category": "data_file",
+                "type": "string",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file"
             },
             "destination": {
-                "name": "",
-                "description": "",
-                "description_url": "",
-                "module": "",
-                "type": ""
+                "name": "Extension.valueString",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
+                "module": "Extensibility",
+                "type": "string",
+                "title": "Value of extension",
+                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_"
             }
         },
         {
@@ -812,17 +854,20 @@
         {
             "source": {
                 "name": "state",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "description": "The current state of the object.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
+                "category": "data_file",
+                "type": "string",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file"
             },
             "destination": {
-                "name": "",
-                "description": "",
-                "description_url": "",
-                "module": "",
-                "type": ""
+                "name": "DocumentReference.status",
+                "description": "The status of this document reference.",
+                "description_url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.status",
+                "module": "Diagnostics",
+                "type": "code",
+                "title": "current | superseded | entered-in-error",
+                "url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.status"
             }
         },
         {
@@ -844,17 +889,20 @@
         {
             "source": {
                 "name": "submitter_id",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
+                "category": "data_file",
+                "type": "string",
+                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file"
             },
             "destination": {
                 "name": "",
                 "description": "",
                 "description_url": "",
                 "module": "",
-                "type": ""
+                "type": "",
+                "title": "",
+                "url": ""
             }
         },
         {

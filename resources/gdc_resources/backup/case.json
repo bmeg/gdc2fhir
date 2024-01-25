@@ -1,270 +1,149 @@
-import json
-
-
-def extract_keys(data, parent_key=None, keys=None):
-    """
-    Extracts all keys in a nested dictionary and applies dot notation to capture nested keys hierarchy
-
-    :param data: Dictionary or containing nested dictionaries
-    :param parent_key: Parent key to build the hierarchy
-    :param keys: List to store the extracted keys
-    :return: List of all keys present
-    """
-    if keys is None:
-        keys = []
-
-    if isinstance(data, dict):
-        for key, value in data.items():
-            current_key = key if parent_key is None else f"{parent_key}.{key}"
-            keys.append(current_key)
-            extract_keys(value, parent_key=current_key, keys=keys)
-    elif isinstance(data, list):
-        for index, item in enumerate(data):
-            if isinstance(item, dict):
-                current_key = f"{parent_key}" if parent_key is not None else str(index)
-                keys.append(current_key)
-                extract_keys(item, parent_key=current_key, keys=keys)
-            else:
-                current_key = f"{parent_key}" if parent_key is not None else ""
-                keys.append(current_key)
-
-    return keys
-
-
-def get_key_hierarchy(json_path):
-    """
-    Reads a json file via a GDC scraper script json output ex.
-    https://github.com/bmeg/bmeg-etl/blob/develop/transform/gdc/gdc-scan.py
-    parses each line, and calls extract_keys() to capture keys hierarchy fetched from GDC
-
-    :param json_path: Path to the JSON file
-    :return: List of *all keys present in JSON file
-    """
-    extracted_keys_list = []
-
-    with open(json_path, 'r') as file:
-        for line in file:
-            try:
-                json_data = json.loads(line)
-                extracted_keys = extract_keys(json_data)
-                extracted_keys_list.extend(extracted_keys)
-            except json.JSONDecodeError as e:
-                print("Error decoding JSON: {}".format(e))
-
-    return extracted_keys_list
-
-
-JSON_SCHEMA = {
+{
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "",
+    "version": "1.0.0",
     "metadata": {
-        "title": "",
-        "category": "",
-        "type": "",
-        "downloadable": False,
-        "description": "",
+        "title": "Case",
+        "category": "case",
+        "type": "object",
+        "downloadable": false,
+        "description": "Mapping GDC case entities, properties, and relations to FHIR. GDC case is the collection of all data related to a specific subject in the context of a specific project.",
         "versions": [
             {
-                "source_version": ""
+                "source_version": "1",
+                "data_release": "Data Release 39.0 - December 04, 2023",
+                "commit": "023da73eee3c17608db1a9903c82852428327b88",
+                "status": "OK",
+                "tag": "5.0.6"
             },
             {
-                "destination_version": ""
+                "destination_version": "5.0.0"
             }
         ],
-        "resource_links": []
+        "resource_links": [
+            "https://gdc.cancer.gov/about-gdc/gdc-overview",
+            "https://www.hl7.org/fhir/overview.html"
+        ]
     },
     "obj_mapping": {
         "source": {
-            "name": "",
-            "description": "",
-            "description_url": "",
-            "category": "",
-            "type": ""
+            "name": "case",
+            "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+            "description": "The collection of all data related to a specific subject in the context of a specific project.",
+            "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
+            "category": "case",
+            "type": "object"
         },
         "destination": {
-            "name": "",
-            "title": "",
-            "description": "",
-            "description_url": "",
-            "module": "",
-            "type": ""
+            "name": "Observation",
+            "url": "https://build.fhir.org/observation-definitions.html#Observation",
+            "description": "Measurements and simple assertions made about a patient, device or other subject.",
+            "description_url": "https://build.fhir.org/observation-definitions.html#Observation",
+            "module": "Diagnostics",
+            "type": "DomainResource"
         }
     },
-    "obj_keys": [],
-    "source_key_required": [],
-    "destination_key_required": [],
-    "unique_keys": [],
-    "source_key_aliases": {},
-    "destination_key_aliases": {},
-    "mappings": []
-}
-
-MAPPING_TEMPLATE = {
-    "source": {
-        "name": "",
-        "description": "",
-        "description_url": "",
-        "category": "",
-        "type": ""
+    "obj_keys": [
+        "id",
+        "submitter_id",
+        "project.project_id",
+        "demographic.age_at_index",
+        "demographic.days_to_birth",
+        "project.name",
+        "project.program.dbgap_accession_number",
+        "demographic.submitter_id",
+        "project.primary_site",
+        "sample_ids",
+        "samples",
+        "exposures",
+        "index_date",
+        "demographic.year_of_birth",
+        "demographic",
+        "project.disease_type",
+        "demographic.race",
+        "disease_type",
+        "project.program.name",
+        "aliquot_ids",
+        "diagnoses",
+        "tissue_source_site.tissue_source_site_id",
+        "project.releasable",
+        "demographic.created_datetime",
+        "project.program",
+        "days_to_consent",
+        "demographic.cause_of_death_source",
+        "created_datetime",
+        "demographic.gender",
+        "demographic.country_of_residence_at_enrollment",
+        "demographic.occupation_duration_years",
+        "summary",
+        "tissue_source_site",
+        "demographic.demographic_id",
+        "slide_ids",
+        "tissue_source_site.name",
+        "demographic.days_to_death",
+        "submitter_sample_ids",
+        "analyte_ids",
+        "days_to_lost_to_followup",
+        "updated_datetime",
+        "demographic.year_of_death",
+        "submitter_analyte_ids",
+        "lost_to_followup",
+        "project.released",
+        "summary.file_size",
+        "demographic.age_is_obfuscated",
+        "tissue_source_site.bcr_id",
+        "consent_type",
+        "demographic.vital_status",
+        "demographic.cause_of_death",
+        "portion_ids",
+        "diagnosis_ids",
+        "project.program.program_id",
+        "family_histories",
+        "project.state",
+        "state",
+        "submitter_portion_ids",
+        "summary.file_count",
+        "summary.experimental_strategies",
+        "demographic.weeks_gestation_at_birth",
+        "tissue_source_site.code",
+        "demographic.state",
+        "demographic.ethnicity",
+        "submitter_diagnosis_ids",
+        "submitter_aliquot_ids",
+        "submitter_slide_ids",
+        "demographic.updated_datetime",
+        "demographic.premature_at_birth",
+        "primary_site",
+        "tissue_source_site.project",
+        "project.dbgap_accession_number",
+        "summary.data_categories",
+        "project"
+    ],
+    "unique_keys": [
+        [
+            "id"
+        ],
+        [
+            "project_id",
+            "submitter_id"
+        ]
+    ],
+    "source_key_required": [
+        "submitter_id",
+        "disease_type",
+        "primary_site"
+    ],
+    "destination_key_required" : [],
+    "source_key_aliases": {
+        "id": "case_id"
     },
-    "destination": {
-        "name": "",
-        "description": "",
-        "description_url": "",
-        "module": "",
-        "type": ""
-    }
-}
-
-
-def create_mapping(mapping_template, key):
-    """
-    Creates a mapping for a given key based on the template.
-
-    :param mapping_template: Template for the mapping structure
-    :param key: Key to be included in the mapping
-    :return: Mapping for the key
-    """
-    mapping = json.loads(mapping_template)
-    mapping["source"]["name"] = key
-    return mapping
-
-
-def initialize_json_schema(keys, out_path, mapping_template=json.dumps(MAPPING_TEMPLATE),
-                           json_schema=json.dumps(JSON_SCHEMA), source_version="",
-                           destination_version="", json_schema_version="1.0.0"):
-    """
-    Generates an empty schema json file with all source keys of interest to be mapped to destination keys.
-
-    :param keys: List of keys to be included in the schema
-    :param out_path: Output file path for the generated schema
-    :param mapping_template: Template for the mapping structure
-    :param json_schema: JSON schema template
-    :param source_version: Source version for the schema
-    :param destination_version: Destination version for the schema
-    :param json_schema_version: Version of the JSON schema
-    :return: Initial empty schema json file with all source keys to be mapped
-    """
-    mappings = [create_mapping(mapping_template, key) for key in keys]
-    json_meta = {"version": json_schema_version, "metadata": {
-        "versions": [{"source_version": source_version, "destination_version": destination_version}]}, "obj_keys": keys}
-
-    json_schema = json.loads(json_schema)
-    json_schema.update(json_meta)
-
-    json_schema["mappings"] = mappings
-
-    with open(out_path, 'w') as json_file:
-        json.dump(json_schema, json_file, indent=4)
-
-    return json_schema
-
-
-def initialize_content_annotations(annot_enum, out_path):
-    """
-    Generates the initial list dictionary of content annotations to annotate
-
-    :param annot_enum: List of annotations strings
-    :param out_path: File path for the generated JSON.
-    :return: List of dictionaries with each content annotation name as value's key
-    """
-    obj_list = []
-
-    for item in annot_enum:
-        content_annotation = {
-            "value": item,
-            "description": "",
-            "description_url": "",
-            "annotation_type": "",
-            "annotation_url": ""
-            # "ontology_url": "",
-            # "sctid": ""
-        }
-        obj_list.append(content_annotation)
-
-    jr = json.dumps(obj_list, indent=4)
-
-    if out_path:
-        with open(out_path, "w") as output_file:
-            output_file.write(jr)
-
-
-def generate_content_annotations(data, out_path):
-    """
-
-    :param data: GDC data dictionary containing enum values and definitions.
-    :param out_path: File path for annotations.
-    """
-    annotations = []
-
-    for enum_value in data['enum']:
-        if enum_value in data['enumDef']:
-            enum_data = data['enumDef'][enum_value]
-            definition = enum_data.get('description', 'No description available')
-            term_url = enum_data['termDef'].get('term_url', '')
-
-            annotations.append({
-                "value": enum_value,
-                "description": definition,
-                "description_url": term_url,
-                "annotation_type": enum_data['termDef'].get('source', ''),
-                "annotation_url": term_url
-            })
-        else:
-            annotations.append({
-                "value": enum_value,
-                "description": '',
-                "description_url": '',
-                "annotation_type": '',
-                "annotation_url": ''
-            })
-
-    with open(out_path, 'w', encoding='utf-8') as file:
-        json.dump(annotations, file, indent=4)
-
-"""
-# TODO: remove use-cases
-generate_content_annotations(demographic_dict['properties']['race'], "content_annotations/demographic/race.json")
-generate_content_annotations(demographic_dict['properties']['ethnicity'], "content_annotations/demographic/ethnicity.json")
-generate_content_annotations(case_dict['properties']['disease_type'], "content_annotations/case/disease_type.json")
-generate_content_annotations(case_dict['properties']['primary_site'], "content_annotations/case/primary_site.json")
-"""
-
-
-def update_values(schema, source_name, source=True, destination=False, source_values=None, destination_values=None):
-    """
-    Updates values of source and/or destination keys
-
-    :param schema: Json schema to be updated
-    :param source_name: name of source to be updated
-    :param source: boolean indicating source to be updated
-    :param destination: boolean indicating destination to be updated
-    :param source_values: Dictionary with updated info
-    :param destination_values: Dictionary with updated info
-    :return: updated schema
-    """
-    for i, mapping_dict in enumerate(schema['mappings']):
-        for key in mapping_dict:
-            if key == "source" and source:
-                if mapping_dict[key]['name'] == source_name:
-                    mapping_dict[key].update(source_values)
-                    if destination:
-                        mapping_dict['destination'].update(destination_values)
-                        print(mapping_dict)
-    # return schema
-
-
-def read_schema(path):
-    with open(path, encoding='utf-8') as f:
-        entity_schema = json.load(f)
-        return entity_schema
-
-# remove after first commit -------
-case_schema = read_schema("./mapping/case.json")
-file_schema = read_schema("./mapping/file.json")
-
-
-l = [
+    "destination_key_aliases": {
+        "ResearchStudy.condition": [
+            "Observation",
+            "Condition"
+        ],
+        "Observation.bodySite": "Condition.bodySite"
+    },
+    "mappings": [
         {
             "source": {
                 "name": "case_id",
@@ -622,132 +501,4 @@ l = [
             }
         }
     ]
-
-l = [
-        {
-            "source": {
-                "name": "id",
-                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "description": "Universally Unique Identifier",
-                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "category": "data_file",
-                "type": "string"
-            },
-            "destination": {
-                "name": "DocumentReference.identifier",
-                "title": "Business identifiers for the document",
-                "url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.identifier",
-                "description": "Business identifiers assigned to this document reference by the performer and/or other systems. These identifiers remain constant as the resource is updated and propagates from server to server.",
-                "description_url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.identifier",
-                "module": "Diagnostics",
-                "type": "Identifier"
-            }
-        },
-        {
-            "source": {
-                "name": "submitter_id",
-                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
-                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "category": "data_file",
-                "type": "string"
-            },
-            "destination": {
-                "name": "",
-                "title": "",
-                "url": "",
-                "description": "",
-                "description_url": "",
-                "module": "",
-                "type": ""
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "description": "The name (or part of a name) of a file (of any type).",
-                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "category": "data_file",
-                "type": "string"
-            },
-            "destination": {
-                "name": "DocumentReference.content.Attachment.title",
-                "title": "Label to display in place of the data",
-                "url": "",
-                "description": "A label or set of text to display in place of the data.",
-                "description_url": "",
-                "module": "Attachment",
-                "type": "string"
-            }
-        },
-        {
-            "source": {
-                "name": "file_size",
-                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "description": "The size of the data file (object) in bytes.",
-                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "category": "data_file",
-                "type": "integer"
-            },
-            "destination": {
-                "name": "DocumentReference.content.Attachment.size",
-                "title": "Number of bytes of content (if url provided)",
-                "url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.content.attachment",
-                "description": "The number of bytes of data that make up this attachment (before base64 encoding, if that is done).",
-                "description_url": "https://build.fhir.org/datatypes-definitions.html#Attachment.size",
-                "module": "Attachment",
-                "type": "integer64"
-            }
-        },
-        {
-            "source": {
-                "name": "md5sum",
-                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "description": "The 128-bit hash value expressed as a 32 digit hexadecimal number (in lower case) used as a file's digital fingerprint.",
-                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "category": "data_file",
-                "type": "string"
-            },
-            "destination": {
-                "name": "Extension.valueString",
-                "title": "Value of extension",
-                "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
-                "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "module": "Extensibility",
-                "type": "string"
-            }
-        },
-        {
-            "source": {
-                "name": "state",
-                "url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "description": "The current state of the object.",
-                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/file",
-                "category": "data_file",
-                "type": "string"
-            },
-            "destination": {
-                "name": "DocumentReference.status",
-                "title": "current | superseded | entered-in-error",
-                "url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.status",
-                "description": "The status of this document reference.",
-                "description_url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.status",
-                "module": "Diagnostics",
-                "type": "code"
-            }
-        }
-    ]
-
-source_names = []
-for d in l:
-    source_names.append(d['source']['name'])
-
-for d in l:
-    update_values(file_schema, source_name=d['source']['name'], source=True, destination=True, source_values=d['source'], destination_values=d['destination'])
-
-with open("mapping/file.json", 'w', encoding='utf-8') as file:
-    json.dump(file_schema, file, indent=4)
-
-
+}

@@ -85,7 +85,7 @@
             },
             "destination": {
                 "name": "DocumentReference.identifier",
-                "title": "",
+                "title": "Business identifiers for the document",
                 "url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.identifier",
                 "description": "Business identifiers assigned to this document reference by the performer and/or other systems. These identifiers remain constant as the resource is updated and propagates from server to server.",
                 "description_url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.identifier",
@@ -123,7 +123,7 @@
             },
             "destination": {
                 "name": "DocumentReference.content.Attachment.title",
-                "title": "",
+                "title": "Label to display in place of the data",
                 "url": "",
                 "description": "A label or set of text to display in place of the data.",
                 "description_url": "",
@@ -142,7 +142,7 @@
             },
             "destination": {
                 "name": "DocumentReference.content.Attachment.size",
-                "title": "",
+                "title": "Number of bytes of content (if url provided)",
                 "url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.content.attachment",
                 "description": "The number of bytes of data that make up this attachment (before base64 encoding, if that is done).",
                 "description_url": "https://build.fhir.org/datatypes-definitions.html#Attachment.size",
@@ -160,10 +160,10 @@
                 "type": "string"
             },
             "destination": {
-                "name": "Extension.value[x]",
-                "title": "",
+                "name": "Extension.valueString",
+                "title": "Value of extension",
                 "url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
-                "description": "Value of extension",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "https://www.hl7.org/fhir/extensibility-definitions.html#Extension.value_x_",
                 "module": "Extensibility",
                 "type": "string"
@@ -180,9 +180,9 @@
             },
             "destination": {
                 "name": "DocumentReference.status",
-                "title": "",
+                "title": "current | superseded | entered-in-error",
                 "url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.status",
-                "description": "The current state of the document reference.",
+                "description": "The status of this document reference.",
                 "description_url": "https://build.fhir.org/documentreference-definitions.html#DocumentReference.status",
                 "module": "Diagnostics",
                 "type": "code"

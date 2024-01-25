@@ -40,7 +40,7 @@ def gdc_available_fields(save=True):
         if save:
             for k, v in fields.items():
                 jr = json.dumps(v, indent=4)
-                out_path = "".join(["./mapping/gdc/fields/", k, ".json"])
+                out_path = "".join(["./resources/gdc_resources/fields/", k, ".json"])
                 with open(out_path, "w") as output_file:
                     output_file.write(jr)
         return fields
@@ -73,17 +73,22 @@ def gdc_api_version_data_info(api_version="v0"):
     response = requests.get(api_url)
 
     if response.status_code == 200:
-        return response.json()
+        version_dict = response.json()
+        version_dict['source_version'] = version_dict.pop('version')
+        return version_dict
 
 
 # (load all || point to an existing resource ? if there are any ) && save in repo for versioning
 demographic_dict = gdc_data_dict("demographic")
 project_dict = gdc_data_dict("project")
 case_dict = gdc_data_dict("case")
+file_dict = gdc_data_dict("file")
 annotations_dict = gdc_data_dict("annotations")
 
 
 # primary_sites = case_dict['properties']['primary_site']['enum']
 # disease_types = case_dict['properties']['disease_type']['enum']
+
+
 
 

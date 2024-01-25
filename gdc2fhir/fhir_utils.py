@@ -11,10 +11,12 @@ from fhir.resources.researchstudy import ResearchStudy, ResearchStudyRecruitment
 from fhir.resources.genomicstudy import GenomicStudyAnalysis
 from fhir.resources.researchsubject import ResearchSubject
 from fhir.resources.specimen import Specimen
+from fhir.resources.attachment import Attachment
 
 # https://pypi.org/project/fhir.resources/ version 7.1.0 uses FHIR® (Release R5, version 5.0.0)
 version = "5.0.0"
 
+#
 Coding.schema()['properties']['code']['description']
 Patient.schema()['properties']
 DocumentReference.schema()['properties']
@@ -24,6 +26,11 @@ ResearchStudy.schema()['properties']
 GenomicStudyAnalysis.schema()['properties']['changeType']
 ResearchSubject.schema()['properties']
 Specimen.schema()['properties']['identifier']
+
+
+Attachment.schema()['properties']['title']['title']
+Attachment.schema()['properties']['size']['title']
+Extension.schema()['properties']['valueString']
 
 
 def clean_description(description):
@@ -62,8 +69,4 @@ def get_us_core(path=None, url=None):
             return soup
     else:
         pass
-
-
-
-
 

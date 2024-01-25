@@ -16,8 +16,7 @@ setup(
     install_requires=[
         'requests',
         'json',
-        'beautifulsoup4'
-        'fhir-resources>=7.1.0'  # FHIR® (Release R5, version 5.0.0)
+        'fhir.resources>=7.1.0'  # FHIR® (Release R5, version 5.0.0)
     ],
     tests_require=['pytest'],
     classifiers=[
