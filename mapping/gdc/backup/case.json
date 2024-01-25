@@ -16,7 +16,7 @@
                 "tag": "5.0.6"
             },
             {
-                "destination_version": "v6.0.0"
+                "destination_version": "5.0.0"
             }
         ],
         "resource_links": [

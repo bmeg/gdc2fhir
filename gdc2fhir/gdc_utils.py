@@ -1,3 +1,4 @@
+import json
 import requests
 from bs4 import BeautifulSoup
 
@@ -16,7 +17,7 @@ def get_field_text(table):
     return fields
 
 
-def gdc_available_fields():
+def gdc_available_fields(save=True):
     """
     Fetch available fields via GDC site
 
@@ -32,7 +33,17 @@ def gdc_available_fields():
         project_fields = get_field_text(field_tables[0])
         case_fields = get_field_text(field_tables[1])
         file_fields = get_field_text(field_tables[2])
-        return {"project_fields": project_fields, "case_fields": case_fields, "file_fields": file_fields}
+        annotation_fields = get_field_text(field_tables[3])
+        convention_supplement = get_field_text(field_tables[8])  # make dict
+        fields = {"project_fields": project_fields, "case_fields": case_fields, "file_fields": file_fields,
+                  "annotation_fields": annotation_fields, "convention_supplement": convention_supplement}
+        if save:
+            for k, v in fields.items():
+                jr = json.dumps(v, indent=4)
+                out_path = "".join(["./mapping/gdc/fields/", k, ".json"])
+                with open(out_path, "w") as output_file:
+                    output_file.write(jr)
+        return fields
     else:
         print(f"Failed to retrieve data. Status code: {response.status_code}")
 
@@ -74,4 +85,5 @@ annotations_dict = gdc_data_dict("annotations")
 
 # primary_sites = case_dict['properties']['primary_site']['enum']
 # disease_types = case_dict['properties']['disease_type']['enum']
+
 
