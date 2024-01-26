@@ -1,36 +1,9 @@
 import json
 import requests
 from bs4 import BeautifulSoup
-from fhir.resources.patient import Patient
-from fhir.resources.documentreference import DocumentReference
-from fhir.resources.coding import Coding
-from fhir.resources.observation import Observation
-from fhir.resources.observationdefinition import ObservationDefinition
-from fhir.resources.extension import Extension
-from fhir.resources.researchstudy import ResearchStudy, ResearchStudyRecruitment, ResearchStudyProgressStatus
-from fhir.resources.genomicstudy import GenomicStudyAnalysis
-from fhir.resources.researchsubject import ResearchSubject
-from fhir.resources.specimen import Specimen
-from fhir.resources.attachment import Attachment
 
 # https://pypi.org/project/fhir.resources/ version 7.1.0 uses FHIR® (Release R5, version 5.0.0)
 version = "5.0.0"
-
-#
-Coding.schema()['properties']['code']['description']
-Patient.schema()['properties']
-DocumentReference.schema()['properties']
-Observation.schema()['properties']
-Extension.schema()['properties']
-ResearchStudy.schema()['properties']
-GenomicStudyAnalysis.schema()['properties']['changeType']
-ResearchSubject.schema()['properties']
-Specimen.schema()['properties']['identifier']
-
-
-Attachment.schema()['properties']['title']['title']
-Attachment.schema()['properties']['size']['title']
-Extension.schema()['properties']['valueString']
 
 
 def clean_description(description):

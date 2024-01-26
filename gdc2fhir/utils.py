@@ -222,14 +222,6 @@ def generate_content_annotations(data, out_path):
     with open(out_path, 'w', encoding='utf-8') as file:
         json.dump(annotations, file, indent=4)
 
-"""
-# TODO: remove use-cases
-generate_content_annotations(demographic_dict['properties']['race'], "content_annotations/demographic/race.json")
-generate_content_annotations(demographic_dict['properties']['ethnicity'], "content_annotations/demographic/ethnicity.json")
-generate_content_annotations(case_dict['properties']['disease_type'], "content_annotations/case/disease_type.json")
-generate_content_annotations(case_dict['properties']['primary_site'], "content_annotations/case/primary_site.json")
-"""
-
 
 def update_values(schema, source_name, source=True, destination=False, source_values=None, destination_values=None):
     """
@@ -250,7 +242,7 @@ def update_values(schema, source_name, source=True, destination=False, source_va
                     mapping_dict[key].update(source_values)
                     if destination:
                         mapping_dict['destination'].update(destination_values)
-                        print(mapping_dict)
+
     # return schema
 
 
@@ -258,6 +250,8 @@ def read_schema(path):
     with open(path, encoding='utf-8') as f:
         entity_schema = json.load(f)
         return entity_schema
+
+# TODO: move logic
 """
 case_schema = read_schema("./mapping/case.json")
 file_schema = read_schema("./mapping/file.json")
@@ -271,6 +265,13 @@ for d in l:
 
 with open("mapping/file.json", 'w', encoding='utf-8') as file:
     json.dump(file_schema, file, indent=4)
+"""
+
+"""
+generate_content_annotations(demographic_dict['properties']['race'], "./resources/gdc_resources/content_annotations/demographic/race.json")
+generate_content_annotations(demographic_dict['properties']['ethnicity'], "./resources/gdc_resources/content_annotations/demographic/ethnicity.json")
+generate_content_annotations(case_dict['properties']['disease_type'], "./resources/gdc_resources/content_annotations/case/disease_type.json")
+generate_content_annotations(case_dict['properties']['primary_site'], "./resources/gdc_resources/content_annotations/case/primary_site.json")
 """
 
 

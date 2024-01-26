@@ -18,20 +18,30 @@ class Schema:
     def update_metadata(self, m):
         self.metadata.update(m)
 
-    def update_mappings(self, name, mapping_key="source", new_values=None):
+    def filter_mappings(self, schema):
+        pass
+
+    def transition_mappings(self):
+        pass
+
+    def update_mappings(self, source_name, source=True, destination=False, source_values=None, destination_values=None):
         """
-        Updates values of source or destination keys
+        Updates values of source and/or destination keys
 
         :param schema: Json schema to be updated
-        :param name: name of source or destination dictionary to be updated
-        :param mapping_key: source of destination
-        :param new_values: Dictionary with key and values to be updated
+        :param source_name: name of source to be updated
+        :param source: boolean indicating source to be updated
+        :param destination: boolean indicating destination to be updated
+        :param source_values: Dictionary with updated info
+        :param destination_values: Dictionary with updated info
         :return: updated schema
         """
         for i, mapping_dict in enumerate(self.mappings):
             for key in mapping_dict:
-                if key in mapping_key:
-                    if mapping_dict[key]['name'] == name:
-                        mapping_dict[key].update(new_values)
-        return self
+                if key == "source" and source:
+                    if mapping_dict[key]['name'] == source_name:
+                        mapping_dict[key].update(source_values)
+                        if destination:
+                            mapping_dict['destination'].update(destination_values)
+                            print(mapping_dict)
 
