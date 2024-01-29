@@ -243,18 +243,20 @@ def update_values(schema, source_name, source=True, destination=False, source_va
                     if destination:
                         mapping_dict['destination'].update(destination_values)
 
-    # return schema
 
-
-def read_schema(path):
+def read_json(path):
     """
+    Reads in json file
 
-    :param path:
+    :param path: path to json file
     :return:
     """
-    with open(path, encoding='utf-8') as f:
-        entity_schema = json.load(f)
-        return entity_schema
+    try:
+        with open(path, encoding='utf-8') as f:
+            this_json = json.load(f)
+            return this_json
+    except json.JSONDecodeError as e:
+        print("Error decoding JSON: {}".format(e))
 
 
 

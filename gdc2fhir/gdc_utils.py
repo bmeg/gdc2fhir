@@ -3,6 +3,7 @@ import json
 import glob
 import requests
 from bs4 import BeautifulSoup
+from gdc2fhir import utils
 
 
 def get_field_text(table):
@@ -235,20 +236,6 @@ def generate_gdc_data_dictionary(create=False):
                 output_file.write(json.dumps(v, indent=4))
 
 
-def read_json(path):
-    """
-    Reads in json file
-
-    :param path: path to json file
-    :return:
-    """
-    try:
-        with open(path, encoding='utf-8') as f:
-            this_json = json.load(f)
-            return this_json
-    except json.JSONDecodeError as e:
-        print("Error decoding JSON: {}".format(e))
-
 
 def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
     """
@@ -269,7 +256,7 @@ def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
 
         module_file = module_path[1]
         name = module_file.replace(".json", "")
-        dat_dict = read_json(all_paths[i])
+        dat_dict = utils.read_json(all_paths[i])
         all_dat[module].update({name: dat_dict})
 
     return all_dat
@@ -280,7 +267,7 @@ def load_fields(path="./resources/gdc_resources/fields/"):
     loads GDC fields in resources
 
     :param path: path to json files
-    :return: dictionary with file name and json content value 
+    :return: dictionary with file name and json content value
     """
     all_paths = glob.glob("".join([path, "/*.json"]))
     all_dat = {}
@@ -290,7 +277,7 @@ def load_fields(path="./resources/gdc_resources/fields/"):
         field_file = field_path[0]
 
         name = field_file.replace(".json", "")
-        dat_dict = read_json(all_paths[i])
+        dat_dict = utils.read_json(all_paths[i])
 
         all_dat.update({name: dat_dict})
 
