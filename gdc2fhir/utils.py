@@ -247,9 +247,16 @@ def update_values(schema, source_name, source=True, destination=False, source_va
 
 
 def read_schema(path):
+    """
+
+    :param path:
+    :return:
+    """
     with open(path, encoding='utf-8') as f:
         entity_schema = json.load(f)
         return entity_schema
+
+
 
 # TODO: move logic
 """

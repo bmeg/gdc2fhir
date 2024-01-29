@@ -43,3 +43,72 @@ def get_us_core(path=None, url=None):
     else:
         pass
 
+
+def is_camel_case(name):
+    """
+    If the first letter of a word/key is camel case
+
+    :param name: Name of FHIR module/property
+    :return: boolean if name is not none and if it's first letter is uppercase
+    """
+    return name and name[0].isupper()
+
+
+def decipher_relation(key_name_relation):
+    """
+    Splits key names by dot notation convention
+
+    :param key_name_relation: string for the distination key name
+    :return: list of key names
+    """
+    names = key_name_relation.split(".")
+    return [is_camel_case(n) for n in names]
+
+
+def has_extension(name):
+    """
+    Returns true if ':' exists in FHIR naming key convention
+    
+    :param name: key name
+    :return: bool
+    """
+    return ":" in name
+
+
+def schema_enum_reference_types(schem_properties):
+    """
+    Extracts all enum_reference_types from a FHIR schema property
+
+    :param schem_properties: FHIR schema property
+    :return: dictionary of property keys and list of module/nodes they reference to
+    """
+    d = {}
+    for k, v in schem_properties.items():
+        if "enum_reference_types" in v.keys():
+            d.update({k: v["enum_reference_types"]})
+    return d
+
+
+def schem_element_required(schema_properties):
+    """
+    Extract element_required from a FHIR schema property and destination keys required
+
+    :param schema_properties:
+    :return:
+    """
+    d = {}
+    for k, v in schema_properties.items():
+        if "element_required" in v.keys():
+            d.update({k: v["element_required"]})
+    return d
+
+
+def append_required_fhir_keys(element_required, required_keys):
+    """
+    Appends required keys to list of it doesn't exist in list
+
+    :param element_required: dictionary of required elements of a schema property
+    :param required_keys: list holding required keys dictionary
+    :return: updated required key list
+    """
+    return [required_keys.append(obj) for obj in element_required if obj not in required_keys]
