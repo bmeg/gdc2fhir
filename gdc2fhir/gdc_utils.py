@@ -262,15 +262,37 @@ def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
     all_dat = {}
 
     for i, item in enumerate(all_paths):
-        module_path = all_paths[i].replace("./resources/gdc_resources/data_dictionary/", "").split("/")
+        module_path = all_paths[i].replace(path, "").split("/")
         module = module_path[0]
         if module not in all_dat.keys():
             all_dat.update({module: {}})
 
         module_file = module_path[1]
         name = module_file.replace(".json", "")
-        dat_dict = read_json(all_paths[0])
+        dat_dict = read_json(all_paths[i])
         all_dat[module].update({name: dat_dict})
+
+    return all_dat
+
+
+def load_fields(path="./resources/gdc_resources/fields/"):
+    """
+    loads GDC fields in resources
+
+    :param path: path to json files
+    :return: dictionary with file name and json content value 
+    """
+    all_paths = glob.glob("".join([path, "/*.json"]))
+    all_dat = {}
+
+    for i, item in enumerate(all_paths):
+        field_path = all_paths[i].replace(path, "").split("/")
+        field_file = field_path[0]
+
+        name = field_file.replace(".json", "")
+        dat_dict = read_json(all_paths[i])
+
+        all_dat.update({name: dat_dict})
 
     return all_dat
 
