@@ -235,10 +235,44 @@ def generate_gdc_data_dictionary(create=False):
                 output_file.write(json.dumps(v, indent=4))
 
 
+def read_json(path):
+    """
+    Reads in json file
+
+    :param path: path to json file
+    :return:
+    """
+    try:
+        with open(path, encoding='utf-8') as f:
+            this_json = json.load(f)
+            return this_json
+    except json.JSONDecodeError as e:
+        print("Error decoding JSON: {}".format(e))
+
+
 def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
-    # glob.glob('./resources/gdc_resources/data_dictionary/**/*.json') # get all
-    # os.walk(path) # get hierarchy
-    pass
+    """
+    Reads in  data_dictionary from file-path hierarchy and creates a dictionary for data mapping
+
+    :param path:  Path string to data_dictionary files "./resources/gdc_resources/data_dictionary"
+    :return: Dictionary of GDC data_dictionaries
+    """
+
+    all_paths = glob.glob("".join([path, "**/*.json"]))
+    all_dat = {}
+
+    for i, item in enumerate(all_paths):
+        module_path = all_paths[i].replace("./resources/gdc_resources/data_dictionary/", "").split("/")
+        module = module_path[0]
+        if module not in all_dat.keys():
+            all_dat.update({module: {}})
+
+        module_file = module_path[1]
+        name = module_file.replace(".json", "")
+        dat_dict = read_json(all_paths[0])
+        all_dat[module].update({name: dat_dict})
+
+    return all_dat
 
 
 # (load all || point to an existing resource ? if there are any ) && save in repo for versioning

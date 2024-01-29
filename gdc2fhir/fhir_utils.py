@@ -68,7 +68,7 @@ def decipher_relation(key_name_relation):
 def has_extension(name):
     """
     Returns true if ':' exists in FHIR naming key convention
-    
+
     :param name: key name
     :return: bool
     """
@@ -89,7 +89,7 @@ def schema_enum_reference_types(schem_properties):
     return d
 
 
-def schem_element_required(schema_properties):
+def schema_element_required(schema_properties):
     """
     Extract element_required from a FHIR schema property and destination keys required
 
