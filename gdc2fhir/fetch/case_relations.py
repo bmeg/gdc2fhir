@@ -11,6 +11,7 @@ from fhir.resources.genomicstudy import GenomicStudyAnalysis
 from fhir.resources.researchsubject import ResearchSubject
 from fhir.resources.specimen import Specimen
 from fhir.resources.imagingstudy import ImagingStudy
+from fhir.resources.annotation import Annotation
 
 from fhir.resources.documentreference import DocumentReference
 from fhir.resources.attachment import Attachment
@@ -62,12 +63,12 @@ print(name)
 
 case_mapping = case_schema['mappings'][3]
 case_mapping["source"]["description"] = data_dict["case"]["case"]["properties"]["created_datetime"]["common"]["description"]
-case_mapping["source"]["category"] = "case"
+case_mapping["source"]["category"] = data_dict["case"]["case"]["category"]
 case_mapping["source"]["type"] = data_dict["case"]["case"]["properties"]["created_datetime"]["oneOf"][0]["type"]
 
-# created_datetime -> Extention.valueDateTime
+# created_datetime -> Extension.valueDateTime
 Specimen.schema()['properties']["identifier"]
-case_mapping["destination"]["name"] = "Observation.Extention.valueDateTime"
+case_mapping["destination"]["name"] = "ResearchSubject.Extension.valueDateTime"
 case_mapping["destination"]["description"] = Extension.schema()["properties"]["valueDateTime"]["description"]
 case_mapping["destination"]["type"] = Extension.schema()["properties"]["valueDateTime"]["type"]
 case_mapping["destination"]["module"] = "Extensibility"
@@ -94,6 +95,7 @@ case_mapping["destination"]["name"] = "Specimen.identifier"
 case_mapping["destination"]["description"] = Specimen.schema()["properties"]["identifier"]["description"]
 case_mapping["destination"]["type"] = Specimen.schema()["properties"]["identifier"]["type"]
 case_mapping["destination"]["module"] = "Diagnostics"
+
 utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
 # ---------------------------------
 name = case_schema['mappings'][7]['source']['name']
@@ -118,7 +120,7 @@ print(name)
 # state -> ResearchSubject.status
 case_mapping = case_schema['mappings'][8]
 case_mapping["source"]["description"] = data_dict["case"]["case"]["properties"]["state"]["common"]["description"]
-case_mapping["source"]["category"] = "case"
+case_mapping["source"]["category"] = data_dict["case"]["case"]["category"]
 case_mapping["source"]["type"] = "string"
 case_mapping["source"]["content_annotation"] = data_dict["case"]["case"]["properties"]["state"]["oneOf"]
 
@@ -145,7 +147,126 @@ case_mapping["destination"]["module"] = "Diagnostics"
 
 utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
 # ------------------------------
+name = case_schema['mappings'][10]['source']['name']
+print(name)
 
+# submitter_analyte_ids -> Specimen.id
+case_mapping = case_schema['mappings'][10]
+case_mapping["source"]["description"] = data_dict["biospecimen"]["analyte"]["properties"]["submitter_id"]["description"]
+case_mapping["source"]["category"] = data_dict["biospecimen"]["analyte"]["category"]
+case_mapping["source"]["type"] = data_dict["biospecimen"]["analyte"]["properties"]["submitter_id"]["type"]
+
+
+case_mapping["destination"]["name"] = "Specimen.id"
+case_mapping["destination"]["description"] = Specimen.schema()["properties"]["id"]["description"]
+case_mapping["destination"]["type"] = Specimen.schema()["properties"]["id"]["type"]
+case_mapping["destination"]["module"] = "Diagnostics"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][11]['source']['name']
+print(name)
+
+# submitter_ids -> ResearchSubject.id
+case_mapping = case_schema['mappings'][11]
+case_mapping["source"]["description"] = data_dict["case"]["case"]["properties"]["submitter_id"]["description"]
+case_mapping["source"]["category"] = data_dict["case"]["case"]["category"]
+case_mapping["source"]["type"] = data_dict["case"]["case"]["properties"]["submitter_id"]["type"]
+
+
+case_mapping["destination"]["name"] = "ResearchSubject.id"
+case_mapping["destination"]["description"] = ResearchSubject.schema()["properties"]["id"]["description"]
+case_mapping["destination"]["type"] = ResearchSubject.schema()["properties"]["id"]["type"]
+case_mapping["destination"]["module"] = "Administration"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][12]['source']['name']
+print(name)
+
+# submitter_portion_ids -> Specimen.id
+case_mapping = case_schema['mappings'][12]
+case_mapping["source"]["description"] = data_dict["biospecimen"]["portion"]["properties"]["submitter_id"]["description"]
+case_mapping["source"]["category"] = data_dict["biospecimen"]["portion"]["category"]
+case_mapping["source"]["type"] = data_dict["biospecimen"]["portion"]["properties"]["submitter_id"]["type"]
+
+
+case_mapping["destination"]["name"] = "Specimen.id"
+case_mapping["destination"]["description"] = Specimen.schema()["properties"]["id"]["description"]
+case_mapping["destination"]["type"] = Specimen.schema()["properties"]["id"]["type"]
+case_mapping["destination"]["module"] = "Diagnostics"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][13]['source']['name']
+print(name)
+
+# submitter_sample_ids -> Specimen.id
+case_mapping = case_schema['mappings'][13]
+case_mapping["source"]["description"] = data_dict["biospecimen"]["sample"]["properties"]["submitter_id"]["description"]
+case_mapping["source"]["category"] = data_dict["biospecimen"]["sample"]["category"]
+case_mapping["source"]["type"] = data_dict["biospecimen"]["sample"]["properties"]["submitter_id"]["type"]
+
+
+case_mapping["destination"]["name"] = "Specimen.id"
+case_mapping["destination"]["description"] = Specimen.schema()["properties"]["id"]["description"]
+case_mapping["destination"]["type"] = Specimen.schema()["properties"]["id"]["type"]
+case_mapping["destination"]["module"] = "Diagnostics"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][14]['source']['name']
+print(name)
+
+# submitter_slide_ids -> ImagingStudy.id
+case_mapping = case_schema['mappings'][14]
+case_mapping["source"]["description"] = data_dict["biospecimen"]["slide"]["properties"]["submitter_id"]["description"]
+case_mapping["source"]["category"] = data_dict["biospecimen"]["slide"]["category"]
+case_mapping["source"]["type"] = data_dict["biospecimen"]["slide"]["properties"]["submitter_id"]["type"]
+
+
+case_mapping["destination"]["name"] = "ImagingStudy.id"
+case_mapping["destination"]["description"] = ImagingStudy.schema()["properties"]["id"]["description"]
+case_mapping["destination"]["type"] = ImagingStudy.schema()["properties"]["id"]["type"]
+case_mapping["destination"]["module"] = "Diagnostics"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][15]['source']['name']
+print(name)
+
+# updated_datetime -> Extension.valueDateTime
+case_mapping = case_schema['mappings'][15]
+case_mapping["source"]["description"] = data_dict["case"]["case"]["properties"]["updated_datetime"]
+case_mapping["source"]["category"] = data_dict["case"]["case"]["category"]
+case_mapping["source"]["type"] = data_dict["case"]["case"]["properties"]["updated_datetime"]["oneOf"][0]["type"]
+
+
+case_mapping["destination"]["name"] = "ResearchSubject.Extension.valueDateTime"
+case_mapping["destination"]["description"] = Extension.schema()["properties"]["valueDateTime"]["description"]
+case_mapping["destination"]["type"] = Extension.schema()["properties"]["valueDateTime"]["type"]
+case_mapping["destination"]["module"] = "Extensibility"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+
+# ------------------------------
+name = case_schema['mappings'][16]['source']['name']
+print(name)
+
+# annotations.annotation_id -> Annotation.id
+case_mapping = case_schema['mappings'][16]
+case_mapping["source"]["description"] = data_dict["annotations"]["annotation"]["properties"]["id"]["common"]["description"]
+case_mapping["source"]["category"] = data_dict["annotations"]["annotation"]["category"]
+case_mapping["source"]["type"] = data_dict["annotations"]["annotation"]["properties"]["id"]["type"]
+
+
+# TODO: ResearchSubject not listed as "used in following places" https://build.fhir.org/datatypes.html#annotation
+case_mapping["destination"]["name"] = "ResearchSubject.Annotation.id"  # identifier - not listed for annotations
+case_mapping["destination"]["description"] = Annotation.schema()["properties"]["id"]["description"]
+case_mapping["destination"]["type"] = Annotation.schema()["properties"]["id"]["type"]
+case_mapping["destination"]["module"] = "Foundation"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
 
 # ------------------------------ Brainstorming
 # case

@@ -913,11 +913,11 @@
                 "name": "created_datetime",
                 "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
                 "description_url": "",
-                "category": "case",
+                "category": "administrative",
                 "type": "string"
             },
             "destination": {
-                "name": "Observation.Extention.valueDateTime",
+                "name": "ResearchSubject.Extension.valueDateTime",
                 "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "",
                 "module": "Extensibility",
@@ -1047,113 +1047,133 @@
         {
             "source": {
                 "name": "submitter_analyte_ids",
-                "description": "",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "submitter_id",
-                "description": "",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "case",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "ResearchSubject.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Administration",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "submitter_portion_ids",
-                "description": "",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "submitter_sample_ids",
-                "description": "",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "submitter_slide_ids",
-                "description": "",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "ImagingStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "updated_datetime",
-                "description": "",
+                "description": {
+                    "common": {
+                        "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
+                        "termDef": {
+                            "cde_id": null,
+                            "cde_version": null,
+                            "source": null,
+                            "term": null,
+                            "term_url": null
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "administrative",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "ResearchSubject.Extension.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Extensibility",
+                "type": "string"
             }
         },
         {
             "source": {
                 "name": "annotations.annotation_id",
-                "description": "",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "notation",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "ResearchSubject.Annotation.id",
+                "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Foundation",
+                "type": "string"
             }
         },
         {
