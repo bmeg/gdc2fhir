@@ -870,7 +870,8 @@
                 "description": "Id for specimen.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "array"
+                "type": "array",
+                "title": "External Identifier"
             }
         },
         {
@@ -886,7 +887,8 @@
                 "description": "Id for specimen.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "array"
+                "type": "array",
+                "title": "External Identifier"
             }
         },
         {
@@ -921,7 +923,8 @@
                 "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "",
                 "module": "Extensibility",
-                "type": "string"
+                "type": "string",
+                "title": "Value of extension"
             }
         },
         {
@@ -953,7 +956,8 @@
                 "description": "Id for specimen.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "array"
+                "type": "array",
+                "title": "External Identifier"
             }
         },
         {
@@ -986,7 +990,8 @@
                 "description": "Identifiers for the ImagingStudy such as DICOM Study Instance UID.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "array"
+                "type": "array",
+                "title": "Identifiers for the whole study"
             }
         },
         {
@@ -994,7 +999,7 @@
                 "name": "state",
                 "description": "The current state of the object.",
                 "description_url": "",
-                "category": "case",
+                "category": "administrative",
                 "type": "string",
                 "content_annotation": [
                     {
@@ -1025,7 +1030,8 @@
                 "description": "The publication state of the resource (not of the subject).",
                 "description_url": "",
                 "module": "Administration",
-                "type": "string"
+                "type": "string",
+                "title": "draft | active | retired | unknown"
             }
         },
         {
@@ -1041,7 +1047,8 @@
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "string"
+                "type": "string",
+                "title": "Logical id of this artifact"
             }
         },
         {
@@ -1057,7 +1064,8 @@
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "string"
+                "type": "string",
+                "title": "Logical id of this artifact"
             }
         },
         {
@@ -1065,7 +1073,7 @@
                 "name": "submitter_id",
                 "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "description_url": "",
-                "category": "case",
+                "category": "administrative",
                 "type": "string"
             },
             "destination": {
@@ -1073,7 +1081,8 @@
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
                 "module": "Administration",
-                "type": "string"
+                "type": "string",
+                "title": "Logical id of this artifact"
             }
         },
         {
@@ -1089,7 +1098,8 @@
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "string"
+                "type": "string",
+                "title": "Logical id of this artifact"
             }
         },
         {
@@ -1105,7 +1115,8 @@
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "string"
+                "type": "string",
+                "title": "Logical id of this artifact"
             }
         },
         {
@@ -1121,33 +1132,14 @@
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
                 "module": "Diagnostics",
-                "type": "string"
+                "type": "string",
+                "title": "Logical id of this artifact"
             }
         },
         {
             "source": {
                 "name": "updated_datetime",
-                "description": {
-                    "common": {
-                        "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
-                        "termDef": {
-                            "cde_id": null,
-                            "cde_version": null,
-                            "source": null,
-                            "term": null,
-                            "term_url": null
-                        }
-                    },
-                    "oneOf": [
-                        {
-                            "format": "date-time",
-                            "type": "string"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
-                },
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
                 "description_url": "",
                 "category": "administrative",
                 "type": "string"
@@ -1157,7 +1149,8 @@
                 "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "",
                 "module": "Extensibility",
-                "type": "string"
+                "type": "string",
+                "title": "Value of extension"
             }
         },
         {
@@ -1173,7 +1166,8 @@
                 "description": "Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.",
                 "description_url": "",
                 "module": "Foundation",
-                "type": "string"
+                "type": "string",
+                "title": "Unique id for inter-element referencing"
             }
         },
         {
@@ -1435,17 +1429,18 @@
         {
             "source": {
                 "name": "demographic.created_datetime",
-                "description": "",
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Patient.Extension.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Extensibility",
+                "type": "string",
+                "title": "Value of extension"
             }
         },
         {
