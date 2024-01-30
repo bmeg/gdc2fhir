@@ -882,11 +882,11 @@
                 "type": "string"
             },
             "destination": {
-                "name": "Observation.Extention.valueDateTime",
-                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "name": "Specimen.identifier",
+                "description": "Id for specimen.",
                 "description_url": "",
-                "module": "Extensibility",
-                "type": "string"
+                "module": "Diagnostics",
+                "type": "array"
             }
         },
         {
@@ -910,10 +910,10 @@
         },
         {
             "source": {
-                "name": "analyte_ids",
-                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "name": "created_datetime",
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
                 "description_url": "",
-                "category": "biospecimen",
+                "category": "case",
                 "type": "string"
             },
             "destination": {
@@ -996,7 +996,7 @@
                 "description_url": "",
                 "category": "case",
                 "type": "string",
-                "enum": [
+                "content_annotation": [
                     {
                         "enum": [
                             "uploading",
@@ -1031,17 +1031,17 @@
         {
             "source": {
                 "name": "submitter_aliquot_ids",
-                "description": "",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "string"
             }
         },
         {

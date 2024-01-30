@@ -43,7 +43,7 @@ utils.update_values(case_schema, source_name=name, source=True, destination=True
 name = case_schema['mappings'][1]['source']['name']
 print(name)
 
-# analyte_ids -> Specimen.parent.Specimen.id
+# analyte_ids -> Specimen.identifier
 case_mapping = case_schema['mappings'][1]
 case_mapping["source"]["description"] = data_dict["biospecimen"]["analyte"]["properties"]["id"]["common"]["description"]
 case_mapping["source"]["category"] = data_dict["biospecimen"]["analyte"]["category"]
@@ -60,12 +60,12 @@ utils.update_values(case_schema, source_name=name, source=True, destination=True
 name = case_schema['mappings'][3]['source']['name']
 print(name)
 
-# created_datetime -> Extention.valueDateTime
-case_mapping = case_schema['mappings'][1]
-case_mapping["source"]["description"] = data_dict["biospecimen"]["analyte"]["properties"]["id"]["common"]["description"]
-case_mapping["source"]["category"] = data_dict["biospecimen"]["analyte"]["category"]
-case_mapping["source"]["type"] = data_dict["biospecimen"]["analyte"]["properties"]["id"]["type"]
+case_mapping = case_schema['mappings'][3]
+case_mapping["source"]["description"] = data_dict["case"]["case"]["properties"]["created_datetime"]["common"]["description"]
+case_mapping["source"]["category"] = "case"
+case_mapping["source"]["type"] = data_dict["case"]["case"]["properties"]["created_datetime"]["oneOf"][0]["type"]
 
+# created_datetime -> Extention.valueDateTime
 Specimen.schema()['properties']["identifier"]
 case_mapping["destination"]["name"] = "Observation.Extention.valueDateTime"
 case_mapping["destination"]["description"] = Extension.schema()["properties"]["valueDateTime"]["description"]
@@ -83,7 +83,7 @@ print(name)
 name = case_schema['mappings'][5]['source']['name']
 print(name)
 
-# portion_ids -> Specimen.parent.Specimen.id
+# portion_ids -> Specimen.identifier
 case_mapping = case_schema['mappings'][5]
 case_mapping["source"]["description"] = data_dict["biospecimen"]["portion"]["properties"]["id"]["common"]["description"]
 case_mapping["source"]["category"] = data_dict["biospecimen"]["portion"]["category"]
@@ -120,7 +120,7 @@ case_mapping = case_schema['mappings'][8]
 case_mapping["source"]["description"] = data_dict["case"]["case"]["properties"]["state"]["common"]["description"]
 case_mapping["source"]["category"] = "case"
 case_mapping["source"]["type"] = "string"
-case_mapping["source"]["enum"] = data_dict["case"]["case"]["properties"]["state"]["oneOf"]
+case_mapping["source"]["content_annotation"] = data_dict["case"]["case"]["properties"]["state"]["oneOf"]
 
 
 case_mapping["destination"]["name"] = "ResearchSubject.status"
@@ -128,6 +128,24 @@ case_mapping["destination"]["description"] = ResearchSubject.schema()["propertie
 case_mapping["destination"]["type"] = ResearchSubject.schema()["properties"]["status"]["type"]
 case_mapping["destination"]["module"] = "Administration"
 utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ---------------------------------
+name = case_schema['mappings'][9]['source']['name']
+print(name)
+
+# submitter_aliquot_ids -> Specimen.id
+case_mapping = case_schema['mappings'][9]
+case_mapping["source"]["description"] = data_dict["biospecimen"]["aliquot"]["properties"]["submitter_id"]["description"]
+case_mapping["source"]["category"] = data_dict["biospecimen"]["aliquot"]["category"]
+case_mapping["source"]["type"] = data_dict["biospecimen"]["aliquot"]["properties"]["submitter_id"]["type"]
+
+case_mapping["destination"]["name"] = "Specimen.id"
+case_mapping["destination"]["description"] = Specimen.schema()["properties"]["id"]["description"]
+case_mapping["destination"]["type"] = Specimen.schema()["properties"]["id"]["type"]
+case_mapping["destination"]["module"] = "Diagnostics"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+
 
 # ------------------------------ Brainstorming
 # case
@@ -157,5 +175,6 @@ for mapping in case_schema['mappings']:
 
 with open("./mapping/case.json", 'w', encoding='utf-8') as file:
     json.dump(case_schema, file, indent=4)
+
 
 
