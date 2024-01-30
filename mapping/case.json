@@ -1539,28 +1539,29 @@
                 "type": "string"
             },
             "destination": {
-                "name": "ResearchSubject.identifier",
-                "description": "Identifiers assigned to this research subject for a study.",
+                "name": "Patient.Extension.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
-                "module": "Administration",
-                "type": "code",
-                "title": "Business Identifier for research subject in a study"
+                "module": "Extensibility",
+                "type": "string",
+                "title": "Value of extension"
             }
         },
         {
             "source": {
                 "name": "demographic.updated_datetime",
-                "description": "",
-                "description_url": "",
-                "category": "",
-                "type": ""
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
+                "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
+                "category": "clinical",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
-                "description_url": "",
-                "module": "",
-                "type": ""
+                "name": "Patient.Extension.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
+                "module": "Extensibility",
+                "type": "string",
+                "title": "Value of extension"
             }
         },
         {
