@@ -236,7 +236,6 @@ def generate_gdc_data_dictionary(create=False):
                 output_file.write(json.dumps(v, indent=4))
 
 
-
 def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
     """
     Reads in  data_dictionary from file-path hierarchy and creates a dictionary for data mapping

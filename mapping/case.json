@@ -860,33 +860,33 @@
         {
             "source": {
                 "name": "aliquot_ids",
-                "description": "",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Specimen.identifier",
+                "description": "Id for specimen.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "array"
             }
         },
         {
             "source": {
                 "name": "analyte_ids",
-                "description": "",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Observation.Extention.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Extensibility",
+                "type": "string"
             }
         },
         {
@@ -910,18 +910,18 @@
         },
         {
             "source": {
-                "name": "created_datetime",
-                "description": "",
+                "name": "analyte_ids",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Observation.Extention.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Extensibility",
+                "type": "string"
             }
         },
         {
@@ -943,17 +943,17 @@
         {
             "source": {
                 "name": "portion_ids",
-                "description": "",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Specimen.identifier",
+                "description": "Id for specimen.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "array"
             }
         },
         {
@@ -976,33 +976,56 @@
         {
             "source": {
                 "name": "slide_ids",
-                "description": "",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "biospecimen",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "ImagingStudy.identifier",
+                "description": "Identifiers for the ImagingStudy such as DICOM Study Instance UID.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "array"
             }
         },
         {
             "source": {
                 "name": "state",
-                "description": "",
+                "description": "The current state of the object.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "case",
+                "type": "string",
+                "enum": [
+                    {
+                        "enum": [
+                            "uploading",
+                            "uploaded",
+                            "md5summing",
+                            "md5summed",
+                            "validating",
+                            "error",
+                            "invalid",
+                            "suppressed",
+                            "redacted",
+                            "live"
+                        ]
+                    },
+                    {
+                        "enum": [
+                            "validated",
+                            "submitted",
+                            "released"
+                        ]
+                    }
+                ]
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "ResearchSubject.status",
+                "description": "The publication state of the resource (not of the subject).",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Administration",
+                "type": "string"
             }
         },
         {
