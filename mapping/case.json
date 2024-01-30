@@ -1446,17 +1446,18 @@
         {
             "source": {
                 "name": "demographic.demographic_id",
-                "description": "",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Patient.identifier",
+                "description": "An identifier for this patient",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Administration",
+                "type": "array",
+                "title": "An identifier for this patient"
             }
         },
         {
@@ -1466,7 +1467,7 @@
                 "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/demographic",
                 "category": "clinical",
                 "type": "Ethnic Group Category Text",
-                "content_annotation": "@content_annotations/demographic/ethnicity.json"
+                "content_annotation": "@./resources/gdc_resources/content_annotations/demographic/ethnicity.json"
             },
             "destination": {
                 "name": "Patient.Extension:extension.USCoreEthnicity",
@@ -1480,17 +1481,19 @@
         {
             "source": {
                 "name": "demographic.gender",
-                "description": "",
+                "description": "Text designations that identify gender. Gender is described as the assemblage of properties that distinguish people on the basis of their societal roles. [Explanatory Comment 1: Identification of gender is based upon self-report and may come from a form, questionnaire, interview, etc.]",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "string",
+                "content_annotation": "@./resources/gdc_resources/content_annotations/demographic/gender.json"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Patient.gender",
+                "description": "Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Administration",
+                "type": "string",
+                "title": "male | female | other | unknown"
             }
         },
         {
@@ -1500,7 +1503,7 @@
                 "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic&anchor=race",
                 "category": "clinical",
                 "type": "Race Category Text",
-                "content_annotation": "@content_annotations/demographic/race.json"
+                "content_annotation": "@./resources/gdc_resources/content_annotations/demographic/race.json"
             },
             "destination": {
                 "name": "Patient.Extension.extension:USCoreRaceExtension",
@@ -10432,7 +10435,7 @@
                 "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
                 "category": "case",
                 "type": "string",
-                "content_annotation": "@content_annotations/case/disease_types.json"
+                "content_annotation": "@./resources/gdc_resources/content_annotations/case/disease_types.json"
             },
             "destination": {
                 "name": "ResearchStudy.condition",
@@ -10467,7 +10470,7 @@
                 "description_url": "https://api.gdc.cancer.gov/v0/submission/_dictionary/case",
                 "category": "administrative",
                 "type": "string",
-                "content_annotation": "@content_annotations/case/primary_sites.json"
+                "content_annotation": "@./resources/gdc_resources/content_annotations/case/primary_sites.json"
             },
             "destination": {
                 "name": "ResearchStudy.Observation.bodySite",

@@ -371,7 +371,7 @@ print(name)
 case_mapping = case_schema['mappings'][33]
 case_mapping["source"]["description"] = data_dict["clinical"]["demographic"]["properties"]["created_datetime"]["common"]["description"]
 case_mapping["source"]["category"] = data_dict["clinical"]["demographic"]["category"]
-case_mapping["source"]["type"] = data_dict["case"]["case"]["properties"]["updated_datetime"]["oneOf"][0]["type"]
+case_mapping["source"]["type"] = data_dict["clinical"]["demographic"]["properties"]["created_datetime"]["oneOf"][0]["type"]
 
 
 case_mapping["destination"]["name"] = "Patient.Extension.valueDateTime"
@@ -389,18 +389,35 @@ print(name)
 case_mapping = case_schema['mappings'][34]
 case_mapping["source"]["description"] = data_dict["clinical"]["demographic"]["properties"]["id"]["common"]["description"]
 case_mapping["source"]["category"] = data_dict["clinical"]["demographic"]["category"]
-case_mapping["source"]["type"] = data_dict["case"]["case"]["properties"]["id"]["type"]
+case_mapping["source"]["type"] = "string"
 
 
 case_mapping["destination"]["name"] = "Patient.identifier"
 case_mapping["destination"]["title"] = Patient.schema()["properties"]['identifier']["title"]
 case_mapping["destination"]["description"] = Patient.schema()["properties"]['identifier']["title"]
-case_mapping["destination"]["type"] = Extension.schema()["properties"]["valueDateTime"]["type"]
-case_mapping["destination"]["module"] = "Extensibility"
+case_mapping["destination"]["type"] = Patient.schema()["properties"]['identifier']["type"]
+case_mapping["destination"]["module"] = "Administration"
 
 utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][36]['source']['name']
+print(name)
 
+# demographic.gender -> Patient.gender
+case_mapping = case_schema['mappings'][36]
+case_mapping["source"]["description"] = data_dict["clinical"]["demographic"]["properties"]["gender"]["description"]
+case_mapping["source"]["category"] = data_dict["clinical"]["demographic"]["category"]
+case_mapping["source"]["type"] = data_dict["case"]["case"]["properties"]["id"]["type"]
+case_mapping["source"]["content_annotation"] = "@./resources/gdc_resources/content_annotations/demographic/gender.json"
 
+case_mapping["destination"]["name"] = "Patient.gender"
+case_mapping["destination"]["title"] = Patient.schema()["properties"]["gender"]["title"]
+case_mapping["destination"]["description"] = Patient.schema()["properties"]["gender"]["description"]
+case_mapping["destination"]["type"] = Patient.schema()["properties"]["gender"]["type"]
+case_mapping["destination"]["module"] = "Administration"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+#
 # ------------------------------ Brainstorming
 # case
 Coding.schema()['properties']['code']['description']

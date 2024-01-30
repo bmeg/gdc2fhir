@@ -169,18 +169,29 @@ def initialize_content_annotations(annot_enum, out_path):
     :return: List of dictionaries with each content annotation name as value's key
     """
     obj_list = []
+    if isinstance(annot_enum, dict):
+        for k, v in annot_enum.items():
+            content_annotation = {
+                "value": k,
+                "description": v["description"],
+                "description_url": v["termDef"]["term_url"],
+                "annotation_type": v["termDef"]["source"]
+                # "ontology_url": "",
+                # "sctid": ""
+            }
+            obj_list.append(content_annotation)
 
-    for item in annot_enum:
-        content_annotation = {
-            "value": item,
-            "description": "",
-            "description_url": "",
-            "annotation_type": "",
-            "annotation_url": ""
-            # "ontology_url": "",
-            # "sctid": ""
-        }
-        obj_list.append(content_annotation)
+    if isinstance(annot_enum, list):
+        for item in annot_enum:
+            content_annotation = {
+                "value": item,
+                "description": "",
+                "description_url": "",
+                "annotation_type": ""
+                # "ontology_url": "",
+                # "sctid": ""
+            }
+            obj_list.append(content_annotation)
 
     jr = json.dumps(obj_list, indent=4)
 
