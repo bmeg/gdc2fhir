@@ -1539,12 +1539,12 @@
                 "type": "string"
             },
             "destination": {
-                "name": "Patient.Extension.valueDateTime",
-                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "name": "Patient.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": "https://build.fhir.org/researchsubject-definitions.html#ResearchSubject.identifier",
-                "module": "Extensibility",
+                "module": "Administration",
                 "type": "string",
-                "title": "Value of extension"
+                "title": "Logical id of this artifact"
             }
         },
         {
@@ -1584,65 +1584,83 @@
         {
             "source": {
                 "name": "demographic.year_of_death",
-                "description": "",
+                "description": "Numeric value to represent the year of the death of an individual.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "integer"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Patient.deceasedDateTime",
+                "description": "Indicates if the individual is deceased or not",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Administration",
+                "type": "string",
+                "title": "Indicates if the individual is deceased or not"
             }
         },
         {
             "source": {
                 "name": "diagnoses.age_at_diagnosis",
-                "description": "",
+                "description": "Age at the time of diagnosis expressed in number of days since birth.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "integer"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Condition.onsetAge",
+                "description": "Estimated or actual date or date-time  the condition began, in the opinion of the clinician.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Clinical_Summary",
+                "type": "Age",
+                "title": "Estimated or actual date,  date-time, or age"
             }
         },
         {
             "source": {
                 "name": "diagnoses.classification_of_tumor",
-                "description": "",
+                "description": "Text that describes the kind of disease present in the tumor specimen as related to a specific timepoint.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "string",
+                "enum": [
+                    "metastasis",
+                    "Premalignant",
+                    "primary",
+                    "Prior primary",
+                    "Progression",
+                    "recurrence",
+                    "Synchronous primary",
+                    "other",
+                    "Unknown",
+                    "not reported",
+                    "Not Allowed To Collect"
+                ],
+                "content_annotation": "@./resources/gdc_resources/content_annotations/diagnosis/classification_of_tumor.json"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Condition.category",
+                "description": "A category assigned to the condition.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Clinical_Summary",
+                "type": "array",
+                "title": "problem-list-item | encounter-diagnosis"
             }
         },
         {
             "source": {
                 "name": "diagnoses.created_datetime",
-                "description": "",
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "string"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "Condition.onsetDateTime",
+                "description": "Estimated or actual date or date-time  the condition began, in the opinion of the clinician.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Clinical_Summary",
+                "type": "string",
+                "title": "Estimated or actual date,  date-time, or age"
             }
         },
         {
