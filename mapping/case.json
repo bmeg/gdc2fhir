@@ -27,19 +27,18 @@
     "obj_mapping": {
         "source": {
             "name": "case",
-            "url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
             "description": "The collection of all data related to a specific subject in the context of a specific project.",
             "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=case",
             "category": "case",
             "type": "object"
         },
         "destination": {
-            "name": "Observation",
-            "url": "https://build.fhir.org/observation-definitions.html#Observation",
-            "description": "Measurements and simple assertions made about a patient, device or other subject.",
-            "description_url": "https://build.fhir.org/observation-definitions.html#Observation",
-            "module": "Diagnostics",
-            "type": "DomainResource"
+            "name": "Patient",
+            "title": "Patient",
+            "description": "Information about an individual or animal receiving health care services. Demographics and other administrative information about an individual or animal receiving care or other health-related services.",
+            "description_url": "",
+            "module": "Administration",
+            "type": "object"
         }
     },
     "obj_keys": [
@@ -1485,7 +1484,18 @@
                 "description_url": "",
                 "category": "clinical",
                 "type": "string",
-                "content_annotation": "@./resources/gdc_resources/content_annotations/demographic/gender.json"
+                "content_annotation": "@./resources/gdc_resources/content_annotations/demographic/gender.json",
+                "enums": [
+                    {
+                        "enum": [
+                            "female",
+                            "male",
+                            "unspecified",
+                            "unknown",
+                            "not reported"
+                        ]
+                    }
+                ]
             },
             "destination": {
                 "name": "Patient.gender",
@@ -1622,20 +1632,24 @@
                 "description_url": "",
                 "category": "clinical",
                 "type": "string",
-                "enum": [
-                    "metastasis",
-                    "Premalignant",
-                    "primary",
-                    "Prior primary",
-                    "Progression",
-                    "recurrence",
-                    "Synchronous primary",
-                    "other",
-                    "Unknown",
-                    "not reported",
-                    "Not Allowed To Collect"
-                ],
-                "content_annotation": "@./resources/gdc_resources/content_annotations/diagnosis/classification_of_tumor.json"
+                "content_annotation": "@./resources/gdc_resources/content_annotations/diagnosis/classification_of_tumor.json",
+                "enums": [
+                    {
+                        "enum": [
+                            "metastasis",
+                            "Premalignant",
+                            "primary",
+                            "Prior primary",
+                            "Progression",
+                            "recurrence",
+                            "Synchronous primary",
+                            "other",
+                            "Unknown",
+                            "not reported",
+                            "Not Allowed To Collect"
+                        ]
+                    }
+                ]
             },
             "destination": {
                 "name": "Condition.category",
@@ -1655,12 +1669,12 @@
                 "type": "string"
             },
             "destination": {
-                "name": "Condition.onsetDateTime",
-                "description": "Estimated or actual date or date-time  the condition began, in the opinion of the clinician.",
+                "name": "DiagnosticReport.issued",
+                "description": "The date and time that this version of the report was made available to providers, typically after the report was reviewed and verified.",
                 "description_url": "",
-                "module": "Clinical_Summary",
+                "module": "Diagnostics",
                 "type": "string",
-                "title": "Estimated or actual date,  date-time, or age"
+                "title": "DateTime this version was made"
             }
         },
         {
@@ -1698,33 +1712,35 @@
         {
             "source": {
                 "name": "diagnoses.days_to_last_follow_up",
-                "description": "",
+                "description": "Time interval from the date of last follow up to the date of initial pathologic diagnosis, represented as a calculated number of days.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "number"
             },
             "destination": {
                 "name": "",
                 "description": "",
                 "description_url": "",
                 "module": "",
-                "type": ""
+                "type": "",
+                "title": ""
             }
         },
         {
             "source": {
                 "name": "diagnoses.days_to_last_known_disease_status",
-                "description": "",
+                "description": "Number of days between the date used for index and the date the patient's disease status was known.",
                 "description_url": "",
-                "category": "",
-                "type": ""
+                "category": "clinical",
+                "type": "number"
             },
             "destination": {
-                "name": "",
-                "description": "",
+                "name": "DiagnosticReport.effectivePeriod",
+                "description": "The time or time-period the observed values are related to. When the subject of the report is a patient, this is usually either the time of the procedure or of specimen collection(s), but very often the source of the date/time is not known, only the date/time itself.",
                 "description_url": "",
-                "module": "",
-                "type": ""
+                "module": "Diagnostics",
+                "type": "Period",
+                "title": "Clinically relevant time/time-period for report"
             }
         },
         {

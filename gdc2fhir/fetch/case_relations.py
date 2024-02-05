@@ -13,6 +13,8 @@ from fhir.resources.specimen import Specimen
 from fhir.resources.imagingstudy import ImagingStudy
 from fhir.resources.annotation import Annotation
 from fhir.resources.condition import Condition
+from fhir.resources.diagnosticreport import DiagnosticReport
+from fhir.resources.range import Range
 
 from fhir.resources.documentreference import DocumentReference
 from fhir.resources.attachment import Attachment
@@ -386,6 +388,7 @@ utils.update_values(case_schema, source_name=name, source=True, destination=True
 name = case_schema['mappings'][34]['source']['name']
 print(name)
 
+# TODO: change since case is Patient
 # demographic.demographic_id -> Patient.identifier
 case_mapping = case_schema['mappings'][34]
 case_mapping["source"]["description"] = data_dict["clinical"]["demographic"]["properties"]["id"]["common"]["description"]
@@ -409,6 +412,7 @@ case_mapping = case_schema['mappings'][36]
 case_mapping["source"]["description"] = data_dict["clinical"]["demographic"]["properties"]["gender"]["description"]
 case_mapping["source"]["category"] = data_dict["clinical"]["demographic"]["category"]
 case_mapping["source"]["type"] = data_dict["case"]["case"]["properties"]["id"]["type"]
+case_mapping["source"]["enums"] = [{"enum": ["female", "male", "unspecified", "unknown", "not reported"]}]
 case_mapping["source"]["content_annotation"] = "@./resources/gdc_resources/content_annotations/demographic/gender.json"
 
 case_mapping["destination"]["name"] = "Patient.gender"
@@ -447,7 +451,7 @@ name = case_schema['mappings'][40]['source']['name']
 print(name)
 
 # demographic.updated_datetime -> Patient.Extension.valueDateTime
-case_schema['mappings'][40]['source']['name'] = "demographic.updated_datetime"
+case_mapping = case_schema['mappings'][40]
 case_mapping["source"]["description"] = data_dict["clinical"]["demographic"]["properties"]["updated_datetime"]["common"]["description"]
 case_mapping["source"]["category"] = data_dict["clinical"]["demographic"]["category"]
 case_mapping["source"]["type"] = data_dict["clinical"]["demographic"]["properties"]["updated_datetime"]["oneOf"][0]["type"]
@@ -505,8 +509,7 @@ case_mapping["source"]["description"] = data_dict["clinical"]["diagnosis"]["prop
 case_mapping["source"]["category"] = data_dict["clinical"]["diagnosis"]["category"]
 case_mapping["source"]["type"] = "string"
 # TODO: there are cases with multiple enums - standardizing it would be something like below
-# case_mapping["source"]["enums"] = [{"enum": data_dict["clinical"]["diagnosis"]["properties"]["classification_of_tumor"]["enum"]}]
-case_mapping["source"]["enum"] = data_dict["clinical"]["diagnosis"]["properties"]["classification_of_tumor"]["enum"]
+case_mapping["source"]["enums"] = [{"enum": data_dict["clinical"]["diagnosis"]["properties"]["classification_of_tumor"]["enum"]}]
 case_mapping["source"]["content_annotation"] = "@./resources/gdc_resources/content_annotations/diagnosis/classification_of_tumor.json"
 
 case_mapping["destination"]["name"] = "Condition.category"
@@ -521,19 +524,80 @@ utils.update_values(case_schema, source_name=name, source=True, destination=True
 name = case_schema['mappings'][45]['source']['name']
 print(name)
 
-# diagnoses.created_datetime -> Condition.onsetDateTime
+# diagnoses.created_datetime -> DiagnosticReport.issued
 case_mapping = case_schema['mappings'][45]
 case_mapping["source"]["description"] = data_dict["clinical"]["diagnosis"]["properties"]["created_datetime"]["common"]["description"]
 case_mapping["source"]["category"] = data_dict["clinical"]["diagnosis"]["category"]
 case_mapping["source"]["type"] = data_dict["clinical"]["diagnosis"]["properties"]["created_datetime"]["oneOf"][0]["type"]
 
-case_mapping["destination"]["name"] = "Condition.onsetDateTime"
-case_mapping["destination"]["title"] = Condition.schema()["properties"]["onsetDateTime"]["title"]
-case_mapping["destination"]["description"] = Condition.schema()["properties"]["onsetDateTime"]["description"]
-case_mapping["destination"]["type"] = Condition.schema()["properties"]["onsetDateTime"]["type"]
-case_mapping["destination"]["module"] = "Clinical_Summary"
+case_mapping["destination"]["name"] = "DiagnosticReport.issued"
+case_mapping["destination"]["title"] = DiagnosticReport.schema()["properties"]["issued"]["title"]
+case_mapping["destination"]["description"] = DiagnosticReport.schema()["properties"]["issued"]["description"]
+case_mapping["destination"]["type"] = DiagnosticReport.schema()["properties"]["issued"]["type"]
+case_mapping["destination"]["module"] = "Diagnostics"
 
 utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][46]['source']['name']
+print(name)
+
+# diagnoses.days_to_birth ->
+# TODO: item is not under data_dict["clinical"]["diagnosis"]["properties"]["days_to_birth"][
+
+# ------------------------------
+name = case_schema['mappings'][47]['source']['name']
+print(name)
+
+# diagnoses.days_to_death ->
+# TODO: item is not under data_dict["clinical"]["diagnosis"]["properties"]["days_to_death"][
+# ------------------------------
+name = case_schema['mappings'][48]['source']['name']
+print(name)
+
+# TODO: time interval mappings
+# diagnoses.days_to_last_follow_up ->
+case_mapping = case_schema['mappings'][48]
+case_mapping["source"]["description"] = data_dict["clinical"]["diagnosis"]["properties"]["days_to_last_follow_up"]["description"]
+case_mapping["source"]["category"] = data_dict["clinical"]["diagnosis"]["category"]
+case_mapping["source"]["type"] = data_dict["clinical"]["diagnosis"]["properties"]["days_to_last_follow_up"]["oneOf"][0]["type"]
+
+case_mapping["destination"]["name"] = ""
+case_mapping["destination"]["title"] = ""
+case_mapping["destination"]["description"] = ""
+case_mapping["destination"]["type"] = ""
+""" 
+case_mapping["source"]["type_component_value"] = [
+    {Range.schema()["title"]: {
+        "Range.high": data_dict["clinical"]["diagnosis"]["properties"]["days_to_last_follow_up"]["oneOf"][0]["maximum"],
+        "Range.low": data_dict["clinical"]["diagnosis"]["properties"]["days_to_last_follow_up"]["oneOf"][0]["minimum"],
+    }}
+]
+"""
+case_mapping["destination"]["module"] = ""
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][49]['source']['name']
+print(name)
+
+# TODO: time interval mappings
+# days_to_last_known_disease_status -> DiagnosticReport.effectivePeriod
+case_mapping = case_schema['mappings'][49]
+case_mapping["source"]["description"] = data_dict["clinical"]["diagnosis"]["properties"]["days_to_last_known_disease_status"]["description"]
+case_mapping["source"]["category"] = data_dict["clinical"]["diagnosis"]["category"]
+case_mapping["source"]["type"] = data_dict["clinical"]["diagnosis"]["properties"]["days_to_last_known_disease_status"]["oneOf"][0]["type"]
+
+case_mapping["destination"]["name"] = "DiagnosticReport.effectivePeriod"
+case_mapping["destination"]["title"] = DiagnosticReport.schema()["properties"]["effectivePeriod"]["title"]
+case_mapping["destination"]["description"] = DiagnosticReport.schema()["properties"]["effectivePeriod"]["description"]
+case_mapping["destination"]["type"] = DiagnosticReport.schema()["properties"]["effectivePeriod"]["type"]
+case_mapping["destination"]["module"] = "Diagnostics"
+
+utils.update_values(case_schema, source_name=name, source=True, destination=True, source_values=case_mapping["source"], destination_values=case_mapping["destination"])
+# ------------------------------
+name = case_schema['mappings'][50]['source']['name']
+print(name)
+
 # ------------------------------ Brainstorming
 # case
 Coding.schema()['properties']['code']['description']

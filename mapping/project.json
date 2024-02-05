@@ -430,7 +430,7 @@
                 "type": "integer"
             },
             "destination": {
-                "name": "Observation.valueQuantity",
+                "name": "ResearchStudy.recruitment.actualNumber",
                 "title": "Actual result",
                 "url": "https://build.fhir.org/datatypes-definitions.html#Quantity.value",
                 "description": "The information determined as a result of making the observation, if the information has a simple value.",
