@@ -1,47 +1,106 @@
+from __future__ import annotations
+from typing import List, Optional
+from pydantic import BaseModel, Field
 
 
-class Schema:
-    def __init__(self, version, schema_standard: str, metadata: dict, obj_mapping: dict,
-                 obj_keys: list, source_key_required: list, destination_key_required: list, unique_keys: list,
-                 source_key_aliases: dict, mappings: list):
-        self.version = version
-        self.schema_standard = schema_standard
-        self.metadata = metadata
-        self.obj_mapping = obj_mapping
-        self.obj_keys = obj_keys
-        self.source_key_required = source_key_required
-        self.destination_key_required = destination_key_required
-        self.unique_keys = unique_keys
-        self.source_key_aliases = source_key_aliases
-        self.mappings = mappings
+class Source(BaseModel):
+    # map types via this standard: https://docs.pydantic.dev/latest/concepts/types/
+    name: str = Field(...)
+    description: str = Field(...)
+    description_url: str | None = Field(None)
+    category: str | None = Field(None)
+    type: str = Field(...)
+    format: str | None = Field(None)
+    enums: List[dict] | None = None
+    content_annotation: list | str | None = None
 
-    def update_metadata(self, m):
-        self.metadata.update(m)
 
-    def filter_mappings(self, schema):
-        pass
+class Destination(BaseModel):
+    name: str = Field(...)
+    description: str = Field(...)
+    description_url: str | None = Field(None)
+    module: str = Field(...)
+    title: str = Field(...)
+    type: str = Field(...)
+    format: str | None = Field(None)
 
-    def transition_mappings(self):
-        pass
 
-    def update_mappings(self, source_name, source=True, destination=False, source_values=None, destination_values=None):
-        """
-        Updates values of source and/or destination keys
+class Map(BaseModel):
+    source: Source
+    destination: Destination
 
-        :param schema: Json schema to be updated
-        :param source_name: name of source to be updated
-        :param source: boolean indicating source to be updated
-        :param destination: boolean indicating destination to be updated
-        :param source_values: Dictionary with updated info
-        :param destination_values: Dictionary with updated info
-        :return: updated schema
-        """
-        for i, mapping_dict in enumerate(self.mappings):
-            for key in mapping_dict:
-                if key == "source" and source:
-                    if mapping_dict[key]['name'] == source_name:
-                        mapping_dict[key].update(source_values)
-                        if destination:
-                            mapping_dict['destination'].update(destination_values)
-                            print(mapping_dict)
+
+class Schema(BaseModel):
+    metadata: dict = Field(..., description='Metadata on GDC object and FHIR resources.')
+    obj_mapping: Map = Field(..., description="The GDC object being mapped.")
+    obj_key: List[str] = Field(..., description='GDC available field names')
+    mappings: List[Map]
+
+
+meta = {
+    "title": "",
+    "category": "",
+    "type": "",
+    "downloadable": False,
+    "description": "",
+    "versions": [
+        {
+            "source_version": ""
+        },
+        {
+            "destination_version": ""
+        }
+    ],
+    "resource_links": []
+}
+
+
+mappings = [
+        {
+            "source": {
+                "name": "case",
+                "description": "The collection of all data related to a specific subject in the context of a specific project.",
+                "type": "object"
+            }
+        },
+        {
+            "destination": {
+                "name": "Patient",
+                "title": "Patient",
+                "description": "Information about an individual or animal receiving health care services. Demographics and other administrative information about an individual or animal receiving care or ot her health-related services.",
+                "description_url": "",
+                "module": "Administration",
+                "type": "object"
+            }
+        }
+]
+
+M1 = Map(**{"source": {
+                "name": "case",
+                "description": "The collection of all data related to a specific subject in the context of a specific project.",
+                "type": "object"
+            },
+    "destination": {
+                "name": "Patient",
+                "title": "Patient",
+                "description": "Information about an individual or animal receiving health care services. Demographics and other administrative information about an individual or animal receiving care or ot her health-related services.",
+                "module": "Administration",
+                "type": "object"
+            }})
+
+M2 = Map(**{"source": {
+                "name": "case",
+                "description": "The collection of all data related to a specific subject in the context of a specific project.",
+                "type": "object"
+            },
+    "destination": {
+                "name": "Patient",
+                "title": "Patient",
+                "description": "Information about an individual or animal receiving health care services. Demographics and other administrative information about an individual or animal receiving care or ot her health-related services.",
+                "module": "Administration",
+                "type": "object"
+            }})
+
+test_schema = Schema(**{"metadata": meta, "obj_mapping": M1, "obj_key": ["submitter_id", "case_id"], "mappings": [M1, M2]})
+test_schema.json()
 

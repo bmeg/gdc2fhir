@@ -16,10 +16,11 @@ def clean_description(description):
     return description.replace("Disclaimer: Any field name ends with ``__ext`` doesn't part of\nResource StructureDefinition, instead used to enable Extensibility feature\nfor FHIR Primitive Data Types.\n\n", "")
 
 
-def get_us_core(path=None, url=None):
+def get_us_core(path=None, url=None, param={}):
     """
     Given a path or url to FHIR Extension.extension:[x] loads in data to map to :[x]
 
+    :param param: Json dictionary
     :param path: Path to json
     :param url: url ex. https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.json
     :return: TBD
@@ -34,7 +35,7 @@ def get_us_core(path=None, url=None):
                 except json.JSONDecodeError as e:
                     print("Error decoding JSON: {}".format(e))
     elif url:
-        response = requests.get(url)
+        response = requests.get(url, param=param)
 
         if response.status_code == 200:
             html_content = response.content.decode("utf-8")
