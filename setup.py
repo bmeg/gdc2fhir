@@ -11,10 +11,13 @@ setup(
     author='https://ellrottlab.org/',  
     packages=find_packages(),
     entry_points={
-        'console_scripts': ['gdc2fhir = gdc2fhir.__main__:main']
+        'console_scripts': ['gdc2fhir = gdc2fhir.cli:cli']
     },
     install_requires=[
         'requests',
+        'pydantic',
+        'click',
+        'beautifulsoup4',
         'fhir.resources>=7.1.0'  # FHIR® (Release R5, version 5.0.0)
     ],
     tests_require=['pytest'],

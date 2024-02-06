@@ -283,12 +283,3 @@ def load_fields(path="./resources/gdc_resources/fields/"):
     return all_dat
 
 
-# (load all || point to an existing resource ? if there are any ) && save in repo for versioning
-# demographic_dict = gdc_data_dict("demographic")
-# project_dict = gdc_data_dict("project")
-# case_dict = gdc_data_dict("case")
-# file_dict = gdc_data_dict("file")
-# annotations_dict = gdc_data_dict("annotations")
-# primary_sites = case_dict['properties']['primary_site']['enum']
-# disease_types = case_dict['properties']['disease_type']['enum']
-
