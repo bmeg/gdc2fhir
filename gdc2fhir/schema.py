@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List, Optional, Union, Dict
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, validate_model
 
 
 class Source(BaseModel):
@@ -30,7 +30,7 @@ class Map(BaseModel):
     destination: Destination
 
     # store maps internally with source name as key to access faster
-    _map_dict: Dict[str, 'Map'] = {}
+    _map_dict: Dict[str, Map] = {}
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -63,9 +63,10 @@ class Map(BaseModel):
             return map_instance.destination
 
     @classmethod
-    def validate_map(cls, map_instance: 'Map') -> 'Map':
-        validated_map = Map.validate_model(map_instance)
-        return validated_map
+    def check_map(cls, map_instance: Map) -> Map:
+        *_, validation_error = validate_model(map_instance.__class__, map_instance.__dict__)
+        if validation_error:
+            raise validation_error
 
 
 class Schema(BaseModel):
@@ -97,7 +98,9 @@ class Schema(BaseModel):
     def has_map_for_destination(self, destination_key: str) -> bool:
         return any(mapping.destination.name == destination_key for mapping in self.mappings)
 
-    def validate_schema(self) -> 'Schema':
-        validated_schema = Schema.validate_model(self)
-        return validated_schema
+    def check_schema(self) -> Schema:
+        *_, validation_error = validate_model(self.__class__, self.__dict__)
+        if validation_error:
+            raise validation_error
+
 

@@ -1,4 +1,5 @@
 import pytest
+from pydantic import ValidationError
 from gdc2fhir.schema import Schema, Source, Destination, Map
 
 
@@ -99,3 +100,21 @@ def test_find_and_update_values(example_schema):
     assert updated_source is not None
     assert updated_source.description == "Unique key of entity"
 
+
+@pytest.mark.xfail
+def test_invalid_map(example_schema):
+    # can't have map without name - expected to fail
+    with pytest.raises(ValidationError, match="can't have map without name - none not allowed"):
+        Map.check_map(Map(
+            source=Source(name=None, description="invalid Source", type="object"),
+            destination=example_schema.obj_mapping.destination
+        ))
+
+
+@pytest.mark.xfail
+def test_invalid_schema():
+    # can't have schema without obj_kye - expected to fail
+    with pytest.raises(ValidationError, match="obj_key required"):
+        Schema.check_schema(Schema(metadata={'title': 'Case', 'downloadable': False},
+                                   obj_mapping=Map(source=Source(name="case_id", description='UUID', type='object')))
+                            )
