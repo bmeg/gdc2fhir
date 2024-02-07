@@ -5,7 +5,7 @@
 Mapping GDC (Genomic Data Commons) schema to Ellrot's lab FHIR (Fast Healthcare Interoperability Resources) schema.
 
 ### High-level mapping:
-img
+![mapping](./imgs/high-level.png)
 
 ### gdc2fhir structure:
 
