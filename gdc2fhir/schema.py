@@ -4,8 +4,8 @@ from pydantic import BaseModel, Field, validate_model
 
 
 class Reference(BaseModel):
-    reference_type: str = Field(..., description='Reference typeof data resource.')
-    parent: str = Field(None, description='Parent identifier if available.')
+    reference_type: str = Field(..., description='Reference type of data resource.')
+    parent: str = Field(None, description='Parent identifier.')
 
 
 class Coding(BaseModel):
