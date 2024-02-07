@@ -1,13 +1,13 @@
 # gdc2fhir
 ![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
 
-###**Project overview**: 
+## Project overview: 
 Mapping GDC (Genomic Data Commons) schema to Ellrot's lab FHIR (Fast Healthcare Interoperability Resources) schema.
 
-###**High-level mapping**:
+### High-level mapping:
 img
 
-###**gdc2fhir structure**:
+### gdc2fhir structure:
 
 Data directories:
 - **mapping**: json data maps done by gdc2fhir
@@ -47,7 +47,7 @@ gdc2fhir/
 └── setup.py
 ```
 
-### Installation
+## Installation
 
 - from source 
 ```
