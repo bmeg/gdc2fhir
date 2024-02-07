@@ -678,4 +678,4 @@ def append_required_fhir_keys(element_required, required_keys):
     return [required_keys.append(obj) for obj in element_required if obj not in required_keys]
 
 
-_data_dict = utils.load_data_dictionary()
+_data_dict = load_data_dictionary()

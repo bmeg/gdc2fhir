@@ -27,9 +27,35 @@ def field_keys(input_path):
 @click.option('--out_path', required=True,
               default='./mapping/project_test.json',
               show_default=True,
-              help='Path GDC project json schema')
+              help='Path to GDC project json schema')
 def project_init(field_path, out_path):
     mapping.initialize_project(field_path, out_path)
+
+
+@cli.command('case_init')
+@click.option('--field_path', required=True,
+              default='./resources/gdc_resources/fields/',
+              show_default=True,
+              help='Path to GDC fields')
+@click.option('--out_path', required=True,
+              default='./mapping/case_test.json',
+              show_default=True,
+              help='Path to GDC case json schema')
+def case_init(field_path, out_path):
+    mapping.initialize_case(field_path, out_path)
+
+
+@cli.command('file_init')
+@click.option('--field_path', required=True,
+              default='./resources/gdc_resources/fields/',
+              show_default=True,
+              help='Path to GDC fields')
+@click.option('--out_path', required=True,
+              default='./mapping/file_test.json',
+              show_default=True,
+              help='Path to GDC file json schema')
+def file_init(field_path, out_path):
+    mapping.initialize_file(field_path, out_path)
 
 
 if __name__ == '__main__':

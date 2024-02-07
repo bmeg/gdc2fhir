@@ -40,10 +40,12 @@
             "format": null,
             "enums": null,
             "content_annotation": null,
-            "reference": {
-                "reference_type": "program",
-                "parent": null
-            }
+            "reference": [
+                {
+                    "reference_type": "program",
+                    "parent": null
+                }
+            ]
         },
         "destination": {
             "name": "ResearchStudy",
@@ -53,10 +55,12 @@
             "title": "ResearchStudy",
             "type": "object",
             "format": null,
-            "reference": {
-                "reference_type": "ResearchStudy",
-                "parent": null
-            }
+            "reference": [
+                {
+                    "reference_type": "ResearchStudy",
+                    "parent": null
+                }
+            ]
         }
     },
     "obj_keys": [

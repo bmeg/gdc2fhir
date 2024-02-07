@@ -34,7 +34,7 @@ class Source(BaseModel):
     format: str = Field(None, description='GDC format of the type of the last element ex. date-time.')
     enums: List[dict] = Field(None, description='Enum string values of the last GDC element.')
     content_annotation: Union[List[dict], str] = Field(None, description='Content annotations with definitions.')
-    reference: Reference = Field(None, description='Reference to parent type and id.')
+    reference: List[Reference] = Field(None, description='Reference to parent type and id.')
 
 
 class Destination(BaseModel):
@@ -45,7 +45,7 @@ class Destination(BaseModel):
     title: str = Field(..., description='Field title of the FHIR mapping element.')
     type: str = Field(..., description='type of the final FHIR mapping element.')
     format: str = Field(None, description='Format required for mapping ex. a pydantic list[str]')
-    reference: Reference = Field(None, description='Reference to parent type and id.')
+    reference: List[Reference] = Field(None, description='Reference to parent type and id.')
 
 
 class Map(BaseModel):
