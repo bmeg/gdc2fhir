@@ -8,11 +8,6 @@ from fhir.resources.patient import Patient
 from fhir.resources.documentreference import DocumentReference
 
 
-# Project -------------------------------------------
-# read in project keys
-# create header of schema and versions
-# save json without Map mappings as initial structurae
-
 data_dict = utils._data_dict
 
 
