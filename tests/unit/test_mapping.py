@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from gdc2fhir.schema import Schema, Source, Destination, Map
+from gdc2fhir.schema import Schema, Source, Destination, Map, Metadata, Version
 
 
 @pytest.fixture
@@ -54,8 +54,29 @@ def example_schema():
 
     map2 = Map(source=source_b, destination=destination_b)
 
+    gdc_version = Version(
+        source_version="1",
+        data_release="Data Release 39.0 - December 04, 2023",
+        commit="023da73eee3c17608db1a9903c82852428327b88",
+        status="OK",
+        tag="5.0.6",
+    )
+    fhir_version = Version(
+        destination_version="5.0.0"
+    )
+
+    metadata = Metadata(
+        title="Case",
+        category="case",
+        type="obj",
+        description="",
+        downloadable=False,
+        versions=[gdc_version, fhir_version]
+    )
+
     return Schema(
-        metadata={"title": "Case", "downloadable": False},
+        version="1.0.0",
+        metadata=metadata,
         obj_mapping=map_obj,
         obj_key=["case_id", "sample_id"],
         mappings=[map1, map2]

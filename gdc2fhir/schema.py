@@ -3,26 +3,49 @@ from typing import List, Optional, Union, Dict
 from pydantic import BaseModel, Field, validate_model
 
 
+class Reference(BaseModel):
+    reference_type: str = Field(..., description='Reference typeof data resource.')
+    parent: str = Field(None, description='Parent identifier if available.')
+
+
+class Coding(BaseModel):
+    system: str = Field(..., description='Url of the coding system ex. http://loinc.org')
+    code: str = Field(..., description='Code id of the system')
+    display: str = Field(..., description='Name display text.')
+
+
+class ContentAnnotation(BaseModel):
+    value: str = Field(..., description='Enum string value of the last GDC element.')
+    description: str = Field(..., description='Description of the last GDC element for mapping.')
+    description_url: Optional[str] = Field(None, description='Description source url.')
+    annotation_type: str = Field(..., description='Common Data Element (CDE) created by the caDSR.')
+    ontology_url: str = Field(None, description='Ontology definition url link.')
+    coding: Coding = Field(None, description='Similar to FHIR Codeable concept for mapping annotation definition(s).')
+
+
 class Source(BaseModel):
     # map types via this standard: https://docs.pydantic.dev/latest/concepts/types/
-    name: str = Field(...)
-    description: str = Field(...)
-    description_url: Optional[str] = Field(None)
-    category: Optional[str] = Field(None)
-    type: str = Field(...)
-    format: Optional[str] = Field(None)
-    enums: Optional[List[dict]] = None
-    content_annotation: Optional[Union[List[dict], str]] = None
+    name: str = Field(..., description='GDC available field name hierarchy dot notation.')
+    description: str = Field(..., description='Description of the last GDC element for mapping.')
+    description_url: Optional[str] = Field(None, description='Description source url.')
+    category: Optional[str] = Field(None, description='GDC data dictionary category: case | clinical | biospecimen | '
+                                                      'files | anntations | analysis | notation | index | data')
+    type: str = Field(..., description='GDC type of the last element.')
+    format: str = Field(None, description='GDC format of the type of the last element ex. date-time.')
+    enums: List[dict] = Field(None, description='Enum string values of the last GDC element.')
+    content_annotation: Union[List[dict], str] = Field(None, description='Content annotations with definitions.')
+    reference: Reference = Field(None, description='Reference to parent type and id.')
 
 
 class Destination(BaseModel):
-    name: str = Field(...)
-    description: str = Field(...)
-    description_url: Optional[str] = Field(None)
-    module: str = Field(...)
-    title: str = Field(...)
-    type: str = Field(...)
-    format: Optional[str] = Field(None)
+    name: str = Field(..., description='FHIR resources matching the source hierarchy.')
+    description: str = Field(..., description='Description of the final FHIR mapping element.')
+    description_url: Optional[str] = Field(None, description='Description source url.')
+    module: str = Field(..., description='Name of the parent module of final mapping element.')
+    title: str = Field(..., description='Field title of the FHIR mapping element.')
+    type: str = Field(..., description='type of the final FHIR mapping element.')
+    format: str = Field(None, description='Format required for mapping ex. a pydantic list[str]')
+    reference: Reference = Field(None, description='Reference to parent type and id.')
 
 
 class Map(BaseModel):
@@ -69,14 +92,45 @@ class Map(BaseModel):
             raise validation_error
 
 
+class Version(BaseModel):
+    source_version: str = Field(None, description='GDC data dictionary version.')
+    data_release: str = Field(None, description='GDC data dictionary release.')
+    commit: str = Field(None, description='GDC data dictionary commit.')
+    status: str = Field(None, description='GDC data dictionary status.')
+    tag: str = Field(None, description='GDC data dictionary tag.')
+    destination_version: str = Field(None, description='FHIR published data release version.')
+
+
+class Metadata(BaseModel):
+    title: str = Field(..., description='GDC object name for this schema.')
+    category: str = Field(None, description='GDC object category ex. case | file | project.')
+    type: str = Field(..., description='GDC object type.')
+    downloadable: bool = Field(None, description='Downloadable content available.')
+    description: str = Field(..., description='GDC description of this schema object.')
+    versions: List[Version] = Field(..., description='Source and destination data versions being mapped.')
+    resource_links: Optional[List[str]] = Field(None, description='Resource links to GDC and FHIR overviews.')
+
+
 class Schema(BaseModel):
-    metadata: dict = Field(default_factory=dict, description='Metadata on GDC object and FHIR resources.')
+    version: str = Field(..., description='Semantic versioning of the mappings schema.')
+    metadata: Metadata = Field(..., description='Metadata on GDC object and FHIR resources.')
     obj_mapping: Map = Field(..., description="The GDC object being mapped.")
-    obj_key: List[str] = Field(..., description='GDC available field names')
-    mappings: List[Map]
+    obj_key: List[str] = Field(..., description='List of GDC available fields hierarchy to be mapped.')
+    mappings: List[Map] = Field(..., description='List of Map(s) describing the source -> destination Maps.')
+    source_key_required: Optional[List[str]] = Field(None, description='Required key elements defined by GDC in this schema.')
+    destination_key_required: Optional[List[str]] = Field(None, description='Required key elements defined by FHIR in this schema.')
+    unique_keys: Optional[List[List[str]]] = Field(None, description='Unique keys that identify this GDC based schema model.')
+    source_key_aliases: Optional[Dict[str, str]] = Field(None, description='GDC key aliases in this schema.')
+    destination_key_aliases: Optional[Dict[str, Union[str, List[str]]]] = Field(None, description='FHIR key aliases in this schema.')
+
+    class Config:
+        schema_extra = {
+            '$schema': 'http://json-schema.org/draft-07/schema#'
+        }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
 
     @property
     def source_map_dict(self):

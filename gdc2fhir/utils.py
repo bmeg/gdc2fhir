@@ -1,4 +1,6 @@
 import json
+from typing import List, Optional
+from gdc2fhir.schema import Schema, Source, Destination, Map, Metadata, JsonMeta, Version
 
 
 def extract_keys(data, parent_key=None, keys=None):
@@ -268,30 +270,4 @@ def read_json(path):
             return this_json
     except json.JSONDecodeError as e:
         print("Error decoding JSON: {}".format(e))
-
-
-
-# TODO: move logic
-"""
-case_schema = read_schema("./mapping/case.json")
-file_schema = read_schema("./mapping/file.json")
-
-source_names = []
-for d in l:
-    source_names.append(d['source']['name'])
-
-for d in l:
-    update_values(file_schema, source_name=d['source']['name'], source=True, destination=True, source_values=d['source'], destination_values=d['destination'])
-
-with open("mapping/file.json", 'w', encoding='utf-8') as file:
-    json.dump(file_schema, file, indent=4)
-"""
-
-"""
-generate_content_annotations(demographic_dict['properties']['race'], "./resources/gdc_resources/content_annotations/demographic/race.json")
-generate_content_annotations(demographic_dict['properties']['ethnicity'], "./resources/gdc_resources/content_annotations/demographic/ethnicity.json")
-generate_content_annotations(case_dict['properties']['disease_type'], "./resources/gdc_resources/content_annotations/case/disease_type.json")
-generate_content_annotations(case_dict['properties']['primary_site'], "./resources/gdc_resources/content_annotations/case/primary_site.json")
-"""
-
 
