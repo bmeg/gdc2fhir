@@ -115,7 +115,7 @@ class Schema(BaseModel):
     version: str = Field(..., description='Semantic versioning of the mappings schema.')
     metadata: Metadata = Field(..., description='Metadata on GDC object and FHIR resources.')
     obj_mapping: Map = Field(..., description="The GDC object being mapped.")
-    obj_key: List[str] = Field(..., description='List of GDC available fields hierarchy to be mapped.')
+    obj_keys: List[str] = Field(..., description='List of GDC available fields hierarchy to be mapped.')
     mappings: List[Map] = Field(..., description='List of Map(s) describing the source -> destination Maps.')
     source_key_required: Optional[List[str]] = Field(None, description='Required key elements defined by GDC in this schema.')
     destination_key_required: Optional[List[str]] = Field(None, description='Required key elements defined by FHIR in this schema.')

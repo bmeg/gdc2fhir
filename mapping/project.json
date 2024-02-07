@@ -1,0 +1,89 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "version": "1",
+    "metadata": {
+        "title": "Project",
+        "category": "project",
+        "type": "object",
+        "downloadable": false,
+        "description": "Mapping GDC project entities, properties, and relations to FHIR. GDC project is any specifically defined piece of work that is undertaken or attempted to meet a single requirement. (NCIt C47885)",
+        "versions": [
+            {
+                "source_version": "1",
+                "data_release": "Data Release 39.0 - December 04, 2023",
+                "commit": "023da73eee3c17608db1a9903c82852428327b88",
+                "status": "OK",
+                "tag": "5.0.6",
+                "destination_version": null
+            },
+            {
+                "source_version": null,
+                "data_release": null,
+                "commit": null,
+                "status": null,
+                "tag": null,
+                "destination_version": "5.0.0"
+            }
+        ],
+        "resource_links": [
+            "https://gdc.cancer.gov/about-gdc/gdc-overview",
+            "https://www.hl7.org/fhir/overview.html"
+        ]
+    },
+    "obj_mapping": {
+        "source": {
+            "name": "project",
+            "description": "Any specifically defined piece of work that is undertaken or attempted to meet a single requirement. (NCIt C47885)",
+            "description_url": null,
+            "category": "administrative",
+            "type": "object",
+            "format": null,
+            "enums": null,
+            "content_annotation": null,
+            "reference": {
+                "reference_type": "program",
+                "parent": null
+            }
+        },
+        "destination": {
+            "name": "ResearchStudy",
+            "description": "Investigation to increase healthcare-related patient-independent knowledge. A scientific study of nature that sometimes includes processes involved in health and disease. For example, clinical trials are research studies that involve people. These studies may be related to new ways to screen, prevent, diagnose, and treat disease. They may also study certain outcomes and certain groups of people by looking at data collected in the past or future.",
+            "description_url": null,
+            "module": "Administration",
+            "title": "ResearchStudy",
+            "type": "object",
+            "format": null,
+            "reference": {
+                "reference_type": "ResearchStudy",
+                "parent": null
+            }
+        }
+    },
+    "obj_keys": [
+        "dbgap_accession_number",
+        "disease_type",
+        "name",
+        "primary_site",
+        "project_id",
+        "released",
+        "state",
+        "program.dbgap_accession_number",
+        "program.name",
+        "program.program_id",
+        "summary.case_count",
+        "summary.file_count",
+        "summary.file_size",
+        "summary.data_categories.case_count",
+        "summary.data_categories.data_category",
+        "summary.data_categories.file_count",
+        "summary.experimental_strategies.case_count",
+        "summary.experimental_strategies.experimental_strategy",
+        "summary.experimental_strategies.file_count"
+    ],
+    "mappings": [],
+    "source_key_required": [],
+    "destination_key_required": [],
+    "unique_keys": [],
+    "source_key_aliases": {},
+    "destination_key_aliases": {}
+}

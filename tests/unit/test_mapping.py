@@ -78,7 +78,7 @@ def example_schema():
         version="1.0.0",
         metadata=metadata,
         obj_mapping=map_obj,
-        obj_key=["case_id", "sample_id"],
+        obj_keys=["case_id", "sample_id"],
         mappings=[map1, map2]
     )
 

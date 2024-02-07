@@ -56,3 +56,12 @@ cd gdc2fhir
 python setup.py install
 ```
 
+### Testing 
+```
+pytest --cov
+```
+
+### click cmds
+```
+gdc2fhir project_init 
+```
