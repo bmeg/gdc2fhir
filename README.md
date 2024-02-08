@@ -62,6 +62,16 @@ pytest --cov
 ```
 
 ### click cmds
+
+initialize initial structure of project, case, or file to add Maps
+
 ```
 gdc2fhir project_init 
+gdc2fhir case_init 
+gdc2fhir file_init 
+```
+
+convert GDC keys to FHIR 
+```
+gdc2fhir convert --in_path '../../my_gdc_data.json' --out_path '../../my_mapping_result.json' --verbose 'True' 
 ```
