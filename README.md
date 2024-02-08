@@ -19,6 +19,7 @@ gdc2fhir/
 |-- gdc2fhir/
 |   |-- __init__.py
 |   |-- schema.py
+|   |-- mapping.py
 |   |-- utils.py
 |   └── cli.py
 |   
