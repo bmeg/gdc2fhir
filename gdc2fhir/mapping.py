@@ -310,7 +310,7 @@ def convert_maps(in_path, out_path, name='project'):
         if schema:
             projects = utils.load_gdc_scripts_json(path=in_path)
 
-            keys = utils.extract_keys(projects[0])
+            keys = list(utils.extract_keys(projects[0]))
             available_maps = [schema.find_map_by_source(k) for k in keys]
 
             mapped_data = utils.map_data(projects[0], available_maps)

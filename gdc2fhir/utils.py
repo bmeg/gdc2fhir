@@ -3,40 +3,43 @@ import json
 import glob
 import requests
 from bs4 import BeautifulSoup
-from gdc2fhir import utils
 from typing import List, Optional, Dict
 from gdc2fhir.schema import Schema, Map
 
 
-# needs bug fix for repeating list item's key
-def extract_keys(data, parent_key=None, keys=None):
+def extract_keys(data, parent_key=None, seen_keys=None):
     """
-    Extracts all keys in a nested dictionary and applies dot notation to capture nested keys hierarchy
+    Extracts all keys in a nested dictionary and applies dot notation to capture nested keys hierarchy.
 
-    :param data: Dictionary or containing nested dictionaries
-    :param parent_key: Parent key to build the hierarchy
-    :param keys: List to store the extracted keys
-    :return: List of all keys present
+    ex run:
+    data = {
+        'a': {
+            'b': {
+                'c': 1,
+                'd': [2, 3]
+            }
+        },
+        'e': [4, 5]
+    }
+
+    list(extract_keys(data))
+    ['a', 'a.b', 'a.b.c', 'a.b.d', 'e']
+
+    :param data: Resource dictionary containing nested dictionaries hierarchy.
+    :param parent_key: Parent key to build the hierarchy.
+    :param seen_keys: Set to keep track of seen keys.
+    :return: Generator list of hierarchy keys with dot notation.
     """
-    if keys is None:
-        keys = []
+    if seen_keys is None:
+        seen_keys = set()
 
-    if isinstance(data, dict):
-        for key, value in data.items():
-            current_key = key if parent_key is None else f"{parent_key}.{key}"
-            keys.append(current_key)
-            extract_keys(value, parent_key=current_key, keys=keys)
-    elif isinstance(data, list):
-        for index, item in enumerate(data):
-            if isinstance(item, dict):
-                current_key = f"{parent_key}" if parent_key is not None else str(index)
-                keys.append(current_key)
-                extract_keys(item, parent_key=current_key, keys=keys)
-            else:
-                current_key = f"{parent_key}" if parent_key is not None else ""
-                keys.append(current_key)
-
-    return keys
+    if isinstance(data, (dict, list)):
+        for k, val in (data.items() if isinstance(data, dict) else enumerate(data)):
+            current_key = k if parent_key is None else ".".join([parent_key, k]) if isinstance(data, dict) else f"{parent_key}"
+            if current_key not in seen_keys:
+                seen_keys.add(current_key)
+                yield current_key
+            yield from extract_keys(val, parent_key=current_key, seen_keys=seen_keys)
 
 
 def get_key_hierarchy(json_path):
@@ -678,7 +681,9 @@ def append_required_fhir_keys(element_required, required_keys):
     """
     return [required_keys.append(obj) for obj in element_required if obj not in required_keys]
 
-
+# -------------------------------------------------
+# mapping.py utils
+# -------------------------------------------------
 _data_dict = load_data_dictionary()
 
 
@@ -741,9 +746,10 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
             traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter)
 
 
-def map_data(data, available_maps: List[Optional[Map]]) -> Dict:
+def map_data(data, available_maps: List[Optional[Map]], verbose=True) -> Dict:
     """
 
+    :param verbose:
     :param data:
     :param available_maps:
     :return:
@@ -751,5 +757,8 @@ def map_data(data, available_maps: List[Optional[Map]]) -> Dict:
     mapped_data = {}
     success_counter = {'mapped': 0}
     traverse_and_map(data, [], mapped_data, available_maps, success_counter)
-    print('mapped_data', mapped_data, '\n', f'mapped { success_counter["mapped"]} key items.')
+    if verbose:
+        print('Available Map items of entity: ', len(available_maps), '\n')
+        print('mapped_data: ', mapped_data, '\n\n', f'Mapped { success_counter["mapped"]} key items.', '\n')
+        print('Percentage of available maps mapped: ', success_counter["mapped"]/len([x for x in available_maps if x is not None]) * 100, '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}
