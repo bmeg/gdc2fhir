@@ -1,6 +1,4 @@
-import os
 import json
-from pydantic import types
 from gdc2fhir import utils
 from gdc2fhir.schema import Schema, Map, Metadata, Version, Source, Destination, ContentAnnotation, Coding, Reference
 from fhir.resources.researchstudy import ResearchStudy
@@ -289,7 +287,7 @@ def add_some_maps(out_path="./mapping/project.json"):
     utils.validate_and_write(project_schema, out_path=out_path, update=True, generate=False)
 
 
-def convert_maps(in_path, out_path, name='project'):
+def convert_maps(in_path, out_path, name='project', verbose=True):
     """
     - load updated schema
     - load GDC bmeg script json file
@@ -300,6 +298,7 @@ def convert_maps(in_path, out_path, name='project'):
     :param name:
     :param in_path:
     :param out_path:
+    :param verbose:
     :return:
     """
     l = []
@@ -313,7 +312,7 @@ def convert_maps(in_path, out_path, name='project'):
             keys = list(utils.extract_keys(projects[0]))
             available_maps = [schema.find_map_by_source(k) for k in keys]
 
-            mapped_data = utils.map_data(projects[0], available_maps)
+            mapped_data = utils.map_data(projects[0], available_maps, verbose=verbose)
             l.append(mapped_data)
 
             if out_path:

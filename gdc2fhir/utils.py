@@ -65,111 +65,6 @@ def get_key_hierarchy(json_path):
     return extracted_keys_list
 
 
-JSON_SCHEMA = {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "",
-    "metadata": {
-        "title": "",
-        "category": "",
-        "type": "",
-        "downloadable": False,
-        "description": "",
-        "versions": [
-            {
-                "source_version": ""
-            },
-            {
-                "destination_version": ""
-            }
-        ],
-        "resource_links": []
-    },
-    "obj_mapping": {
-        "source": {
-            "name": "",
-            "description": "",
-            "description_url": "",
-            "category": "",
-            "type": ""
-        },
-        "destination": {
-            "name": "",
-            "title": "",
-            "description": "",
-            "description_url": "",
-            "module": "",
-            "type": ""
-        }
-    },
-    "obj_keys": [],
-    "source_key_required": [],
-    "destination_key_required": [],
-    "unique_keys": [],
-    "source_key_aliases": {},
-    "destination_key_aliases": {},
-    "mappings": []
-}
-
-MAPPING_TEMPLATE = {
-    "source": {
-        "name": "",
-        "description": "",
-        "description_url": "",
-        "category": "",
-        "type": ""
-    },
-    "destination": {
-        "name": "",
-        "description": "",
-        "description_url": "",
-        "module": "",
-        "type": ""
-    }
-}
-
-
-def create_mapping(mapping_template, key):
-    """
-    Creates a mapping for a given key based on the template.
-
-    :param mapping_template: Template for the mapping structure
-    :param key: Key to be included in the mapping
-    :return: Mapping for the key
-    """
-    mapping = json.loads(mapping_template)
-    mapping["source"]["name"] = key
-    return mapping
-
-
-def initialize_json_schema(keys, out_path, mapping_template=json.dumps(MAPPING_TEMPLATE),
-                           json_schema=json.dumps(JSON_SCHEMA), source_version="",
-                           destination_version="", json_schema_version="1.0.0"):
-    """
-    Generates an empty schema json file with all source keys of interest to be mapped to destination keys.
-
-    :param keys: List of keys to be included in the schema
-    :param out_path: Output file path for the generated schema
-    :param mapping_template: Template for the mapping structure
-    :param json_schema: JSON schema template
-    :param source_version: Source version for the schema
-    :param destination_version: Destination version for the schema
-    :param json_schema_version: Version of the JSON schema
-    :return: Initial empty schema json file with all source keys to be mapped
-    """
-    mappings = [create_mapping(mapping_template, key) for key in keys]
-    json_meta = {"version": json_schema_version, "metadata": {
-        "versions": [{"source_version": source_version, "destination_version": destination_version}]}, "obj_keys": keys}
-
-    json_schema = json.loads(json_schema)
-    json_schema.update(json_meta)
-
-    json_schema["mappings"] = mappings
-
-    with open(out_path, 'w') as json_file:
-        json.dump(json_schema, json_file, indent=4)
-
-    return json_schema
-
 
 def initialize_content_annotations(annot_enum, out_path):
     """
@@ -243,27 +138,6 @@ def generate_content_annotations(data, out_path):
 
     with open(out_path, 'w', encoding='utf-8') as file:
         json.dump(annotations, file, indent=4)
-
-
-def update_values(schema, source_name, source=True, destination=False, source_values=None, destination_values=None):
-    """
-    Updates values of source and/or destination keys
-
-    :param schema: Json schema to be updated
-    :param source_name: name of source to be updated
-    :param source: boolean indicating source to be updated
-    :param destination: boolean indicating destination to be updated
-    :param source_values: Dictionary with updated info
-    :param destination_values: Dictionary with updated info
-    :return: updated schema
-    """
-    for i, mapping_dict in enumerate(schema['mappings']):
-        for key in mapping_dict:
-            if key == "source" and source:
-                if mapping_dict[key]['name'] == source_name:
-                    mapping_dict[key].update(source_values)
-                    if destination:
-                        mapping_dict['destination'].update(destination_values)
 
 
 def _read_json(path):
@@ -746,12 +620,12 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
             traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter)
 
 
-def map_data(data, available_maps: List[Optional[Map]], verbose=True) -> Dict:
+def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
     """
 
-    :param verbose:
     :param data:
     :param available_maps:
+    :param verbose:
     :return:
     """
     mapped_data = {}
@@ -762,3 +636,4 @@ def map_data(data, available_maps: List[Optional[Map]], verbose=True) -> Dict:
         print('mapped_data: ', mapped_data, '\n\n', f'Mapped { success_counter["mapped"]} key items.', '\n')
         print('Percentage of available maps mapped: ', success_counter["mapped"]/len([x for x in available_maps if x is not None]) * 100, '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}
+

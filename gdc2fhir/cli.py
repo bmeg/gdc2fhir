@@ -69,8 +69,12 @@ def file_init(field_path, out_path):
 @click.option('--out_path', required=False,
               show_default=True,
               help='Path to save mapped result')
-def convert(name, in_path, out_path):
-    mapping.convert_maps(name=name, in_path=in_path, out_path=out_path)
+@click.option('--verbose', required=False,
+              default=True,
+              show_default=True,
+              help='Print the count metric statements')
+def convert(name, in_path, out_path, verbose):
+    mapping.convert_maps(name=name, in_path=in_path, out_path=out_path, verbose=verbose)
 
 
 if __name__ == '__main__':
