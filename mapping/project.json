@@ -84,7 +84,54 @@
         "summary.experimental_strategies.experimental_strategy",
         "summary.experimental_strategies.file_count"
     ],
-    "mappings": [],
+    "mappings": [
+        {
+            "source": {
+                "name": "name",
+                "description": "Display name for the project.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.name",
+                "description": "Name for this study (computer friendly)",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Name for this study (computer friendly)",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project_id",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "Universally Unique Identifier",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Business Identifier for study",
+                "type": "Identifier",
+                "format": "array",
+                "reference": null
+            }
+        }
+    ],
     "source_key_required": [],
     "destination_key_required": [],
     "unique_keys": [],

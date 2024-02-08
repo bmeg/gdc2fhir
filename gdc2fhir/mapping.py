@@ -7,7 +7,6 @@ from fhir.resources.researchstudy import ResearchStudy
 from fhir.resources.patient import Patient
 from fhir.resources.documentreference import DocumentReference
 
-
 data_dict = utils._data_dict
 
 
@@ -86,19 +85,7 @@ def initialize_project(field_path="./resources/gdc_resources/fields/", out_path=
         mappings=[]
     )
 
-    # validate schema
-    Schema.check_schema(project_schema)
-
-    schema_extra = project_schema.Config.schema_extra.get('$schema', None)
-    project_schema_dict = project_schema.dict()
-    project_schema_dict = {'$schema': schema_extra, **project_schema_dict}
-
-    # write initial schema to json
-    if os.path.exists(out_path):
-        print(f"File: {out_path} exists.")
-    else:
-        with open(out_path, 'w') as j:
-            json.dump(project_schema_dict, j, indent=4)
+    utils.validate_and_write(project_schema, out_path=out_path, update=False, generate=True)
 
 
 def initialize_case(field_path="./resources/gdc_resources/fields/", out_path="./mapping/case_test.json"):
@@ -175,19 +162,7 @@ def initialize_case(field_path="./resources/gdc_resources/fields/", out_path="./
         mappings=[]
     )
 
-    # validate schema
-    Schema.check_schema(case_schema)
-
-    schema_extra = case_schema.Config.schema_extra.get('$schema', None)
-    case_schema_dict = case_schema.dict()
-    case_schema_dict = {'$schema': schema_extra, **case_schema_dict}
-
-    # write initial schema to json
-    if os.path.exists(out_path):
-        print(f"File: {out_path} exists.")
-    else:
-        with open(out_path, 'w') as j:
-            json.dump(case_schema_dict, j, indent=4)
+    utils.validate_and_write(case_schema, out_path=out_path, update=False, generate=True)
 
 
 def initialize_file(field_path="./resources/gdc_resources/fields/", out_path="./mapping/file_test.json"):
@@ -267,16 +242,91 @@ def initialize_file(field_path="./resources/gdc_resources/fields/", out_path="./
         mappings=[]
     )
 
-    # validate schema
-    Schema.check_schema(file_schema)
+    utils.validate_and_write(file_schema, out_path=out_path, update=False, generate=True)
 
-    schema_extra = file_schema.Config.schema_extra.get('$schema', None)
-    file_schema_dict = file_schema.dict()
-    file_schema_dict = {'$schema': schema_extra, **file_schema_dict}
 
-    # write initial schema to json
-    if os.path.exists(out_path):
-        print(f"File: {out_path} exists.")
-    else:
-        with open(out_path, 'w') as j:
-            json.dump(file_schema_dict, j, indent=4)
+def add_some_maps(out_path="./mapping/project.json"):
+    """
+    # add name and project_id for testing
+
+    :param out_path:
+    :return:
+    """
+    project_schema = utils.load_schema_from_json(path='./mapping/project.json')
+
+    m = [Map(
+        source=Source(
+            name='name',
+            description='Display name for the project.',
+            category=data_dict['administrative']['project']['category'],
+            type='string'
+        ),
+        destination=Destination(
+            name='ResearchStudy.name',
+            description=ResearchStudy.schema()['properties']['name']['title'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['name']['title'],
+            type=ResearchStudy.schema()['properties']['name']['type'],
+        )
+    ), Map(
+        source=Source(
+            name='project_id',
+            description=data_dict['administrative']['project']['properties']['id']['common']['description'],
+            category=data_dict['administrative']['project']['category'],
+            type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term']
+        ),
+        destination=Destination(
+            name='ResearchStudy.identifier',
+            description=ResearchStudy.schema()['properties']['identifier']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['identifier']['title'],
+            type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
+            format=ResearchStudy.schema()['properties']['identifier']['type']
+        )
+    )]
+
+    [project_schema.mappings.append(i) for i in m]
+    utils.validate_and_write(project_schema, out_path=out_path, update=True, generate=False)
+
+
+def convert_maps(in_path, out_path, name='project'):
+    """
+    - load updated schema
+    - load GDC bmeg script json file
+    - extract gdc key hierarchy
+    - check available Map sources
+    - map destination keys
+
+    :param name:
+    :param in_path:
+    :param out_path:
+    :return:
+    """
+    l = []
+
+    if name == 'project':
+        schema = utils.load_schema_from_json(path='./mapping/project.json')
+
+        if schema:
+            projects = utils.load_gdc_scripts_json(path=in_path)
+
+            keys = utils.extract_keys(projects[0])
+            available_maps = [schema.find_map_by_source(k) for k in keys]
+
+            mapped_data = utils.map_data(projects[0], available_maps)
+            l.append(mapped_data)
+
+            if out_path:
+                with open(out_path, 'w') as file:
+                    json.dump(mapped_data, file, indent=4)
+
+    return l
+
+
+
+
+
+
+
+
+

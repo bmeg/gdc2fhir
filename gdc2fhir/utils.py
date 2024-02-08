@@ -4,11 +4,11 @@ import glob
 import requests
 from bs4 import BeautifulSoup
 from gdc2fhir import utils
+from typing import List, Optional, Dict
+from gdc2fhir.schema import Schema, Map
 
-from typing import List, Optional
-from gdc2fhir.schema import Schema, Source, Destination, Map, Metadata, Version
 
-
+# needs bug fix for repeating list item's key
 def extract_keys(data, parent_key=None, keys=None):
     """
     Extracts all keys in a nested dictionary and applies dot notation to capture nested keys hierarchy
@@ -579,6 +579,7 @@ def clean_description(description):
     description = description.replace('\n', ' ')
     return description
 
+
 def get_us_core(path=None, url=None, param={}):
     """
     Given a path or url to FHIR Extension.extension:[x] loads in data to map to :[x]
@@ -679,3 +680,76 @@ def append_required_fhir_keys(element_required, required_keys):
 
 
 _data_dict = load_data_dictionary()
+
+
+def validate_and_write(schema, out_path, update=False, generate=False):
+    schema.check_schema()
+
+    schema_extra = schema.Config.schema_extra.get('$schema', None)
+    schema_dict = schema.dict()
+    schema_dict = {'$schema': schema_extra, **schema_dict}
+
+    if os.path.exists(out_path) and update:
+        with open(out_path, 'w') as json_file:
+            json.dump(schema_dict, json_file, indent=4)
+    elif generate:
+        if os.path.exists(out_path):
+            print(f"File: {out_path} exists.")
+        else:
+            with open(out_path, 'w') as json_file:
+                json.dump(schema_dict, json_file, indent=4)
+    else:
+        print(f"File: {out_path} update not required")
+
+
+def load_schema_from_json(path) -> Schema:
+    with open(path, "r") as j:
+        data = json.load(j)
+        return Schema.parse_obj(data)
+
+
+def load_gdc_scripts_json(path):
+    try:
+        with open(path, 'r') as gdc_file:
+            content = gdc_file.read()
+            obj = [json.loads(obj) for obj in content.strip().split('\n')]
+            return obj
+    except json.JSONDecodeError as e:
+        print(e)
+
+
+def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter):
+    """
+    TODO: initial simple version of mapping - needs checks for more complex hierarchy mapping
+
+    :param node:
+    :param current_keys:
+    :param mapped_data:
+    :param available_maps:
+    :param success_counter:
+    :return:
+    """
+    for key, value in node.items():
+        current_key = '.'.join(current_keys + [key])
+        schema_map = next((m for m in available_maps if m and m.source.name == current_key), None)
+
+        if schema_map:
+            destination_key = schema_map.destination.name
+            mapped_data[destination_key] = value
+            success_counter['mapped'] += 1
+        elif isinstance(value, dict):
+            traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter)
+
+
+def map_data(data, available_maps: List[Optional[Map]]) -> Dict:
+    """
+
+    :param data:
+    :param available_maps:
+    :return:
+    """
+    mapped_data = {}
+    success_counter = {'mapped': 0}
+    traverse_and_map(data, [], mapped_data, available_maps, success_counter)
+    print('mapped_data', mapped_data, '\n', f'mapped { success_counter["mapped"]} key items.')
+    return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}

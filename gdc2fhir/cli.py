@@ -58,6 +58,21 @@ def file_init(field_path, out_path):
     mapping.initialize_file(field_path, out_path)
 
 
+@cli.command('convert')
+@click.option('--name', required=True,
+              default='project',
+              show_default=True,
+              help='Name of GDC entity to map')
+@click.option('--in_path', required=True,
+              show_default=True,
+              help='Path to GDC data to be mapped')
+@click.option('--out_path', required=False,
+              show_default=True,
+              help='Path to save mapped result')
+def convert(name, in_path, out_path):
+    mapping.convert_maps(name=name, in_path=in_path, out_path=out_path)
+
+
 if __name__ == '__main__':
     cli()
 
