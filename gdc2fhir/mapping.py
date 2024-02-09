@@ -1,11 +1,14 @@
+import os
 import json
+import pathlib
 from gdc2fhir import utils
 from gdc2fhir.schema import Schema, Map, Metadata, Version, Source, Destination, ContentAnnotation, Coding, Reference
 from fhir.resources.researchstudy import ResearchStudy
 from fhir.resources.patient import Patient
 from fhir.resources.documentreference import DocumentReference
 
-data_dict = utils._data_dict
+
+data_dict = utils.load_data_dictionary(path="./resources/gdc_resources/data_dictionary/")
 
 
 def initialize_project(field_path="./resources/gdc_resources/fields/", out_path="./mapping/project_test.json"):
@@ -320,12 +323,4 @@ def convert_maps(in_path, out_path, name='project', verbose=True):
                     json.dump(mapped_data, file, indent=4)
 
     return l
-
-
-
-
-
-
-
-
 

@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from typing import List, Optional, Dict
 from gdc2fhir.schema import Schema, Map
 
+here = os.path.abspath(os.path.dirname(__file__))
 
 def extract_keys(data, parent_key=None, seen_keys=None):
     """
@@ -63,7 +64,6 @@ def get_key_hierarchy(json_path):
                 print("Error decoding JSON: {}".format(e))
 
     return extracted_keys_list
-
 
 
 def initialize_content_annotations(annot_enum, out_path):

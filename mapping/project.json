@@ -130,6 +130,493 @@
                 "format": "array",
                 "reference": null
             }
+        },
+        {
+            "source": {
+                "name": "name",
+                "description": "Display name for the project.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.name",
+                "description": "Name for this study (computer friendly)",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Name for this study (computer friendly)",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project_id",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "Universally Unique Identifier",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Business Identifier for study",
+                "type": "Identifier",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "dbgap_accession_number",
+                "description": "The dbgap accession number for the project.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Coding.code",
+                "description": "A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).",
+                "description_url": null,
+                "module": "DataTypes",
+                "title": "Symbol in syntax defined by the system",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "disease_type",
+                "description": "Full name for the project",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": "@content_annotations/case/disease_types.json",
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.condition",
+                "description": "The condition that is the focus of the study.  For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Condition being studied",
+                "type": "array",
+                "format": "typing.List[fhir.resources.codeableconcept.CodeableConcept]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "primary_site",
+                "description": "Primary site for the project",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": "@content_annotations/case/primary_site.json",
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.bodySite",
+                "description": "The anatomical location where this condition manifests itself.",
+                "description_url": null,
+                "module": "Clinical Summary",
+                "title": "Anatomical location, if relevant",
+                "type": "array",
+                "format": "typing.List[fhir.resources.codeableconcept.CodeableConcept]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "released",
+                "description": "To release a project is to tell the GDC to include all submitted entities in the next GDC index.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "boolean",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudyProgressStatus.actual",
+                "description": "An indication of whether or not the date is a known date when the state changed or will change. A value of true indicates a known date. A value of false indicates an estimated date.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Actual if true else anticipated",
+                "type": "boolean",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "state",
+                "description": "The possible states a project can be in.  All but `open` are equivalent to some type of locked state.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": [
+                    {
+                        "enum": [
+                            "open",
+                            "review",
+                            "submitted",
+                            "processing",
+                            "processed",
+                            "closed",
+                            "legacy"
+                        ]
+                    }
+                ],
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudyProgressStatus.state",
+                "description": "Label for status or state (e.g. recruitment status)",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Label for status or state (e.g. recruitment status)",
+                "type": "CodeableConcept",
+                "format": "typing.List[fhir.resources.codeableconcept.CodeableConcept]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "program.dbgap_accession_number",
+                "description": "The dbgap accession number provided for the program.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Coding.code",
+                "description": "A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).",
+                "description_url": null,
+                "module": "DataTypes",
+                "title": "Symbol in syntax defined by the system",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "program.name",
+                "description": "Full name/title of the program.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.name",
+                "description": "Name for this study (computer friendly)",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Name for this study (computer friendly)",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "program.program_id",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "Universally Unique Identifier",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Business Identifier for study",
+                "type": "Identifier",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "summary.case_count",
+                "description": "The number of cases in the project",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudyRecruitment.actualNumber",
+                "description": "Actual total number of participants enrolled in study",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Actual total number of participants enrolled in study",
+                "type": "integer",
+                "format": "<class 'pydantic.types.NonNegativeInt'>",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "summary.file_count",
+                "description": "The number of files of the project.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueUnsignedInt",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": null,
+                "module": "Foundation",
+                "title": "Value of extension",
+                "type": "integer",
+                "format": "<class 'pydantic.types.NonNegativeInt'>",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "summary.file_size",
+                "description": "The size of the data file (object) in bytes.(summary)",
+                "description_url": null,
+                "category": "administrative",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueUnsignedInt",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": null,
+                "module": "Foundation",
+                "title": "Value of extension",
+                "type": "integer",
+                "format": "<class 'pydantic.types.NonNegativeInt'>",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "summary.data_categories.case_count",
+                "description": "Total number of case(s) within the type(s) of data available in the project.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueUnsignedInt",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": null,
+                "module": "Foundation",
+                "title": "Value of extension",
+                "type": "integer",
+                "format": "<class 'pydantic.types.NonNegativeInt'>",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "summary.experimental_strategies.case_count",
+                "description": "Total number of case(s) within the genomic analysis type(s) available in the project.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueUnsignedInt",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": null,
+                "module": "Foundation",
+                "title": "Value of extension",
+                "type": "integer",
+                "format": "<class 'pydantic.types.NonNegativeInt'>",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "summary.data_categories.data_category",
+                "description": "Types of data available in the project.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": [
+                    {
+                        "enums": [
+                            "Sequencing Reads",
+                            "Structural Variation",
+                            "Transcriptome Profiling",
+                            "Simple Nucleotide Variation",
+                            "Clinical",
+                            "Biospecimen",
+                            "Copy Number Variation",
+                            "Dna Methylation",
+                            "Somatic Structural Variation",
+                            "Proteome Profiling",
+                            "Combined Nucleotide Variation"
+                        ]
+                    }
+                ],
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueString",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": null,
+                "module": "Foundation",
+                "title": "Value of extension",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "summary.data_categories.file_count",
+                "description": "Total number of files within the type(s) of data available in the project.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueUnsignedInt",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": null,
+                "module": "Foundation",
+                "title": "Value of extension",
+                "type": "integer",
+                "format": "<class 'pydantic.types.NonNegativeInt'>",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "summary.experimental_strategies.experimental_strategy",
+                "description": "All unique experimental strategies used for molecular characterization of the cancer in the project.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": [
+                    {
+                        "enum": [
+                            "RNA-Seq",
+                            "WXS",
+                            "WGS",
+                            "miRNA-Seq",
+                            "Methylation Array",
+                            "Genotyping Array",
+                            "Tissue Slide",
+                            "Diagnostic Slide",
+                            "Reverse Phase Protein Array",
+                            "ATAC-Seq",
+                            "Targeted Sequencing",
+                            "scRNA-Seq"
+                        ]
+                    }
+                ],
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.focus",
+                "description": "The medication(s), food(s), therapy(ies), device(s) or other concerns or interventions that the study is seeking to gain more information about.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Drugs, devices, etc. under study",
+                "type": "array",
+                "format": "typing.List[fhir.resources.codeablereference.CodeableReference]",
+                "reference": [
+                    {
+                        "reference_type": "<class 'fhir.resources.genomicstudy.GenomicStudy'>",
+                        "parent": null
+                    }
+                ]
+            }
+        },
+        {
+            "source": {
+                "name": "summary.experimental_strategies.file_count",
+                "description": "Total number of files within the experimental strategies used for molecular characterization of the cancer in the project.",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Projects/",
+                "category": "administrative",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueUnsignedInt",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": null,
+                "module": "Foundation",
+                "title": "Value of extension",
+                "type": "integer",
+                "format": "<class 'pydantic.types.NonNegativeInt'>",
+                "reference": null
+            }
         }
     ],
     "source_key_required": [],

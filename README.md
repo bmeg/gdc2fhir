@@ -18,6 +18,9 @@ Data directories:
 gdc2fhir/
 |-- gdc2fhir/
 |   |-- __init__.py
+|   |-- labels/
+|   |   |-- __init__.py
+|   |   └── project.py
 |   |-- schema.py
 |   |-- mapping.py
 |   |-- utils.py
