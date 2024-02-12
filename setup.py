@@ -8,7 +8,7 @@ setup(
     description="Mapping GDC's schema to Ellrot's lab FHIR schema.",
     long_description=open('README.md').read(),
     url='https://github.com/bmeg/gdc2fhir',
-    author='https://ellrottlab.org/',  
+    author='https://ellrottlab.org/',
     packages=find_packages(),
     entry_points={
         'console_scripts': ['gdc2fhir = gdc2fhir.cli:cli']

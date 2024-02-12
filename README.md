@@ -57,12 +57,15 @@ gdc2fhir/
 ```
 git clone repo
 cd gdc2fhir
+# create virtual env ex. 
+python -m venv venv-gdc2fhir
+source venv-gdc2fhir/bin/activate
 python setup.py install
 ```
 
 ### Testing 
 ```
-pytest --cov
+pytest -cov 
 ```
 
 ### click cmds

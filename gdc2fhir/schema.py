@@ -1,11 +1,11 @@
 from __future__ import annotations
-from typing import List, Optional, Union, Dict
-from pydantic import BaseModel, Field, validate_model
+from typing import List, Optional, Union, Dict, Any
+from pydantic import BaseModel, Field
 
 
 class Reference(BaseModel):
-    reference_type: str = Field(..., description='Reference type of data resource.')
-    parent: str = Field(None, description='Parent identifier.')
+    reference_type: str = Field(None, description='Reference type of data resource.')
+    parent: Optional[str] = Field(None, description='Parent identifier.')
 
 
 class Coding(BaseModel):
@@ -31,10 +31,10 @@ class Source(BaseModel):
     category: Optional[str] = Field(None, description='GDC data dictionary category: case | clinical | biospecimen | '
                                                       'files | anntations | analysis | notation | index | data')
     type: str = Field(..., description='GDC type of the last element.')
-    format: str = Field(None, description='GDC format of the type of the last element ex. date-time.')
-    enums: List[dict] = Field(None, description='Enum string values of the last GDC element.')
-    content_annotation: Union[List[dict], str] = Field(None, description='Content annotations with definitions.')
-    reference: List[Reference] = Field(None, description='Reference to parent type and id.')
+    format: Optional[str] = Field(None, description='GDC format of the type of the last element ex. date-time.')
+    enums: Optional[List[dict]] = Field(None, description='Enum string values of the last GDC element.')
+    content_annotation: Optional[Union[List[dict], str]] = Field(None, description='Content annotations with definitions.')
+    reference: Optional[List[Reference]] = Field(None, description='Reference to parent type and id.')
 
 
 class Destination(BaseModel):
@@ -44,8 +44,8 @@ class Destination(BaseModel):
     module: str = Field(..., description='Name of the parent module of final mapping element.')
     title: str = Field(..., description='Field title of the FHIR mapping element.')
     type: str = Field(..., description='type of the final FHIR mapping element.')
-    format: str = Field(None, description='Format required for mapping ex. a pydantic list[str]')
-    reference: List[Reference] = Field(None, description='Reference to parent type and id.')
+    format: Optional[str] = Field(None, description='Format required for mapping ex. a pydantic list[str]')
+    reference: Optional[List[Reference]] = Field(None, description='Reference to parent type and id.')
 
 
 class Map(BaseModel):
@@ -65,7 +65,8 @@ class Map(BaseModel):
             setattr(model, field, value)
 
     @staticmethod
-    def update_values(source_name: str, source_values: Optional[Dict] = None, destination_values: Optional[Dict] = None):
+    def update_values(source_name: str, source_values: Optional[Dict] = None,
+                      destination_values: Optional[Dict] = None):
         map_instance = Map._map_dict.get(source_name)
         if map_instance:
             if source_values:
@@ -79,26 +80,14 @@ class Map(BaseModel):
         if map_instance:
             return map_instance.source
 
-    @classmethod
-    def find_destination(cls, destination_name: str) -> Optional[Destination]:
-        map_instance = cls._map_dict.get(destination_name)
-        if map_instance:
-            return map_instance.destination
-
-    @classmethod
-    def check_map(cls, map_instance: Map) -> Map:
-        *_, validation_error = validate_model(map_instance.__class__, map_instance.__dict__)
-        if validation_error:
-            raise validation_error
-
 
 class Version(BaseModel):
-    source_version: str = Field(None, description='GDC data dictionary version.')
-    data_release: str = Field(None, description='GDC data dictionary release.')
-    commit: str = Field(None, description='GDC data dictionary commit.')
-    status: str = Field(None, description='GDC data dictionary status.')
-    tag: str = Field(None, description='GDC data dictionary tag.')
-    destination_version: str = Field(None, description='FHIR published data release version.')
+    source_version: Optional[str] = Field(None, description='GDC data dictionary version.')
+    data_release: Optional[str] = Field(None, description='GDC data dictionary release.')
+    commit: Optional[str] = Field(None, description='GDC data dictionary commit.')
+    status: Optional[str] = Field(None, description='GDC data dictionary status.')
+    tag: Optional[str] = Field(None, description='GDC data dictionary tag.')
+    destination_version: Optional[str] = Field(None, description='FHIR published data release version.')
 
 
 class Metadata(BaseModel):
@@ -117,20 +106,25 @@ class Schema(BaseModel):
     obj_mapping: Map = Field(..., description="The GDC object being mapped.")
     obj_keys: List[str] = Field(..., description='List of GDC available fields hierarchy to be mapped.')
     mappings: List[Map] = Field(..., description='List of Map(s) describing the source -> destination Maps.')
-    source_key_required: Optional[List[str]] = Field(None, description='Required key elements defined by GDC in this schema.')
-    destination_key_required: Optional[List[str]] = Field(None, description='Required key elements defined by FHIR in this schema.')
-    unique_keys: Optional[List[List[str]]] = Field(None, description='Unique keys that identify this GDC based schema model.')
-    source_key_aliases: Optional[Dict[str, str]] = Field(None, description='GDC key aliases in this schema.')
-    destination_key_aliases: Optional[Dict[str, Union[str, List[str]]]] = Field(None, description='FHIR key aliases in this schema.')
+    source_key_required: Optional[List[str]] = Field(None,
+                                                     description='Required key elements defined by GDC in this schema.')
+    destination_key_required: Optional[List[str]] = Field(None,
+                                                          description='Required key elements defined by FHIR in this schema.')
+    unique_keys: Optional[List[List[str]]] = Field(None,
+                                                   description='Unique keys that identify this GDC based schema model.')
+    source_key_aliases: Optional[Dict[str, Union[str, List[str]]]] = Field(None, description='GDC key aliases in this schema.')
+    destination_key_aliases: Optional[Dict[str, Union[str, List[str]]]] = Field(None,
+                                                                                description='FHIR key aliases in this schema.')
 
+    # TODO: replace Config
+    # https://docs.pydantic.dev/latest/concepts/json_schema/
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             '$schema': 'http://json-schema.org/draft-07/schema#'
         }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
 
     @property
     def source_map_dict(self):
@@ -151,10 +145,3 @@ class Schema(BaseModel):
 
     def has_map_for_destination(self, destination_key: str) -> bool:
         return any(mapping.destination.name == destination_key for mapping in self.mappings)
-
-    def check_schema(self) -> Schema:
-        *_, validation_error = validate_model(self.__class__, self.__dict__)
-        if validation_error:
-            raise validation_error
-
-

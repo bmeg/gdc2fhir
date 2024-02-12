@@ -4,7 +4,7 @@ from typing import List
 from gdc2fhir import utils
 from gdc2fhir.schema import Map, Source, Destination, Reference
 from fhir.resources.researchstudy import ResearchStudy, ResearchStudyProgressStatus, ResearchStudyRecruitment
-from fhir.resources.coding import Codingx
+from fhir.resources.coding import Coding
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.condition import Condition

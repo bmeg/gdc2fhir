@@ -81,8 +81,8 @@ def initialize_project(field_path="./resources/gdc_resources/fields/", out_path=
         source_key_required=[],
         destination_key_required=[],
         unique_keys=[],
-        source_key_aliases=[],
-        destination_key_aliases=[],
+        source_key_aliases={},
+        destination_key_aliases={},
         mappings=[]
     )
 
@@ -158,8 +158,8 @@ def initialize_case(field_path="./resources/gdc_resources/fields/", out_path="./
         source_key_required=[],
         destination_key_required=[],
         unique_keys=[],
-        source_key_aliases=[],
-        destination_key_aliases=[],
+        source_key_aliases={},
+        destination_key_aliases={},
         mappings=[]
     )
 
@@ -238,8 +238,8 @@ def initialize_file(field_path="./resources/gdc_resources/fields/", out_path="./
         source_key_required=[],
         destination_key_required=[],
         unique_keys=[],
-        source_key_aliases=[],
-        destination_key_aliases=[],
+        source_key_aliases={},
+        destination_key_aliases={},
         mappings=[]
     )
 

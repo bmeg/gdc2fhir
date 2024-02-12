@@ -562,9 +562,9 @@ _data_dict = load_data_dictionary()
 
 
 def validate_and_write(schema, out_path, update=False, generate=False):
-    schema.check_schema()
+    Schema.model_validate(schema)
 
-    schema_extra = schema.Config.schema_extra.get('$schema', None)
+    schema_extra = schema.Config.json_schema_extra.get('$schema', None)
     schema_dict = schema.dict()
     schema_dict = {'$schema': schema_extra, **schema_dict}
 
