@@ -8,6 +8,7 @@ from gdc2fhir.schema import Schema, Map
 
 here = os.path.abspath(os.path.dirname(__file__))
 
+
 def extract_keys(data, parent_key=None, seen_keys=None):
     """
     Extracts all keys in a nested dictionary and applies dot notation to capture nested keys hierarchy.
@@ -36,7 +37,8 @@ def extract_keys(data, parent_key=None, seen_keys=None):
 
     if isinstance(data, (dict, list)):
         for k, val in (data.items() if isinstance(data, dict) else enumerate(data)):
-            current_key = k if parent_key is None else ".".join([parent_key, k]) if isinstance(data, dict) else f"{parent_key}"
+            current_key = k if parent_key is None else ".".join([parent_key, k]) if isinstance(data,
+                                                                                               dict) else f"{parent_key}"
             if current_key not in seen_keys:
                 seen_keys.add(current_key)
                 yield current_key
@@ -153,6 +155,7 @@ def _read_json(path):
             return this_json
     except json.JSONDecodeError as e:
         print("Error decoding JSON: {}".format(e))
+
 
 # --------------------------------------------------------------------------
 # GDC Utility functions
@@ -299,13 +302,17 @@ def generate_gdc_data_dictionary(create=False):
     submitted_genotyping_array_gdd = gdc_data_dict("submitted_genotyping_array")
     submitted_tangent_copy_number_gdd = gdc_data_dict("submitted_tangent_copy_number")
     submitted_unaligned_reads_gdd = gdc_data_dict("submitted_unaligned_reads")
-    submittable_data_files = {"analysis_metadata": analysis_metadata_gdd, "biospecimen_supplement": biospecimen_supplement_gdd,
-                              "clinical_supplement": clinical_supplement_gdd, "experiment_metadata": experiment_metadata_gdd,
+    submittable_data_files = {"analysis_metadata": analysis_metadata_gdd,
+                              "biospecimen_supplement": biospecimen_supplement_gdd,
+                              "clinical_supplement": clinical_supplement_gdd,
+                              "experiment_metadata": experiment_metadata_gdd,
                               "pathology_report": pathology_report_gdd, "protein_expression": protein_expression_gdd,
                               "raw_methylation_array": raw_methylation_array_gdd, "run_metadata": run_metadata_gdd,
                               "slide_image": slide_image_gdd, "submitted_aligned_reads": submitted_aligned_reads_gdd,
-                              "submitted_genomic_profile": submitted_genomic_profile_gdd, "submitted_genotyping_array": submitted_genotyping_array_gdd,
-                              "submitted_tangent_copy_number": submitted_tangent_copy_number_gdd, "submitted_unaligned_reads": submitted_unaligned_reads_gdd}
+                              "submitted_genomic_profile": submitted_genomic_profile_gdd,
+                              "submitted_genotyping_array": submitted_genotyping_array_gdd,
+                              "submitted_tangent_copy_number": submitted_tangent_copy_number_gdd,
+                              "submitted_unaligned_reads": submitted_unaligned_reads_gdd}
 
     # generated data files
     aggregated_somatic_mutation_gdd = gdc_data_dict("aggregated_somatic_mutation")
@@ -324,14 +331,21 @@ def generate_gdc_data_dictionary(create=False):
     simple_germline_variation_gdd = gdc_data_dict("simple_germline_variation")
     simple_somatic_mutation_gdd = gdc_data_dict("simple_somatic_mutation")
     structural_variation_gdd = gdc_data_dict("structural_variation")
-    generated_data_files = {"aggregated_somatic_mutation": aggregated_somatic_mutation_gdd, "aligned_reads": aligned_reads_gdd,
+    generated_data_files = {"aggregated_somatic_mutation": aggregated_somatic_mutation_gdd,
+                            "aligned_reads": aligned_reads_gdd,
                             "annotated_somatic_mutation": annotated_somatic_mutation_gdd,
-                            "copy_number_auxiliary_file": copy_number_auxiliary_file_gdd, "copy_number_estimate": copy_number_estimate_gdd,
-                            "copy_number_segment": copy_number_segment_gdd, "filtered_copy_number_segment": filtered_copy_number_segment_gdd,
-                            "gene_expression": gene_expression_gdd, "masked_methylation_array": masked_methylation_array_gdd,
-                            "masked_somatic_mutation": masked_somatic_mutation_gdd, "methylation_beta_value": methylation_beta_value_gdd,
-                            "mirna_expression": mirna_expression_gdd, "secondary_expression_analysis": secondary_expression_analysis_gdd,
-                            "simple_germline_variation": simple_germline_variation_gdd, "simple_somatic_mutation": simple_somatic_mutation_gdd,
+                            "copy_number_auxiliary_file": copy_number_auxiliary_file_gdd,
+                            "copy_number_estimate": copy_number_estimate_gdd,
+                            "copy_number_segment": copy_number_segment_gdd,
+                            "filtered_copy_number_segment": filtered_copy_number_segment_gdd,
+                            "gene_expression": gene_expression_gdd,
+                            "masked_methylation_array": masked_methylation_array_gdd,
+                            "masked_somatic_mutation": masked_somatic_mutation_gdd,
+                            "methylation_beta_value": methylation_beta_value_gdd,
+                            "mirna_expression": mirna_expression_gdd,
+                            "secondary_expression_analysis": secondary_expression_analysis_gdd,
+                            "simple_germline_variation": simple_germline_variation_gdd,
+                            "simple_somatic_mutation": simple_somatic_mutation_gdd,
                             "structural_variation": structural_variation_gdd}
 
     # analysis
@@ -351,14 +365,22 @@ def generate_gdc_data_dictionary(create=False):
     somatic_copy_number_workflow_gdd = gdc_data_dict("somatic_copy_number_workflow")
     somatic_mutation_calling_workflow_gdd = gdc_data_dict("somatic_mutation_calling_workflow")
     structural_variant_calling_workflow_gdd = gdc_data_dict("structural_variant_calling_workflow")
-    analysis = {"alignment_cocleaning_workflow": alignment_cocleaning_workflow_gdd, "alignment_workflow": alignment_workflow_gdd,
-                "copy_number_liftover_workflow": copy_number_liftover_workflow_gdd, "copy_number_variation_workflow": copy_number_variation_workflow_gdd,
-                "expression_analysis_workflow": expression_analysis_workflow_gdd, "genomic_profile_harmonization_workflow": genomic_profile_harmonization_workflow_gdd,
-                "germline_mutation_calling_workflow": germline_mutation_calling_workflow_gdd, "methylation_array_harmonization_workflow": methylation_array_harmonization_workflow_gdd,
-                "methylation_liftover_workflow": methylation_liftover_workflow_gdd, "mirna_expression_workflow": mirna_expression_workflow_gdd,
-                "rna_expression_workflow": rna_expression_workflow_gdd, "somatic_aggregation_workflow": somatic_aggregation_workflow_gdd,
-                "somatic_annotation_workflow": somatic_annotation_workflow_gdd, "somatic_copy_number_workflow": somatic_copy_number_workflow_gdd,
-                "somatic_mutation_calling_workflow": somatic_mutation_calling_workflow_gdd, "structural_variant_calling_workflow": structural_variant_calling_workflow_gdd}
+    analysis = {"alignment_cocleaning_workflow": alignment_cocleaning_workflow_gdd,
+                "alignment_workflow": alignment_workflow_gdd,
+                "copy_number_liftover_workflow": copy_number_liftover_workflow_gdd,
+                "copy_number_variation_workflow": copy_number_variation_workflow_gdd,
+                "expression_analysis_workflow": expression_analysis_workflow_gdd,
+                "genomic_profile_harmonization_workflow": genomic_profile_harmonization_workflow_gdd,
+                "germline_mutation_calling_workflow": germline_mutation_calling_workflow_gdd,
+                "methylation_array_harmonization_workflow": methylation_array_harmonization_workflow_gdd,
+                "methylation_liftover_workflow": methylation_liftover_workflow_gdd,
+                "mirna_expression_workflow": mirna_expression_workflow_gdd,
+                "rna_expression_workflow": rna_expression_workflow_gdd,
+                "somatic_aggregation_workflow": somatic_aggregation_workflow_gdd,
+                "somatic_annotation_workflow": somatic_annotation_workflow_gdd,
+                "somatic_copy_number_workflow": somatic_copy_number_workflow_gdd,
+                "somatic_mutation_calling_workflow": somatic_mutation_calling_workflow_gdd,
+                "structural_variant_calling_workflow": structural_variant_calling_workflow_gdd}
 
     # notation
     read_group_qc_gdd = gdc_data_dict("read_group_qc")
@@ -376,7 +398,8 @@ def generate_gdc_data_dictionary(create=False):
 
     names = ["file", "case", "annotations", "administrative", "clinical", "biospecimen", "submittable_data_files",
              "generated_data_files", "analysis", "notation", "index", "data"]
-    dict_list = [file, case, annotations, administrative, clinical, biospecimen, submittable_data_files, generated_data_files,
+    dict_list = [file, case, annotations, administrative, clinical, biospecimen, submittable_data_files,
+                 generated_data_files,
                  analysis, notation, index, data]
 
     for i, d in enumerate(dict_list):
@@ -435,6 +458,7 @@ def load_fields(path="./resources/gdc_resources/fields/"):
 
     return all_dat
 
+
 # --------------------------------------------------------------------------
 # FHIR Utility functions
 # --------------------------------------------------------------------------
@@ -451,7 +475,9 @@ def clean_description(description):
     :param description: fhir class description txt
     :return: cleaned description txt
     """
-    description = description.replace("Disclaimer: Any field name ends with ``__ext`` doesn't part of\nResource StructureDefinition, instead used to enable Extensibility feature\nfor FHIR Primitive Data Types.\n\n", "")
+    description = description.replace(
+        "Disclaimer: Any field name ends with ``__ext`` doesn't part of\nResource StructureDefinition, instead used to enable Extensibility feature\nfor FHIR Primitive Data Types.\n\n",
+        "")
     description = description.replace('\n\n', '\n')
     description = description.replace('\n', ' ')
     return description
@@ -555,6 +581,7 @@ def append_required_fhir_keys(element_required, required_keys):
     """
     return [required_keys.append(obj) for obj in element_required if obj not in required_keys]
 
+
 # -------------------------------------------------
 # mapping.py utils
 # -------------------------------------------------
@@ -633,7 +660,7 @@ def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
     traverse_and_map(data, [], mapped_data, available_maps, success_counter)
     if verbose:
         print('Available Map items of entity: ', len(available_maps), '\n')
-        print('mapped_data: ', mapped_data, '\n\n', f'Mapped { success_counter["mapped"]} key items.', '\n')
-        print('Percentage of available maps mapped: ', success_counter["mapped"]/len([x for x in available_maps if x is not None]) * 100, '\n')
+        print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')
+        print('Percentage of available maps mapped: ',
+              success_counter["mapped"] / len([x for x in available_maps if x is not None]) * 100, '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}
-
