@@ -113,14 +113,13 @@ def test_find_and_update_values(example_schema):
     map_instance = example_schema.find_map_by_source(source_name=source_name)
     assert map_instance is not None
 
-    # TODO: fix bug w update_values - .get doen't currently work
     # Update its values
-    # map_instance.update_values(source_name=source_name, source_values=source_values)
+    map_instance.update_values(source_name=source_name, source_values=source_values)
 
     # Check updates
-    # updated_source = map_instance.find_source(source_name=source_name).source
-    # assert updated_source is not None
-    # assert updated_source.description == "Unique key of entity"
+    updated_source = map_instance.find_source(source_name=source_name)
+    assert updated_source is not None
+    assert updated_source.description == "Unique key of entity"
 
 
 @pytest.mark.xfail
