@@ -671,6 +671,4 @@ def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
     if verbose:
         print('Available Map items of entity: ', len(available_maps), '\n')
         print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')
-        print('Percentage of available maps mapped: ',
-              success_counter["mapped"] / len([x for x in available_maps if x is not None]) * 100, '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}

@@ -304,7 +304,7 @@ def convert_maps(in_path, out_path, name='project', verbose=True):
     :param verbose:
     :return:
     """
-    l = []
+    # l = []
 
     if name == 'project':
         schema = utils.load_schema_from_json(path='./mapping/project.json')
@@ -315,8 +315,8 @@ def convert_maps(in_path, out_path, name='project', verbose=True):
             keys = list(utils.extract_keys(projects[0]))
             available_maps = [schema.find_map_by_source(k) for k in keys]
 
-            mapped_data = utils.map_data(projects[0], available_maps, verbose=verbose)
-            l.append(mapped_data['mapped_data'])
+            l = [utils.map_data(p, available_maps, verbose=verbose)['mapped_data'] for p in projects]
+            # l.append(mapped_data['mapped_data'])
 
             if out_path:
                 with open(out_path, 'w') as file:
