@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class Reference(BaseModel):
-    reference_type: Any = Field(None, description='Reference type of data resource.')
+    reference_type: str = Field(None, description='Reference type of data resource.')
     parent: Optional[str] = Field(None, description='Parent identifier.')
 
 
@@ -44,7 +44,7 @@ class Destination(BaseModel):
     module: str = Field(..., description='Name of the parent module of final mapping element.')
     title: str = Field(..., description='Field title of the FHIR mapping element.')
     type: str = Field(..., description='type of the final FHIR mapping element.')
-    format: Optional[Any] = Field(None, description='Format required for mapping ex. a pydantic list[str]')
+    format: Optional[str] = Field(None, description='Format required for mapping ex. a pydantic list[str]')
     reference: Optional[List[Reference]] = Field(None, description='Reference to parent type and id.')
 
 

@@ -13,7 +13,7 @@ from fhir.resources.extension import Extension
 from fhir.resources.genomicstudy import GenomicStudy
 
 # Variable data required for mapping
-two_level_up = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+two_level_up = os.path.abspath(os.path.join(os.path.dirname('__file__'), '../..'))
 project_schema = utils.load_schema_from_json(path="".join([two_level_up, "/mapping/project.json"]))
 keys_to_label_fields = [key for key in project_schema.obj_keys if
                         key not in [x.source.name for x in project_schema.mappings]]
@@ -26,11 +26,27 @@ Field labels mapped semi-computationally
 project_maps = [
     Map(
         source=Source(
+            name='program',
+            description=data_dict['administrative']['program']['description'],
+            category=data_dict['administrative']['program']['category'],
+            type=data_dict['administrative']['program']['type']
+        ),
+        destination=Destination(
+            name=ResearchStudy.schema()['title'],
+            description=utils.clean_description(ResearchStudy.schema()['description']),
+            module='Administration',
+            title=ResearchStudy.schema()['title'],
+            type=ResearchStudy.schema()['type']
+        )
+    ),
+
+    Map(
+        source=Source(
             name='name',
             description='Display name for the project.',
             category=data_dict['administrative']['project']['category'],
-            type='string'
-            # reference=Reference(reference_type=ResearchStudy)
+            type='string',
+            reference=[Reference(reference_type=str(ResearchStudy))]
         ),
         destination=Destination(
             name='ResearchStudy.name',
@@ -46,8 +62,8 @@ project_maps = [
             name='project_id',
             description=data_dict['administrative']['project']['properties']['id']['common']['description'],
             category=data_dict['administrative']['project']['category'],
-            type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term']
-            # reference=Reference(reference_type=ResearchStudy)
+            type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term'],
+            reference=[Reference(reference_type=str(ResearchStudy))]
         ),
         destination=Destination(
             name='ResearchStudy.identifier',
@@ -55,7 +71,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['identifier']['title'],
             type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=List[Identifier]
+            format=str(List[Identifier])
         )
     ),
 
@@ -64,8 +80,8 @@ project_maps = [
             name='dbgap_accession_number',
             description=data_dict['administrative']['project']['properties']['dbgap_accession_number']['description'],
             category=data_dict['administrative']['project']['category'],
-            type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type']
-            # reference=Reference(reference_type=ResearchStudy)
+            type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type'],
+            reference=[Reference(reference_type=str(ResearchStudy))]
 
         ),
         destination=Destination(
@@ -91,7 +107,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['condition']['title'],
             type=ResearchStudy.schema()['properties']['condition']['type'],
-            format=List[CodeableConcept]
+            format=str(List[CodeableConcept])
         )
     ),
 
@@ -109,7 +125,7 @@ project_maps = [
             module='Clinical Summary',
             title=Condition.schema()['properties']['bodySite']['title'],
             type=Condition.schema()['properties']['bodySite']['type'],
-            format=List[CodeableConcept]
+            format=str(List[CodeableConcept])
         )
     ),
 
@@ -143,7 +159,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudyProgressStatus.schema()['properties']['state']['title'],
             type=ResearchStudyProgressStatus.schema()['properties']['state']['type'],
-            format=List[CodeableConcept]
+            format=str(List[CodeableConcept])
         )
     ),
 
@@ -193,7 +209,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['identifier']['title'],
             type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=List[Identifier]
+            format=str(List[Identifier])
         )
     ),
 
@@ -211,7 +227,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudyRecruitment.schema()['properties']['actualNumber']['title'],
             type=ResearchStudyRecruitment.schema()['properties']['actualNumber']['type'],
-            format=NonNegativeInt,
+            format=str(NonNegativeInt),
         )
     ),
 
@@ -229,7 +245,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=NonNegativeInt
+            format=str(NonNegativeInt)
         )
     ),
 
@@ -247,7 +263,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=NonNegativeInt
+            format=str(NonNegativeInt)
         )
     ),
 
@@ -265,7 +281,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=NonNegativeInt
+            format=str(NonNegativeInt)
         )
     ),
 
@@ -283,7 +299,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=NonNegativeInt
+            format=str(NonNegativeInt)
         )
     ),
 
@@ -330,7 +346,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=NonNegativeInt
+            format=str(NonNegativeInt)
         )
     ),
 
@@ -360,10 +376,8 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['focus']['title'],
             type=ResearchStudy.schema()['properties']['focus']['type'],
-            format=List[CodeableReference],
-            reference=[Reference(
-                reference_type=GenomicStudy
-            )]
+            format=str(List[CodeableReference]),
+            reference=[Reference(reference_type=str(GenomicStudy))]
         )
     ),
 
@@ -381,12 +395,13 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=NonNegativeInt
+            format=str(NonNegativeInt)
         )
     )]
 """
 proceed with caution this code changes the state of current files under mapping
 """
-# out_path = "".join([two_level_up, "/mapping/project.json"])
-# [project_schema.mappings.append(i) for i in project_maps]
-# utils.validate_and_write(project_schema, out_path=out_path, update=True, generate=False)
+out_path = "".join([two_level_up, "/mapping/project.json"])
+valid_project_maps = [Map.model_validate(p) for p in project_maps]
+[project_schema.mappings.append(i) for i in valid_project_maps]
+utils.validate_and_write(project_schema, out_path=out_path, update=True, generate=False)

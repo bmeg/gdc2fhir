@@ -592,7 +592,7 @@ def validate_and_write(schema, out_path, update=False, generate=False):
     Schema.model_validate(schema)
 
     schema_extra = schema.Config.json_schema_extra.get('$schema', None)
-    schema_dict = schema.dict()
+    schema_dict = schema.model_dump()
     schema_dict = {'$schema': schema_extra, **schema_dict}
 
     if os.path.exists(out_path) and update:
@@ -675,9 +675,8 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
 
         elif isinstance(value, dict):
             if verbose:
-                print("instance dict - recall:", current_keys + [key] , "\n")
+                print("instance dict - recall:", current_keys + [key], "\n")
             traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter, verbose)
-
 
 
 def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
@@ -697,4 +696,6 @@ def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
         print('Available Map items of entity: ', len(available_maps), '\n')
         print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}
+
+
 
