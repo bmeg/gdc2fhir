@@ -316,11 +316,11 @@ def convert_maps(in_path, out_path, name='project', verbose=True):
             available_maps = [schema.find_map_by_source(k) for k in keys]
 
             mapped_data = utils.map_data(projects[0], available_maps, verbose=verbose)
-            l.append(mapped_data)
+            l.append(mapped_data['mapped_data'])
 
             if out_path:
                 with open(out_path, 'w') as file:
-                    json.dump(mapped_data, file, indent=4)
+                    json.dump(l, file, indent=4)
 
     return l
 

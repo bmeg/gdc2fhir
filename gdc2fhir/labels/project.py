@@ -30,6 +30,7 @@ project_maps = [
             description='Display name for the project.',
             category=data_dict['administrative']['project']['category'],
             type='string'
+            # reference=Reference(reference_type=ResearchStudy)
         ),
         destination=Destination(
             name='ResearchStudy.name',
@@ -46,6 +47,7 @@ project_maps = [
             description=data_dict['administrative']['project']['properties']['id']['common']['description'],
             category=data_dict['administrative']['project']['category'],
             type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term']
+            # reference=Reference(reference_type=ResearchStudy)
         ),
         destination=Destination(
             name='ResearchStudy.identifier',
@@ -53,7 +55,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['identifier']['title'],
             type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=str(List[Identifier])
+            format=List[Identifier]
         )
     ),
 
@@ -63,6 +65,8 @@ project_maps = [
             description=data_dict['administrative']['project']['properties']['dbgap_accession_number']['description'],
             category=data_dict['administrative']['project']['category'],
             type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type']
+            # reference=Reference(reference_type=ResearchStudy)
+
         ),
         destination=Destination(
             name="Coding.code",
@@ -87,7 +91,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['condition']['title'],
             type=ResearchStudy.schema()['properties']['condition']['type'],
-            format=str(List[CodeableConcept])
+            format=List[CodeableConcept]
         )
     ),
 
@@ -105,7 +109,7 @@ project_maps = [
             module='Clinical Summary',
             title=Condition.schema()['properties']['bodySite']['title'],
             type=Condition.schema()['properties']['bodySite']['type'],
-            format=str(List[CodeableConcept])
+            format=List[CodeableConcept]
         )
     ),
 
@@ -139,7 +143,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudyProgressStatus.schema()['properties']['state']['title'],
             type=ResearchStudyProgressStatus.schema()['properties']['state']['type'],
-            format=str(List[CodeableConcept])
+            format=List[CodeableConcept]
         )
     ),
 
@@ -189,7 +193,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['identifier']['title'],
             type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=str(List[Identifier])
+            format=List[Identifier]
         )
     ),
 
@@ -207,7 +211,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudyRecruitment.schema()['properties']['actualNumber']['title'],
             type=ResearchStudyRecruitment.schema()['properties']['actualNumber']['type'],
-            format=str(NonNegativeInt),
+            format=NonNegativeInt,
         )
     ),
 
@@ -225,7 +229,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            format=NonNegativeInt
         )
     ),
 
@@ -243,7 +247,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            format=NonNegativeInt
         )
     ),
 
@@ -261,7 +265,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            format=NonNegativeInt
         )
     ),
 
@@ -279,7 +283,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            format=NonNegativeInt
         )
     ),
 
@@ -326,7 +330,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            format=NonNegativeInt
         )
     ),
 
@@ -356,9 +360,9 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['focus']['title'],
             type=ResearchStudy.schema()['properties']['focus']['type'],
-            format=str(List[CodeableReference]),
+            format=List[CodeableReference],
             reference=[Reference(
-                reference_type=str(GenomicStudy)
+                reference_type=GenomicStudy
             )]
         )
     ),
@@ -377,7 +381,7 @@ project_maps = [
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
             type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            format=NonNegativeInt
         )
     )]
 """

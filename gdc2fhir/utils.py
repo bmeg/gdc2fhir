@@ -627,6 +627,7 @@ def load_gdc_scripts_json(path):
 def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter):
     """
     TODO: initial simple version of mapping - needs checks for more complex hierarchy mapping
+    Traverse a GDC script and map keys from GDC to FHIR based on Schema's Map objects in gdc2fhir labes python definitions
 
     :param node:
     :param current_keys:
@@ -635,13 +636,20 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
     :param success_counter:
     :return:
     """
+
     for key, value in node.items():
         current_key = '.'.join(current_keys + [key])
         schema_map = next((m for m in available_maps if m and m.source.name == current_key), None)
 
         if schema_map:
             destination_key = schema_map.destination.name
-            mapped_data[destination_key] = value
+            if current_keys and len(current_keys) == 1:
+                if current_keys[0] not in mapped_data.keys():
+                    mapped_data.update({current_keys[0]: {destination_key: value}})
+                elif current_keys[0] in mapped_data.keys():
+                    mapped_data[current_keys[0]].update({destination_key: value})
+            else:
+                mapped_data[destination_key] = value
             success_counter['mapped'] += 1
         elif isinstance(value, dict):
             traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter)
@@ -649,12 +657,14 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
 
 def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
     """
+    Map GDC keys to FHIR and count successful mappings
 
     :param data:
     :param available_maps:
     :param verbose:
     :return:
     """
+
     mapped_data = {}
     success_counter = {'mapped': 0}
     traverse_and_map(data, [], mapped_data, available_maps, success_counter)
