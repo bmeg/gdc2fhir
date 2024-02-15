@@ -614,19 +614,17 @@ def load_schema_from_json(path) -> Schema:
         return Schema.parse_obj(data)
 
 
-def load_gdc_scripts_json(path):
+def load_gdc_scripts_ndjson(path):
     try:
         with open(path, 'r') as gdc_file:
-            content = gdc_file.read()
-            obj = [json.loads(obj) for obj in content.strip().split('\n')]
+            obj = [json.loads(line) for line in gdc_file]
             return obj
     except json.JSONDecodeError as e:
         print(e)
 
 
-def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter, verbose=True):
+def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter, changed_key, verbose=True):
     """
-    TODO: initial simple version of mapping - needs checks for hierarchy mapping, parent ref assignemnets, and content annotations
     Traverse a GDC script and map keys from GDC to FHIR based on Schema's Map objects in gdc2fhir labes python definitions
 
     :param node:
@@ -634,11 +632,17 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
     :param mapped_data:
     :param available_maps:
     :param success_counter:
+    :param changed_key:
     :param verbose:
     :return:
     """
+
     for key, value in node.items():
-        current_key = '.'.join(current_keys + [key])
+        if isinstance(changed_key, tuple):
+            # swap parent key that was changed to FHIR back to GDC
+            current_key = '.'.join([changed_key[0]] + [key])
+        else:
+            current_key = '.'.join(current_keys + [key])
         schema_map = next((m for m in available_maps if m and m.source.name == current_key), None)
 
         if schema_map:
@@ -648,7 +652,7 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
             hierarchy_key = current_keys[0] if current_keys else None
 
             if verbose:
-                print("hierarchy_key: ", hierarchy_key,"\n")
+                print("hierarchy_key: ", hierarchy_key, "\n")
 
             if hierarchy_key and hierarchy_key not in mapped_data:
                 mapped_data[hierarchy_key] = {}
@@ -665,10 +669,17 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
 
             if destination_key not in current_dat:
                 # check Map's destination
-                current_dat[destination_key] = value
+                if not isinstance(value, dict):
+                    current_dat[destination_key] = value
 
                 if verbose:
                     print("assigned destination and it's value: ", current_dat, "\n")
+
+                if isinstance(value, dict):
+                    if verbose:
+                        print("instance dict - recall:", current_keys + [key], "\n")
+                    traverse_and_map(value, current_keys + [destination_key], mapped_data, available_maps, success_counter,
+                                     changed_key=(current_key, destination_key), verbose=True)
 
             # successful map counter
             success_counter['mapped'] += 1
@@ -676,7 +687,7 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
         elif isinstance(value, dict):
             if verbose:
                 print("instance dict - recall:", current_keys + [key], "\n")
-            traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter, verbose)
+            traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter, changed_key, verbose)
 
 
 def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:

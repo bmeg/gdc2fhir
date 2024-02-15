@@ -45,15 +45,15 @@ project_maps = [
             name='name',
             description='Display name for the project.',
             category=data_dict['administrative']['project']['category'],
-            type='string',
-            reference=[Reference(reference_type=str(ResearchStudy))]
+            type='string'
         ),
         destination=Destination(
             name='ResearchStudy.name',
             description=ResearchStudy.schema()['properties']['name']['title'],
             module='Administration',
             title=ResearchStudy.schema()['properties']['name']['title'],
-            type=ResearchStudy.schema()['properties']['name']['type']
+            type=ResearchStudy.schema()['properties']['name']['type'],
+            reference=[Reference(reference_type=str(ResearchStudy))]
         )
     ),
 
@@ -62,8 +62,7 @@ project_maps = [
             name='project_id',
             description=data_dict['administrative']['project']['properties']['id']['common']['description'],
             category=data_dict['administrative']['project']['category'],
-            type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term'],
-            reference=[Reference(reference_type=str(ResearchStudy))]
+            type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term']
         ),
         destination=Destination(
             name='ResearchStudy.identifier',
@@ -71,7 +70,8 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['identifier']['title'],
             type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=str(List[Identifier])
+            format=str(List[Identifier]),
+            reference=[Reference(reference_type=str(ResearchStudy))]
         )
     ),
 
@@ -80,16 +80,15 @@ project_maps = [
             name='dbgap_accession_number',
             description=data_dict['administrative']['project']['properties']['dbgap_accession_number']['description'],
             category=data_dict['administrative']['project']['category'],
-            type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type'],
-            reference=[Reference(reference_type=str(ResearchStudy))]
-
+            type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type']
         ),
         destination=Destination(
             name="Coding.code",
             description=Coding.schema()['properties']['code']['description'],
             module='DataTypes',
             title=Coding.schema()['properties']['code']['title'],
-            type=Coding.schema()['properties']['code']['type']
+            type=Coding.schema()['properties']['code']['type'],
+            reference=[Reference(reference_type=str(ResearchStudy))]
         )
     ),
 

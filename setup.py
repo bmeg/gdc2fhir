@@ -19,6 +19,7 @@ setup(
         'certifi',
         'requests',
         'pydantic',
+        'pytest',
         'click',
         'pathlib',
         'beautifulsoup4',

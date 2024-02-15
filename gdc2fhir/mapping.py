@@ -309,7 +309,7 @@ def convert_maps(in_path, out_path, name='project', verbose=True):
         schema = utils.load_schema_from_json(path='./mapping/project.json')
 
         if schema:
-            projects = utils.load_gdc_scripts_json(path=in_path)
+            projects = utils.load_gdc_scripts_ndjson(path=in_path)
 
             keys = list(utils.extract_keys(projects[0]))
             available_maps = [schema.find_map_by_source(k) for k in keys]
@@ -320,5 +320,6 @@ def convert_maps(in_path, out_path, name='project', verbose=True):
                 with open(out_path, 'w') as file:
                     json.dump(l, file, indent=4)
 
-    return l
+        return l
+
 

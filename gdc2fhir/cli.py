@@ -62,7 +62,7 @@ def file_init(field_path, out_path):
 @click.option('--name', required=True,
               default='project',
               show_default=True,
-              help='Name of GDC entity to map')
+              help='project, case, or file GDC entity to map')
 @click.option('--in_path', required=True,
               show_default=True,
               help='Path to GDC data to be mapped')

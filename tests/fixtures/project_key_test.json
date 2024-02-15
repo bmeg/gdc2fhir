@@ -1,0 +1,79 @@
+[
+    {
+        "summary": {
+            "Extension.valueUnsignedInt": 60945,
+            "ResearchStudyRecruitment.actualNumber": 1098
+        },
+        "Condition.bodySite": [
+            "Breast"
+        ],
+        "Coding.code": null,
+        "ResearchStudy.identifier": "TCGA-BRCA",
+        "ResearchStudy.condition": [
+            "Complex Epithelial Neoplasms",
+            "Epithelial Neoplasms, NOS",
+            "Adnexal and Skin Appendage Neoplasms",
+            "Squamous Cell Neoplasms",
+            "Basal Cell Neoplasms",
+            "Cystic, Mucinous and Serous Neoplasms",
+            "Adenomas and Adenocarcinomas",
+            "Fibroepithelial Neoplasms",
+            "Ductal and Lobular Neoplasms"
+        ],
+        "ResearchStudy.name": "Breast Invasive Carcinoma",
+        "ResearchStudyProgressStatus.state": "open",
+        "ResearchStudy": {
+            "Coding.code": "phs000178",
+            "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
+            "ResearchStudy.name": "TCGA"
+        },
+        "ResearchStudyProgressStatus.actual": true
+    },
+    {
+        "summary": {
+            "Extension.valueUnsignedInt": 25204,
+            "ResearchStudyRecruitment.actualNumber": 443
+        },
+        "Condition.bodySite": [
+            "Stomach"
+        ],
+        "Coding.code": null,
+        "ResearchStudy.identifier": "TCGA-STAD",
+        "ResearchStudy.condition": [
+            "Cystic, Mucinous and Serous Neoplasms",
+            "Adenomas and Adenocarcinomas"
+        ],
+        "ResearchStudy.name": "Stomach Adenocarcinoma",
+        "ResearchStudyProgressStatus.state": "open",
+        "ResearchStudy": {
+            "Coding.code": "phs000178",
+            "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
+            "ResearchStudy.name": "TCGA"
+        },
+        "ResearchStudyProgressStatus.actual": true
+    },
+    {
+        "summary": {
+            "Extension.valueUnsignedInt": 31867,
+            "ResearchStudyRecruitment.actualNumber": 585
+        },
+        "Condition.bodySite": [
+            "Bronchus and lung"
+        ],
+        "Coding.code": null,
+        "ResearchStudy.identifier": "TCGA-LUAD",
+        "ResearchStudy.condition": [
+            "Cystic, Mucinous and Serous Neoplasms",
+            "Adenomas and Adenocarcinomas",
+            "Acinar Cell Neoplasms"
+        ],
+        "ResearchStudy.name": "Lung Adenocarcinoma",
+        "ResearchStudyProgressStatus.state": "open",
+        "ResearchStudy": {
+            "Coding.code": "phs000178",
+            "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
+            "ResearchStudy.name": "TCGA"
+        },
+        "ResearchStudyProgressStatus.actual": true
+    }
+]
