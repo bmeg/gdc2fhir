@@ -14,6 +14,9 @@ setup(
         'console_scripts': ['gdc2fhir = gdc2fhir.cli:cli']
     },
     install_requires=[
+        'charset_normalizer',
+        'idna',
+        'certifi',
         'requests',
         'pydantic',
         'click',
