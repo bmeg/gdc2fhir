@@ -16,10 +16,10 @@ class Coding(BaseModel):
 
 class ContentAnnotation(BaseModel):
     value: str = Field(..., description='Enum string value of the last GDC element.')
-    description: str = Field(..., description='Description of the last GDC element for mapping.')
+    description: Optional[str] = Field(..., description='Description of the last GDC element for mapping.')
     description_url: Optional[str] = Field(None, description='Description source url.')
-    annotation_type: str = Field(..., description='Common Data Element (CDE) created by the caDSR.')
-    ontology_url: str = Field(None, description='Ontology definition url link.')
+    annotation_type: Optional[str] = Field(..., description='Common Data Element (CDE) created by the caDSR.')
+    ontology_url: Optional[str] = Field(None, description='Ontology definition url link.')
     coding: Coding = Field(None, description='Similar to FHIR Codeable concept for mapping annotation definition(s).')
 
 

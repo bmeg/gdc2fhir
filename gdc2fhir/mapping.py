@@ -317,9 +317,6 @@ def convert_maps(in_path, out_path, name='project', verbose=True):
             l = [utils.map_data(p, available_maps, verbose=verbose)['mapped_data'] for p in projects]
 
             if out_path:
-                # with open(out_path, 'w') as file:
-                 #    json.dump(l, file, indent=4)
-                
                 with open(out_path, 'w') as file:
                     file.write('\n'.join(map(json.dumps, l)))
 

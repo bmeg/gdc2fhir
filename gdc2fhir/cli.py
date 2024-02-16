@@ -1,4 +1,4 @@
-from gdc2fhir import utils, mapping
+from gdc2fhir import utils, mapping, entity2fhir
 import click
 
 
@@ -77,6 +77,19 @@ def convert(name, in_path, out_path, verbose):
     mapping.convert_maps(name=name, in_path=in_path, out_path=out_path, verbose=verbose)
 
 
+@cli.command('generate')
+@click.option('--entity', required=True,
+              default='project',
+              show_default=True,
+              help='project, case, or file GDC entity to map')
+@click.option('--out_path', required=True,
+              help='')
+@click.option('--projects_path', required=True,
+              help='')
+def generate(entity, out_path, projects_path):
+    if entity in 'project':
+        entity2fhir.gdc_to_fhir_ndjson(out_path=out_path, projects_path=projects_path)
+
+
 if __name__ == '__main__':
     cli()
-
