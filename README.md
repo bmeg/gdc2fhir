@@ -76,12 +76,16 @@ gdc2fhir generate --entity project --out_path 'ResearchStudy.ndjson' --projects_
 ``` 
 
 
-### Testing 
+### Convert and Generate schema with values
+- GDC projects
 ```
-pytest -cov 
-```
+gdc2fhir convert --in_path projects.ndjson --out_path project_key.ndjson --verbose True
 
-### click cmds
+gdc2fhir generate --entity project --out_path 'ResearchStudy.ndjson' --projects_path project_key.ndjson
+
+``` 
+
+### click cmds for constructing maps
 
 initialize initial structure of project, case, or file to add Maps
 
@@ -89,9 +93,11 @@ initialize initial structure of project, case, or file to add Maps
 gdc2fhir project_init 
 gdc2fhir case_init 
 gdc2fhir file_init 
+# run ex. ./labels/project.py 
 ```
 
-convert GDC keys to FHIR 
+
+### Testing 
 ```
-gdc2fhir convert --in_path '../../my_gdc_data.json' --out_path '../../my_mapping_result.json' --verbose 'True' 
+pytest -cov 
 ```
