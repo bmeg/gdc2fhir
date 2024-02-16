@@ -26,7 +26,7 @@ def assign_fhir(project, disease_types=disease_types):
     rs.identifier = [identifier]
     rs.name = project['ResearchStudy.name']
 
-    if project['ResearchStudy.id']:
+    if 'ResearchStudy.id' in project.keys():
         rs.id = project['ResearchStudy.id']
 
     l = []
