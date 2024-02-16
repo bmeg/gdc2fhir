@@ -87,7 +87,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": "39607008"
+        "sctid": "110736001"
     },
     {
         "value": "Cervix uteri",
@@ -537,7 +537,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "69695003"
     },
     {
         "value": "Testis",

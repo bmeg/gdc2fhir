@@ -24,7 +24,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "115216003"
     },
     {
         "value": "Basal Cell Neoplasms",
@@ -33,7 +33,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "127570002"
     },
     {
         "value": "Blood Vessel Tumors",
@@ -69,7 +69,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "1187225007"
     },
     {
         "value": "Cystic, Mucinous and Serous Neoplasms",
@@ -78,7 +78,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "115217007"
     },
     {
         "value": "Ductal and Lobular Neoplasms",
@@ -87,7 +87,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "115218002"
     },
     {
         "value": "Epithelial Neoplasms, NOS",
@@ -96,7 +96,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "118285006"
     },
     {
         "value": "Fibroepithelial Neoplasms",
@@ -105,7 +105,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "115230008"
     },
     {
         "value": "Fibromatous Neoplasms",
@@ -465,7 +465,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "118286007"
     },
     {
         "value": "Synovial-like Neoplasms",
