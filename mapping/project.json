@@ -118,12 +118,7 @@
                 "format": null,
                 "enums": null,
                 "content_annotation": null,
-                "reference": [
-                    {
-                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
-                        "parent": null
-                    }
-                ]
+                "reference": null
             },
             "destination": {
                 "name": "ResearchStudy.name",
@@ -133,7 +128,12 @@
                 "title": "Name for this study (computer friendly)",
                 "type": "string",
                 "format": null,
-                "reference": null
+                "reference": [
+                    {
+                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
+                        "parent": null
+                    }
+                ]
             }
         },
         {
@@ -146,12 +146,7 @@
                 "format": null,
                 "enums": null,
                 "content_annotation": null,
-                "reference": [
-                    {
-                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
-                        "parent": null
-                    }
-                ]
+                "reference": null
             },
             "destination": {
                 "name": "ResearchStudy.identifier",
@@ -161,7 +156,12 @@
                 "title": "Business Identifier for study",
                 "type": "Identifier",
                 "format": "typing.List[fhir.resources.identifier.Identifier]",
-                "reference": null
+                "reference": [
+                    {
+                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
+                        "parent": null
+                    }
+                ]
             }
         },
         {
@@ -174,22 +174,22 @@
                 "format": null,
                 "enums": null,
                 "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
                 "reference": [
                     {
                         "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
                         "parent": null
                     }
                 ]
-            },
-            "destination": {
-                "name": "Coding.code",
-                "description": "A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).",
-                "description_url": null,
-                "module": "DataTypes",
-                "title": "Symbol in syntax defined by the system",
-                "type": "string",
-                "format": null,
-                "reference": null
             }
         },
         {
@@ -309,14 +309,19 @@
                 "reference": null
             },
             "destination": {
-                "name": "Coding.code",
-                "description": "A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).",
+                "name": "ResearchStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
-                "module": "DataTypes",
-                "title": "Symbol in syntax defined by the system",
+                "module": "Administration",
+                "title": "Logical id of this artifact",
                 "type": "string",
                 "format": null,
-                "reference": null
+                "reference": [
+                    {
+                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
+                        "parent": null
+                    }
+                ]
             }
         },
         {

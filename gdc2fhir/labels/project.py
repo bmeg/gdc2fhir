@@ -4,7 +4,6 @@ from typing import List
 from gdc2fhir import utils
 from gdc2fhir.schema import Map, Source, Destination, Reference
 from fhir.resources.researchstudy import ResearchStudy, ResearchStudyProgressStatus, ResearchStudyRecruitment
-from fhir.resources.coding import Coding
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.condition import Condition
@@ -83,11 +82,11 @@ project_maps = [
             type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type']
         ),
         destination=Destination(
-            name="Coding.code",
-            description=Coding.schema()['properties']['code']['description'],
-            module='DataTypes',
-            title=Coding.schema()['properties']['code']['title'],
-            type=Coding.schema()['properties']['code']['type'],
+            name="ResearchStudy.id",
+            description=ResearchStudy.schema()['properties']['id']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['id']['title'],
+            type=ResearchStudy.schema()['properties']['id']['type'],
             reference=[Reference(reference_type=str(ResearchStudy))]
         )
     ),
@@ -170,13 +169,13 @@ project_maps = [
             type=data_dict['administrative']['program']['properties']['dbgap_accession_number']['type']
         ),
         destination=Destination(
-            name="Coding.code",
-            description=Coding.schema()['properties']['code']['description'],
-            module='DataTypes',
-            title=Coding.schema()['properties']['code']['title'],
-            type=Coding.schema()['properties']['code']['type']
+            name="ResearchStudy.id",
+            description=ResearchStudy.schema()['properties']['id']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['id']['title'],
+            type=ResearchStudy.schema()['properties']['id']['type'],
+            reference=[Reference(reference_type=str(ResearchStudy))]
         )
-
     ),
 
     Map(

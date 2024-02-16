@@ -7,7 +7,7 @@
         "Condition.bodySite": [
             "Breast"
         ],
-        "Coding.code": null,
+        "ResearchStudy.id": null,
         "ResearchStudy.identifier": "TCGA-BRCA",
         "ResearchStudy.condition": [
             "Complex Epithelial Neoplasms",
@@ -23,7 +23,7 @@
         "ResearchStudy.name": "Breast Invasive Carcinoma",
         "ResearchStudyProgressStatus.state": "open",
         "ResearchStudy": {
-            "Coding.code": "phs000178",
+            "ResearchStudy.id": "phs000178",
             "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
             "ResearchStudy.name": "TCGA"
         },
@@ -37,7 +37,7 @@
         "Condition.bodySite": [
             "Stomach"
         ],
-        "Coding.code": null,
+        "ResearchStudy.id": null,
         "ResearchStudy.identifier": "TCGA-STAD",
         "ResearchStudy.condition": [
             "Cystic, Mucinous and Serous Neoplasms",
@@ -46,7 +46,7 @@
         "ResearchStudy.name": "Stomach Adenocarcinoma",
         "ResearchStudyProgressStatus.state": "open",
         "ResearchStudy": {
-            "Coding.code": "phs000178",
+            "ResearchStudy.id": "phs000178",
             "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
             "ResearchStudy.name": "TCGA"
         },
@@ -60,7 +60,7 @@
         "Condition.bodySite": [
             "Bronchus and lung"
         ],
-        "Coding.code": null,
+        "ResearchStudy.id": null,
         "ResearchStudy.identifier": "TCGA-LUAD",
         "ResearchStudy.condition": [
             "Cystic, Mucinous and Serous Neoplasms",
@@ -70,7 +70,7 @@
         "ResearchStudy.name": "Lung Adenocarcinoma",
         "ResearchStudyProgressStatus.state": "open",
         "ResearchStudy": {
-            "Coding.code": "phs000178",
+            "ResearchStudy.id": "phs000178",
             "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
             "ResearchStudy.name": "TCGA"
         },
