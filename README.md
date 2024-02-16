@@ -66,15 +66,6 @@ python -m venv venv-gdc2fhir
 source venv-gdc2fhir/bin/activate
 python setup.py install
 ```
-### Convert and Generate schema with values
-- GDC projects
-```
-gdc2fhir convert --in_path projects.ndjson --out_path project_key.ndjson --verbose True
-
-gdc2fhir generate --entity project --out_path 'ResearchStudy.ndjson' --projects_path project_key.ndjson
-
-``` 
-
 
 ### Convert and Generate schema with values
 - GDC projects
