@@ -5,6 +5,9 @@ from fhir.resources.researchstudy import ResearchStudyRecruitment
 from fhir.resources.extension import Extension
 from fhir.resources.reference import Reference
 from fhir.resources.condition import Condition
+from gdc2fhir import utils
+
+projects = utils.load_ndjson("./tests/fixtures/project_key.ndjson")
 
 identifier = Identifier.construct()
 identifier.value = "TCGA-BRCA"

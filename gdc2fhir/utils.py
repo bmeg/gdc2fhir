@@ -614,10 +614,10 @@ def load_schema_from_json(path) -> Schema:
         return Schema.parse_obj(data)
 
 
-def load_gdc_scripts_ndjson(path):
+def load_ndjson(path):
     try:
-        with open(path, 'r') as gdc_file:
-            obj = [json.loads(line) for line in gdc_file]
+        with open(path, 'r') as file:
+            obj = [json.loads(line) for line in file]
             return obj
     except json.JSONDecodeError as e:
         print(e)
