@@ -135,7 +135,7 @@ project_maps = [
             type=data_dict['administrative']['project']['properties']['released']['type']
         ),
         destination=Destination(
-            name='ResearchStudyProgressStatus.actual',
+            name='ResearchStudyProgressStatus.actual', # TODO will be part of ResearchStudy.status
             description=ResearchStudyProgressStatus.schema()['properties']['actual']['description'],
             module='Administration',
             title=ResearchStudyProgressStatus.schema()['properties']['actual']['title'],
@@ -152,12 +152,11 @@ project_maps = [
             enums=[{'enum': data_dict['administrative']['project']['properties']['state']['enum']}]
         ),
         destination=Destination(
-            name='ResearchStudyProgressStatus.state',
-            description=ResearchStudyProgressStatus.schema()['properties']['state']['title'],
+            name='ResearchStudy.status',
+            description=ResearchStudy.schema()['properties']['status']['description'],
             module='Administration',
-            title=ResearchStudyProgressStatus.schema()['properties']['state']['title'],
-            type=ResearchStudyProgressStatus.schema()['properties']['state']['type'],
-            format=str(List[CodeableConcept])
+            title=ResearchStudy.schema()['properties']['status']['title'],
+            type=ResearchStudy.schema()['properties']['status']['type']
         )
     ),
 

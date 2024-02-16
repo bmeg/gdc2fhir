@@ -286,13 +286,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudyProgressStatus.state",
-                "description": "Label for status or state (e.g. recruitment status)",
+                "name": "ResearchStudy.status",
+                "description": "The publication state of the resource (not of the study).",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Label for status or state (e.g. recruitment status)",
-                "type": "CodeableConcept",
-                "format": "typing.List[fhir.resources.codeableconcept.CodeableConcept]",
+                "title": "draft | active | retired | unknown",
+                "type": "string",
+                "format": null,
                 "reference": null
             }
         },

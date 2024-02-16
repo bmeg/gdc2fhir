@@ -21,7 +21,7 @@
             "Ductal and Lobular Neoplasms"
         ],
         "ResearchStudy.name": "Breast Invasive Carcinoma",
-        "ResearchStudyProgressStatus.state": "open",
+        "ResearchStudy.status": "open",
         "ResearchStudy": {
             "ResearchStudy.id": "phs000178",
             "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
@@ -44,7 +44,7 @@
             "Adenomas and Adenocarcinomas"
         ],
         "ResearchStudy.name": "Stomach Adenocarcinoma",
-        "ResearchStudyProgressStatus.state": "open",
+        "ResearchStudy.status": "open",
         "ResearchStudy": {
             "ResearchStudy.id": "phs000178",
             "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
@@ -68,7 +68,7 @@
             "Acinar Cell Neoplasms"
         ],
         "ResearchStudy.name": "Lung Adenocarcinoma",
-        "ResearchStudyProgressStatus.state": "open",
+        "ResearchStudy.status": "open",
         "ResearchStudy": {
             "ResearchStudy.id": "phs000178",
             "ResearchStudy.identifier": "b80aa962-9650-5110-b3eb-bd087da808db",
