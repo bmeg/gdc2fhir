@@ -623,7 +623,7 @@ def load_ndjson(path):
         print(e)
 
 
-def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter, changed_key, verbose=True):
+def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter, changed_key, verbose):
     """
     Traverse a GDC script and map keys from GDC to FHIR based on Schema's Map objects in gdc2fhir labes python definitions
 
@@ -679,7 +679,7 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
                     if verbose:
                         print("instance dict - recall:", current_keys + [key], "\n")
                     traverse_and_map(value, current_keys + [destination_key], mapped_data, available_maps, success_counter,
-                                     changed_key=(current_key, destination_key), verbose=True)
+                                     changed_key=(current_key, destination_key), verbose=verbose)
 
             # successful map counter
             success_counter['mapped'] += 1
@@ -687,7 +687,7 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
         elif isinstance(value, dict):
             if verbose:
                 print("instance dict - recall:", current_keys + [key], "\n")
-            traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter, changed_key, verbose)
+            traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter, changed_key=changed_key, verbose=verbose)
 
 
 def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
@@ -702,7 +702,7 @@ def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
 
     mapped_data = {}
     success_counter = {'mapped': 0}
-    traverse_and_map(data, [], mapped_data, available_maps, success_counter, verbose)
+    traverse_and_map(data, [], mapped_data, available_maps, success_counter, changed_key=None, verbose=verbose)
     if verbose:
         print('Available Map items of entity: ', len(available_maps), '\n')
         print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')

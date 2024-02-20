@@ -851,7 +851,708 @@
         "tissue_source_site.project",
         "tissue_source_site.tissue_source_site_id"
     ],
-    "mappings": [],
+    "mappings": [
+        {
+            "source": {
+                "name": "aliquot_ids",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": [
+                    {
+                        "reference_type": "analyte",
+                        "parent": null
+                    },
+                    {
+                        "reference_type": "sample",
+                        "parent": null
+                    }
+                ]
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": "Id for specimen.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "External Identifier",
+                "type": "array",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analyte_ids",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": [
+                    {
+                        "reference_type": "portion",
+                        "parent": null
+                    },
+                    {
+                        "reference_type": "sample",
+                        "parent": null
+                    }
+                ]
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": "Id for specimen.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "External Identifier",
+                "type": "array",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "case_id",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "Universally Unique Identifier",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": [
+                    {
+                        "reference_type": "project",
+                        "parent": null
+                    },
+                    {
+                        "reference_type": "tissue_source_site",
+                        "parent": null
+                    }
+                ]
+            },
+            "destination": {
+                "name": "Patient.identifier",
+                "description": "An identifier for this patient",
+                "description_url": null,
+                "module": "Administration",
+                "title": "An identifier for this patient",
+                "type": "array",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "created_datetime",
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
+                "description_url": null,
+                "category": "clinical",
+                "type": "string",
+                "format": "date-time",
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "DiagnosticReport.issued",
+                "description": "The date and time that this version of the report was made available to providers, typically after the report was reviewed and verified.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "DateTime this version was made",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "portion_ids",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": "Id for specimen.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "External Identifier",
+                "type": "array",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "sample_ids",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "Universally Unique Identifier",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": [
+                    {
+                        "reference_type": "case",
+                        "parent": null
+                    },
+                    {
+                        "reference_type": "tissue_source_site",
+                        "parent": null
+                    },
+                    {
+                        "reference_type": "diagnosis",
+                        "parent": null
+                    },
+                    {
+                        "reference_type": "sample",
+                        "parent": null
+                    }
+                ]
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": "Id for specimen.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "External Identifier",
+                "type": "array",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "slide_ids",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ImagingStudy.identifier",
+                "description": "Identifiers for the ImagingStudy such as DICOM Study Instance UID.",
+                "description_url": null,
+                "module": "",
+                "title": "Identifiers for the whole study",
+                "type": "Identifier",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "state",
+                "description": "The current state of the object.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchSubject.status",
+                "description": "The publication state of the resource (not of the subject).",
+                "description_url": null,
+                "module": "",
+                "title": "draft | active | retired | unknown",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_aliquot_ids",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_aliquot_ids",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_id",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Patient.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_portion_ids",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_sample_ids",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "submitter_slide_ids",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": null,
+                "category": "biospecimen",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ImagingStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Diagnostics",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "updated_datetime",
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": "date-time",
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": "https://build.fhir.org/datatypes.html#dateTime",
+                "module": "Extensibility",
+                "title": "Value of extension",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.created_datetime",
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
+                "description_url": "https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=demographic",
+                "category": "clinical",
+                "type": "string",
+                "format": "date-time",
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": "https://build.fhir.org/datatypes.html#dateTime",
+                "module": "Foundation",
+                "title": "Value of extension",
+                "type": "string",
+                "format": "date-time",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.demographic_id",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "clinical",
+                "type": "Universally Unique Identifier",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Patient.identifier",
+                "description": "An identifier for this patient",
+                "description_url": null,
+                "module": "Administration",
+                "title": "An identifier for this patient",
+                "type": "array",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.ethnicity",
+                "description": "An individual's self-described social and cultural grouping, specifically whether an individual describes themselves as Hispanic or Latino. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
+                "description_url": null,
+                "category": "clinical",
+                "type": "Ethnic Group Category Text",
+                "format": null,
+                "enums": [
+                    {
+                        "enum": [
+                            "hispanic or latino",
+                            "not hispanic or latino",
+                            "Unknown",
+                            "unknown",
+                            "not reported",
+                            "not allowed to collect"
+                        ]
+                    }
+                ],
+                "content_annotation": "@gdc2fhir/resources/gdc_resources/content_annotations/demographic/ethnicity.json",
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension:extension.USCoreEthnicity",
+                "description": "Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality. The race codes used to represent these concepts are based upon the CDC Race and Ethnicity Code Set Version 1.0 which includes over 900 concepts for representing race and ethnicity of which 921 reference race. The race concepts are grouped by and pre-mapped to the 5 OMB race categories.",
+                "description_url": "https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-ethnicity.profile.json.html",
+                "module": "Foundation",
+                "title": "Additional content defined by implementations",
+                "type": "array",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.gender",
+                "description": "Text designations that identify gender. Gender is described as the assemblage of properties that distinguish people on the basis of their societal roles. [Explanatory Comment 1: Identification of gender is based upon self-report and may come from a form, questionnaire, interview, etc.]",
+                "description_url": null,
+                "category": "clinical",
+                "type": "Person Gender Text Type",
+                "format": null,
+                "enums": [
+                    {
+                        "enum": [
+                            "female",
+                            "male",
+                            "unspecified",
+                            "unknown",
+                            "not reported"
+                        ]
+                    }
+                ],
+                "content_annotation": "@gdc2fhir/resources/gdc_resources/content_annotations/demographic/gender.json",
+                "reference": null
+            },
+            "destination": {
+                "name": "Patient.gender",
+                "description": "Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "male | female | other | unknown",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.race",
+                "description": "An arbitrary classification of a taxonomic group that is a division of a species. It usually arises as a consequence of geographical isolation within a species and is characterized by shared heredity, physical attributes and behavior, and in the case of humans, by common history, nationality, or geographic distribution. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
+                "description_url": null,
+                "category": "clinical",
+                "type": "Race Category Text",
+                "format": null,
+                "enums": [
+                    {
+                        "enum": [
+                            "american indian or alaska native",
+                            "asian",
+                            "black or african american",
+                            "native hawaiian or other pacific islander",
+                            "white",
+                            "other",
+                            "Unknown",
+                            "unknown",
+                            "not reported",
+                            "not allowed to collect"
+                        ]
+                    }
+                ],
+                "content_annotation": "@gdc2fhir/resources/gdc_resources/content_annotations/demographic/race.json",
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.extension:USCoreRaceExtension",
+                "description": "Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality. The race codes used to represent these concepts are based upon the CDC Race and Ethnicity Code Set Version 1.0 which includes over 900 concepts for representing race and ethnicity of which 921 reference race. The race concepts are grouped by and pre-mapped to the 5 OMB race categories.",
+                "description_url": "http://hl7.org/fhir/us/core/STU6.1/StructureDefinition-us-core-race.profile.json.html",
+                "module": "Foundation",
+                "title": "Additional content defined by implementations",
+                "type": "array",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.state",
+                "description": "The current state of the object.",
+                "description_url": null,
+                "category": "clinical",
+                "type": "string",
+                "format": null,
+                "enums": [
+                    {
+                        "enum": [
+                            "uploading",
+                            "uploaded",
+                            "md5summing",
+                            "md5summed",
+                            "validating",
+                            "error",
+                            "invalid",
+                            "suppressed",
+                            "redacted",
+                            "live"
+                        ]
+                    },
+                    {
+                        "enum": [
+                            "validated",
+                            "submitted",
+                            "released"
+                        ]
+                    }
+                ],
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueString",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": "",
+                "module": "Foundation",
+                "title": "Additional content defined by implementations",
+                "type": "Value of extension",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.submitter_id",
+                "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
+                "description_url": null,
+                "category": "clinical",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Patient.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.updated_datetime",
+                "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]",
+                "description_url": null,
+                "category": "clinical",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Extension.valueDateTime",
+                "description": "Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).",
+                "description_url": "https://build.fhir.org/datatypes.html#dateTime",
+                "module": "Extensibility",
+                "title": "Value of extension",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.year_of_birth",
+                "description": "Numeric value to represent the calendar year in which an individual was born.",
+                "description_url": null,
+                "category": "clinical",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Patient.birthDate",
+                "description": "The date of birth for the individual",
+                "description_url": null,
+                "module": "Administration",
+                "title": "The date of birth for the individual",
+                "type": "string",
+                "format": "typing.LiteralString",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "demographic.year_of_death",
+                "description": "Numeric value to represent the year of the death of an individual.",
+                "description_url": null,
+                "category": "clinical",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Patient.deceasedDateTime",
+                "description": "Indicates if the individual is deceased or not",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Indicates if the individual is deceased or not",
+                "type": "string",
+                "format": "typing.LiteralString",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.age_at_diagnosis",
+                "description": "Age at the time of diagnosis expressed in number of days since birth.",
+                "description_url": null,
+                "category": "clinical",
+                "type": "integer",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.onsetAge",
+                "description": "Estimated or actual date,  date-time, or age",
+                "description_url": null,
+                "module": "Clinical Summary",
+                "title": "Estimated or actual date,  date-time, or age",
+                "type": "Age",
+                "format": "",
+                "reference": null
+            }
+        }
+    ],
     "source_key_required": [],
     "destination_key_required": [],
     "unique_keys": [],

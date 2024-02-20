@@ -8,10 +8,11 @@ from fhir.resources.reference import Reference
 from fhir.resources.condition import Condition
 from gdc2fhir import utils
 
+
 disease_types = utils._read_json("./resources/gdc_resources/content_annotations/case/disease_types.json")
 
-def assign_fhir(project, disease_types=disease_types):
 
+def assign_fhir(project, disease_types=disease_types):
     identifier = Identifier.construct()
     identifier.value = project['ResearchStudy.identifier']
 
@@ -69,6 +70,7 @@ def assign_fhir(project, disease_types=disease_types):
     #  condition -- subject --> patient <--subject-- researchsubject -- study --> researchstudy -- partOf --> researchstudy
 
     return {'ResearchStudy': rs.json(), "ResearchStudy.partOf": rs_parent.json()}
+
 
 # out_path ='./data/ResearchStudy.ndjson'
 # projects_path="./tests/fixtures/project_key.ndjson"

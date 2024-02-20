@@ -12,7 +12,7 @@ from fhir.resources.extension import Extension
 from fhir.resources.genomicstudy import GenomicStudy
 
 # Variable data required for mapping
-two_level_up = os.path.abspath(os.path.join(os.path.dirname('__file__'), '../..'))
+two_level_up = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 project_schema = utils.load_schema_from_json(path="".join([two_level_up, "/mapping/project.json"]))
 keys_to_label_fields = [key for key in project_schema.obj_keys if
                         key not in [x.source.name for x in project_schema.mappings]]

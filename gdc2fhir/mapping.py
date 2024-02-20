@@ -290,7 +290,7 @@ def add_some_maps(out_path="./mapping/project.json"):
     utils.validate_and_write(project_schema, out_path=out_path, update=True, generate=False)
 
 
-def convert_maps(in_path, out_path, name='project', verbose=True):
+def convert_maps(in_path, out_path, name, verbose):
     """
     - load updated schema
     - load GDC bmeg script json file
@@ -298,28 +298,39 @@ def convert_maps(in_path, out_path, name='project', verbose=True):
     - check available Map sources
     - map destination keys
 
-    :param name:
-    :param in_path:
+    gdc2fhir convert --in_path "/Users/sanati/KCRB/fhir/cases.ndjson" --out_path "/Users/sanati/KCRB/fhir/case_key.ndjson" --verbose True
+
+    :param name: project, case GDC entity
+    :param in_path: ndjson path of data scripted from GDC ex bmeg-etl script
     :param out_path:
     :param verbose:
     :return:
     """
 
-    if name == 'project':
+    mapped_entity_list = []
+
+    if name in 'project':
         schema = utils.load_schema_from_json(path='./mapping/project.json')
+    elif name in 'case':
+        schema = utils.load_schema_from_json(path='./mapping/case.json')
 
         if schema:
-            projects = utils.load_ndjson(path=in_path)
+            entities = utils.load_ndjson(path=in_path)
 
-            keys = list(utils.extract_keys(projects[0]))
+            all_keys = [list(utils.extract_keys(e)) for e in entities]
+            keys = list(set().union(*all_keys)) # union of all keys
+
             available_maps = [schema.find_map_by_source(k) for k in keys]
+            available_maps.append(schema.obj_mapping)
 
-            l = [utils.map_data(p, available_maps, verbose=verbose)['mapped_data'] for p in projects]
+            if verbose:
+                print("available_maps: ", available_maps)
+
+            mapped_entity_list = [utils.map_data(e, available_maps, verbose=verbose)['mapped_data'] for e in entities]
 
             if out_path:
                 with open(out_path, 'w') as file:
-                    file.write('\n'.join(map(json.dumps, l)))
+                    file.write('\n'.join(map(json.dumps, mapped_entity_list)))
 
-        return l
-
+        return mapped_entity_list
 
