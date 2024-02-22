@@ -8,7 +8,8 @@ Mapping GDC (Genomic Data Commons) schema to Ellrot's lab FHIR (Fast Healthcare 
 - #### GDC schema 
 ![mapping](./imgs/high-level.png)
 
-- #### FHIR schema 
+- #### FHIR simplified schema 
+![mapping](./imgs/gdc-fhir.png)
 
 
 ### gdc2fhir structure:
