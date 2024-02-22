@@ -8,29 +8,14 @@ class Reference(BaseModel):
     parent: Optional[str] = Field(None, description='Parent identifier.')
 
 
-class Coding(BaseModel):
-    system: str = Field(..., description='Url of the coding system ex. http://loinc.org')
-    code: str = Field(..., description='Code id of the system')
-    display: str = Field(..., description='Name display text.')
-
-
-class ContentAnnotation(BaseModel):
-    value: str = Field(..., description='Enum string value of the last GDC element.')
-    description: Optional[str] = Field(..., description='Description of the last GDC element for mapping.')
-    description_url: Optional[str] = Field(None, description='Description source url.')
-    annotation_type: Optional[str] = Field(..., description='Common Data Element (CDE) created by the caDSR.')
-    ontology_url: Optional[str] = Field(None, description='Ontology definition url link.')
-    coding: Coding = Field(None, description='Similar to FHIR Codeable concept for mapping annotation definition(s).')
-
-
 class Source(BaseModel):
     # map types via this standard: https://docs.pydantic.dev/latest/concepts/types/
     name: str = Field(..., description='GDC available field name hierarchy dot notation.')
-    description: str = Field(..., description='Description of the last GDC element for mapping.')
+    description: Optional[str] = Field(None, description='Description of the last GDC element for mapping.')
     description_url: Optional[str] = Field(None, description='Description source url.')
     category: Optional[str] = Field(None, description='GDC data dictionary category: case | clinical | biospecimen | '
                                                       'files | anntations | analysis | notation | index | data')
-    type: str = Field(..., description='GDC type of the last element.')
+    type: Optional[str] = Field(None, description='GDC type of the last element.')
     format: Optional[str] = Field(None, description='GDC format of the type of the last element ex. date-time.')
     enums: Optional[List[dict]] = Field(None, description='Enum string values of the last GDC element.')
     content_annotation: Optional[Union[List[dict], str]] = Field(None, description='Content annotations with definitions.')
@@ -39,11 +24,11 @@ class Source(BaseModel):
 
 class Destination(BaseModel):
     name: str = Field(..., description='FHIR resources matching the source hierarchy.')
-    description: str = Field(..., description='Description of the final FHIR mapping element.')
+    description: Optional[str] = Field(None, description='Description of the final FHIR mapping element.')
     description_url: Optional[str] = Field(None, description='Description source url.')
-    module: str = Field(..., description='Name of the parent module of final mapping element.')
-    title: str = Field(..., description='Field title of the FHIR mapping element.')
-    type: str = Field(..., description='type of the final FHIR mapping element.')
+    module: Optional[str] = Field(None, description='Name of the parent module of final mapping element.')
+    title: Optional[str] = Field(None, description='Field title of the FHIR mapping element.')
+    type: Optional[str] = Field(None, description='type of the final FHIR mapping element.')
     format: Optional[str] = Field(None, description='Format required for mapping ex. a pydantic list[str]')
     reference: Optional[List[Reference]] = Field(None, description='Reference to parent type and id.')
 

@@ -12,11 +12,11 @@ from fhir.resources.extension import Extension
 from fhir.resources.genomicstudy import GenomicStudy
 
 # Variable data required for mapping
-two_level_up = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+two_level_up = os.path.abspath(os.path.join(os.path.dirname('__file__'), '../..'))
 project_schema = utils.load_schema_from_json(path="".join([two_level_up, "/mapping/project.json"]))
 keys_to_label_fields = [key for key in project_schema.obj_keys if
                         key not in [x.source.name for x in project_schema.mappings]]
-data_dict = utils.load_data_dictionary("".join([two_level_up, "/resources/gdc_resources/data_dictionary/"]))
+data_dict = utils.load_data_dictionary("".join([two_level_up, "./resources/gdc_resources/data_dictionary/"]))
 
 """
 Field labels mapped semi-computationally 
@@ -31,7 +31,7 @@ project_maps = [
             type=data_dict['administrative']['program']['type']
         ),
         destination=Destination(
-            name=ResearchStudy.schema()['title'],
+            name='ResearchStudy',
             description=utils.clean_description(ResearchStudy.schema()['description']),
             module='Administration',
             title=ResearchStudy.schema()['title'],

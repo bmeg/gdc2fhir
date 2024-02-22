@@ -108,35 +108,70 @@ def initialize_content_annotations(annot_enum, out_path):
             output_file.write(jr)
 
 
-def generate_content_annotations(data, out_path):
+def generate_cancer_pathological_stage_content_annotations(data, out_path):
     """
 
     :param data: GDC data dictionary containing enum values and definitions.
     :param out_path: File path for annotations.
     """
     annotations = []
+    if isinstance(data, list):
+        for d in data:
+            for enum_value in d['enum']:
+                if enum_value in d['enumDef']:
+                    enum_data = d['enumDef'][enum_value]
+                    definition = enum_data.get('description', 'No description available')
+                    term_url = enum_data['termDef'].get('term_url', '')
+                    term_cde_id = enum_data['termDef'].get('cde_id', '')
 
-    for enum_value in data['enum']:
-        if enum_value in data['enumDef']:
-            enum_data = data['enumDef'][enum_value]
-            definition = enum_data.get('description', 'No description available')
-            term_url = enum_data['termDef'].get('term_url', '')
+                    if 'Stage' in enum_value:
+                        sctid = '1222593009'
+                    elif 'T' in enum_value:
+                        sctid = '78873005'
+                    elif 'N' in enum_value:
+                        sctid = '277206009'
+                    elif 'M' in enum_value:
+                        sctid = '277208005'
+                    else:
+                        sctid = ''
 
-            annotations.append({
-                "value": enum_value,
-                "description": definition,
-                "description_url": term_url,
-                "annotation_type": enum_data['termDef'].get('source', ''),
-                "annotation_url": term_url
-            })
-        else:
-            annotations.append({
-                "value": enum_value,
-                "description": '',
-                "description_url": '',
-                "annotation_type": '',
-                "annotation_url": ''
-            })
+                    annotations.append({
+                        "value": enum_value,
+                        "description": definition,
+                        "description_url": term_url,
+                        "annotation_type": enum_data['termDef'].get('source', ''),
+                        "annotation_url": term_url,
+                        "cde_id": term_cde_id,
+                        "sctid": sctid,
+                        "stage_type_display": d['termDef']['term'],
+                        "stage_type_cde_id": d['termDef']['cde_id'],
+                        "stage_type_sctid": '1222593009'
+                    })
+
+                else:
+                    if 'Stage' in enum_value:
+                        sctid = '1222593009'
+                    elif 'T' in enum_value:
+                        sctid = '78873005'
+                    elif 'N' in enum_value:
+                        sctid = '277206009'
+                    elif 'M' in enum_value:
+                        sctid = '277208005'
+                    else:
+                        sctid = ''
+
+                    annotations.append({
+                        "value": enum_value,
+                        "description": '',
+                        "description_url": '',
+                        "annotation_type": '',
+                        "annotation_url": '',
+                        "cde_id": '',
+                        "sctid": sctid,
+                        "stage_type_display": '',
+                        "stage_type_cde_id": '',
+                        "stage_type_sctid": '1222593009'
+                    })
 
     with open(out_path, 'w', encoding='utf-8') as file:
         json.dump(annotations, file, indent=4)
@@ -160,8 +195,6 @@ def _read_json(path):
 # --------------------------------------------------------------------------
 # GDC Utility functions
 # --------------------------------------------------------------------------
-
-
 def get_field_text(table):
     """
     Gets text of td tags of an xml table
@@ -462,8 +495,6 @@ def load_fields(path="./resources/gdc_resources/fields/"):
 # --------------------------------------------------------------------------
 # FHIR Utility functions
 # --------------------------------------------------------------------------
-
-
 # https://pypi.org/project/fhir.resources/ version 7.1.0 uses FHIR® (Release R5, version 5.0.0)
 version = "5.0.0"
 
@@ -476,14 +507,15 @@ def clean_description(description):
     :return: cleaned description txt
     """
     description = description.replace(
-        "Disclaimer: Any field name ends with ``__ext`` doesn't part of\nResource StructureDefinition, instead used to enable Extensibility feature\nfor FHIR Primitive Data Types.\n\n",
+        "Disclaimer: Any field name ends with ``__ext`` doesn't part of\nResource StructureDefinition, instead used "
+        "to enable Extensibility feature\nfor FHIR Primitive Data Types.\n\n",
         "")
     description = description.replace('\n\n', '\n')
     description = description.replace('\n', ' ')
     return description
 
 
-def get_us_core(path=None, url=None, param={}):
+def get_us_core(path=None, url=None, param=None):
     """
     Given a path or url to FHIR Extension.extension:[x] loads in data to map to :[x]
 
@@ -493,6 +525,8 @@ def get_us_core(path=None, url=None, param={}):
     :return: TBD
     """
 
+    if param is None:
+        param = {}
     if path:
         with open(path, 'r') as file:
             for line in file:
@@ -502,7 +536,7 @@ def get_us_core(path=None, url=None, param={}):
                 except json.JSONDecodeError as e:
                     print("Error decoding JSON: {}".format(e))
     elif url:
-        response = requests.get(url, param=param)
+        response = requests.get(url, param)
 
         if response.status_code == 200:
             html_content = response.content.decode("utf-8")
@@ -651,9 +685,6 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
             # separate hierarchy key to track
             hierarchy_key = current_keys[0] if current_keys else None
 
-            if verbose:
-                print("hierarchy_key: ", hierarchy_key, "\n")
-
             if hierarchy_key and hierarchy_key not in mapped_data:
                 mapped_data[hierarchy_key] = {}
 
@@ -677,12 +708,24 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
 
                 if isinstance(value, dict):
                     if verbose:
-                        print("instance dict - recall:", current_keys + [key], "\n")
+                        print("instance dict - recall (DICT):", current_keys + [key], "\n")
                     traverse_and_map(value, current_keys + [destination_key], mapped_data, available_maps, success_counter,
                                      changed_key=(current_key, destination_key), verbose=verbose)
 
             # successful map counter
             success_counter['mapped'] += 1
+
+        elif (value and not isinstance(value, bool) and
+              not isinstance(value, int) and
+              not isinstance(value, float) and
+              not isinstance(value, str) and len(value) >= 1 and isinstance(value, list) and
+              isinstance(value[0], dict)):
+            # mapped_data update to handle nested list dictionary values
+            if verbose:
+                print("instance list of dict: ", current_keys + [key], "\n")
+                print("mapped_data_type: ", type(mapped_data))
+                for v in value:
+                    traverse_and_map(v, current_keys + [key], mapped_data, available_maps, success_counter, changed_key=changed_key, verbose=verbose)
 
         elif isinstance(value, dict):
             if verbose:
@@ -707,6 +750,3 @@ def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
         print('Available Map items of entity: ', len(available_maps), '\n')
         print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}
-
-
-

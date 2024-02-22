@@ -1,5 +1,6 @@
 import os
 from typing import List, LiteralString
+from pydantic import NonNegativeInt
 from gdc2fhir import utils
 from gdc2fhir.schema import Map, Source, Destination, Reference
 from fhir.resources.patient import Patient
@@ -18,8 +19,13 @@ from fhir.resources.diagnosticreport import DiagnosticReport
 from fhir.resources.range import Range
 from fhir.resources.documentreference import DocumentReference
 from fhir.resources.attachment import Attachment
+from fhir.resources.codeableconcept import CodeableConcept
+from fhir.resources.codeablereference import CodeableReference
+from fhir.resources.genomicstudy import GenomicStudy
+from fhir.resources.encounter import Encounter
 
-two_level_up = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+
+two_level_up = os.path.abspath(os.path.join(os.path.dirname('__file__'), '../..'))
 case_schema = utils.load_schema_from_json(path="".join([two_level_up, "/mapping/case.json"]))
 keys_to_label_fields = [key for key in case_schema.obj_keys if
                         key not in [x.source.name for x in case_schema.mappings]]
@@ -70,7 +76,7 @@ case_maps = [Map(
             Reference(reference_type=data_dict["biospecimen"]["aliquot"]["links"][0]["subgroup"][1]["target_type"])]
     ),
     destination=Destination(
-        name='Specimen.identifier',
+        name='Specimen.identifier.aliquot',
         description=Specimen.schema()["properties"]["identifier"]["description"],
         module='Diagnostics',
         title=Specimen.schema()["properties"]["identifier"]["title"],
@@ -90,7 +96,7 @@ case_maps = [Map(
                 Reference(reference_type=data_dict["biospecimen"]["analyte"]["links"][0]["subgroup"][1]["target_type"])]
         ),
         destination=Destination(
-            name='Specimen.identifier',
+            name='Specimen.identifier.analyte',
             description=Specimen.schema()["properties"]["identifier"]["description"],
             module='Diagnostics',
             title=Specimen.schema()["properties"]["identifier"]["title"],
@@ -142,7 +148,7 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["portion"]["properties"]["id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.identifier',
+            name='Specimen.identifier.portion',
             description=Specimen.schema()["properties"]["identifier"]["description"],
             module='Diagnostics',
             title=Specimen.schema()["properties"]["identifier"]["title"],
@@ -213,7 +219,7 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["aliquot"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.id',
+            name='Specimen.id.aliquot',
             description=Specimen.schema()["properties"]["id"]["description"],
             module='Diagnostics',
             title=Specimen.schema()["properties"]["id"]["title"],
@@ -224,13 +230,13 @@ case_maps = [Map(
 
     Map(
         source=Source(
-            name='submitter_aliquot_ids',
+            name='submitter_analyte_ids',
             description=data_dict["biospecimen"]["analyte"]["properties"]["submitter_id"]["description"],
             category=data_dict["biospecimen"]["analyte"]["category"],
             type=data_dict["biospecimen"]["analyte"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.id',
+            name='Specimen.id.analyte',
             description=Specimen.schema()["properties"]["id"]["description"],
             module='Diagnostics',
             title=Specimen.schema()["properties"]["id"]["title"],
@@ -264,7 +270,7 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["portion"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.id',
+            name='Specimen.id.portion',
             description=Specimen.schema()["properties"]["id"]["description"],
             module='Diagnostics',
             title=Specimen.schema()["properties"]["id"]["title"],
@@ -552,11 +558,329 @@ case_maps = [Map(
             type=Condition.schema()["properties"]["onsetAge"]["type"],
             format=''
         )
-    )]
+    ),
+
+    Map(
+        source=Source(
+            name='tissue_source_site.tissue_source_site_id'
+            # description=data_dict['administrative']['tissue_source_site']['description'],
+            # type=data_dict['administrative']['tissue_source_site']['type']
+        ),
+        destination=Destination(
+            name='Encounter.identifier'
+            # description=Encounter.schema()['properties']['identifier']['title'],
+            # type=Encounter.schema()['properties']['identifier']['items']['type']
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.sample_id'
+        ),
+        destination=Destination(
+            name='Specimen.identifier'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.portion_id'
+        ),
+        destination=Destination(
+            name='Specimen.identifier'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.analyte_id'
+        ),
+        destination=Destination(
+            name='Specimen.identifier'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.aliquot_id'
+        ),
+        destination=Destination(
+            name='Specimen.identifier'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.slides.slide_id'
+        ),
+        destination=Destination(
+            name='Specimen.identifier'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.ajcc_pathologic_stage'
+        ),
+        destination=Destination(
+            name='Condition.stage_ajcc_pathologic_stage'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.ajcc_pathologic_t'
+        ),
+        destination=Destination(
+            name='Condition.stage_ajcc_pathologic_t'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.ajcc_pathologic_n'
+        ),
+        destination=Destination(
+            name='Condition.stage_ajcc_pathologic_n'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.ajcc_pathologic_m'
+        ),
+        destination=Destination(
+            name='Condition.stage_ajcc_pathologic_m'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.treatments.treatment_id'
+        ),
+        destination=Destination(
+            name='MedicationAdministration.identifier'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.diagnosis_id'
+        ),
+        destination=Destination(
+            name='Condition.identifier'
+        )
+    ),
+
+    # project Maps -----------------------------------------------------
+    Map(
+        source=Source(
+            name='project',
+            description=data_dict['administrative']['project']['description'],
+            category=data_dict['administrative']['project']['category'],
+            type=data_dict['administrative']['project']['type']
+        ),
+        destination=Destination(
+            name='ResearchStudy',
+            description=utils.clean_description(ResearchStudy.schema()['description']),
+            module='Administration',
+            title=ResearchStudy.schema()['title'],
+            type=ResearchStudy.schema()['type']
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.program',
+            description=data_dict['administrative']['program']['description'],
+            category=data_dict['administrative']['program']['category'],
+            type=data_dict['administrative']['program']['type']
+        ),
+        destination=Destination(
+            name='ResearchStudy',
+            description=utils.clean_description(ResearchStudy.schema()['description']),
+            module='Administration',
+            title=ResearchStudy.schema()['title'],
+            type=ResearchStudy.schema()['type']
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.name',
+            description='Display name for the project.',
+            category=data_dict['administrative']['project']['category'],
+            type='string'
+        ),
+        destination=Destination(
+            name='ResearchStudy.name',
+            description=ResearchStudy.schema()['properties']['name']['title'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['name']['title'],
+            type=ResearchStudy.schema()['properties']['name']['type'],
+            reference=[Reference(reference_type=str(ResearchStudy))]
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.project_id',
+            description=data_dict['administrative']['project']['properties']['id']['common']['description'],
+            category=data_dict['administrative']['project']['category'],
+            type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term']
+        ),
+        destination=Destination(
+            name='ResearchStudy.identifier',
+            description=ResearchStudy.schema()['properties']['identifier']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['identifier']['title'],
+            type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
+            format=str(List[Identifier]),
+            reference=[Reference(reference_type=str(ResearchStudy))]
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.dbgap_accession_number',
+            description=data_dict['administrative']['project']['properties']['dbgap_accession_number']['description'],
+            category=data_dict['administrative']['project']['category'],
+            type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type']
+        ),
+        destination=Destination(
+            name="ResearchStudy.id",
+            description=ResearchStudy.schema()['properties']['id']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['id']['title'],
+            type=ResearchStudy.schema()['properties']['id']['type'],
+            reference=[Reference(reference_type=str(ResearchStudy))]
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.disease_type',
+            description=data_dict['administrative']['project']['properties']['disease_type']['description'],
+            category=data_dict['administrative']['project']['category'],
+            type=data_dict['administrative']['project']['properties']['disease_type']['type'],
+            content_annotation='@content_annotations/case/disease_types.json'
+        ),
+        destination=Destination(
+            name='ResearchStudy.condition',
+            description=ResearchStudy.schema()['properties']['condition']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['condition']['title'],
+            type=ResearchStudy.schema()['properties']['condition']['type'],
+            format=str(List[CodeableConcept])
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.primary_site',
+            description=data_dict['administrative']['project']['properties']['primary_site']['description'],
+            category=data_dict['administrative']['project']['category'],
+            type=data_dict['administrative']['project']['properties']['primary_site']['type'],
+            content_annotation='@content_annotations/case/primary_site.json'
+        ),
+        destination=Destination(
+            name='Condition.bodySite',
+            description=Condition.schema()['properties']['bodySite']['description'],
+            module='Clinical Summary',
+            title=Condition.schema()['properties']['bodySite']['title'],
+            type=Condition.schema()['properties']['bodySite']['type'],
+            format=str(List[CodeableConcept])
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.released',
+            description=data_dict['administrative']['project']['properties']['released']['description'],
+            category=data_dict['administrative']['project']['category'],
+            type=data_dict['administrative']['project']['properties']['released']['type']
+        ),
+        destination=Destination(
+            name='ResearchStudyProgressStatus.actual',  # TODO will be part of ResearchStudy.status
+            description=ResearchStudyProgressStatus.schema()['properties']['actual']['description'],
+            module='Administration',
+            title=ResearchStudyProgressStatus.schema()['properties']['actual']['title'],
+            type=ResearchStudyProgressStatus.schema()['properties']['actual']['type']
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.state',
+            description=data_dict['administrative']['project']['properties']['state']['description'],
+            category=data_dict['administrative']['project']['category'],
+            type='string',
+            enums=[{'enum': data_dict['administrative']['project']['properties']['state']['enum']}]
+        ),
+        destination=Destination(
+            name='ResearchStudy.status',
+            description=ResearchStudy.schema()['properties']['status']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['status']['title'],
+            type=ResearchStudy.schema()['properties']['status']['type']
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.program.dbgap_accession_number',
+            description=data_dict['administrative']['program']['properties']['dbgap_accession_number']['description'],
+            category=data_dict['administrative']['program']['category'],
+            type=data_dict['administrative']['program']['properties']['dbgap_accession_number']['type']
+        ),
+        destination=Destination(
+            name="ResearchStudy.id",
+            description=ResearchStudy.schema()['properties']['id']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['id']['title'],
+            type=ResearchStudy.schema()['properties']['id']['type'],
+            reference=[Reference(reference_type=str(ResearchStudy))]
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.program.name',
+            description=data_dict['administrative']['program']['properties']['name']['description'],
+            category=data_dict['administrative']['program']['category'],
+            type=data_dict['administrative']['program']['properties']['name']['type']
+        ),
+        destination=Destination(
+            name='ResearchStudy.name',
+            description=ResearchStudy.schema()['properties']['name']['title'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['name']['title'],
+            type=ResearchStudy.schema()['properties']['name']['type']
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='project.program.program_id',
+            description=data_dict['administrative']['program']['properties']['id']['common']['description'],
+            category=data_dict['administrative']['program']['category'],
+            type=data_dict['administrative']['program']['properties']['id']['common']['termDef']['term']
+        ),
+        destination=Destination(
+            name='ResearchStudy.identifier',
+            description=ResearchStudy.schema()['properties']['identifier']['description'],
+            module='Administration',
+            title=ResearchStudy.schema()['properties']['identifier']['title'],
+            type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
+            format=str(List[Identifier])
+        )
+    )
+]
 
 """
 proceed with caution this code changes the state of current files under mapping
 """
+
 out_path = "".join([two_level_up, "/mapping/case.json"])
 valid_case_maps = [Map.model_validate(c) for c in case_maps]
 [case_schema.mappings.append(i) for i in valid_case_maps]

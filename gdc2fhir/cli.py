@@ -82,13 +82,15 @@ def convert(name, in_path, out_path, verbose):
               default='project',
               show_default=True,
               help='project, case, or file GDC entity to map')
-@click.option('--out_path', required=True,
+@click.option('--out_dir', required=True,
               help='')
-@click.option('--projects_path', required=True,
+@click.option('--entity_path', required=True,
               help='')
-def generate(entity, out_path, projects_path):
+def generate(entity, out_dir, entity_path):
     if entity in 'project':
-        entity2fhir.gdc_to_fhir_ndjson(out_path=out_path, projects_path=projects_path)
+        entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path)
+    if entity in 'case':
+        entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, cases_path=entity_path)
 
 
 if __name__ == '__main__':

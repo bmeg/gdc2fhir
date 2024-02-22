@@ -2,7 +2,7 @@ import os
 import json
 import pathlib
 from gdc2fhir import utils
-from gdc2fhir.schema import Schema, Map, Metadata, Version, Source, Destination, ContentAnnotation, Coding, Reference
+from gdc2fhir.schema import Schema, Map, Metadata, Version, Source, Destination, Reference
 from fhir.resources.researchstudy import ResearchStudy
 from fhir.resources.patient import Patient
 from fhir.resources.documentreference import DocumentReference

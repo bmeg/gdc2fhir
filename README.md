@@ -67,12 +67,15 @@ source venv-gdc2fhir/bin/activate
 python setup.py install
 ```
 
-### Convert and Generate schema with values
-- GDC projects
+### Convert and Generate
+ 
+- convert GDC schema keys to fhir mapping
+- generate fhir object models ndjson files in directory  
+ 
 ```
 gdc2fhir convert --name project --in_path projects.ndjson --out_path project_key.ndjson --verbose True
 
-gdc2fhir generate --entity project --out_path 'ResearchStudy.ndjson' --projects_path project_key.ndjson
+gdc2fhir generate --entity project --out_dir ./data --projects_path project_key.ndjson
 
 ``` 
 

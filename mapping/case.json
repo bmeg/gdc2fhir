@@ -874,7 +874,7 @@
                 ]
             },
             "destination": {
-                "name": "Specimen.identifier",
+                "name": "Specimen.identifier.aliquot",
                 "description": "Id for specimen.",
                 "description_url": null,
                 "module": "Diagnostics",
@@ -906,7 +906,7 @@
                 ]
             },
             "destination": {
-                "name": "Specimen.identifier",
+                "name": "Specimen.identifier.analyte",
                 "description": "Id for specimen.",
                 "description_url": null,
                 "module": "Diagnostics",
@@ -984,7 +984,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier",
+                "name": "Specimen.identifier.portion",
                 "description": "Id for specimen.",
                 "description_url": null,
                 "module": "Diagnostics",
@@ -1093,7 +1093,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.id",
+                "name": "Specimen.id.aliquot",
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Diagnostics",
@@ -1105,7 +1105,7 @@
         },
         {
             "source": {
-                "name": "submitter_aliquot_ids",
+                "name": "submitter_analyte_ids",
                 "description": "A project-specific identifier for a node. This property is the calling card/nickname/alias for a unit of submission. It can be used in place of the uuid for identifying or recalling a node.",
                 "description_url": null,
                 "category": "biospecimen",
@@ -1116,7 +1116,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.id",
+                "name": "Specimen.id.analyte",
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Diagnostics",
@@ -1162,7 +1162,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.id",
+                "name": "Specimen.id.portion",
                 "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Diagnostics",
@@ -1549,6 +1549,590 @@
                 "title": "Estimated or actual date,  date-time, or age",
                 "type": "Age",
                 "format": "",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "tissue_source_site.tissue_source_site_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Encounter.identifier",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "samples.sample_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "samples.portions.portion_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "samples.portions.analytes.analyte_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "samples.portions.analytes.aliquots.aliquot_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "samples.portions.slides.slide_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.identifier",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.ajcc_pathologic_stage",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.stage_ajcc_pathologic_stage",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.ajcc_pathologic_t",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.stage_ajcc_pathologic_t",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.ajcc_pathologic_n",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.stage_ajcc_pathologic_n",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.ajcc_pathologic_m",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.stage_ajcc_pathologic_m",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.treatments.treatment_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "MedicationAdministration.identifier",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.diagnosis_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.identifier",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project",
+                "description": "Any specifically defined piece of work that is undertaken or attempted to meet a single requirement. (NCIt C47885)",
+                "description_url": null,
+                "category": "administrative",
+                "type": "object",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy",
+                "description": "Investigation to increase healthcare-related patient-independent knowledge. A scientific study of nature that sometimes includes processes involved in health and disease. For example, clinical trials are research studies that involve people. These studies may be related to new ways to screen, prevent, diagnose, and treat disease. They may also study certain outcomes and certain groups of people by looking at data collected in the past or future.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "ResearchStudy",
+                "type": "object",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project.program",
+                "description": "A broad framework of goals to be achieved. (NCIt C52647)",
+                "description_url": null,
+                "category": "administrative",
+                "type": "object",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy",
+                "description": "Investigation to increase healthcare-related patient-independent knowledge. A scientific study of nature that sometimes includes processes involved in health and disease. For example, clinical trials are research studies that involve people. These studies may be related to new ways to screen, prevent, diagnose, and treat disease. They may also study certain outcomes and certain groups of people by looking at data collected in the past or future.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "ResearchStudy",
+                "type": "object",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project.name",
+                "description": "Display name for the project.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.name",
+                "description": "Name for this study (computer friendly)",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Name for this study (computer friendly)",
+                "type": "string",
+                "format": null,
+                "reference": [
+                    {
+                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
+                        "parent": null
+                    }
+                ]
+            }
+        },
+        {
+            "source": {
+                "name": "project.project_id",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "Universally Unique Identifier",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Business Identifier for study",
+                "type": "Identifier",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "reference": [
+                    {
+                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
+                        "parent": null
+                    }
+                ]
+            }
+        },
+        {
+            "source": {
+                "name": "project.dbgap_accession_number",
+                "description": "The dbgap accession number for the project.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
+                "reference": [
+                    {
+                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
+                        "parent": null
+                    }
+                ]
+            }
+        },
+        {
+            "source": {
+                "name": "project.disease_type",
+                "description": "Full name for the project",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": "@content_annotations/case/disease_types.json",
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.condition",
+                "description": "The condition that is the focus of the study.  For example, In a study to examine risk factors for Lupus, might have as an inclusion criterion \"healthy volunteer\", but the target condition code would be a Lupus SNOMED code.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Condition being studied",
+                "type": "array",
+                "format": "typing.List[fhir.resources.codeableconcept.CodeableConcept]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project.primary_site",
+                "description": "Primary site for the project",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": "@content_annotations/case/primary_site.json",
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.bodySite",
+                "description": "The anatomical location where this condition manifests itself.",
+                "description_url": null,
+                "module": "Clinical Summary",
+                "title": "Anatomical location, if relevant",
+                "type": "array",
+                "format": "typing.List[fhir.resources.codeableconcept.CodeableConcept]",
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project.released",
+                "description": "To release a project is to tell the GDC to include all submitted entities in the next GDC index.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "boolean",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudyProgressStatus.actual",
+                "description": "An indication of whether or not the date is a known date when the state changed or will change. A value of true indicates a known date. A value of false indicates an estimated date.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Actual if true else anticipated",
+                "type": "boolean",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project.state",
+                "description": "The possible states a project can be in.  All but `open` are equivalent to some type of locked state.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": [
+                    {
+                        "enum": [
+                            "open",
+                            "review",
+                            "submitted",
+                            "processing",
+                            "processed",
+                            "closed",
+                            "legacy"
+                        ]
+                    }
+                ],
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.status",
+                "description": "The publication state of the resource (not of the study).",
+                "description_url": null,
+                "module": "Administration",
+                "title": "draft | active | retired | unknown",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project.program.dbgap_accession_number",
+                "description": "The dbgap accession number provided for the program.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
+                "reference": [
+                    {
+                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
+                        "parent": null
+                    }
+                ]
+            }
+        },
+        {
+            "source": {
+                "name": "project.program.name",
+                "description": "Full name/title of the program.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "string",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.name",
+                "description": "Name for this study (computer friendly)",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Name for this study (computer friendly)",
+                "type": "string",
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "project.program.program_id",
+                "description": "A 128-bit identifier. Depending on the mechanism used to generate it, it is either guaranteed to be different from all other UUIDs/GUIDs generated until 3400 AD or extremely likely to be different. Its relatively small size lends itself well to sorting, ordering, and hashing of all sorts, storing in databases, simple allocation, and ease of programming in general.",
+                "description_url": null,
+                "category": "administrative",
+                "type": "Universally Unique Identifier",
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "description_url": null,
+                "module": "Administration",
+                "title": "Business Identifier for study",
+                "type": "Identifier",
+                "format": "typing.List[fhir.resources.identifier.Identifier]",
                 "reference": null
             }
         }
