@@ -70,7 +70,9 @@ python setup.py install
 ### Convert and Generate
  
 - convert GDC schema keys to fhir mapping
-- generate fhir object models ndjson files in directory  
+- generate fhir object models ndjson files in directory
+
+  Example run - replace path's to ndjson files or directories. 
  
 ```
 gdc2fhir convert --name project --in_path projects.ndjson --out_path project_key.ndjson --verbose True
