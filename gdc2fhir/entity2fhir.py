@@ -230,6 +230,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     observation.encounter = encounter_ref
     observation.identifier = [observation_identifier]
 
+    observation_code = CodeableConcept.construct()
+    observation_code.coding = [{'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}]
+    observation.code = observation_code
+
     observation_ref = Reference.construct()
     observation_ref.type = str(Observation)
     # todo explicit observation - or parent observation associated w encounter
@@ -245,6 +249,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
     condition = Condition.construct()
+    condition_clinicalstatus_code = CodeableConcept.construct()
+    condition_clinicalstatus_code.coding = [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "unknown" }]
+    condition.clinicalStatus = condition_clinicalstatus_code
     condition.subject = subject_ref
     condition.encounter = encounter_ref
     # todo: change to fhir type Age - from fhir.resources.age import Age

@@ -750,3 +750,4 @@ def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
         print('Available Map items of entity: ', len(available_maps), '\n')
         print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}
+
