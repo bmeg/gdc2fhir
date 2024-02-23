@@ -62,7 +62,7 @@ def file_init(field_path, out_path):
 @click.option('--name', required=True,
               default='project',
               show_default=True,
-              help='project, case, or file GDC entity to map')
+              help='project, case, or file GDC entity name to map')
 @click.option('--in_path', required=True,
               show_default=True,
               help='Path to GDC data to be mapped')
@@ -71,25 +71,24 @@ def file_init(field_path, out_path):
               help='Path to save mapped result')
 @click.option('--verbose', required=False,
               default=True,
-              show_default=True,
-              help='Print the count metric statements')
+              show_default=True)
 def convert(name, in_path, out_path, verbose):
     mapping.convert_maps(name=name, in_path=in_path, out_path=out_path, verbose=verbose)
 
 
 @cli.command('generate')
-@click.option('--entity', required=True,
+@click.option('--name', required=True,
               default='project',
               show_default=True,
-              help='project, case, or file GDC entity to map')
+              help='project, case, or file GDC entity name to map')
 @click.option('--out_dir', required=True,
-              help='')
+              help='Directory path to save mapped FHIR ndjson files.')
 @click.option('--entity_path', required=True,
-              help='')
-def generate(entity, out_dir, entity_path):
-    if entity in 'project':
+              help='Path to GDC entity with mapped FHIR like keys (converted file via convert).')
+def generate(name, out_dir, entity_path):
+    if name in 'project':
         entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path)
-    if entity in 'case':
+    if name in 'case':
         entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, cases_path=entity_path)
 
 

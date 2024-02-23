@@ -1,3 +1,4 @@
+import re
 import json
 from fhir.resources.identifier import Identifier
 from fhir.resources.researchstudy import ResearchStudy
@@ -112,47 +113,65 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     patient = Patient.construct()
     patient.identifier = [patient_identifier]
-    patient.id = case['Patient.id']
-    patient.gender = case['demographic']['Patient.gender']
-    patient.birthDate = str(case['demographic']['Patient.birthDate'])
-    if case['demographic']['Patient.deceasedDateTime']:
+
+    if 'Patient.id' in case.keys() and case['Patient.id'] and re.match(r"^[A-Za-z0-9\-.]+$", case['Patient.id']):
+        patient.id = case['Patient.id']
+
+    if 'demographic' in case.keys() and 'Patient.birthDate' in case['demographic']:
+        patient.birthDate = case['demographic']['Patient.birthDate']
+
+    if 'demographic' in case.keys() and 'Patient.gender' in case['demographic']:
+        gender = case['demographic']['Patient.gender']
+    else:
+        gender = None
+
+    patient.gender = gender
+    if 'demographic' in case.keys() and 'Patient.deceasedDateTime' in case['demographic']:
         patient.deceasedDateTime = case['demographic']['Patient.deceasedDateTime']
 
-    #  race and ethnicity
-    race_ext = Extension.construct()
-    race_ext.url = "https://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-race.json"
-    race_ext.valueString = case['demographic']['Extension.extension:USCoreRaceExtension']  # TODO change w FHIR strings
+    race_ethnicity = []
+    if 'demographic' in case.keys() and 'Extension.extension:USCoreRaceExtension' in case['demographic'].keys():
+        #  race and ethnicity
+        race_ext = Extension.construct()
+        race_ext.url = "https://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-race.json"
+        race_ext.valueString = case['demographic']['Extension.extension:USCoreRaceExtension']  # TODO change w FHIR strings
 
-    race_code = ""
-    for r in race:
-        if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension']:
-            race_code = r['ombCategory-code']
+        race_code = ""
+        for r in race:
+            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension']:
+                race_code = r['ombCategory-code']
 
-    if race_code:
-        race_ext.extension = [{"url": "ombCategory",
-                               "valueCoding": {
-                                   "system": "urn:oid:2.16.840.1.113883.6.238",
-                                   "code": race_code,
-                                   "display": case['demographic']['Extension.extension:USCoreRaceExtension']
-                               }}]
+        if race_code:
+            race_ext.extension = [{"url": "ombCategory",
+                                   "valueCoding": {
+                                       "system": "urn:oid:2.16.840.1.113883.6.238",
+                                       "code": race_code,
+                                       "display": case['demographic']['Extension.extension:USCoreRaceExtension']
+                                   }}]
+        race_ethnicity.append(race_ext)
 
-    ethnicity_ext = Extension.construct()
-    ethnicity_ext.url = "http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-ethnicity.json"
-    ethnicity_ext.valueString = case['demographic']['Extension:extension.USCoreEthnicity']  # TODO change w FHIR strings
+    if 'demographic' in case.keys() and 'Extension:extension.USCoreEthnicity' in case['demographic'].keys():
+        ethnicity_ext = Extension.construct()
+        ethnicity_ext.url = "http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-ethnicity.json"
+        ethnicity_ext.valueString = case['demographic']['Extension:extension.USCoreEthnicity']  # TODO change w FHIR strings
 
-    ethnicity_code = ""
-    for e in ethnicity:
-        if e['value'] in case['demographic']['Extension:extension.USCoreEthnicity']:
-            ethnicity_code = e['ombCategory-code']
+        ethnicity_code = ""
+        for e in ethnicity:
+            if e['value'] in case['demographic']['Extension:extension.USCoreEthnicity']:
+                ethnicity_code = e['ombCategory-code']
 
-    if ethnicity_code:
-        ethnicity_ext.extension = [{"url": "ombCategory",
-                                    "valueCoding": {
-                                        "system": "urn:oid:2.16.840.1.113883.6.238",
-                                        "code": ethnicity_code,
-                                        "display": case['demographic']['Extension:extension.USCoreEthnicity']
-                                    }}]
-    patient.extension = [ethnicity_ext, race_ext]
+        if ethnicity_code:
+            ethnicity_ext.extension = [{"url": "ombCategory",
+                                        "valueCoding": {
+                                            "system": "urn:oid:2.16.840.1.113883.6.238",
+                                            "code": ethnicity_code,
+                                            "display": case['demographic']['Extension:extension.USCoreEthnicity']
+                                        }}]
+
+            race_ethnicity.append(ethnicity_ext)
+
+        if race_ethnicity:
+            patient.extension = race_ethnicity
 
     # gdc project for patient
     project_relations = assign_fhir_for_project(project=case['ResearchStudy'], disease_types=disease_types)
@@ -181,9 +200,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     # create Encounter **
     # TODO: check tissue source site is ok to be encounter
+    if 'tissue_source_site' in case.keys():
+        encounter_tss_id = case['tissue_source_site']['Encounter.identifier']
+    else:
+        encounter_tss_id = None
     encounter = Encounter.construct()
     encounter_identifier = Identifier.construct()
-    encounter_identifier.value = case['tissue_source_site']['Encounter.identifier']
+    encounter_identifier.value = encounter_tss_id
     encounter.status = 'completed'
     encounter.identifier = [encounter_identifier]
     encounter.subject = subject_ref
@@ -192,8 +215,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     encounter_ref.type = str(Encounter)
     encounter_ref.identifier = encounter_identifier
 
+    if 'diagnoses' in case.keys() and 'Condition.identifier' in case['diagnoses'].keys():
+        obs_identifier = case['diagnoses']['Condition.identifier']
+    else:
+        obs_identifier = None
+
     observation_identifier = Identifier.construct()
-    observation_identifier.value = case['diagnoses']['Condition.identifier']
+    observation_identifier.value = obs_identifier
 
     # create Observation **
     observation = Observation.construct()
@@ -207,8 +235,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     # todo explicit observation - or parent observation associated w encounter
     observation_ref.identifier = observation.identifier[0]
 
+    if 'diagnoses' in case.keys() and 'Condition.identifier' in case['diagnoses'].keys():
+        cond_identifier = case['diagnoses']['Condition.identifier']
+    else:
+        cond_identifier = None
+
     condition_identifier = Identifier.construct()
-    condition_identifier.value = case['diagnoses']['Condition.identifier']
+    condition_identifier.value = cond_identifier
 
     # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
     condition = Condition.construct()
@@ -216,62 +249,89 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     condition.encounter = encounter_ref
     # todo: change to fhir type Age - from fhir.resources.age import Age
     # same definition for onsetString: Estimated or actual date,  date-time, or age
-    condition.onsetString = str(case['diagnoses']['Condition.onsetAge'])
-    # "primary_diagnosis": "Infiltrating duct carcinoma, NOS"
-    condition.identifier = [condition_identifier]
+
+    if 'diagnoses' in case.keys() and 'Condition.onsetAge' in case['diagnoses'].keys():
+        condition.onsetString = str(case['diagnoses']['Condition.onsetAge'])
+        # "primary_diagnosis": "Infiltrating duct carcinoma, NOS"
+        condition.identifier = [condition_identifier]
 
     # condition.bodySite <-- primary_site snomed
     l_body_site = []
     for body_site in case['ResearchStudy']['Condition.bodySite']:
+        # print("body_site", body_site)
         for p in primary_sites:
-            if body_site in p['value'] and p['sctid']:
-                l_body_site.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': p['sctid']})
+            if not 'sctid' in p.keys():
+                code = "0000"
+            elif not p['sctid']:
+                code = "0000"
+            else:
+                code = p['sctid']
+            if body_site in p['value'] and 'sctid' in p.keys():
+                l_body_site.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
+    # print("l_body_site", l_body_site)
 
     cc_body_site = CodeableConcept.construct()
     cc_body_site.coding = l_body_site
     condition.bodySite = [cc_body_site]
 
-    # condition staging
-    staging_list = []
-    for key, value in case['diagnoses'].items():
-        if 'Condition.stage_' in key:
-            case_stage_display = value
-            staging_name = key.replace('Condition.stage_', '')
+    if 'diagnoses' in case.keys():
+        # condition staging
+        staging_list = []
+        for key, value in case['diagnoses'].items():
+            if 'Condition.stage_' in key and value:
+                case_stage_display = value
+                print("case_stage_display", case_stage_display)
+                staging_name = key.replace('Condition.stage_', '')
 
-            sctid_code = None
-            stage_type_sctid_code = None
-            for dict_item in cancer_pathological_staging:
-                if case['diagnoses'][key] == dict_item['value']:
-                    sctid_code = dict_item['sctid']
-                    stage_type_sctid_code = dict_item['stage_type_sctid']
+                sctid_code = "0000"
+                stage_type_sctid_code = "0000"
+                for dict_item in cancer_pathological_staging:
+                    if case['diagnoses'][key] == dict_item['value']:
+                        sctid_code = dict_item['sctid']
+                        stage_type_sctid_code = dict_item['stage_type_sctid']
 
-            cc_stage_type = CodeableConcept.construct()
-            cc_stage_type.coding = [{'system': "https://cadsr.cancer.gov/",
-                                     'code': data_dict['clinical']['diagnosis']['properties'][staging_name]['termDef'][
-                                         'cde_id']},
-                                    {'system': "http://snomed.info/sct",
-                                     'code': stage_type_sctid_code}
-                                    ]
+                cc_stage_type = CodeableConcept.construct()
+                cc_stage_type.coding = [{'system': "https://cadsr.cancer.gov/",
+                                         'code': data_dict['clinical']['diagnosis']['properties'][staging_name]['termDef'][
+                                             'cde_id']},
+                                        {'system': "http://snomed.info/sct",
+                                         'code': stage_type_sctid_code}
+                                        ]
+                # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
+                if case_stage_display and case_stage_display in data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'].keys():
+                    code = data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'][case_stage_display]['termDef']['cde_id']
+                else:
+                    code = "0000"
 
-            cc_stage = CodeableConcept.construct()
-            cc_stage.coding = [{'system': "https://ncit.nci.nih.gov",
-                                'display': case['diagnoses'][key],
-                                'code': data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'][
-                                    case_stage_display]['termDef']['cde_id']
-                                }]
+                if case['diagnoses'][key]:
+                    display = case['diagnoses'][key]
+                else:
+                    display = "replace-me"
 
-            cc_stage_sctid = CodeableConcept.construct()
-            cc_stage_sctid.coding = [{'system': "http://snomed.info/sct",
-                                      'display': case['diagnoses'][key],
-                                      'code': sctid_code}]
+                if not re.match("^[^\s]+(\s[^\s]+)*$", sctid_code):
+                    sctid_code = "0000"
 
-            condition_stage = ConditionStage.construct()
-            condition_stage.summary = cc_stage
-            condition_stage.type = cc_stage_type
-            condition_stage.assessment = [observation_ref]
-            staging_list.append(condition_stage)
+                # print("sctid_code", sctid_code)
+                # print("code", code)
 
-    condition.stage = staging_list
+                cc_stage = CodeableConcept.construct()
+                cc_stage.coding = [{'system': "https://ncit.nci.nih.gov",
+                                    'display': display,
+                                    'code': code
+                                    }]
+
+                cc_stage_sctid = CodeableConcept.construct()
+                cc_stage_sctid.coding = [{'system': "http://snomed.info/sct",
+                                          'display': display,
+                                          'code': sctid_code}]
+
+                condition_stage = ConditionStage.construct()
+                condition_stage.summary = cc_stage
+                condition_stage.type = cc_stage_type
+                condition_stage.assessment = [observation_ref]
+                staging_list.append(condition_stage)
+
+        condition.stage = staging_list
 
     # relations inside samples list - todo: need to fix traverse_and_map to return ex. [{}, [{[{}, {}]}], {}] cases
     # create specimen

@@ -204,7 +204,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "64033007"
     },
     {
         "value": "Larynx",
@@ -285,7 +285,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "0000"
     },
     {
         "value": "Other and ill-defined sites",
@@ -294,7 +294,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "0000"
     },
     {
         "value": "Other and ill-defined sites in lip, oral cavity and pharynx",
@@ -303,7 +303,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "0000"
     },
     {
         "value": "Other and ill-defined sites within respiratory system and intrathoracic organs",
@@ -312,7 +312,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "0000"
     },
     {
         "value": "Other and unspecified female genital organs",
@@ -411,7 +411,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "15776009"
     },
     {
         "value": "Parotid gland",
@@ -600,7 +600,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "35039007"
     },
     {
         "value": "Vagina",
