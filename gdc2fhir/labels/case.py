@@ -614,7 +614,7 @@ case_maps = [Map(
             name='samples.portions.slides.slide_id'
         ),
         destination=Destination(
-            name='Specimen.identifier'
+            name='ImagingStudy.id'
         )
     ),
 

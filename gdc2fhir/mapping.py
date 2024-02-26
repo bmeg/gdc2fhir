@@ -308,29 +308,34 @@ def convert_maps(in_path, out_path, name, verbose):
     """
 
     mapped_entity_list = []
+    schema = None
 
     if name in 'project':
         schema = utils.load_schema_from_json(path='./mapping/project.json')
     elif name in 'case':
         schema = utils.load_schema_from_json(path='./mapping/case.json')
 
-        if schema:
-            entities = utils.load_ndjson(path=in_path)
+    if schema:
+        entities = utils.load_ndjson(path=in_path)
 
-            all_keys = [list(utils.extract_keys(e)) for e in entities]
-            keys = list(set().union(*all_keys)) # union of all keys
+        all_keys = [list(utils.extract_keys(e)) for e in entities]
+        keys = list(set().union(*all_keys))  # union of all keys
+        # print(keys)
 
-            available_maps = [schema.find_map_by_source(k) for k in keys]
-            available_maps.append(schema.obj_mapping)
+        available_maps = [schema.find_map_by_source(k) for k in keys]
+        available_maps.append(schema.obj_mapping)
+        # print("available_maps", available_maps)
 
-            if verbose:
-                print("available_maps: ", available_maps)
+        if verbose:
+            print("available_maps: ", available_maps)
 
-            mapped_entity_list = [utils.map_data(e, available_maps, verbose=verbose)['mapped_data'] for e in entities]
+        mapped_entity_list = [utils.map_data(e, available_maps, verbose=verbose)['mapped_data'] for e in entities]
 
-            if out_path:
-                with open(out_path, 'w') as file:
-                    file.write('\n'.join(map(json.dumps, mapped_entity_list)))
+        if out_path:
+            with open(out_path, 'w') as file:
+                file.write('\n'.join(map(json.dumps, mapped_entity_list)))
 
-        return mapped_entity_list
+    return mapped_entity_list
+
+
 

@@ -1680,7 +1680,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier",
+                "name": "ImagingStudy.id",
                 "description": null,
                 "description_url": null,
                 "module": null,
