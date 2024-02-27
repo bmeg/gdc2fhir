@@ -3,8 +3,7 @@ import json
 import glob
 import requests
 from bs4 import BeautifulSoup
-from typing import List, Optional, Dict
-from gdc2fhir.schema import Schema, Map
+from gdc2fhir.schema import Schema
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -645,7 +644,7 @@ def validate_and_write(schema, out_path, update=False, generate=False):
 def load_schema_from_json(path) -> Schema:
     with open(path, "r") as j:
         data = json.load(j)
-        return Schema.parse_obj(data)
+        return Schema.model_validate(data)
 
 
 def load_ndjson(path):
@@ -657,21 +656,70 @@ def load_ndjson(path):
         print(e)
 
 
-def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter, changed_key, verbose):
-    """
-    Traverse a GDC script and map keys from GDC to FHIR based on Schema's Map objects in gdc2fhir labes python definitions
+def is_deeply_nested_dict_list(nested_value):
+    return isinstance(nested_value, list) and all(isinstance(item, dict) for item in nested_value)
 
-    :param node:
-    :param current_keys:
-    :param mapped_data:
-    :param available_maps:
-    :param success_counter:
-    :param changed_key:
-    :param verbose:
-    :return:
-    """
+
+def append_data_to_key(data, target_key, data_to_append, parent_key='', separator='_'):
+    if isinstance(data, dict):
+        for key, value in data.items():
+            nested_key = f"{parent_key}{separator}{key}" if parent_key else key
+            if nested_key == target_key:
+                data[key].append(data_to_append)
+            else:
+                append_data_to_key(value, target_key, data_to_append, nested_key, separator)
+    elif isinstance(data, list):
+        for i, value in enumerate(data):
+            nested_key = f"{parent_key}{separator}{i}" if parent_key else str(i)
+            append_data_to_key(value, target_key, data_to_append, nested_key, separator)
+
+def process_nested_list(traverse_key, nested_value, current_keys, available_maps):
+    tks = traverse_key.split(".")
+    tks = tks[-1]
+    this_nest = {tks : []}
+
+    for elm in nested_value:
+        if isinstance(elm, dict):
+            for key, value in elm.items():
+
+                if isinstance(value, list):
+                    current_key = '.'.join(current_keys + [traverse_key] + [key])
+                    tks = traverse_key.split(".")
+                    tks = tks[-1]
+
+                    result = process_nested_list(current_key, value, current_keys, available_maps)
+                    append_data_to_key(this_nest, tks, result, parent_key='', separator='_')
+                    continue
+
+                current_key = '.'.join(current_keys + [traverse_key] + [key])
+                schema_map = next((m for m in available_maps if m and m.source.name == current_key), None)
+
+                if schema_map:
+                    destination_key = schema_map.destination.name
+
+                    if not is_deeply_nested_dict_list(value) and not isinstance(value, list):
+                        if isinstance(this_nest[tks], list):
+                            append_data_to_key(this_nest, tks, {destination_key: value}, parent_key='', separator='_')
+                        elif isinstance(this_nest[tks], dict):
+                            append_data_to_key(this_nest, tks, {destination_key: value}, parent_key='', separator='_')
+
+    return this_nest
+
+
+def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter, changed_key, verbose):
 
     for key, value in node.items():
+        is_nested_list = is_deeply_nested_dict_list(value)
+        if is_nested_list:
+            maps = process_nested_list(key, value, current_keys, available_maps)
+            mapped_data.update(maps)
+
+            if verbose:
+                print("********** is_nested_list: ", is_nested_list, "key: ", key, "value: ", value,  "\n")
+                print("--- maps ---- ", maps)
+                print("--- All Done ---- ")
+            continue
+
         if isinstance(changed_key, tuple):
             # swap parent key that was changed to FHIR back to GDC
             current_key = '.'.join([changed_key[0]] + [key])
@@ -690,17 +738,21 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
 
             current_dat = mapped_data
             for nested_key in current_keys:
-                if nested_key not in current_dat:
-                    # create dict for hierarchy parsing
+                if nested_key not in current_dat and nested_key not in mapped_data.keys():
                     current_dat[nested_key] = {}
-                current_dat = current_dat[nested_key]
-
+                if nested_key not in current_dat and nested_key in mapped_data.keys():
+                    current_dat.update({nested_key: {destination_key: value}})
+                else:
+                    current_dat = current_dat[nested_key]
                 if verbose:
                     print("current_dat: ", current_dat, "\n")
 
-            if destination_key not in current_dat:
+            if destination_key not in current_dat and not isinstance(current_dat, list):
                 # check Map's destination
                 if not isinstance(value, dict):
+                    current_dat[destination_key] = value
+
+                if isinstance(value, list):
                     current_dat[destination_key] = value
 
                 if verbose:
@@ -709,45 +761,27 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
                 if isinstance(value, dict):
                     if verbose:
                         print("instance dict - recall (DICT):", current_keys + [key], "\n")
-                    traverse_and_map(value, current_keys + [destination_key], mapped_data, available_maps, success_counter,
+                    traverse_and_map(value, current_keys + [destination_key], mapped_data, available_maps,
+                                     success_counter,
                                      changed_key=(current_key, destination_key), verbose=verbose)
 
-            # successful map counter
-            success_counter['mapped'] += 1
-
-        elif (value and not isinstance(value, bool) and
-              not isinstance(value, int) and
-              not isinstance(value, float) and
-              not isinstance(value, str) and len(value) >= 1 and isinstance(value, list) and
-              isinstance(value[0], dict)):
-            # mapped_data update to handle nested list dictionary values
-            if verbose:
-                print("instance list of dict: ", current_keys + [key], "\n")
-                print("mapped_data_type: ", type(mapped_data))
-                for v in value:
-                    traverse_and_map(v, current_keys + [key], mapped_data, available_maps, success_counter, changed_key=changed_key, verbose=verbose)
+            # success_counter['mapped'] += 1
 
         elif isinstance(value, dict):
             if verbose:
                 print("instance dict - recall:", current_keys + [key], "\n")
-            traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter, changed_key=changed_key, verbose=verbose)
+            traverse_and_map(value, current_keys + [key], mapped_data, available_maps, success_counter,
+                             changed_key=changed_key, verbose=verbose)
 
 
-def map_data(data, available_maps: List[Optional[Map]], verbose) -> Dict:
-    """
-    Map GDC keys to FHIR and count successful mappings
-
-    :param data:
-    :param available_maps:
-    :param verbose:
-    :return:
-    """
-
+def map_data(data, available_maps, verbose):
     mapped_data = {}
+    # TODO: success_counter incrementation
     success_counter = {'mapped': 0}
+
     traverse_and_map(data, [], mapped_data, available_maps, success_counter, changed_key=None, verbose=verbose)
     if verbose:
         print('Available Map items of entity: ', len(available_maps), '\n')
-        print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')
+        # print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}
 

@@ -219,6 +219,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     observation = None
     observation_ref = None
+
+    # TODO: temporary fix
+    if 'diagnoses' in case.keys():
+        case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
+
     if 'diagnoses' in case.keys() and 'Condition.identifier' in case['diagnoses'].keys():
         obs_identifier = case['diagnoses']['Condition.identifier']
 
@@ -243,6 +248,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation_ref.identifier = observation.identifier[0]
 
     condition = None # normal tissue don't/shouldn't  have diagnoses or condition
+
     if 'diagnoses' in case.keys() and 'Condition.identifier' in case['diagnoses'].keys():
         cond_identifier = case['diagnoses']['Condition.identifier']
 
@@ -286,6 +292,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if 'diagnoses' in case.keys():
             # condition staging
             staging_list = []
+            # print("case['diagnoses']", case['diagnoses'])
             for key, value in case['diagnoses'].items():
                 if 'Condition.stage_' in key and value:
                     case_stage_display = value

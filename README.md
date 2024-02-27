@@ -78,7 +78,7 @@ python setup.py install
 ```
 gdc2fhir convert --name project --in_path projects.ndjson --out_path project_key.ndjson --verbose True
 
-gdc2fhir generate --name project --out_dir ./data --projects_path project_key.ndjson
+gdc2fhir generate --name project --out_dir ./data --entity_path project_key.ndjson
 
 ``` 
 
