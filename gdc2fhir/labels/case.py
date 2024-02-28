@@ -578,7 +578,7 @@ case_maps = [Map(
             name='samples.sample_id'
         ),
         destination=Destination(
-            name='Specimen.identifier'
+            name='Specimen.identifier.sample'
         )
     ),
 
@@ -587,7 +587,7 @@ case_maps = [Map(
             name='samples.portions.portion_id'
         ),
         destination=Destination(
-            name='Specimen.identifier'
+            name='Specimen.identifier.portion'
         )
     ),
 
@@ -596,7 +596,7 @@ case_maps = [Map(
             name='samples.portions.analytes.analyte_id'
         ),
         destination=Destination(
-            name='Specimen.identifier'
+            name='Specimen.identifier.analyte'
         )
     ),
 
@@ -605,7 +605,7 @@ case_maps = [Map(
             name='samples.portions.analytes.aliquots.aliquot_id'
         ),
         destination=Destination(
-            name='Specimen.identifier'
+            name='Specimen.identifier.aliquot'
         )
     ),
 

@@ -296,7 +296,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             for key, value in case['diagnoses'].items():
                 if 'Condition.stage_' in key and value:
                     case_stage_display = value
-                    print("case_stage_display", case_stage_display)
+                    # print("case_stage_display", case_stage_display)
                     staging_name = key.replace('Condition.stage_', '')
 
                     sctid_code = "0000"
@@ -391,4 +391,3 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     fhir_ndjson(conditions, "".join([out_dir, "/Condition.ndjson"]))
     fhir_ndjson(research_subjects_flatten, "".join([out_dir, "/ResearchSubject.ndjson"]))
     fhir_ndjson(projects + programs, "".join([out_dir, "/ResearchStudy.ndjson"]))
-

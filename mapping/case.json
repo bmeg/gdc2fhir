@@ -1588,7 +1588,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier",
+                "name": "Specimen.identifier.sample",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1611,7 +1611,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier",
+                "name": "Specimen.identifier.portion",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1634,7 +1634,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier",
+                "name": "Specimen.identifier.analyte",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1657,7 +1657,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier",
+                "name": "Specimen.identifier.aliquot",
                 "description": null,
                 "description_url": null,
                 "module": null,

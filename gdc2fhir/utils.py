@@ -659,21 +659,98 @@ def load_ndjson(path):
 def is_deeply_nested_dict_list(nested_value):
     return isinstance(nested_value, list) and all(isinstance(item, dict) for item in nested_value)
 
+def has_nested_lists_of_dicts(d):
+    return any(isinstance(value, list) and any(isinstance(item, dict) for item in value) for value in d.values())
 
-def append_data_to_key(data, target_key, data_to_append, parent_key='', separator='_'):
+
+def append_data_to_key(data, target_key, data_to_append, depth=0):
     if isinstance(data, dict):
         for key, value in data.items():
-            nested_key = f"{parent_key}{separator}{key}" if parent_key else key
-            if nested_key == target_key:
+            if key == target_key and depth == 0:
+                # print("=========== IN DEPTH 0  =============")
+                if len(data[key]) == 1 and isinstance(data[key][0], dict):
+
+                    if data[key][0].keys() == data_to_append.keys() and data[key][0].values() != data_to_append.values():
+                        data[key].append(data_to_append)
+                        continue
+                    else:
+                        if not data[key] and key == "samples":
+                            data[key][0].update(data_to_append)
+                            continue
+                        if data[key] and key == "samples":
+                            data[key].append(data_to_append)
+                            continue
+
+                        data[key][0].update(data_to_append)
+                        continue
+
+                if data[key] and len(data[key]) > 1:
+                    for i, item in enumerate(data[key]):
+                        if len(item.keys()) == 1 and "Specimen.identifier" in item.keys():
+                            data[key][i].update(data_to_append)
+                            continue
+                        elif len(item.keys()) == 1 and "Specimen.identifier" not in item.keys():
+                            if item.keys() == data_to_append.keys() and item.values() != data_to_append.values():
+                                if isinstance(data[key][i], dict):
+                                    data[key][i].update(data_to_append)
+                                    continue
+                                if isinstance(data[key][i], list):
+                                    data[key][i].append(data_to_append)
+                                    continue
+                        else:
+                            data[key][i].append(data_to_append)
+                else:
+                    data[key].append(data_to_append)
+                    continue
+
+            elif key == target_key and depth == 1:
+                # print("=========== IN DEPTH 1  =============")
+                if len(data[key]) == 1 and isinstance(data[key][0], dict):
+                    if data[key][0].keys() == data_to_append.keys() and data[key][0].values() != data_to_append.values():
+                        data[key].append(data_to_append)
+                        continue
+                    else:
+                        data[key][0].update(data_to_append)
+                        continue
+
+                if data[key] and len(data[key]) > 1:
+                    for i, item in enumerate(data[key]):
+                        if len(item.keys()) == 1 and "Specimen.identifier" in item.keys():
+                            data[key][i].update(data_to_append)
+                            continue
+                        elif len(item.keys()) == 1 and "Specimen.identifier" not in item.keys():
+                            data[key][0].update(data_to_append)
+                            continue
+
                 data[key].append(data_to_append)
-            else:
-                append_data_to_key(value, target_key, data_to_append, nested_key, separator)
+
+            elif key == target_key and depth == 2:
+                # print("=========== IN DEPTH 2  =============")
+
+                if len(data[key]) == 1 and isinstance(data[key][0], dict):
+                    data[key][0].update(data_to_append)
+                    continue
+                data[key].append(data_to_append)
+                continue
+           
+            elif key == target_key and depth == 3:
+                # print("=========== IN DEPTH 3  =============")
+                if len(data[key]) == 1 and isinstance(data[key][0], dict):
+                    if data[key][0].keys() == data_to_append.keys() and data[key][0].values() != data_to_append.values():
+                        data[key].append(data_to_append)
+                        continue
+                    else:
+                        data[key][0].update(data_to_append)
+                        continue
+
+                data[key].append(data_to_append)
+                continue
+
     elif isinstance(data, list):
         for i, value in enumerate(data):
-            nested_key = f"{parent_key}{separator}{i}" if parent_key else str(i)
-            append_data_to_key(value, target_key, data_to_append, nested_key, separator)
+            append_data_to_key(value, target_key, data_to_append)
 
-def process_nested_list(traverse_key, nested_value, current_keys, available_maps):
+def process_nested_list(traverse_key, nested_value, current_keys, available_maps, depth=0):
     tks = traverse_key.split(".")
     tks = tks[-1]
     this_nest = {tks : []}
@@ -687,8 +764,8 @@ def process_nested_list(traverse_key, nested_value, current_keys, available_maps
                     tks = traverse_key.split(".")
                     tks = tks[-1]
 
-                    result = process_nested_list(current_key, value, current_keys, available_maps)
-                    append_data_to_key(this_nest, tks, result, parent_key='', separator='_')
+                    result = process_nested_list(current_key, value, current_keys, available_maps, depth + 1)
+                    append_data_to_key(this_nest, tks, result, depth)
                     continue
 
                 current_key = '.'.join(current_keys + [traverse_key] + [key])
@@ -699,17 +776,16 @@ def process_nested_list(traverse_key, nested_value, current_keys, available_maps
 
                     if not is_deeply_nested_dict_list(value) and not isinstance(value, list):
                         if isinstance(this_nest[tks], list):
-                            append_data_to_key(this_nest, tks, {destination_key: value}, parent_key='', separator='_')
+                            append_data_to_key(this_nest, tks, {destination_key: value}, depth)
                         elif isinstance(this_nest[tks], dict):
-                            append_data_to_key(this_nest, tks, {destination_key: value}, parent_key='', separator='_')
-
+                            append_data_to_key(this_nest, tks, {destination_key: value}, depth)
     return this_nest
-
 
 def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter, changed_key, verbose):
 
     for key, value in node.items():
         is_nested_list = is_deeply_nested_dict_list(value)
+
         if is_nested_list:
             maps = process_nested_list(key, value, current_keys, available_maps)
             mapped_data.update(maps)
@@ -784,4 +860,3 @@ def map_data(data, available_maps, verbose):
         print('Available Map items of entity: ', len(available_maps), '\n')
         # print('mapped_data: ', mapped_data, '\n\n', f'Mapped {success_counter["mapped"]} key items.', '\n')
     return {'mapped_data': mapped_data, 'success_counter': success_counter['mapped']}
-
