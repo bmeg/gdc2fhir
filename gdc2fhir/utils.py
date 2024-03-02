@@ -659,113 +659,96 @@ def load_ndjson(path):
 def is_deeply_nested_dict_list(nested_value):
     return isinstance(nested_value, list) and all(isinstance(item, dict) for item in nested_value)
 
-def has_nested_lists_of_dicts(d):
-    return any(isinstance(value, list) and any(isinstance(item, dict) for item in value) for value in d.values())
+def similar_key_set(dat_dict, new_dict):
+    return set(dat_dict.keys()).intersection(new_dict.keys())
 
 
-def append_data_to_key(data, target_key, data_to_append, depth=0):
+def has_complex_child(value):
+    if isinstance(value, (list, dict)):
+        return any(isinstance(child_value, (list, dict)) for child_value in value.values()) if isinstance(value, dict) else True
+    return False
+
+
+def custom_sort(item):
+    if isinstance(item, tuple):
+        key, value = item
+        return has_complex_child(value), key
+    elif isinstance(item, dict):
+        return has_complex_child(item), next(iter(item))
+    else:
+        return item
+
+
+def append_data_to_key(data, target_key, data_to_append):
     if isinstance(data, dict):
         for key, value in data.items():
-            if key == target_key and depth == 0:
-                # print("=========== IN DEPTH 0  =============")
-                if len(data[key]) == 1 and isinstance(data[key][0], dict):
 
-                    if data[key][0].keys() == data_to_append.keys() and data[key][0].values() != data_to_append.values():
+             if key == target_key:
+
+                if data[key] and isinstance(data[key][0], dict): # len(data[key]) == 1 and
+
+                    if data[key][0].keys() == data_to_append.keys()  and not data_to_append.items() <= data[key][0].items():
                         data[key].append(data_to_append)
                         continue
+
                     else:
-                        if not data[key] and key == "samples":
-                            data[key][0].update(data_to_append)
-                            continue
-                        if data[key] and key == "samples":
-                            data[key].append(data_to_append)
-                            continue
+                        shared_keys = similar_key_set(data[key][0], data_to_append)
+                        if shared_keys:
+                            shared_keys_items = next(iter(shared_keys))
+                            if isinstance(data[key][0][shared_keys_items], str) and isinstance(data_to_append[shared_keys_items], str) and data[key][0][shared_keys_items] != data_to_append[shared_keys_items]:
+                                data[key].append(data_to_append)
+                                continue
 
-                        data[key][0].update(data_to_append)
-                        continue
+                            elif isinstance(data[key][0][shared_keys_items], str) and isinstance(data_to_append[shared_keys_items], str) and data[key][0][shared_keys_items] == data_to_append[shared_keys_items]:
+                                data[key].append(data_to_append)
+                                continue
 
-                if data[key] and len(data[key]) > 1:
-                    for i, item in enumerate(data[key]):
-                        if len(item.keys()) == 1 and "Specimen.identifier" in item.keys():
-                            data[key][i].update(data_to_append)
-                            continue
-                        elif len(item.keys()) == 1 and "Specimen.identifier" not in item.keys():
-                            if item.keys() == data_to_append.keys() and item.values() != data_to_append.values():
-                                if isinstance(data[key][i], dict):
-                                    data[key][i].update(data_to_append)
+
+                            elif isinstance(data[key][0][shared_keys_items], list) and isinstance(data_to_append[shared_keys_items], list):
+                                data[key].append(data_to_append)
+                                continue
+
+                            # elif isinstance(data[key][0][shared_keys_items], list) and isinstance(data_to_append[shared_keys_items], list)
+                            # and not data[key][0][shared_keys_items][0].items() <= data_to_append[shared_keys_items][0].items():
+
+                        if data[key][0]:
+                            for i, item in enumerate(data[key]):
+                                if (isinstance(item, dict)
+                                        and not set(data_to_append.keys()).intersection(set(item.keys()))
+                                        and not data_to_append.items() <= item.items()):
+                                    item.update(data_to_append)
                                     continue
-                                if isinstance(data[key][i], list):
-                                    data[key][i].append(data_to_append)
-                                    continue
-                        else:
-                            data[key][i].append(data_to_append)
-                else:
+
+                        elif (data[key] and key == "samples"
+                                and not data[key][0].items() <= data_to_append.items()
+                                and not data_to_append.items() <= data[key][0].items()):
+                           data[key].append(data_to_append)
+                           continue
+
+                elif isinstance(data[key], list): # list is empty
                     data[key].append(data_to_append)
                     continue
-
-            elif key == target_key and depth == 1:
-                # print("=========== IN DEPTH 1  =============")
-                if len(data[key]) == 1 and isinstance(data[key][0], dict):
-                    if data[key][0].keys() == data_to_append.keys() and data[key][0].values() != data_to_append.values():
-                        data[key].append(data_to_append)
-                        continue
-                    else:
-                        data[key][0].update(data_to_append)
-                        continue
-
-                if data[key] and len(data[key]) > 1:
-                    for i, item in enumerate(data[key]):
-                        if len(item.keys()) == 1 and "Specimen.identifier" in item.keys():
-                            data[key][i].update(data_to_append)
-                            continue
-                        elif len(item.keys()) == 1 and "Specimen.identifier" not in item.keys():
-                            data[key][0].update(data_to_append)
-                            continue
-
-                data[key].append(data_to_append)
-
-            elif key == target_key and depth == 2:
-                # print("=========== IN DEPTH 2  =============")
-
-                if len(data[key]) == 1 and isinstance(data[key][0], dict):
-                    data[key][0].update(data_to_append)
-                    continue
-                data[key].append(data_to_append)
-                continue
-           
-            elif key == target_key and depth == 3:
-                # print("=========== IN DEPTH 3  =============")
-                if len(data[key]) == 1 and isinstance(data[key][0], dict):
-                    if data[key][0].keys() == data_to_append.keys() and data[key][0].values() != data_to_append.values():
-                        data[key].append(data_to_append)
-                        continue
-                    else:
-                        data[key][0].update(data_to_append)
-                        continue
-
-                data[key].append(data_to_append)
-                continue
-
     elif isinstance(data, list):
-        for i, value in enumerate(data):
+        sorted_data_keys = sorted(data, key=lambda x: custom_sort(x))
+        for i, value in enumerate(sorted_data_keys):
             append_data_to_key(value, target_key, data_to_append)
 
-def process_nested_list(traverse_key, nested_value, current_keys, available_maps, depth=0):
+
+def process_nested_list(traverse_key, nested_value, current_keys, available_maps):
     tks = traverse_key.split(".")
     tks = tks[-1]
-    this_nest = {tks : []}
+    this_nest = {tks: []}
 
-    for elm in nested_value:
+    for elm in sorted(nested_value, key=custom_sort):
         if isinstance(elm, dict):
-            for key, value in elm.items():
-
+            for key, value in sorted(elm.items(), key=lambda x: custom_sort(x)):
                 if isinstance(value, list):
                     current_key = '.'.join(current_keys + [traverse_key] + [key])
                     tks = traverse_key.split(".")
                     tks = tks[-1]
 
-                    result = process_nested_list(current_key, value, current_keys, available_maps, depth + 1)
-                    append_data_to_key(this_nest, tks, result, depth)
+                    result = process_nested_list(current_key, value, current_keys, available_maps)
+                    append_data_to_key(this_nest, tks, result)
                     continue
 
                 current_key = '.'.join(current_keys + [traverse_key] + [key])
@@ -776,10 +759,12 @@ def process_nested_list(traverse_key, nested_value, current_keys, available_maps
 
                     if not is_deeply_nested_dict_list(value) and not isinstance(value, list):
                         if isinstance(this_nest[tks], list):
-                            append_data_to_key(this_nest, tks, {destination_key: value}, depth)
+                            append_data_to_key(this_nest, tks, {destination_key: value})
                         elif isinstance(this_nest[tks], dict):
-                            append_data_to_key(this_nest, tks, {destination_key: value}, depth)
+                            append_data_to_key(this_nest, tks, {destination_key: value})
+
     return this_nest
+
 
 def traverse_and_map(node, current_keys, mapped_data, available_maps, success_counter, changed_key, verbose):
 
@@ -791,7 +776,7 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
             mapped_data.update(maps)
 
             if verbose:
-                print("********** is_nested_list: ", is_nested_list, "key: ", key, "value: ", value,  "\n")
+                print("********** is_nested_list: ", is_nested_list, "key: ", key, "value: ", value, "\n")
                 print("--- maps ---- ", maps)
                 print("--- All Done ---- ")
             continue
@@ -840,8 +825,6 @@ def traverse_and_map(node, current_keys, mapped_data, available_maps, success_co
                     traverse_and_map(value, current_keys + [destination_key], mapped_data, available_maps,
                                      success_counter,
                                      changed_key=(current_key, destination_key), verbose=verbose)
-
-            # success_counter['mapped'] += 1
 
         elif isinstance(value, dict):
             if verbose:
