@@ -78,9 +78,10 @@ def assign_fhir_for_project(project, disease_types=disease_types):
             'Extension.valueUnsignedInt']  # total documentReference Count - better association?
         rs.extension = [e]
 
-    ref = Reference.construct()
-    ref.type = str(ResearchStudy)
-    ref.identifier = identifier_parent
+    # ref = Reference.construct()
+    # ref.type = "ResearchStudy"
+    # ref.identifier = identifier_parent
+    ref = Reference(**{"reference": "/".join(["ResearchStudy", project['ResearchStudy']['ResearchStudy.identifier']])})
     rs.partOf = [ref]
     #  condition -- subject --> patient <--subject-- researchsubject -- study --> researchstudy -- partOf --> researchstudy
 
@@ -180,15 +181,18 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     # study Reference link to a ResearchStudy
     project_study_ref_list = []
     for identifier in project_relations['ResearchStudy_obj'].identifier:
-        project_study_ref = Reference.construct()
-        project_study_ref.type = str(ResearchStudy)
-        project_study_ref.identifier = identifier
-        project_study_ref_list.append(project_study_ref)
+        # project_study_ref = Reference.construct()
+        # project_study_ref.type = "ResearchStudy"
+        # project_study_ref.identifier = identifier
+        ref = Reference(**{"reference": "/".join(["ResearchStudy", identifier.value])})
+        project_study_ref_list.append(ref)
 
     # subject Reference link to a Patient
-    subject_ref = Reference.construct()
-    subject_ref.type = str(Patient)
-    subject_ref.identifier = patient_identifier
+    # subject_ref = Reference.construct()
+    # subject_ref.type = "Patient"
+    # subject_ref.identifier = patient_identifier
+
+    subject_ref = Reference(**{"reference": "/".join(["Patient", case['Patient.identifier']])})
 
     # create researchSubject to link Patient --> ResearchStudy
     research_subject_list = []
@@ -213,14 +217,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         encounter.identifier = [encounter_identifier]
         encounter.subject = subject_ref
 
-        encounter_ref = Reference.construct()
-        encounter_ref.type = str(Encounter)
-        encounter_ref.identifier = encounter_identifier
+        # encounter_ref = Reference.construct()
+        # encounter_ref.type = "Encounter"
+        # encounter_ref.identifier = encounter_identifier
+
+        encounter_ref = Reference(**{"reference": "/".join(["Encounter", encounter_tss_id])})
 
     observation = None
     observation_ref = None
-
-    # TODO: temporary fix
     if 'diagnoses' in case.keys():
         case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
 
@@ -242,13 +246,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation_code.coding = [{'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}]
         observation.code = observation_code
 
-        observation_ref = Reference.construct()
-        observation_ref.type = str(Observation)
+        # observation_ref = Reference.construct()
+        # observation_ref.type = "Observation"
+        observation_ref = Reference(**{"reference": "/".join(["Observation", observation.identifier[0].value])})
+
         # todo explicit observation - or parent observation associated w encounter
         observation_ref.identifier = observation.identifier[0]
 
     condition = None # normal tissue don't/shouldn't  have diagnoses or condition
-
     if 'diagnoses' in case.keys() and 'Condition.identifier' in case['diagnoses'].keys():
         cond_identifier = case['diagnoses']['Condition.identifier']
 
