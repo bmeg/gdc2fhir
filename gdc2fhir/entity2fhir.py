@@ -25,6 +25,7 @@ cancer_pathological_staging = utils._read_json("./resources/gdc_resources/conten
 def assign_fhir_for_project(project, disease_types=disease_types):
     # create ResearchStudy
     identifier = Identifier.construct()
+    print("INSIDE assign_fhir_for_project", project)
     identifier.value = project['ResearchStudy.identifier']
 
     rs = ResearchStudy.construct()
@@ -350,13 +351,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
             condition.stage = staging_list
 
-    # relations inside samples list - todo: need to fix traverse_and_map to return ex. [{}, [{[{}, {}]}], {}] cases
     # create specimen
     specimen = Specimen.construct()
     aliquot_specimen = Specimen.construct()
     analyte_specimen = Specimen.construct()
     portion_specimen = Specimen.construct()
-
 
     return {'patient': patient, 'encounter': encounter, 'observation': observation, 'condition': condition,
             'project_relations': project_relations, 'research_subject_list': research_subject_list}

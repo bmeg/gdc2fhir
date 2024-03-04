@@ -320,11 +320,9 @@ def convert_maps(in_path, out_path, name, verbose):
 
         all_keys = [list(utils.extract_keys(e)) for e in entities]
         keys = list(set().union(*all_keys))  # union of all keys
-        # print(keys)
 
         available_maps = [schema.find_map_by_source(k) for k in keys]
         available_maps.append(schema.obj_mapping)
-        # print("available_maps", available_maps)
 
         if verbose:
             print("available_maps: ", available_maps)
