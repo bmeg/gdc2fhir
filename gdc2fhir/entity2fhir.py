@@ -1,5 +1,7 @@
 import re
 import json
+import orjson
+from iteration_utilities import unique_everseen
 from fhir.resources.identifier import Identifier
 from fhir.resources.researchstudy import ResearchStudy
 from fhir.resources.codeableconcept import CodeableConcept
@@ -25,7 +27,6 @@ cancer_pathological_staging = utils._read_json("./resources/gdc_resources/conten
 def assign_fhir_for_project(project, disease_types=disease_types):
     # create ResearchStudy
     identifier = Identifier.construct()
-    print("INSIDE assign_fhir_for_project", project)
     identifier.value = project['ResearchStudy.identifier']
 
     rs = ResearchStudy.construct()
@@ -87,16 +88,14 @@ def assign_fhir_for_project(project, disease_types=disease_types):
             "ResearchStudy.partOf_obj": rs_parent}
 
 
-# out_path ='./data/ResearchStudy.ndjson'
-# projects_path="./tests/fixtures/project_key.ndjson"
+# projects_path="./tests/fixtures/project/project_key.ndjson"
 
 def project_gdc_to_fhir_ndjson(out_dir, projects_path):
     projects = utils.load_ndjson(projects_path)
     all_rs = [assign_fhir_for_project(project=p, disease_types=disease_types) for p in projects]
-    research_study = [rs['ResearchStudy'] for rs in all_rs]
-    research_study_parent = set(
-        rs['ResearchStudy.partOf'] for rs in all_rs)  # ResearchStudy -- *...1  partOf -> ResearchStudy
-    rs_e2f = research_study + list(research_study_parent)
+    research_study = [orjson.loads(rs['ResearchStudy_obj'].json()) for rs in all_rs]
+    research_study_parent = [orjson.loads(rs['ResearchStudy.partOf_obj'].json()) for rs in all_rs]
+    rs_e2f = research_study + list(unique_everseen(research_study_parent)) # ResearchStudy -- *...1  partOf -> ResearchStudy
 
     with open("".join([out_dir, "/ResearchStudy.ndjson"]), 'w') as file:
         file.write('\n'.join(map(json.dumps, rs_e2f)))
@@ -367,7 +366,7 @@ def fhir_ndjson(entity, out_path):
             file.write('\n'.join(map(lambda e: json.dumps(e, ensure_ascii=False), entity)))
     else:
         with open(out_path, 'w', encoding='utf8') as file:
-            file.write(json.dumps(entity.json(), ensure_ascii=False))
+            file.write(json.dumps(entity, ensure_ascii=False))
 
 
 def case_gdc_to_fhir_ndjson(out_dir, cases_path):
@@ -375,14 +374,14 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     all_fhir_case_obj = []
     [all_fhir_case_obj.append(assign_fhir_for_case(c)) for c in cases]
 
-    patients = [json.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
-    encounters = [json.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if 'encounter' in fhir_case.keys() and fhir_case['encounter']]
-    observations = [json.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if 'observation' in fhir_case.keys() and fhir_case['observation']]
-    conditions = [json.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if 'condition' in fhir_case.keys() and fhir_case['condition']]
+    patients = [orjson.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
+    encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if 'encounter' in fhir_case.keys() and fhir_case['encounter']]
+    observations = [orjson.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if 'observation' in fhir_case.keys() and fhir_case['observation']]
+    conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if 'condition' in fhir_case.keys() and fhir_case['condition']]
     research_subjects = [fhir_case['research_subject_list'] for fhir_case in all_fhir_case_obj]
-    research_subjects_flatten = [json.loads(r.json()) for rs in research_subjects for r in rs]
-    projects = [json.loads(fhir_case['project_relations']["ResearchStudy_obj"].json()) for fhir_case in all_fhir_case_obj]
-    programs = list(set([fhir_case['project_relations']["ResearchStudy.partOf_obj"].json() for fhir_case in all_fhir_case_obj]))
+    research_subjects_flatten = [orjson.loads(r.json()) for rs in research_subjects for r in rs]
+    projects = [orjson.loads(fhir_case['project_relations']["ResearchStudy_obj"].json()) for fhir_case in all_fhir_case_obj]
+    programs = list(unique_everseen([orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].json()) for fhir_case in all_fhir_case_obj]))
 
     fhir_ndjson(patients, "".join([out_dir, "/Patient.ndjson"]))
     fhir_ndjson(encounters, "".join([out_dir, "/Encounter.ndjson"]))

@@ -22,6 +22,8 @@ setup(
         'pytest',
         'click',
         'pathlib',
+        'orjson',
+        'iteration_utilities',
         'beautifulsoup4',
         'fhir.resources>=7.1.0'  # FHIR® (Release R5, version 5.0.0)
     ],
