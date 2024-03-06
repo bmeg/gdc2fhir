@@ -149,19 +149,14 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.identifier",
-                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "name": "ResearchStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Business Identifier for study",
-                "type": "Identifier",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
-                "reference": [
-                    {
-                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
-                        "parent": null
-                    }
-                ]
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
+                "reference": null
             }
         },
         {
@@ -177,19 +172,14 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.id",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Logical id of this artifact",
-                "type": "string",
+                "title": "Business Identifier for study",
+                "type": "array",
                 "format": null,
-                "reference": [
-                    {
-                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
-                        "parent": null
-                    }
-                ]
+                "reference": null
             }
         },
         {
@@ -309,19 +299,14 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.id",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Logical id of this artifact",
-                "type": "string",
+                "title": "Business Identifier for study",
+                "type": "array",
                 "format": null,
-                "reference": [
-                    {
-                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
-                        "parent": null
-                    }
-                ]
+                "reference": null
             }
         },
         {
@@ -360,13 +345,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.identifier",
-                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "name": "ResearchStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Business Identifier for study",
-                "type": "Identifier",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
                 "reference": null
             }
         },

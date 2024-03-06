@@ -16,7 +16,7 @@ two_level_up = os.path.abspath(os.path.join(os.path.dirname('__file__'), '../..'
 project_schema = utils.load_schema_from_json(path="".join([two_level_up, "/mapping/project.json"]))
 keys_to_label_fields = [key for key in project_schema.obj_keys if
                         key not in [x.source.name for x in project_schema.mappings]]
-data_dict = utils.load_data_dictionary("".join([two_level_up, "./resources/gdc_resources/data_dictionary/"]))
+data_dict = utils.load_data_dictionary("".join([two_level_up, "/resources/gdc_resources/data_dictionary/"]))
 
 """
 Field labels mapped semi-computationally 
@@ -64,13 +64,11 @@ project_maps = [
             type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term']
         ),
         destination=Destination(
-            name='ResearchStudy.identifier',
-            description=ResearchStudy.schema()['properties']['identifier']['description'],
+            name='ResearchStudy.id',
+            description=ResearchStudy.schema()['properties']['id']['description'],
             module='Administration',
-            title=ResearchStudy.schema()['properties']['identifier']['title'],
-            type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=str(List[Identifier]),
-            reference=[Reference(reference_type=str(ResearchStudy))]
+            title=ResearchStudy.schema()['properties']['id']['title'],
+            type=ResearchStudy.schema()['properties']['id']['type']
         )
     ),
 
@@ -82,12 +80,11 @@ project_maps = [
             type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type']
         ),
         destination=Destination(
-            name="ResearchStudy.id",
-            description=ResearchStudy.schema()['properties']['id']['description'],
+            name="ResearchStudy.identifier",
+            description=ResearchStudy.schema()['properties']['identifier']['description'],
             module='Administration',
-            title=ResearchStudy.schema()['properties']['id']['title'],
-            type=ResearchStudy.schema()['properties']['id']['type'],
-            reference=[Reference(reference_type=str(ResearchStudy))]
+            title=ResearchStudy.schema()['properties']['identifier']['title'],
+            type=ResearchStudy.schema()['properties']['identifier']['type']
         )
     ),
 
@@ -168,12 +165,11 @@ project_maps = [
             type=data_dict['administrative']['program']['properties']['dbgap_accession_number']['type']
         ),
         destination=Destination(
-            name="ResearchStudy.id",
-            description=ResearchStudy.schema()['properties']['id']['description'],
+            name="ResearchStudy.identifier",
+            description=ResearchStudy.schema()['properties']['identifier']['description'],
             module='Administration',
-            title=ResearchStudy.schema()['properties']['id']['title'],
-            type=ResearchStudy.schema()['properties']['id']['type'],
-            reference=[Reference(reference_type=str(ResearchStudy))]
+            title=ResearchStudy.schema()['properties']['identifier']['title'],
+            type=ResearchStudy.schema()['properties']['identifier']['type']
         )
     ),
 
@@ -201,12 +197,11 @@ project_maps = [
             type=data_dict['administrative']['program']['properties']['id']['common']['termDef']['term']
         ),
         destination=Destination(
-            name='ResearchStudy.identifier',
-            description=ResearchStudy.schema()['properties']['identifier']['description'],
+            name='ResearchStudy.id',
+            description=ResearchStudy.schema()['properties']['id']['description'],
             module='Administration',
-            title=ResearchStudy.schema()['properties']['identifier']['title'],
-            type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=str(List[Identifier])
+            title=ResearchStudy.schema()['properties']['id']['title'],
+            type=ResearchStudy.schema()['properties']['id']['type']
         )
     ),
 

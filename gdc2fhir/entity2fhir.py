@@ -26,22 +26,24 @@ cancer_pathological_staging = utils._read_json("./resources/gdc_resources/conten
 
 def assign_fhir_for_project(project, disease_types=disease_types):
     # create ResearchStudy
-    identifier = Identifier.construct()
-    identifier.value = project['ResearchStudy.identifier']
-
     rs = ResearchStudy.construct()
-
-    # rs.status = "open-released" # assign required fields first
     if project['ResearchStudyProgressStatus.actual']:
         rs.status = "-".join([project['ResearchStudy.status'], "released"])
     else:
         rs.status = project['ResearchStudy.status']
 
-    rs.identifier = [identifier]
+    if project['ResearchStudy.id'] in ["EXCEPTIONAL_RESPONDERS-ER", "CDDP_EAGLE-1"]:
+        rs.id = project['ResearchStudy']['ResearchStudy.id']
+    else:
+        rs.id = project['ResearchStudy.id']
+
     rs.name = project['ResearchStudy.name']
 
-    if 'ResearchStudy.id' in project.keys():
-        rs.id = project['ResearchStudy.id']
+    if 'ResearchStudy.identifier' in project.keys() and project['ResearchStudy.identifier']:
+        ident = Identifier.construct()
+        ident.value = project['ResearchStudy.identifier']
+        ident.system = "".join(["https://gdc.cancer.gov/", "project"])
+        rs.identifier = [ident]
 
     l = []
     for c in project['ResearchStudy.condition']:
@@ -60,13 +62,17 @@ def assign_fhir_for_project(project, disease_types=disease_types):
     # create ResearchStudy -- partOf --> ResearchStudy
     # TODO: check 1..1 relation
     rs_parent = ResearchStudy.construct()
-    identifier_parent = Identifier.construct()
-    identifier_parent.value = project['ResearchStudy']['ResearchStudy.identifier']
 
     # assign required fields first
     rs_parent.status = project['ResearchStudy.status']  # child's status?
+    rs_parent.id = project['ResearchStudy']['ResearchStudy.id']
     rs_parent.name = project['ResearchStudy']['ResearchStudy.name']
-    rs_parent.identifier = [identifier_parent]
+
+    if 'ResearchStudy.identifier' in project['ResearchStudy'].keys() and project['ResearchStudy']['ResearchStudy.identifier']:
+        ident_parent = Identifier.construct()
+        ident_parent.value = project['ResearchStudy']['ResearchStudy.identifier']
+        ident_parent.system = "".join(["https://gdc.cancer.gov/", "project"])
+        rs_parent.identifier = [ident_parent]
 
     if 'summary' in project.keys():
         rsr = ResearchStudyRecruitment.construct()
@@ -78,10 +84,7 @@ def assign_fhir_for_project(project, disease_types=disease_types):
             'Extension.valueUnsignedInt']  # total documentReference Count - better association?
         rs.extension = [e]
 
-    # ref = Reference.construct()
-    # ref.type = "ResearchStudy"
-    # ref.identifier = identifier_parent
-    ref = Reference(**{"reference": "/".join(["ResearchStudy", project['ResearchStudy']['ResearchStudy.identifier']])})
+    ref = Reference(**{"reference": "/".join(["ResearchStudy", project['ResearchStudy']['ResearchStudy.id']])})
     rs.partOf = [ref]
     #  condition -- subject --> patient <--subject-- researchsubject -- study --> researchstudy -- partOf --> researchstudy
 
@@ -110,14 +113,14 @@ def project_gdc_to_fhir_ndjson(out_dir, projects_path):
 def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primary_sites, data_dict=data_dict,
                          race=race, ethnicity=ethnicity):
     # create patient **
-    patient_identifier = Identifier.construct()
-    patient_identifier.value = case['Patient.identifier']
-
     patient = Patient.construct()
-    patient.identifier = [patient_identifier]
+    patient.id = case['Patient.id']
 
-    if 'Patient.id' in case.keys() and case['Patient.id'] and re.match(r"^[A-Za-z0-9\-.]+$", case['Patient.id']):
-        patient.id = case['Patient.id']
+    if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$", case['Patient.identifier']):
+        patient_identifier = Identifier.construct()
+        patient_identifier.value = case['Patient.identifier']
+        patient_identifier.system = "".join(["https://gdc.cancer.gov/", "case"])
+        patient.identifier = [patient_identifier]
 
     if 'demographic' in case.keys() and 'Patient.birthDate' in case['demographic']:
         patient.birthDate = case['demographic']['Patient.birthDate']
@@ -179,60 +182,54 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     project_relations = assign_fhir_for_project(project=case['ResearchStudy'], disease_types=disease_types)
 
     # study Reference link to a ResearchStudy
-    project_study_ref_list = []
-    for identifier in project_relations['ResearchStudy_obj'].identifier:
-        # project_study_ref = Reference.construct()
-        # project_study_ref.type = "ResearchStudy"
-        # project_study_ref.identifier = identifier
-        ref = Reference(**{"reference": "/".join(["ResearchStudy", identifier.value])})
-        project_study_ref_list.append(ref)
+    # project_study_ref_list = []
+    # for id in project_relations['ResearchStudy_obj'].id:
+    study_ref = Reference(**{"reference": "/".join(["ResearchStudy", project_relations['ResearchStudy_obj'].id])})
+    # project_study_ref_list.append(ref)
 
-    # subject Reference link to a Patient
-    # subject_ref = Reference.construct()
-    # subject_ref.type = "Patient"
-    # subject_ref.identifier = patient_identifier
-
-    subject_ref = Reference(**{"reference": "/".join(["Patient", case['Patient.identifier']])})
+    subject_ref = Reference(**{"reference": "/".join(["Patient", case['Patient.id']])})
 
     # create researchSubject to link Patient --> ResearchStudy
-    research_subject_list = []
-    for study_ref in project_study_ref_list:
-        research_subject = ResearchSubject.construct()
-        research_subject.status = "".join(['unknown-', case['ResearchSubject.status']])
-        research_subject.study = study_ref
-        research_subject.subject = subject_ref
-        research_subject_list.append(research_subject)
+    # research_subject_list = []
+    # for study_ref in project_study_ref_list:
+    research_subject = ResearchSubject.construct()
+    research_subject.status = "".join(['unknown-', case['ResearchSubject.status']])
+    research_subject.study = study_ref
+    research_subject.subject = subject_ref
+    # research_subject_list.append(research_subject)
 
     # create Encounter **
     # TODO: check tissue source site is ok to be encounter
     encounter = None
     encounter_ref = None
     if 'tissue_source_site' in case.keys():
-        encounter_tss_id = case['tissue_source_site']['Encounter.identifier']
+        encounter_tss_id = case['tissue_source_site']['Encounter.id']
 
         encounter = Encounter.construct()
-        encounter_identifier = Identifier.construct()
-        encounter_identifier.value = encounter_tss_id
+        # encounter_identifier = Identifier.construct()
+        # encounter_identifier.value = encounter_tss_id
+        # encounter_identifier.system = "".join(["https://gdc.cancer.gov/", "case"])
         encounter.status = 'completed'
-        encounter.identifier = [encounter_identifier]
+        encounter.id = encounter_tss_id
         encounter.subject = subject_ref
 
         # encounter_ref = Reference.construct()
         # encounter_ref.type = "Encounter"
-        # encounter_ref.identifier = encounter_identifier
+        # encounter_ref.identifier = encounter_identifierc
 
         encounter_ref = Reference(**{"reference": "/".join(["Encounter", encounter_tss_id])})
 
     observation = None
     observation_ref = None
-    if 'diagnoses' in case.keys():
-        case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
+    if 'diagnoses' in case.keys() and isinstance(case['diagnoses'], list):
+         case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
 
-    if 'diagnoses' in case.keys() and 'Condition.identifier' in case['diagnoses'].keys():
-        obs_identifier = case['diagnoses']['Condition.identifier']
+    if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
+        obs_identifier = case['diagnoses']['Condition.id']
 
-        observation_identifier = Identifier.construct()
-        observation_identifier.value = obs_identifier
+        # observation_identifier = Identifier.construct()
+        # observation_identifier.value = obs_identifier
+        # observation_identifier.system = "".join(["https://gdc.cancer.gov/", "case"])
 
         # create Observation **
         observation = Observation.construct()
@@ -240,7 +237,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation.subject = subject_ref
         if encounter_ref:
             observation.encounter = encounter_ref
-        observation.identifier = [observation_identifier]
+        observation.id = obs_identifier
 
         observation_code = CodeableConcept.construct()
         observation_code.coding = [{'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}]
@@ -248,32 +245,28 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         # observation_ref = Reference.construct()
         # observation_ref.type = "Observation"
-        observation_ref = Reference(**{"reference": "/".join(["Observation", observation.identifier[0].value])})
-
-        # todo explicit observation - or parent observation associated w encounter
-        observation_ref.identifier = observation.identifier[0]
+        observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
 
     condition = None # normal tissue don't/shouldn't  have diagnoses or condition
-    if 'diagnoses' in case.keys() and 'Condition.identifier' in case['diagnoses'].keys():
-        cond_identifier = case['diagnoses']['Condition.identifier']
-
-        condition_identifier = Identifier.construct()
-        condition_identifier.value = cond_identifier
+    if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
 
         # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
         condition = Condition.construct()
+        condition.id = case['diagnoses']['Condition.id']
         condition_clinicalstatus_code = CodeableConcept.construct()
-        condition_clinicalstatus_code.coding = [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "unknown" }]
+
+        if 'display' in case['diagnoses'].keys():
+            condition_display = case['diagnoses']['display']
+        else:
+            condition_display = "replace-me"
+
+        condition_clinicalstatus_code.coding = [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": condition_display, "code": "unknown"}]
         condition.clinicalStatus = condition_clinicalstatus_code
         condition.subject = subject_ref
         condition.encounter = encounter_ref
-        # todo: change to fhir type Age - from fhir.resources.age import Age
-        # same definition for onsetString: Estimated or actual date,  date-time, or age
 
         if 'diagnoses' in case.keys() and 'Condition.onsetAge' in case['diagnoses'].keys():
             condition.onsetString = str(case['diagnoses']['Condition.onsetAge'])
-            # "primary_diagnosis": "Infiltrating duct carcinoma, NOS"
-            condition.identifier = [condition_identifier]
 
         # condition.bodySite <-- primary_site snomed
         l_body_site = []
@@ -313,9 +306,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                     cc_stage_type = CodeableConcept.construct()
                     cc_stage_type.coding = [{'system': "https://cadsr.cancer.gov/",
+                                             'display': case['diagnoses'][key],
                                              'code': data_dict['clinical']['diagnosis']['properties'][staging_name]['termDef'][
                                                  'cde_id']},
                                             {'system': "http://snomed.info/sct",
+                                             'display': case['diagnoses'][key],
                                              'code': stage_type_sctid_code}
                                             ]
                     # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
@@ -362,7 +357,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     portion_specimen = Specimen.construct()
 
     return {'patient': patient, 'encounter': encounter, 'observation': observation, 'condition': condition,
-            'project_relations': project_relations, 'research_subject_list': research_subject_list}
+            'project_relations': project_relations, 'research_subject': research_subject}
 
 
 def fhir_ndjson(entity, out_path):
@@ -383,8 +378,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if 'encounter' in fhir_case.keys() and fhir_case['encounter']]
     observations = [orjson.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if 'observation' in fhir_case.keys() and fhir_case['observation']]
     conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if 'condition' in fhir_case.keys() and fhir_case['condition']]
-    research_subjects = [fhir_case['research_subject_list'] for fhir_case in all_fhir_case_obj]
-    research_subjects_flatten = [orjson.loads(r.json()) for rs in research_subjects for r in rs]
+    research_subjects = [orjson.loads(fhir_case['research_subject'].json()) for fhir_case in all_fhir_case_obj]
     projects = [orjson.loads(fhir_case['project_relations']["ResearchStudy_obj"].json()) for fhir_case in all_fhir_case_obj]
     programs = list(unique_everseen([orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].json()) for fhir_case in all_fhir_case_obj]))
 
@@ -392,5 +386,5 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     fhir_ndjson(encounters, "".join([out_dir, "/Encounter.ndjson"]))
     fhir_ndjson(observations, "".join([out_dir, "/Observation.ndjson"]))
     fhir_ndjson(conditions, "".join([out_dir, "/Condition.ndjson"]))
-    fhir_ndjson(research_subjects_flatten, "".join([out_dir, "/ResearchSubject.ndjson"]))
+    fhir_ndjson(research_subjects, "".join([out_dir, "/ResearchSubject.ndjson"]))
     fhir_ndjson(projects + programs, "".join([out_dir, "/ResearchStudy.ndjson"]))

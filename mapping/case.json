@@ -874,13 +874,13 @@
                 ]
             },
             "destination": {
-                "name": "Specimen.identifier.aliquot",
-                "description": "Id for specimen.",
+                "name": "Specimen.id.aliquot",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "External Identifier",
-                "type": "array",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
                 "reference": null
             }
         },
@@ -906,13 +906,13 @@
                 ]
             },
             "destination": {
-                "name": "Specimen.identifier.analyte",
-                "description": "Id for specimen.",
+                "name": "Specimen.id.analyte",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "External Identifier",
-                "type": "array",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
                 "reference": null
             }
         },
@@ -938,12 +938,12 @@
                 ]
             },
             "destination": {
-                "name": "Patient.identifier",
-                "description": "An identifier for this patient",
+                "name": "Patient.id",
+                "description": "Logical id of this artifact",
                 "description_url": null,
                 "module": "Administration",
-                "title": "An identifier for this patient",
-                "type": "array",
+                "title": "Logical id of this artifact",
+                "type": "string",
                 "format": null,
                 "reference": null
             }
@@ -984,13 +984,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier.portion",
-                "description": "Id for specimen.",
+                "name": "Specimen.id.portion",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "External Identifier",
-                "type": "array",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
                 "reference": null
             }
         },
@@ -1024,13 +1024,13 @@
                 ]
             },
             "destination": {
-                "name": "Specimen.identifier",
-                "description": "Id for specimen.",
+                "name": "Specimen.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "External Identifier",
-                "type": "array",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
                 "reference": null
             }
         },
@@ -1047,13 +1047,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "ImagingStudy.identifier",
-                "description": "Identifiers for the ImagingStudy such as DICOM Study Instance UID.",
+                "name": "ImagingStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "",
-                "title": "Identifiers for the whole study",
-                "type": "Identifier",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
                 "reference": null
             }
         },
@@ -1093,13 +1093,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.id.aliquot",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "Specimen.identifier.aliquot",
+                "description": "Id for specimen.",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "Logical id of this artifact",
-                "type": "string",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "External Identifier",
+                "type": "array",
+                "format": null,
                 "reference": null
             }
         },
@@ -1116,13 +1116,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.id.analyte",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "Specimen.identifier.analyte",
+                "description": "Id for specimen.",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "Logical id of this artifact",
-                "type": "string",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "External Identifier",
+                "type": "array",
+                "format": null,
                 "reference": null
             }
         },
@@ -1139,12 +1139,12 @@
                 "reference": null
             },
             "destination": {
-                "name": "Patient.id",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "Patient.identifier",
+                "description": "An identifier for this patient",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Logical id of this artifact",
-                "type": "string",
+                "title": "An identifier for this patient",
+                "type": "array",
                 "format": null,
                 "reference": null
             }
@@ -1162,13 +1162,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.id.portion",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "Specimen.identifier.portion",
+                "description": "External Identifier",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "Logical id of this artifact",
-                "type": "string",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "External Identifier",
+                "type": "array",
+                "format": null,
                 "reference": null
             }
         },
@@ -1185,13 +1185,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.id",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "Specimen.identifier",
+                "description": "External Identifier",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "Logical id of this artifact",
-                "type": "string",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "External Identifier",
+                "type": "array",
+                "format": null,
                 "reference": null
             }
         },
@@ -1208,13 +1208,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "ImagingStudy.id",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "ImagingStudy.identifier",
+                "description": "Identifiers for the whole study",
                 "description_url": null,
                 "module": "Diagnostics",
-                "title": "Logical id of this artifact",
-                "type": "string",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "Identifiers for the whole study",
+                "type": "array",
+                "format": null,
                 "reference": null
             }
         },
@@ -1277,12 +1277,12 @@
                 "reference": null
             },
             "destination": {
-                "name": "Patient.identifier",
-                "description": "An identifier for this patient",
+                "name": "Patient.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "An identifier for this patient",
-                "type": "array",
+                "title": "Logical id of this artifact",
+                "type": "string",
                 "format": null,
                 "reference": null
             }
@@ -1450,12 +1450,12 @@
                 "reference": null
             },
             "destination": {
-                "name": "Patient.id",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "Patient.identifier",
+                "description": "An identifier for this patient",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Logical id of this artifact",
-                "type": "string",
+                "title": "An identifier for this patient",
+                "type": "array",
                 "format": null,
                 "reference": null
             }
@@ -1565,7 +1565,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Encounter.identifier",
+                "name": "Encounter.id",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1588,7 +1588,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier.sample",
+                "name": "Specimen.id.sample",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1611,7 +1611,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier.portion",
+                "name": "Specimen.id.portion",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1634,7 +1634,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier.analyte",
+                "name": "Specimen.id.analyte",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1657,7 +1657,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.identifier.aliquot",
+                "name": "Specimen.id.aliquot",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1795,7 +1795,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "MedicationAdministration.identifier",
+                "name": "MedicationAdministration.id",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1818,7 +1818,30 @@
                 "reference": null
             },
             "destination": {
-                "name": "Condition.identifier",
+                "name": "Condition.id",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.primary_diagnoses",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Condition.display",
                 "description": null,
                 "description_url": null,
                 "module": null,
@@ -1915,19 +1938,14 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.identifier",
-                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "name": "ResearchStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Business Identifier for study",
-                "type": "Identifier",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
-                "reference": [
-                    {
-                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
-                        "parent": null
-                    }
-                ]
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
+                "reference": null
             }
         },
         {
@@ -1943,19 +1961,14 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.id",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Logical id of this artifact",
-                "type": "string",
+                "title": "Business Identifier for study",
+                "type": "Identifier",
                 "format": null,
-                "reference": [
-                    {
-                        "reference_type": "<class 'fhir.resources.researchstudy.ResearchStudy'>",
-                        "parent": null
-                    }
-                ]
+                "reference": null
             }
         },
         {
@@ -2075,12 +2088,12 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.id",
-                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
+                "name": "ResearchStudy.identifier",
+                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Logical id of this artifact",
-                "type": "string",
+                "title": "Business Identifier for study",
+                "type": "Identifier",
                 "format": null,
                 "reference": [
                     {
@@ -2126,13 +2139,13 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.identifier",
-                "description": "Identifiers assigned to this research study by the sponsor or other systems.",
+                "name": "ResearchStudy.id",
+                "description": "The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.",
                 "description_url": null,
                 "module": "Administration",
-                "title": "Business Identifier for study",
-                "type": "Identifier",
-                "format": "typing.List[fhir.resources.identifier.Identifier]",
+                "title": "Logical id of this artifact",
+                "type": "string",
+                "format": null,
                 "reference": null
             }
         }

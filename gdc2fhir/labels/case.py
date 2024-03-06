@@ -76,12 +76,11 @@ case_maps = [Map(
             Reference(reference_type=data_dict["biospecimen"]["aliquot"]["links"][0]["subgroup"][1]["target_type"])]
     ),
     destination=Destination(
-        name='Specimen.identifier.aliquot',
-        description=Specimen.schema()["properties"]["identifier"]["description"],
+        name='Specimen.id.aliquot',
+        description=Specimen.schema()["properties"]["id"]["description"],
         module='Diagnostics',
-        title=Specimen.schema()["properties"]["identifier"]["title"],
-        type=Specimen.schema()["properties"]["identifier"]["type"],
-        format=str(List[Identifier])
+        title=Specimen.schema()["properties"]["id"]["title"],
+        type=Specimen.schema()["properties"]["id"]["type"]
     )
 ),
 
@@ -96,12 +95,11 @@ case_maps = [Map(
                 Reference(reference_type=data_dict["biospecimen"]["analyte"]["links"][0]["subgroup"][1]["target_type"])]
         ),
         destination=Destination(
-            name='Specimen.identifier.analyte',
-            description=Specimen.schema()["properties"]["identifier"]["description"],
+            name='Specimen.id.analyte',
+            description=Specimen.schema()["properties"]["id"]["description"],
             module='Diagnostics',
-            title=Specimen.schema()["properties"]["identifier"]["title"],
-            type=Specimen.schema()["properties"]["identifier"]["type"],
-            format=str(List[Identifier])
+            title=Specimen.schema()["properties"]["id"]["title"],
+            type=Specimen.schema()["properties"]["id"]["type"]
         )
     ),
 
@@ -115,11 +113,11 @@ case_maps = [Map(
                        Reference(reference_type=data_dict["case"]["case"]["links"][1]["target_type"])]
         ),
         destination=Destination(
-            name='Patient.identifier',
-            description=Patient.schema()["properties"]['identifier']["title"],
+            name='Patient.id',
+            description=Patient.schema()["properties"]['id']["title"],
             module='Administration',
-            title=Patient.schema()["properties"]['identifier']["title"],
-            type=Patient.schema()["properties"]['identifier']["type"]
+            title=Patient.schema()["properties"]['id']["title"],
+            type=Patient.schema()["properties"]['id']["type"]
         )
     ),
 
@@ -148,12 +146,11 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["portion"]["properties"]["id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.identifier.portion',
-            description=Specimen.schema()["properties"]["identifier"]["description"],
+            name='Specimen.id.portion',
+            description=Specimen.schema()["properties"]["id"]["description"],
             module='Diagnostics',
-            title=Specimen.schema()["properties"]["identifier"]["title"],
-            type=Specimen.schema()["properties"]["identifier"]["type"],
-            format=str(List[Identifier])
+            title=Specimen.schema()["properties"]["id"]["title"],
+            type=Specimen.schema()["properties"]["id"]["type"]
         )
     ),
 
@@ -169,12 +166,11 @@ case_maps = [Map(
                        Reference(reference_type=data_dict["biospecimen"]["sample"]["links"][3]["target_type"])]
         ),
         destination=Destination(
-            name='Specimen.identifier',
-            description=Specimen.schema()["properties"]["identifier"]["description"],
+            name='Specimen.id',
+            description=Specimen.schema()["properties"]["id"]["description"],
             module='Diagnostics',
-            title=Specimen.schema()["properties"]["identifier"]["title"],
-            type=Specimen.schema()["properties"]["identifier"]["type"],
-            format=str(List[Identifier])
+            title=Specimen.schema()["properties"]["id"]["title"],
+            type=Specimen.schema()["properties"]["id"]["type"]
         )
     ),
 
@@ -186,12 +182,11 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["slide"]["properties"]["id"]["type"]
         ),
         destination=Destination(
-            name='ImagingStudy.identifier',
-            description=ImagingStudy.schema()["properties"]["identifier"]["description"],
+            name='ImagingStudy.id',
+            description=ImagingStudy.schema()["properties"]["id"]["description"],
             module='',
-            title=ImagingStudy.schema()["properties"]["identifier"]["title"],
-            type=ImagingStudy.schema()["properties"]["identifier"]["items"]["type"],
-            format=str(List[Identifier])
+            title=ImagingStudy.schema()["properties"]["id"]["title"],
+            type=ImagingStudy.schema()["properties"]["id"]["type"]
         )
     ),
 
@@ -219,12 +214,11 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["aliquot"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.id.aliquot',
-            description=Specimen.schema()["properties"]["id"]["description"],
+            name='Specimen.identifier.aliquot',
+            description=Specimen.schema()["properties"]["identifier"]["description"],
             module='Diagnostics',
-            title=Specimen.schema()["properties"]["id"]["title"],
-            type=Specimen.schema()["properties"]["id"]["type"],
-            format=str(List[Identifier])
+            title=Specimen.schema()["properties"]["identifier"]["title"],
+            type=Specimen.schema()["properties"]["identifier"]["type"]
         )
     ),
 
@@ -236,12 +230,11 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["analyte"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.id.analyte',
-            description=Specimen.schema()["properties"]["id"]["description"],
+            name='Specimen.identifier.analyte',
+            description=Specimen.schema()["properties"]["identifier"]["description"],
             module='Diagnostics',
-            title=Specimen.schema()["properties"]["id"]["title"],
-            type=Specimen.schema()["properties"]["id"]["type"],
-            format=str(List[Identifier])
+            title=Specimen.schema()["properties"]["identifier"]["title"],
+            type=Specimen.schema()["properties"]["identifier"]["type"]
         )
     ),
 
@@ -254,11 +247,11 @@ case_maps = [Map(
 
         ),
         destination=Destination(
-            name='Patient.id',
-            description=Patient.schema()["properties"]['id']["description"],
+            name='Patient.identifier',
+            description=Patient.schema()["properties"]['identifier']["title"],
             module='Administration',
-            title=Patient.schema()["properties"]['id']["title"],
-            type=Patient.schema()["properties"]['id']["type"]
+            title=Patient.schema()["properties"]['identifier']["title"],
+            type=Patient.schema()["properties"]['identifier']["type"]
         )
     ),
 
@@ -270,12 +263,11 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["portion"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.id.portion',
-            description=Specimen.schema()["properties"]["id"]["description"],
+            name='Specimen.identifier.portion',
+            description=Specimen.schema()["properties"]["identifier"]["title"],
             module='Diagnostics',
-            title=Specimen.schema()["properties"]["id"]["title"],
-            type=Specimen.schema()["properties"]["id"]["type"],
-            format=str(List[Identifier])
+            title=Specimen.schema()["properties"]["identifier"]["title"],
+            type=Specimen.schema()["properties"]["identifier"]["type"]
         )
     ),
 
@@ -287,12 +279,11 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["sample"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='Specimen.id',
-            description=Specimen.schema()["properties"]["id"]["description"],
+            name='Specimen.identifier',
+            description=Specimen.schema()["properties"]["identifier"]["title"],
             module='Diagnostics',
-            title=Specimen.schema()["properties"]["id"]["title"],
-            type=Specimen.schema()["properties"]["id"]["type"],
-            format=str(List[Identifier])
+            title=Specimen.schema()["properties"]["identifier"]["title"],
+            type=Specimen.schema()["properties"]["identifier"]["type"]
         )
     ),
 
@@ -304,12 +295,11 @@ case_maps = [Map(
             type=data_dict["biospecimen"]["slide"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='ImagingStudy.id',
-            description=ImagingStudy.schema()["properties"]["id"]["description"],
+            name='ImagingStudy.identifier',
+            description=ImagingStudy.schema()["properties"]["identifier"]["title"],
             module='Diagnostics',
-            title=ImagingStudy.schema()["properties"]["id"]["title"],
-            type=ImagingStudy.schema()["properties"]["id"]["type"],
-            format=str(List[Identifier])
+            title=ImagingStudy.schema()["properties"]["identifier"]["title"],
+            type=ImagingStudy.schema()["properties"]["identifier"]["type"]
         )
     ),
 
@@ -360,11 +350,11 @@ case_maps = [Map(
             type=data_dict["clinical"]["demographic"]["properties"]["id"]["common"]["termDef"]["term"]
         ),
         destination=Destination(
-            name='Patient.identifier',
-            description=Patient.schema()["properties"]['identifier']["title"],
+            name='Patient.id',
+            description=Patient.schema()["properties"]['id']["description"],
             module='Administration',
-            title=Patient.schema()["properties"]['identifier']["title"],
-            type=Patient.schema()["properties"]['identifier']["type"]
+            title=Patient.schema()["properties"]['id']["title"],
+            type=Patient.schema()["properties"]['id']["type"]
         )
     ),
 
@@ -483,11 +473,11 @@ case_maps = [Map(
             type=data_dict["clinical"]["demographic"]["properties"]["submitter_id"]["type"]
         ),
         destination=Destination(
-            name='Patient.id',
-            description=Patient.schema()["properties"]["id"]["description"],
+            name='Patient.identifier',
+            description=Patient.schema()["properties"]["identifier"]["title"],
             module='Administration',
-            title=Patient.schema()["properties"]["id"]["title"],
-            type=Patient.schema()["properties"]["id"]["type"]
+            title=Patient.schema()["properties"]["identifier"]["title"],
+            type=Patient.schema()["properties"]["identifier"]["type"]
         )
     ),
 
@@ -563,13 +553,9 @@ case_maps = [Map(
     Map(
         source=Source(
             name='tissue_source_site.tissue_source_site_id'
-            # description=data_dict['administrative']['tissue_source_site']['description'],
-            # type=data_dict['administrative']['tissue_source_site']['type']
         ),
         destination=Destination(
-            name='Encounter.identifier'
-            # description=Encounter.schema()['properties']['identifier']['title'],
-            # type=Encounter.schema()['properties']['identifier']['items']['type']
+            name='Encounter.id'
         )
     ),
 
@@ -578,7 +564,7 @@ case_maps = [Map(
             name='samples.sample_id'
         ),
         destination=Destination(
-            name='Specimen.identifier.sample'
+            name='Specimen.id.sample'
         )
     ),
 
@@ -587,7 +573,7 @@ case_maps = [Map(
             name='samples.portions.portion_id'
         ),
         destination=Destination(
-            name='Specimen.identifier.portion'
+            name='Specimen.id.portion'
         )
     ),
 
@@ -596,7 +582,7 @@ case_maps = [Map(
             name='samples.portions.analytes.analyte_id'
         ),
         destination=Destination(
-            name='Specimen.identifier.analyte'
+            name='Specimen.id.analyte'
         )
     ),
 
@@ -605,7 +591,7 @@ case_maps = [Map(
             name='samples.portions.analytes.aliquots.aliquot_id'
         ),
         destination=Destination(
-            name='Specimen.identifier.aliquot'
+            name='Specimen.id.aliquot'
         )
     ),
 
@@ -659,7 +645,7 @@ case_maps = [Map(
             name='diagnoses.treatments.treatment_id'
         ),
         destination=Destination(
-            name='MedicationAdministration.identifier'
+            name='MedicationAdministration.id'
         )
     ),
 
@@ -668,7 +654,16 @@ case_maps = [Map(
             name='diagnoses.diagnosis_id'
         ),
         destination=Destination(
-            name='Condition.identifier'
+            name='Condition.id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.primary_diagnoses'
+        ),
+        destination=Destination(
+            name='Condition.display'
         )
     ),
 
@@ -730,13 +725,11 @@ case_maps = [Map(
             type=data_dict['administrative']['project']['properties']['id']['common']['termDef']['term']
         ),
         destination=Destination(
-            name='ResearchStudy.identifier',
-            description=ResearchStudy.schema()['properties']['identifier']['description'],
+            name='ResearchStudy.id',
+            description=ResearchStudy.schema()['properties']['id']['description'],
             module='Administration',
-            title=ResearchStudy.schema()['properties']['identifier']['title'],
-            type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=str(List[Identifier]),
-            reference=[Reference(reference_type=str(ResearchStudy))]
+            title=ResearchStudy.schema()['properties']['id']['title'],
+            type=ResearchStudy.schema()['properties']['id']['type']
         )
     ),
 
@@ -748,12 +741,11 @@ case_maps = [Map(
             type=data_dict['administrative']['project']['properties']['dbgap_accession_number']['type']
         ),
         destination=Destination(
-            name="ResearchStudy.id",
-            description=ResearchStudy.schema()['properties']['id']['description'],
+            name="ResearchStudy.identifier",
+            description=ResearchStudy.schema()['properties']['identifier']['description'],
             module='Administration',
-            title=ResearchStudy.schema()['properties']['id']['title'],
-            type=ResearchStudy.schema()['properties']['id']['type'],
-            reference=[Reference(reference_type=str(ResearchStudy))]
+            title=ResearchStudy.schema()['properties']['identifier']['title'],
+            type=ResearchStudy.schema()['properties']['identifier']['items']['type']
         )
     ),
 
@@ -834,11 +826,11 @@ case_maps = [Map(
             type=data_dict['administrative']['program']['properties']['dbgap_accession_number']['type']
         ),
         destination=Destination(
-            name="ResearchStudy.id",
-            description=ResearchStudy.schema()['properties']['id']['description'],
+            name="ResearchStudy.identifier",
+            description=ResearchStudy.schema()['properties']['identifier']['description'],
             module='Administration',
-            title=ResearchStudy.schema()['properties']['id']['title'],
-            type=ResearchStudy.schema()['properties']['id']['type'],
+            title=ResearchStudy.schema()['properties']['identifier']['title'],
+            type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
             reference=[Reference(reference_type=str(ResearchStudy))]
         )
     ),
@@ -867,12 +859,11 @@ case_maps = [Map(
             type=data_dict['administrative']['program']['properties']['id']['common']['termDef']['term']
         ),
         destination=Destination(
-            name='ResearchStudy.identifier',
-            description=ResearchStudy.schema()['properties']['identifier']['description'],
+            name='ResearchStudy.id',
+            description=ResearchStudy.schema()['properties']['id']['description'],
             module='Administration',
-            title=ResearchStudy.schema()['properties']['identifier']['title'],
-            type=ResearchStudy.schema()['properties']['identifier']['items']['type'],
-            format=str(List[Identifier])
+            title=ResearchStudy.schema()['properties']['id']['title'],
+            type=ResearchStudy.schema()['properties']['id']['type']
         )
     )
 ]
