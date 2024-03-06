@@ -351,13 +351,75 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             condition.stage = staging_list
 
     # create specimen
-    specimen = Specimen.construct()
-    aliquot_specimen = Specimen.construct()
-    analyte_specimen = Specimen.construct()
-    portion_specimen = Specimen.construct()
+    def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specimens):
+        if name in dat.keys():
+            for sample in dat[name]:
+                if id_key in sample.keys():
+                    fhir_specimen = Specimen.construct()
+                    fhir_specimen.id = sample[id_key]
+                    fhir_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+                    if has_parent:
+                        fhir_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", parent.id])})]
+                    if fhir_specimen not in all_fhir_specimens:
+                        all_fhir_specimens.append(fhir_specimen)
+
+    sample_list = None
+    if "samples" in case.keys():
+        samples = case["samples"]
+        all_samples = []
+        all_portions = []
+        all_analytes = []
+        all_aliquots = []
+        for sample in samples:
+            if 'Specimen.id.sample' in sample.keys():
+                specimen = Specimen.construct()
+                specimen.id = sample["Specimen.id.sample"]
+                specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+                if specimen not in all_samples:
+                    all_samples.append(specimen)
+
+                add_specimen(dat=sample, name="analytes", id_key="Specimen.id.analyte", has_parent=True,
+                             parent=sample, patient=patient, all_fhir_specimens=all_analytes)
+
+                add_specimen(dat=sample, name="aliquots", id_key="Specimen.id.aliquot", has_parent=True,
+                             parent=sample, patient=patient, all_fhir_specimens=all_aliquots)
+
+                if "portions" in sample.keys():
+                    for portion in sample['portions']:
+                        if "Specimen.id.portion" in portion.keys():
+                            portion_specimen = Specimen.construct()
+                            portion_specimen.id = portion["Specimen.id.portion"]
+                            portion_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+                            portion_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", specimen.id])})]
+                            if portion_specimen not in all_portions:
+                                all_portions.append(portion_specimen)
+
+                            if "analytes" in portion.keys():
+                                for analyte in portion["analytes"]:
+                                    if "Specimen.id.analyte" in analyte.keys():
+                                        analyte_specimen = Specimen.construct()
+                                        analyte_specimen.id = analyte["Specimen.id.analyte"]
+                                        analyte_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+                                        analyte_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", portion_specimen.id])})]
+                                        if analyte_specimen not in all_analytes:
+                                            all_analytes.append(analyte_specimen)
+
+                                        if "aliquots" in analyte.keys():
+                                            for aliquot in analyte["aliquots"]:
+                                                if "Specimen.id.aliquot" in aliquot.keys():
+                                                    aliquot_specimen = Specimen.construct()
+                                                    aliquot_specimen.id = aliquot["Specimen.id.aliquot"]
+                                                    aliquot_specimen.subject = Reference(
+                                                        **{"reference": "/".join(["Patient", patient.id])})
+                                                    aliquot_specimen.parent = [Reference(
+                                                        **{"reference": "/".join(["Specimen", analyte_specimen.id])})]
+                                                    if aliquot_specimen not in all_aliquots:
+                                                        all_aliquots.append(aliquot_specimen)
+
+        sample_list = all_samples + all_portions + all_aliquots + all_analytes
 
     return {'patient': patient, 'encounter': encounter, 'observation': observation, 'condition': condition,
-            'project_relations': project_relations, 'research_subject': research_subject}
+            'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list}
 
 
 def fhir_ndjson(entity, out_path):
@@ -381,6 +443,16 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     research_subjects = [orjson.loads(fhir_case['research_subject'].json()) for fhir_case in all_fhir_case_obj]
     projects = [orjson.loads(fhir_case['project_relations']["ResearchStudy_obj"].json()) for fhir_case in all_fhir_case_obj]
     programs = list(unique_everseen([orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].json()) for fhir_case in all_fhir_case_obj]))
+
+    specimens = []
+    for fhir_case in all_fhir_case_obj:
+        if fhir_case["specimens"]:
+            for specimen in fhir_case["specimens"]:
+                print(specimen.dict())
+                specimens.append(orjson.loads(specimen.json()))
+
+    if specimens:
+        fhir_ndjson(specimens, "".join([out_dir, "/Specimen.ndjson"]))
 
     fhir_ndjson(patients, "".join([out_dir, "/Patient.ndjson"]))
     fhir_ndjson(encounters, "".join([out_dir, "/Encounter.ndjson"]))
