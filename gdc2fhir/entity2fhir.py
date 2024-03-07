@@ -448,7 +448,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     for fhir_case in all_fhir_case_obj:
         if fhir_case["specimens"]:
             for specimen in fhir_case["specimens"]:
-                print(specimen.dict())
+                # print(specimen.dict())
                 specimens.append(orjson.loads(specimen.json()))
 
     if specimens:

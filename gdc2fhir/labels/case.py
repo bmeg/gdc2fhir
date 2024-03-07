@@ -579,12 +579,31 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='samples.days_to_collection'
+        ),
+        destination=Destination(
+            name='Specimen.combined.time_indicator_for_sample_pairs'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='samples.portions.analytes.analyte_id'
         ),
         destination=Destination(
             name='Specimen.id.analyte'
         )
     ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.analyte_type'
+        ),
+        destination=Destination(
+            name='Specimen.type.analyte'
+        )
+    ),
+
 
     Map(
         source=Source(
@@ -601,6 +620,24 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='ImagingStudy.id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.sample_type'
+        ),
+        destination=Destination(
+            name='Specimen.type.sample'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.preservation_method'
+        ),
+        destination=Destination(
+            name='Specimen.processing.method'
         )
     ),
 
@@ -642,6 +679,33 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='diagnoses.ajcc_clinical_t'
+        ),
+        destination=Destination(
+            name='Condition.stage_ajcc_clinical_t'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.ajcc_clinical_n'
+        ),
+        destination=Destination(
+            name='Condition.stage_ajcc_clinical_n'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.ajcc_clinical_m'
+        ),
+        destination=Destination(
+            name='Condition.stage_ajcc_clinical_m'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='diagnoses.treatments.treatment_id'
         ),
         destination=Destination(
@@ -655,6 +719,33 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Condition.id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.primary_diagnosis'
+        ),
+        destination=Destination(
+            name='Condition.code_primary_diagnosis'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.prior_treatment'
+        ),
+        destination=Destination(
+            name='Condition.prior_treatment'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.icd_10_code'
+        ),
+        destination=Destination(
+            name='Condition.coding_icd_10_code'
         )
     ),
 

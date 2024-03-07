@@ -674,8 +674,16 @@ def sort_parent_keys(data):
     return {i: data[i] for i in sorted_keys}
 
 
+def sort_parent_keys_with_head(data, head_key="Specimen.id.sample"):
+    sorted_keys = sorted(data.keys(), key=lambda k: (k != head_key, isinstance(data[k], (dict, list)), k))
+    return {i: data[i] for i in sorted_keys}
+
+
 def append_data_to_key(data, target_key, data_to_append, verbose):
     if isinstance(data, dict):
+        data = sort_parent_keys_with_head(data, head_key="Specimen.id.sample")
+        # data = sort_parent_keys(data)
+
         for key, value in data.items():
             if verbose:
                 print("=========== DICT KEY - append_data_to_key =============", key)
@@ -697,34 +705,58 @@ def append_data_to_key(data, target_key, data_to_append, verbose):
 
                     # else the keys match
                     else:
-                        shared_keys = similar_key_set(data[key][0], data_to_append)
+                        shared_keys = None
+                        if len(data[key]) > 1:
+                            shared_keys = similar_key_set(data[key][-1], data_to_append)
+                        elif len(data[key]) == 1:
+                            shared_keys = similar_key_set(data[key][0], data_to_append)
                         if verbose:
-                            print(f"=========== THE KEYS MATCH {target_key} ============= case B")
+                            print(f"=========== THE KEYS MATCH {target_key} ============= case B", "data[key][0]")
                             pprint.pprint(data[key][0])
+                            print("data_to_append")
                             pprint.pprint(data_to_append)
 
                         # which keys match?
                         if shared_keys:
                             shared_keys_items = next(iter(shared_keys))
                             if verbose:
-                                print(f"======== instance Dict {target_key} ============== case C", "shared_keys: ",
-                                      shared_keys)
+                                print(f"======== instance Dict {target_key} ============== case C", "shared_keys: ", shared_keys)
+
                             if isinstance(data[key][0][shared_keys_items], str) and isinstance(
                                     data_to_append[shared_keys_items], str) and data[key][0][shared_keys_items] != \
                                     data_to_append[shared_keys_items]:
-                                data[key].append(data_to_append)
+
+                                reached = False
+                                for item in data[key]:
+                                    if verbose:
+                                        print("Specimen.id" in item.keys())
+                                        print(len(item.keys()))
+
+                                    if len(item.keys()) == 1 and "Specimen.id" in list(item.keys())[0] and data_to_append.keys() != item.keys():
+                                        # this is where metadata is updated if the head key with Specimen.id exists
+                                        item.update(data_to_append)
+                                        reached = True
+                                        continue
+
+                                if not reached:
+                                    # this is where first Specimen.id is appended
+                                    data[key].append(data_to_append)
                                 if verbose:
-                                    print(f"======== instance Dict {target_key} ============== case D AFTER",
-                                          "data[key]: ", data[key], "\n\n")
+                                    print(f"======== instance Dict {target_key} ============== case D AFTER", "data[key]: ", data[key], "\n\n")
                                 continue
 
                             elif isinstance(data[key][0][shared_keys_items], str) and isinstance(
                                     data_to_append[shared_keys_items], str) and data[key][0][shared_keys_items] == \
                                     data_to_append[shared_keys_items]:
-                                data[key].append(data_to_append)
-                                if verbose:
-                                    print(f"======== instance Dict {target_key} ============== case E AFTER",
-                                          "data[key]: ", data[key], "\n\n")
+                                if len(data[key]) == 1:
+                                    data[key].append(data_to_append)
+                                else:
+                                    # check membership
+                                    if not data_to_append.items() <= data[key][-1].items():
+                                        print("00000")
+                                        data[key][-1].update(data_to_append)
+
+                                print(f"======== instance Dict {target_key} ============== case E AFTER", "data[key]: ", data[key], "\n\n")
                                 continue
 
                             elif isinstance(data[key][0][shared_keys_items], list) and isinstance(
@@ -733,13 +765,21 @@ def append_data_to_key(data, target_key, data_to_append, verbose):
                                     print("=========== data subset but not the same =============")
 
                                 for d in data[key]:
+                                    if verbose:
+                                        print("==== d ====", d, "\n")
                                     if len(d.keys()) == 1:
                                         d.update(data_to_append)  # update parent key
                                         continue
-
+                                    elif 'portions' in data_to_append.keys():
+                                        if 'portions' not in d.keys():
+                                            d.update(data_to_append)
+                                            continue
+                                    elif 'aliquots' in data_to_append.keys() - d.keys():
+                                        print("data_to_append.keys() - d.keys()", data_to_append.keys() - d.keys())
+                                        d.update(data_to_append)
+                                        continue
                                 if verbose:
-                                    print(f"======== instance Dict {target_key} ============== case F After",
-                                          "data[key]: ", data[key], "\n\n")
+                                    print(f"======== instance Dict {target_key} ============== case F After", "data[key]: ", data[key], "\n\n")
                                 continue
 
                             elif (isinstance(data[key][0][shared_keys_items], list) and isinstance(
@@ -747,32 +787,33 @@ def append_data_to_key(data, target_key, data_to_append, verbose):
                                   not data[key][0][shared_keys_items][0].items() <= data_to_append[shared_keys_items][
                                       0].items()):
                                 if verbose:
-                                    print(f"======== instance Dict {target_key} ============== case G",
-                                          "data[key]: ", data[key])
+                                    print(f"======== instance Dict {target_key} ============== case G", "data[key]: ", data[key])
 
                         if data[key][0]:
+                            if len(data[key]) > 1 and len(data[key][-1]) == 1:
+                                data[key][-1].update(data_to_append)
+                                continue
+
                             for i, item in enumerate(data[key]):
                                 if (isinstance(item, dict)
                                         and not set(data_to_append.keys()).intersection(set(item.keys()))
                                         and not data_to_append.items() <= item.items()):
                                     item.update(data_to_append)
                                     if verbose:
-                                        print(f"======== instance Dict {target_key} ============== case H AFTER",
-                                              "item: ",
-                                              item, "\n\n")
+                                        print(f"======== instance Dict {target_key} ============== case H AFTER", "item: ", item, "\n\n")
                                     continue
 
                         elif (data[key] and key == "samples"
                               and not data[key][0].items() <= data_to_append.items()
                               and not data_to_append.items() <= data[key][0].items()):
-                            if verbose:
-                                print(f"======== instance Dict {target_key} ============== I")
+                            print(f"======== instance Dict {target_key} ============== I")
                             data[key].append(data_to_append)
                             continue
 
                 elif isinstance(data[key], list):
                     if verbose:
                         print(f"======== instance LIST {target_key} ============== J", "data_key", data[key])
+                        print("===== DATA TO APPEND: ", data_to_append)
                     data[key].append(data_to_append)
                     continue
 
@@ -780,8 +821,9 @@ def append_data_to_key(data, target_key, data_to_append, verbose):
         if verbose:
             print(f"======== instance LIST  {target_key} ============== K", "\n\n")
         for i, value in enumerate(data):
-            value = sort_parent_keys(value)
-            append_data_to_key(value, target_key, data_to_append)
+            value = sort_parent_keys_with_head(value, head_key="Specimen.id.sample")
+            # value = sort_parent_keys(value)
+            append_data_to_key(value, target_key, data_to_append, verbose)
 
 
 def process_nested_list(traverse_key, nested_value, current_keys, available_maps, verbose):
@@ -791,7 +833,8 @@ def process_nested_list(traverse_key, nested_value, current_keys, available_maps
 
     for elm in nested_value:
         if isinstance(elm, dict):
-            elm = sort_parent_keys(elm)
+            elm = sort_parent_keys_with_head(elm, head_key="sample_id")
+            # elm = sort_parent_keys(elm)
 
             for key, value in elm.items():
                 if isinstance(value, list):
@@ -800,6 +843,8 @@ def process_nested_list(traverse_key, nested_value, current_keys, available_maps
                     tks = tks[-1]
 
                     result = process_nested_list(current_key, value, current_keys, available_maps, verbose)
+                    if verbose:
+                        print("----- RESULT ----- ", type(result), result)
                     append_data_to_key(this_nest, tks, result, verbose)
                     continue
 
