@@ -11,17 +11,21 @@ from fhir.resources.reference import Reference
 from fhir.resources.condition import Condition, ConditionStage
 from fhir.resources.observation import Observation
 from fhir.resources.encounter import Encounter
-from fhir.resources.specimen import Specimen
+from fhir.resources.specimen import Specimen, SpecimenProcessing
 from fhir.resources.patient import Patient
 from fhir.resources.researchsubject import ResearchSubject
 from gdc2fhir import utils
+import datetime
+import icd10
 
 disease_types = utils._read_json("./resources/gdc_resources/content_annotations/case/disease_types.json")
 primary_sites = utils._read_json("./resources/gdc_resources/content_annotations/case/primary_sites.json")
 race = utils._read_json("./resources/gdc_resources/content_annotations/demographic/race.json")
 ethnicity = utils._read_json("./resources/gdc_resources/content_annotations/demographic/ethnicity.json")
+gender = ethnicity = utils._read_json("./resources/gdc_resources/content_annotations/demographic/gender.json")
 data_dict = utils.load_data_dictionary("./resources/gdc_resources/data_dictionary/")
-cancer_pathological_staging = utils._read_json("./resources/gdc_resources/content_annotations/diagnosis/cancer_pathological_staging.json")
+cancer_pathological_staging = utils._read_json(
+    "./resources/gdc_resources/content_annotations/diagnosis/cancer_pathological_staging.json")
 
 
 def assign_fhir_for_project(project, disease_types=disease_types):
@@ -68,7 +72,8 @@ def assign_fhir_for_project(project, disease_types=disease_types):
     rs_parent.id = project['ResearchStudy']['ResearchStudy.id']
     rs_parent.name = project['ResearchStudy']['ResearchStudy.name']
 
-    if 'ResearchStudy.identifier' in project['ResearchStudy'].keys() and project['ResearchStudy']['ResearchStudy.identifier']:
+    if 'ResearchStudy.identifier' in project['ResearchStudy'].keys() and project['ResearchStudy'][
+        'ResearchStudy.identifier']:
         ident_parent = Identifier.construct()
         ident_parent.value = project['ResearchStudy']['ResearchStudy.identifier']
         ident_parent.system = "".join(["https://gdc.cancer.gov/", "project"])
@@ -99,7 +104,8 @@ def project_gdc_to_fhir_ndjson(out_dir, projects_path):
     all_rs = [assign_fhir_for_project(project=p, disease_types=disease_types) for p in projects]
     research_study = [orjson.loads(rs['ResearchStudy_obj'].json()) for rs in all_rs]
     research_study_parent = [orjson.loads(rs['ResearchStudy.partOf_obj'].json()) for rs in all_rs]
-    rs_e2f = research_study + list(unique_everseen(research_study_parent)) # ResearchStudy -- *...1  partOf -> ResearchStudy
+    rs_e2f = research_study + list(
+        unique_everseen(research_study_parent))  # ResearchStudy -- *...1  partOf -> ResearchStudy
 
     with open("".join([out_dir, "/ResearchStudy.ndjson"]), 'w') as file:
         file.write('\n'.join(map(json.dumps, rs_e2f)))
@@ -116,21 +122,26 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     patient = Patient.construct()
     patient.id = case['Patient.id']
 
-    if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$", case['Patient.identifier']):
+    if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$",
+                                                                                       case['Patient.identifier']):
         patient_identifier = Identifier.construct()
         patient_identifier.value = case['Patient.identifier']
         patient_identifier.system = "".join(["https://gdc.cancer.gov/", "case"])
         patient.identifier = [patient_identifier]
 
     if 'demographic' in case.keys() and 'Patient.birthDate' in case['demographic']:
-        patient.birthDate = case['demographic']['Patient.birthDate']
+        # converted to https://build.fhir.org/datatypes.html#date / NOTE: month and day missing in GDC
+        if case['demographic']['Patient.birthDate']:
+            patient.birthDate = datetime.datetime(int(case['demographic']['Patient.birthDate']), 1, 1)
 
+    patient_gender = None
     if 'demographic' in case.keys() and 'Patient.gender' in case['demographic']:
-        gender = case['demographic']['Patient.gender']
-    else:
-        gender = None
+        for g in gender:
+            if g['value'] == case['demographic']['Patient.gender']:
+                patient_gender = g['fhir_display']
 
-    patient.gender = gender
+    patient.gender = patient_gender
+
     if 'demographic' in case.keys() and 'Patient.deceasedDateTime' in case['demographic']:
         patient.deceasedDateTime = case['demographic']['Patient.deceasedDateTime']
 
@@ -139,38 +150,59 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         #  race and ethnicity
         race_ext = Extension.construct()
         race_ext.url = "https://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-race.json"
-        race_ext.valueString = case['demographic']['Extension.extension:USCoreRaceExtension']  # TODO change w FHIR strings
 
         race_code = ""
+        race_display = ""
+        race_system = ""
         for r in race:
-            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension']:
+            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension'] and re.match(r"[ \r\n\t\S]+", r['ombCategory-code']):
                 race_code = r['ombCategory-code']
+                race_system = r['ombCategory-system']
+                race_display = r['ombCategory-display']
+                gdc_race_code = r['term_id']
+                gdc_race_system = r['description_url']
+                gdc_race_display = r['value']
+                race_ext.valueString = r['ombCategory-display']
 
         if race_code:
             race_ext.extension = [{"url": "ombCategory",
                                    "valueCoding": {
-                                       "system": "urn:oid:2.16.840.1.113883.6.238",
+                                       "system": race_system,
                                        "code": race_code,
-                                       "display": case['demographic']['Extension.extension:USCoreRaceExtension']
+                                       "display": race_display
+                                   }},
+                                  {"url": "https://ncit.nci.nih.gov",
+                                   "valueCoding": {
+                                       "system": gdc_race_system,
+                                       "code": gdc_race_code,
+                                       "display": gdc_race_display
                                    }}]
         race_ethnicity.append(race_ext)
 
     if 'demographic' in case.keys() and 'Extension:extension.USCoreEthnicity' in case['demographic'].keys():
         ethnicity_ext = Extension.construct()
         ethnicity_ext.url = "http://hl7.org/fhir/us/core/STU6/StructureDefinition-us-core-ethnicity.json"
-        ethnicity_ext.valueString = case['demographic']['Extension:extension.USCoreEthnicity']  # TODO change w FHIR strings
 
         ethnicity_code = ""
+        ethnicity_display = ""
+        ethnicity_system = ""
         for e in ethnicity:
             if e['value'] in case['demographic']['Extension:extension.USCoreEthnicity']:
-                ethnicity_code = e['ombCategory-code']
+                # ethnicity_code = e['ombCategory-code']
+                # ethnicity_system = e['ombCategory-system']
+                # ethnicity_display = e['ombCategory-display']
+                gdc_ethnicity_code = e['term_id']
+                gdc_ethnicity_system = e['description_url']
+                gdc_ethnicity_display = e['value']
+                # ethnicity_ext.valueString = e['ombCategory-display']
+                ethnicity_ext.valueString = e['value']
 
         if ethnicity_code:
-            ethnicity_ext.extension = [{"url": "ombCategory",
+            ethnicity_ext.extension = [{"url": "https://ncit.nci.nih.gov",
                                         "valueCoding": {
-                                            "system": "urn:oid:2.16.840.1.113883.6.238",
-                                            "code": ethnicity_code,
-                                            "display": case['demographic']['Extension:extension.USCoreEthnicity']
+                                            "system": gdc_ethnicity_system,
+                                            "code": gdc_ethnicity_code,
+                                            "display": gdc_ethnicity_display
                                         }}]
 
             race_ethnicity.append(ethnicity_ext)
@@ -180,56 +212,37 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     # gdc project for patient
     project_relations = assign_fhir_for_project(project=case['ResearchStudy'], disease_types=disease_types)
-
-    # study Reference link to a ResearchStudy
-    # project_study_ref_list = []
-    # for id in project_relations['ResearchStudy_obj'].id:
     study_ref = Reference(**{"reference": "/".join(["ResearchStudy", project_relations['ResearchStudy_obj'].id])})
-    # project_study_ref_list.append(ref)
-
     subject_ref = Reference(**{"reference": "/".join(["Patient", case['Patient.id']])})
 
     # create researchSubject to link Patient --> ResearchStudy
-    # research_subject_list = []
-    # for study_ref in project_study_ref_list:
     research_subject = ResearchSubject.construct()
     research_subject.status = "".join(['unknown-', case['ResearchSubject.status']])
     research_subject.study = study_ref
     research_subject.subject = subject_ref
-    # research_subject_list.append(research_subject)
 
     # create Encounter **
-    # TODO: check tissue source site is ok to be encounter
     encounter = None
     encounter_ref = None
     if 'tissue_source_site' in case.keys():
         encounter_tss_id = case['tissue_source_site']['Encounter.id']
 
         encounter = Encounter.construct()
-        # encounter_identifier = Identifier.construct()
-        # encounter_identifier.value = encounter_tss_id
-        # encounter_identifier.system = "".join(["https://gdc.cancer.gov/", "case"])
         encounter.status = 'completed'
         encounter.id = encounter_tss_id
         encounter.subject = subject_ref
-
-        # encounter_ref = Reference.construct()
-        # encounter_ref.type = "Encounter"
-        # encounter_ref.identifier = encounter_identifierc
-
         encounter_ref = Reference(**{"reference": "/".join(["Encounter", encounter_tss_id])})
 
     observation = None
     observation_ref = None
+    gdc_condition_annotation = None
+    condition_codes_list = []
     if 'diagnoses' in case.keys() and isinstance(case['diagnoses'], list):
-         case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
+        case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
 
     if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
-        obs_identifier = case['diagnoses']['Condition.id']
 
-        # observation_identifier = Identifier.construct()
-        # observation_identifier.value = obs_identifier
-        # observation_identifier.system = "".join(["https://gdc.cancer.gov/", "case"])
+        obs_identifier = case['diagnoses']['Condition.id']
 
         # create Observation **
         observation = Observation.construct()
@@ -240,28 +253,52 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation.id = obs_identifier
 
         observation_code = CodeableConcept.construct()
-        observation_code.coding = [{'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}]
-        observation.code = observation_code
+        if 'Condition.coding_icd_10_code' in case['diagnoses']:
+            system = "https://terminology.hl7.org/5.1.0/NamingSystem-icd10CM.html"
+            code = case['diagnoses']['Condition.coding_icd_10_code']
+            icd10code = icd10.find(case['diagnoses']['Condition.coding_icd_10_code'])
+            if icd10code:
+                display = icd10code.description
+                icd10_annotation = {'system': system, 'display': display, 'code': code}
+                condition_codes_list.append(icd10_annotation)
+        """
+        if ('Condition.code_primary_diagnosis' in case['diagnoses'].keys() and
+                "Paget disease and infiltrating duct carcinoma of breast" not in case['diagnoses']['Condition.code_primary_diagnosis'])\
+                and "Infiltrating lobular mixed with other types of carcinoma" not in case['diagnoses']['Condition.code_primary_diagnosis']:
+            gdc_condition_display = data_dict['clinical']['diagnosis']['properties']['primary_diagnosis']["enumDef"][
+                case['diagnoses']['Condition.code_primary_diagnosis']]['termDef']['term']
+            gdc_condition_code = data_dict['clinical']['diagnosis']['properties']['primary_diagnosis']["enumDef"][
+                case['diagnoses']['Condition.code_primary_diagnosis']]['termDef']['term_id']
+            gdc_condition_system = data_dict['clinical']['diagnosis']['properties']['primary_diagnosis']["enumDef"][
+                case['diagnoses']['Condition.code_primary_diagnosis']]['termDef']['term_url']
+            gdc_condition_annotation = {"system": gdc_condition_system, "display": gdc_condition_display,
+                                        "code": gdc_condition_code}
+            condition_codes_list.append(gdc_condition_annotation)
+        """
+        loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
 
-        # observation_ref = Reference.construct()
-        # observation_ref.type = "Observation"
+        # observation_code.coding = condition_codes_list
+        observation_code.coding = [loinc_annotation]
+        observation.code = observation_code
         observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
 
-    condition = None # normal tissue don't/shouldn't  have diagnoses or condition
+    condition = None  # normal tissue don't/shouldn't  have diagnoses or condition
     if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
 
         # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
         condition = Condition.construct()
         condition.id = case['diagnoses']['Condition.id']
+        if gdc_condition_annotation:
+            cc = CodeableConcept.construct()
+            cc.coding = [gdc_condition_annotation]
+            condition.code = cc
+
         condition_clinicalstatus_code = CodeableConcept.construct()
-
-        if 'display' in case['diagnoses'].keys():
-            condition_display = case['diagnoses']['display']
-        else:
-            condition_display = "replace-me"
-
-        condition_clinicalstatus_code.coding = [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": condition_display, "code": "unknown"}]
+        condition_clinicalstatus_code.coding = [
+            {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": "unknown",
+             "code": "unknown"}]
         condition.clinicalStatus = condition_clinicalstatus_code
+
         condition.subject = subject_ref
         condition.encounter = encounter_ref
 
@@ -281,7 +318,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     code = p['sctid']
                 if body_site in p['value'] and 'sctid' in p.keys():
                     l_body_site.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
-        # print("l_body_site", l_body_site)
 
         cc_body_site = CodeableConcept.construct()
         cc_body_site.coding = l_body_site
@@ -307,15 +343,20 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     cc_stage_type = CodeableConcept.construct()
                     cc_stage_type.coding = [{'system': "https://cadsr.cancer.gov/",
                                              'display': case['diagnoses'][key],
-                                             'code': data_dict['clinical']['diagnosis']['properties'][staging_name]['termDef'][
+                                             'code': data_dict['clinical']['diagnosis']['properties'][staging_name][
+                                                 'termDef'][
                                                  'cde_id']},
                                             {'system': "http://snomed.info/sct",
                                              'display': case['diagnoses'][key],
                                              'code': stage_type_sctid_code}
                                             ]
                     # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
-                    if case_stage_display and case_stage_display in data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'].keys():
-                        code = data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'][case_stage_display]['termDef']['cde_id']
+                    if case_stage_display and case_stage_display in \
+                            data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'].keys():
+                        code = \
+                            data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'][
+                                case_stage_display][
+                                'termDef']['cde_id']
                     else:
                         code = "0000"
 
@@ -374,6 +415,24 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             if 'Specimen.id.sample' in sample.keys():
                 specimen = Specimen.construct()
                 specimen.id = sample["Specimen.id.sample"]
+                if "Specimen.type.sample" in sample.keys():
+                    sample_type = CodeableConcept.construct()
+                    sample_type.coding = [{
+                                              'system': "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=3111302%20and%20ver_nr=2.0",
+                                              'display': sample["Specimen.type.sample"],
+                                              'code': "3111302"}]
+                    specimen.type = sample_type
+                if "Specimen.processing.method" in sample.keys():
+
+                    sample_processing = CodeableConcept.construct()
+                    sp = SpecimenProcessing.construct()
+                    sample_processing.coding = [{
+                                                    'system': "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=5432521%20and%20ver_nr=1.0",
+                                                    'display': sample["Specimen.processing.method"],
+                                                    'code': "5432521"}]
+                    sp.method = sample_processing
+                    specimen.processing = [sp]
+
                 specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
                 if specimen not in all_samples:
                     all_samples.append(specimen)
@@ -399,8 +458,19 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                     if "Specimen.id.analyte" in analyte.keys():
                                         analyte_specimen = Specimen.construct()
                                         analyte_specimen.id = analyte["Specimen.id.analyte"]
-                                        analyte_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
-                                        analyte_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", portion_specimen.id])})]
+                                        analyte_specimen.subject = Reference(
+                                            **{"reference": "/".join(["Patient", patient.id])})
+                                        analyte_specimen.parent = [
+                                            Reference(**{"reference": "/".join(["Specimen", portion_specimen.id])})]
+
+                                        if "Specimen.type.analyte" in analyte.keys():
+                                            analyte_type = CodeableConcept.construct()
+                                            analyte_type.coding = [{
+                                                'system': "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2513915%20and%20ver_nr=2.0",
+                                                'display': analyte["Specimen.type.analyte"],
+                                                'code': "2513915"}]
+                                            analyte_specimen.type = analyte_type
+
                                         if analyte_specimen not in all_analytes:
                                             all_analytes.append(analyte_specimen)
 
@@ -437,12 +507,18 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     [all_fhir_case_obj.append(assign_fhir_for_case(c)) for c in cases]
 
     patients = [orjson.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
-    encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if 'encounter' in fhir_case.keys() and fhir_case['encounter']]
-    observations = [orjson.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if 'observation' in fhir_case.keys() and fhir_case['observation']]
-    conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if 'condition' in fhir_case.keys() and fhir_case['condition']]
+    encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if
+                  'encounter' in fhir_case.keys() and fhir_case['encounter']]
+    observations = [orjson.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if
+                    'observation' in fhir_case.keys() and fhir_case['observation']]
+    conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if
+                  'condition' in fhir_case.keys() and fhir_case['condition']]
     research_subjects = [orjson.loads(fhir_case['research_subject'].json()) for fhir_case in all_fhir_case_obj]
-    projects = [orjson.loads(fhir_case['project_relations']["ResearchStudy_obj"].json()) for fhir_case in all_fhir_case_obj]
-    programs = list(unique_everseen([orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].json()) for fhir_case in all_fhir_case_obj]))
+    projects = [orjson.loads(fhir_case['project_relations']["ResearchStudy_obj"].json()) for fhir_case in
+                all_fhir_case_obj]
+    programs = list(unique_everseen(
+        [orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].json()) for fhir_case in
+         all_fhir_case_obj]))
 
     specimens = []
     for fhir_case in all_fhir_case_obj:

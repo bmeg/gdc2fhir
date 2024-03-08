@@ -604,7 +604,6 @@ case_maps = [Map(
         )
     ),
 
-
     Map(
         source=Source(
             name='samples.portions.analytes.aliquots.aliquot_id'
