@@ -261,6 +261,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 display = icd10code.description
                 icd10_annotation = {'system': system, 'display': display, 'code': code}
                 condition_codes_list.append(icd10_annotation)
+
+        # not all conditions of GDC are in it's data dictionary
         """
         if ('Condition.code_primary_diagnosis' in case['diagnoses'].keys() and
                 "Paget disease and infiltrating duct carcinoma of breast" not in case['diagnoses']['Condition.code_primary_diagnosis'])\
@@ -275,6 +277,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         "code": gdc_condition_code}
             condition_codes_list.append(gdc_condition_annotation)
         """
+
         loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
 
         # observation_code.coding = condition_codes_list
@@ -350,6 +353,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                              'display': case['diagnoses'][key],
                                              'code': stage_type_sctid_code}
                                             ]
+                    
                     # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
                     if case_stage_display and case_stage_display in \
                             data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'].keys():
@@ -367,9 +371,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                     if not re.match("^[^\s]+(\s[^\s]+)*$", sctid_code):
                         sctid_code = "0000"
-
-                    # print("sctid_code", sctid_code)
-                    # print("code", code)
 
                     cc_stage = CodeableConcept.construct()
                     cc_stage.coding = [{'system': "https://ncit.nci.nih.gov",
@@ -418,7 +419,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 if "Specimen.type.sample" in sample.keys():
                     sample_type = CodeableConcept.construct()
                     sample_type.coding = [{
-                                              'system': "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=3111302%20and%20ver_nr=2.0",
+                                              'system': "https://cadsr.cancer.gov",
                                               'display': sample["Specimen.type.sample"],
                                               'code': "3111302"}]
                     specimen.type = sample_type
@@ -427,7 +428,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     sample_processing = CodeableConcept.construct()
                     sp = SpecimenProcessing.construct()
                     sample_processing.coding = [{
-                                                    'system': "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=5432521%20and%20ver_nr=1.0",
+                                                    'system': "https://cadsr.cancer.gov",
                                                     'display': sample["Specimen.processing.method"],
                                                     'code': "5432521"}]
                     sp.method = sample_processing
@@ -466,7 +467,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         if "Specimen.type.analyte" in analyte.keys():
                                             analyte_type = CodeableConcept.construct()
                                             analyte_type.coding = [{
-                                                'system': "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=2513915%20and%20ver_nr=2.0",
+                                                'system': "https://cadsr.cancer.gov",
                                                 'display': analyte["Specimen.type.analyte"],
                                                 'code': "2513915"}]
                                             analyte_specimen.type = analyte_type
@@ -524,7 +525,6 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     for fhir_case in all_fhir_case_obj:
         if fhir_case["specimens"]:
             for specimen in fhir_case["specimens"]:
-                # print(specimen.dict())
                 specimens.append(orjson.loads(specimen.json()))
 
     if specimens:

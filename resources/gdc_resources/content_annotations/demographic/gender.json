@@ -2,7 +2,7 @@
     {
         "value": "female",
         "description": "A person who belongs to the sex that normally produces ova. The term is used to indicate biological sex distinctions, or cultural gender role distinctions, or both.",
-        "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C16576",
+        "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C16576",
         "_comment_fhir_display_source": "https://build.fhir.org/valueset-administrative-gender.html",
@@ -11,7 +11,7 @@
     {
         "value": "male",
         "description": "A person who belongs to the sex that normally produces sperm. The term is used to indicate biological sex distinctions, cultural gender role distinctions, or both.",
-        "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C20197",
+        "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C20197",
         "_comment_fhir_display_source": "https://build.fhir.org/valueset-administrative-gender.html",
@@ -20,7 +20,7 @@
     {
         "value": "not reported",
         "description": "Not provided or available.",
-        "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234",
+        "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C43234",
         "_comment_fhir_display_source": "https://build.fhir.org/valueset-administrative-gender.html",
@@ -29,7 +29,7 @@
     {
         "value": "unknown",
         "description": "Not known, not observed, not recorded, or refused.",
-        "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998",
+        "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C17998",
         "_comment_fhir_display_source": "https://build.fhir.org/valueset-administrative-gender.html",
@@ -38,7 +38,7 @@
     {
         "value": "unspecified",
         "description": "Not stated explicitly or in detail.",
-        "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C38046",
+        "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C38046",
         "_comment_fhir_display_source": "https://build.fhir.org/valueset-administrative-gender.html",
