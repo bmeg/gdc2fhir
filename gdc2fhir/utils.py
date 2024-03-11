@@ -1,12 +1,13 @@
 import os
 import json
 import glob
+import pathlib
 import pprint
 import requests
 from bs4 import BeautifulSoup
 from gdc2fhir.schema import Schema
 
-here = os.path.abspath(os.path.dirname(__file__))
+package_dir = pathlib.Path(os.path.abspath(os.path.dirname('__file__')))
 
 
 def extract_keys(data, parent_key=None, seen_keys=None):
@@ -232,7 +233,8 @@ def gdc_available_fields(save=True):
         if save:
             for k, v in fields.items():
                 jr = json.dumps(v, indent=4)
-                out_path = "".join(["./resources/gdc_resources/fields/", k, ".json"])
+                # out_path = "".join(["./resources/gdc_resources/fields/", k, ".json"])
+                out_path = os.path.join(package_dir, 'resources', 'gdc_resources', 'fields', "".join([k, ".json"]))
                 with open(out_path, "w") as output_file:
                     output_file.write(jr)
         return fields
@@ -436,7 +438,8 @@ def generate_gdc_data_dictionary(create=False):
                  analysis, notation, index, data]
 
     for i, d in enumerate(dict_list):
-        dir = "".join(["./resources/gdc_resources/data_dictionary/", names[i]])
+        # dir = "".join(["./resources/gdc_resources/data_dictionary/", names[i]])
+        dir = os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary', names[i])
         if not os.path.exists(dir) and create:
             os.makedirs(dir)
         for k, v, in d.items():
@@ -445,7 +448,8 @@ def generate_gdc_data_dictionary(create=False):
                 output_file.write(json.dumps(v, indent=4))
 
 
-def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
+# def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
+def load_data_dictionary(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary', '')):
     """
     Reads in  data_dictionary from file-path hierarchy and creates a dictionary for data mapping
 
@@ -469,8 +473,8 @@ def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
 
     return all_dat
 
-
-def load_fields(path="./resources/gdc_resources/fields/"):
+# def load_fields(path="./resources/gdc_resources/fields/"):
+def load_fields(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'fields', '')):
     """
     loads GDC fields in resources
 
@@ -619,8 +623,6 @@ def append_required_fhir_keys(element_required, required_keys):
 # -------------------------------------------------
 # mapping.py utils
 # -------------------------------------------------
-_data_dict = load_data_dictionary()
-
 
 def validate_and_write(schema, out_path, update=False, generate=False):
     Schema.model_validate(schema)

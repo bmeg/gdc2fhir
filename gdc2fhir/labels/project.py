@@ -7,16 +7,14 @@ from fhir.resources.researchstudy import ResearchStudy, ResearchStudyProgressSta
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.condition import Condition
-from fhir.resources.identifier import Identifier
 from fhir.resources.extension import Extension
 from fhir.resources.genomicstudy import GenomicStudy
 
-# Variable data required for mapping
-two_level_up = os.path.abspath(os.path.join(os.path.dirname('__file__'), '../..'))
-project_schema = utils.load_schema_from_json(path="".join([two_level_up, "/mapping/project.json"]))
+package_dir = utils.package_dir
+project_schema = utils.load_schema_from_json(path=os.path.join(package_dir, 'mapping', 'project.json'))
 keys_to_label_fields = [key for key in project_schema.obj_keys if
                         key not in [x.source.name for x in project_schema.mappings]]
-data_dict = utils.load_data_dictionary("".join([two_level_up, "/resources/gdc_resources/data_dictionary/"]))
+data_dict = utils.load_data_dictionary(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary',  ''))
 
 """
 Field labels mapped semi-computationally 
@@ -393,7 +391,8 @@ project_maps = [
 """
 proceed with caution this code changes the state of current files under mapping
 """
-out_path = "".join([two_level_up, "/mapping/project.json"])
+
+out_path = os.path.join(package_dir, 'mapping', 'project.json')
 valid_project_maps = [Map.model_validate(p) for p in project_maps]
 [project_schema.mappings.append(i) for i in valid_project_maps]
 utils.validate_and_write(project_schema, out_path=out_path, update=True, generate=False)

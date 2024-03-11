@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import orjson
@@ -18,14 +19,15 @@ from gdc2fhir import utils
 import datetime
 import icd10
 
-disease_types = utils._read_json("./resources/gdc_resources/content_annotations/case/disease_types.json")
-primary_sites = utils._read_json("./resources/gdc_resources/content_annotations/case/primary_sites.json")
-race = utils._read_json("./resources/gdc_resources/content_annotations/demographic/race.json")
-ethnicity = utils._read_json("./resources/gdc_resources/content_annotations/demographic/ethnicity.json")
-gender = ethnicity = utils._read_json("./resources/gdc_resources/content_annotations/demographic/gender.json")
-data_dict = utils.load_data_dictionary("./resources/gdc_resources/data_dictionary/")
-cancer_pathological_staging = utils._read_json(
-    "./resources/gdc_resources/content_annotations/diagnosis/cancer_pathological_staging.json")
+package_dir = utils.package_dir
+disease_types = utils._read_json(os.path.join(package_dir, 'resources', 'gdc_resources', 'content_annotations', 'case', 'disease_types.json'))
+primary_sites = utils._read_json(os.path.join(package_dir, 'resources', 'gdc_resources', 'content_annotations', 'case', 'primary_sites.json'))
+race = utils._read_json(os.path.join(package_dir, 'resources', 'gdc_resources', 'content_annotations', 'demographic', 'race.json'))
+ethnicity = utils._read_json(os.path.join(package_dir, 'resources', 'gdc_resources', 'content_annotations', 'demographic', 'ethnicity.json'))
+gender = utils._read_json(os.path.join(package_dir, 'resources', 'gdc_resources', 'content_annotations', 'demographic', 'gender.json'))
+data_dict = utils.load_data_dictionary(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary',  ''))
+cancer_pathological_staging = utils._read_json(os.path.join(package_dir, 'resources', 'gdc_resources', 'content_annotations',
+                                                            'diagnosis', 'cancer_pathological_staging.json'))
 
 
 def assign_fhir_for_project(project, disease_types=disease_types):
@@ -262,7 +264,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 icd10_annotation = {'system': system, 'display': display, 'code': code}
                 condition_codes_list.append(icd10_annotation)
 
-        # not all conditions of GDC are in it's data dictionary
+        # not all conditions of GDC have enumDef for it's resource code/system in data dictionary
         """
         if ('Condition.code_primary_diagnosis' in case['diagnoses'].keys() and
                 "Paget disease and infiltrating duct carcinoma of breast" not in case['diagnoses']['Condition.code_primary_diagnosis'])\
@@ -353,7 +355,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                              'display': case['diagnoses'][key],
                                              'code': stage_type_sctid_code}
                                             ]
-                    
+
                     # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
                     if case_stage_display and case_stage_display in \
                             data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'].keys():

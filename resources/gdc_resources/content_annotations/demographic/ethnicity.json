@@ -4,6 +4,9 @@
         "description": "A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin, regardless of race. The term, \"Spanish origin,\" can be used in addition to \"Hispanic or Latino.\" (OMB)",
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
+        "term_id": "C17459",
+        "ombCategory-system": "",
+        "ombCategory-display": "",
         "ombCategory-code": "2135-2"
     },
     {
@@ -11,6 +14,9 @@
         "description": "A person not of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin, regardless of race.",
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
+        "term_id": "C41222",
+        "ombCategory-system": "",
+        "ombCategory-display": "",
         "ombCategory-code": "2186-5"
     },
     {
@@ -18,6 +24,9 @@
         "description": "Not known, not observed, not recorded, or refused.",
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
+        "term_id": "C17998",
+        "ombCategory-system": "",
+        "ombCategory-display": "",
         "ombCategory-code": ""
     },
     {
@@ -25,6 +34,9 @@
         "description": "Not provided or available.",
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
+        "term_id": "C43234",
+        "ombCategory-system": "",
+        "ombCategory-display": "",
         "ombCategory-code": ""
     },
     {
@@ -32,6 +44,9 @@
         "description": "An indicator that specifies that a collection event was not permitted.",
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
+        "term_id": "C141478",
+        "ombCategory-system": "",
+        "ombCategory-display": "",
         "ombCategory-code": ""
     }
 ]

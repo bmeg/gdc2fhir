@@ -65,7 +65,7 @@ cd gdc2fhir
 # create virtual env ex. 
 python -m venv venv-gdc2fhir
 source venv-gdc2fhir/bin/activate
-python setup.py install
+pip install . 
 ```
 
 ### Convert and Generate

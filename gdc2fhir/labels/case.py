@@ -1,35 +1,25 @@
 import os
 from typing import List, LiteralString
-from pydantic import NonNegativeInt
 from gdc2fhir import utils
 from gdc2fhir.schema import Map, Source, Destination, Reference
 from fhir.resources.patient import Patient
-from fhir.resources.identifier import Identifier
-from fhir.resources.coding import Coding
-from fhir.resources.observation import Observation
-from fhir.resources.observationdefinition import ObservationDefinition
 from fhir.resources.extension import Extension
-from fhir.resources.researchstudy import ResearchStudy, ResearchStudyRecruitment, ResearchStudyProgressStatus
+from fhir.resources.researchstudy import ResearchStudy, ResearchStudyProgressStatus
 from fhir.resources.researchsubject import ResearchSubject
 from fhir.resources.specimen import Specimen
 from fhir.resources.imagingstudy import ImagingStudy
-from fhir.resources.annotation import Annotation
 from fhir.resources.condition import Condition
 from fhir.resources.diagnosticreport import DiagnosticReport
-from fhir.resources.range import Range
-from fhir.resources.documentreference import DocumentReference
-from fhir.resources.attachment import Attachment
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.genomicstudy import GenomicStudy
 from fhir.resources.encounter import Encounter
 
-
-two_level_up = os.path.abspath(os.path.join(os.path.dirname('__file__'), '../..'))
-case_schema = utils.load_schema_from_json(path="".join([two_level_up, "/mapping/case.json"]))
+package_dir = utils.package_dir
+case_schema = utils.load_schema_from_json(path=os.path.join(package_dir, 'mapping', 'case.json'))
 keys_to_label_fields = [key for key in case_schema.obj_keys if
                         key not in [x.source.name for x in case_schema.mappings]]
-data_dict = utils.load_data_dictionary("".join([two_level_up, "/resources/gdc_resources/data_dictionary/"]))
+data_dict = utils.load_data_dictionary(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary',  ''))
 
 """
 Field labels mapped semi-computationally 
@@ -962,7 +952,7 @@ case_maps = [Map(
 proceed with caution this code changes the state of current files under mapping
 """
 
-out_path = "".join([two_level_up, "/mapping/case.json"])
+out_path = os.path.join(package_dir, 'mapping', 'case.json')
 valid_case_maps = [Map.model_validate(c) for c in case_maps]
 [case_schema.mappings.append(i) for i in valid_case_maps]
 utils.validate_and_write(case_schema, out_path=out_path, update=True, generate=False)
