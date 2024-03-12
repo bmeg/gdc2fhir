@@ -1,18 +1,19 @@
 import os
 import json
+from pathlib import Path
+import importlib.resources
 from gdc2fhir import utils
 from gdc2fhir.schema import Schema, Map, Metadata, Version, Source, Destination, Reference
 from fhir.resources.researchstudy import ResearchStudy
 from fhir.resources.patient import Patient
 from fhir.resources.documentreference import DocumentReference
 
-
-package_dir = utils.package_dir
-data_dict = utils.load_data_dictionary(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary',  ''))
+data_dict = utils.load_data_dictionary(path=utils.DATA_DICT_PATH)
 
 
-def initialize_project(field_path=os.path.join(package_dir, 'resources', 'gdc_resources', 'fields', ''),
-                       out_path=os.path.join(package_dir, 'mapping', 'project_test.json')):
+def initialize_project(field_path=utils.FIELDS_PATH,
+                       out_path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'project_test.json'))):
+
     """
     initial Schema structure of GDC project
 
@@ -90,8 +91,8 @@ def initialize_project(field_path=os.path.join(package_dir, 'resources', 'gdc_re
     utils.validate_and_write(project_schema, out_path=out_path, update=False, generate=True)
 
 
-def initialize_case(field_path=os.path.join(package_dir, 'resources', 'gdc_resources', 'fields', ''),
-                    out_path=os.path.join(package_dir, 'mapping', 'case_test.json')):
+def initialize_case(field_path=utils.FIELDS_PATH,
+                    out_path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'case_test.json'))):
     """
     initial Schema structure of GDC Case
 
@@ -168,8 +169,7 @@ def initialize_case(field_path=os.path.join(package_dir, 'resources', 'gdc_resou
     utils.validate_and_write(case_schema, out_path=out_path, update=False, generate=True)
 
 
-def initialize_file(field_path=os.path.join(package_dir, 'resources', 'gdc_resources', 'fields', ''),
-                    out_path=os.path.join(package_dir, 'mapping', 'file_test.json')):
+def initialize_file(field_path=utils.FIELDS_PATH, out_path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'file_test.json'))):
     """
     initial Schema structure of GDC File
 
@@ -248,7 +248,7 @@ def initialize_file(field_path=os.path.join(package_dir, 'resources', 'gdc_resou
     utils.validate_and_write(file_schema, out_path=out_path, update=False, generate=True)
 
 
-def add_some_maps(out_path=os.path.join(package_dir, 'mapping', 'project.json')):
+def add_some_maps(out_path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'project_test.json'))):
     """
     # add name and project_id for testing
 
@@ -313,9 +313,9 @@ def convert_maps(in_path, out_path, name, verbose):
     schema = None
 
     if name in 'project':
-        schema = utils.load_schema_from_json(path=os.path.join(package_dir, 'mapping', 'project.json'))
+        schema = utils.load_schema_from_json(path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'project.json')))
     elif name in 'case':
-        schema = utils.load_schema_from_json(path=os.path.join(package_dir, 'mapping', 'case.json'))
+        schema = utils.load_schema_from_json(path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'case.json')))
 
     if schema:
         entities = utils.load_ndjson(path=in_path)

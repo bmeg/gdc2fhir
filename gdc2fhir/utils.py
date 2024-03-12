@@ -1,13 +1,16 @@
 import os
 import json
 import glob
-import pathlib
 import pprint
 import requests
 from bs4 import BeautifulSoup
 from gdc2fhir.schema import Schema
+from importlib.resources import files
+import importlib
+from pathlib import Path
 
-package_dir = pathlib.Path(os.path.abspath(os.path.dirname('__file__')))
+DATA_DICT_PATH = "".join([str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'data_dictionary')), "/"])
+FIELDS_PATH = "".join([str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'fields')), "/"])
 
 
 def extract_keys(data, parent_key=None, seen_keys=None):
@@ -185,6 +188,7 @@ def _read_json(path):
     :param path: path to json file
     :return:
     """
+    
     try:
         with open(path, encoding='utf-8') as f:
             this_json = json.load(f)
@@ -192,10 +196,10 @@ def _read_json(path):
     except json.JSONDecodeError as e:
         print("Error decoding JSON: {}".format(e))
 
-
 # --------------------------------------------------------------------------
 # GDC Utility functions
 # --------------------------------------------------------------------------
+
 def get_field_text(table):
     """
     Gets text of td tags of an xml table
@@ -233,8 +237,7 @@ def gdc_available_fields(save=True):
         if save:
             for k, v in fields.items():
                 jr = json.dumps(v, indent=4)
-                # out_path = "".join(["./resources/gdc_resources/fields/", k, ".json"])
-                out_path = os.path.join(package_dir, 'resources', 'gdc_resources', 'fields', "".join([k, ".json"]))
+                out_path = "".join([FIELDS_PATH, k, ".json"])
                 with open(out_path, "w") as output_file:
                     output_file.write(jr)
         return fields
@@ -438,8 +441,7 @@ def generate_gdc_data_dictionary(create=False):
                  analysis, notation, index, data]
 
     for i, d in enumerate(dict_list):
-        # dir = "".join(["./resources/gdc_resources/data_dictionary/", names[i]])
-        dir = os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary', names[i])
+        dir = "".join([DATA_DICT_PATH, names[i]])
         if not os.path.exists(dir) and create:
             os.makedirs(dir)
         for k, v, in d.items():
@@ -448,8 +450,7 @@ def generate_gdc_data_dictionary(create=False):
                 output_file.write(json.dumps(v, indent=4))
 
 
-# def load_data_dictionary(path="./resources/gdc_resources/data_dictionary/"):
-def load_data_dictionary(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary', '')):
+def load_data_dictionary(path=DATA_DICT_PATH):
     """
     Reads in  data_dictionary from file-path hierarchy and creates a dictionary for data mapping
 
@@ -473,8 +474,8 @@ def load_data_dictionary(path=os.path.join(package_dir, 'resources', 'gdc_resour
 
     return all_dat
 
-# def load_fields(path="./resources/gdc_resources/fields/"):
-def load_fields(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'fields', '')):
+
+def load_fields(path=FIELDS_PATH):
     """
     loads GDC fields in resources
 

@@ -21,7 +21,7 @@ def field_keys(input_path):
 
 @cli.command('project_init')
 @click.option('--field_path', required=True,
-              default='./resources/gdc_resources/fields/',
+              default=utils.FIELDS_PATH,
               show_default=True,
               help='Path to GDC fields')
 @click.option('--out_path', required=True,
@@ -34,7 +34,7 @@ def project_init(field_path, out_path):
 
 @cli.command('case_init')
 @click.option('--field_path', required=True,
-              default='./resources/gdc_resources/fields/',
+              default=utils.FIELDS_PATH,
               show_default=True,
               help='Path to GDC fields')
 @click.option('--out_path', required=True,
@@ -47,7 +47,7 @@ def case_init(field_path, out_path):
 
 @cli.command('file_init')
 @click.option('--field_path', required=True,
-              default='./resources/gdc_resources/fields/',
+              default=utils.FIELDS_PATH,
               show_default=True,
               help='Path to GDC fields')
 @click.option('--out_path', required=True,

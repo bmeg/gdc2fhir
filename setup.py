@@ -28,6 +28,14 @@ setup(
         'beautifulsoup4',
         'fhir.resources>=7.1.0'  # FHIR® (Release R5, version 5.0.0)
     ],
+    package_data={
+        'gdc2fhir': [
+            '../resources/gdc_resources/content_annotations/**/*.json',
+            '../resources/gdc_resources/data_dictionary/**/*.json',
+            '../resources/gdc_resources/fields/*.json',
+            '../mapping/*.json'
+        ]
+    },
     tests_require=['pytest'],
     classifiers=[
         'Development Status :: 3 - Alpha',
