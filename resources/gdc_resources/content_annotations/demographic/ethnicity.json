@@ -5,8 +5,8 @@
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C17459",
-        "ombCategory-system": "",
-        "ombCategory-display": "",
+        "ombCategory-system": "urn:oid:2.16.840.1.113883.6.238",
+        "ombCategory-display": "Hispanic or Latino",
         "ombCategory-code": "2135-2"
     },
     {
@@ -15,8 +15,8 @@
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C41222",
-        "ombCategory-system": "",
-        "ombCategory-display": "",
+        "ombCategory-system": "urn:oid:2.16.840.1.113883.6.238",
+        "ombCategory-display": "Not Hispanic or Latino",
         "ombCategory-code": "2186-5"
     },
     {
@@ -25,9 +25,9 @@
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C17998",
-        "ombCategory-system": "",
-        "ombCategory-display": "",
-        "ombCategory-code": ""
+        "ombCategory-system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+        "ombCategory-display": "unknown",
+        "ombCategory-code": "UNK"
     },
     {
         "value": "not reported",
@@ -35,9 +35,9 @@
         "description_url": "https://ncit.nci.nih.gov",
         "annotation_type": "NCIt",
         "term_id": "C43234",
-        "ombCategory-system": "",
-        "ombCategory-display": "",
-        "ombCategory-code": ""
+        "ombCategory-system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+        "ombCategory-display": "asked but unknown",
+        "ombCategory-code": "ASKU"
     },
     {
         "value": "not allowed to collect",

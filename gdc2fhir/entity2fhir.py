@@ -21,14 +21,19 @@ import icd10
 import importlib.resources
 from pathlib import Path
 
-
-disease_types = utils._read_json(str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'disease_types.json')))
-primary_sites = utils._read_json(str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'primary_sites.json')))
-race = utils._read_json(str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'race.json')))
-ethnicity = utils._read_json(str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'ethnicity.json')))
-gender = utils._read_json(str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'gender.json')))
+disease_types = utils._read_json(str(Path(importlib.resources.files(
+    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'disease_types.json')))
+primary_sites = utils._read_json(str(Path(importlib.resources.files(
+    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'primary_sites.json')))
+race = utils._read_json(str(Path(importlib.resources.files(
+    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'race.json')))
+ethnicity = utils._read_json(str(Path(importlib.resources.files(
+    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'ethnicity.json')))
+gender = utils._read_json(str(Path(importlib.resources.files(
+    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'gender.json')))
 data_dict = utils.load_data_dictionary(path=utils.DATA_DICT_PATH)
-cancer_pathological_staging = utils._read_json(str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'diagnosis' / 'cancer_pathological_staging.json')))
+cancer_pathological_staging = utils._read_json(str(Path(importlib.resources.files(
+    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'diagnosis' / 'cancer_pathological_staging.json')))
 
 
 def assign_fhir_for_project(project, disease_types=disease_types):
@@ -158,7 +163,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         race_display = ""
         race_system = ""
         for r in race:
-            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension'] and re.match(r"[ \r\n\t\S]+", r['ombCategory-code']):
+            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension'] and re.match(
+                    r"[ \r\n\t\S]+", r['ombCategory-code']):
                 race_code = r['ombCategory-code']
                 race_system = r['ombCategory-system']
                 race_display = r['ombCategory-display']
@@ -191,17 +197,23 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         ethnicity_system = ""
         for e in ethnicity:
             if e['value'] in case['demographic']['Extension:extension.USCoreEthnicity']:
-                # ethnicity_code = e['ombCategory-code']
-                # ethnicity_system = e['ombCategory-system']
-                # ethnicity_display = e['ombCategory-display']
+                ethnicity_code = e['ombCategory-code']
+                ethnicity_system = e['ombCategory-system']
+                ethnicity_display = e['ombCategory-display']
                 gdc_ethnicity_code = e['term_id']
                 gdc_ethnicity_system = e['description_url']
                 gdc_ethnicity_display = e['value']
-                # ethnicity_ext.valueString = e['ombCategory-display']
+                ethnicity_ext.valueString = e['ombCategory-display']
                 ethnicity_ext.valueString = e['value']
 
         if ethnicity_code:
-            ethnicity_ext.extension = [{"url": "https://ncit.nci.nih.gov",
+            ethnicity_ext.extension = [{"url": "ombCategory",
+                                        "valueCoding": {
+                                            "system": ethnicity_system,
+                                            "code": ethnicity_code,
+                                            "display": ethnicity_display
+                                        }},
+                                       {"url": "https://ncit.nci.nih.gov",
                                         "valueCoding": {
                                             "system": gdc_ethnicity_system,
                                             "code": gdc_ethnicity_code,
@@ -422,18 +434,17 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 if "Specimen.type.sample" in sample.keys():
                     sample_type = CodeableConcept.construct()
                     sample_type.coding = [{
-                                              'system': "https://cadsr.cancer.gov",
-                                              'display': sample["Specimen.type.sample"],
-                                              'code': "3111302"}]
+                        'system': "https://cadsr.cancer.gov",
+                        'display': sample["Specimen.type.sample"],
+                        'code': "3111302"}]
                     specimen.type = sample_type
                 if "Specimen.processing.method" in sample.keys():
-
                     sample_processing = CodeableConcept.construct()
                     sp = SpecimenProcessing.construct()
                     sample_processing.coding = [{
-                                                    'system': "https://cadsr.cancer.gov",
-                                                    'display': sample["Specimen.processing.method"],
-                                                    'code': "5432521"}]
+                        'system': "https://cadsr.cancer.gov",
+                        'display': sample["Specimen.processing.method"],
+                        'code': "5432521"}]
                     sp.method = sample_processing
                     specimen.processing = [sp]
 
