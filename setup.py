@@ -5,7 +5,7 @@ __version__ = '0.0.0'
 setup(
     name='gdc2fhir',
     version=__version__,
-    description="Mapping GDC's schema to Ellrot's lab FHIR schema.",
+    description="Mapping GDC's schema to FHIR schema.",
     long_description=open('README.md').read(),
     url='https://github.com/bmeg/gdc2fhir',
     author='https://ellrottlab.org/',

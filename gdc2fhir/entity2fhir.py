@@ -233,6 +233,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     # create researchSubject to link Patient --> ResearchStudy
     research_subject = ResearchSubject.construct()
     research_subject.status = "".join(['unknown-', case['ResearchSubject.status']])
+    # research_subject.status = "active"
     research_subject.study = study_ref
     research_subject.subject = subject_ref
 
@@ -294,9 +295,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         """
 
         loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
+        condition_codes_list.append(loinc_annotation)
 
-        # observation_code.coding = condition_codes_list
-        observation_code.coding = [loinc_annotation]
+        observation_code.coding = condition_codes_list
+        # observation_code.coding = [loinc_annotation]
         observation.code = observation_code
         observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
 

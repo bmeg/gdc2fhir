@@ -2,7 +2,7 @@
 ![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
 
 ## Project overview: 
-Mapping GDC (Genomic Data Commons) schema to Ellrot's lab FHIR (Fast Healthcare Interoperability Resources) schema.
+Mapping GDC (Genomic Data Commons) schema to FHIR (Fast Healthcare Interoperability Resources) schema.
 
 ### High-level mapping:
 - #### GDC schema 
