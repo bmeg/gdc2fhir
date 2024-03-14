@@ -14,7 +14,7 @@ def cli():
               show_default=True,
               help='Path to available GDC field json files in this repo')
 def field_keys(input_path):
-    case_fields = utils.read_json(input_path)
+    case_fields = utils._read_json(input_path)
     print("reading from input_path: ", input_path)
     print("case fields: ", case_fields)
 

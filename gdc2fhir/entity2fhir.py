@@ -15,8 +15,12 @@ from fhir.resources.encounter import Encounter
 from fhir.resources.specimen import Specimen, SpecimenProcessing
 from fhir.resources.patient import Patient
 from fhir.resources.researchsubject import ResearchSubject
+from fhir.resources.imagingstudy import ImagingStudy, ImagingStudySeries
+from fhir.resources.procedure import Procedure
+from fhir.resources.medicationadministration import MedicationAdministration
+from fhir.resources.medication import Medication
 from gdc2fhir import utils
-import datetime
+from datetime import datetime
 import icd10
 import importlib.resources
 from pathlib import Path
@@ -140,7 +144,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     if 'demographic' in case.keys() and 'Patient.birthDate' in case['demographic']:
         # converted to https://build.fhir.org/datatypes.html#date / NOTE: month and day missing in GDC
         if case['demographic']['Patient.birthDate']:
-            patient.birthDate = datetime.datetime(int(case['demographic']['Patient.birthDate']), 1, 1)
+            patient.birthDate = datetime(int(case['demographic']['Patient.birthDate']), 1, 1)
 
     patient_gender = None
     if 'demographic' in case.keys() and 'Patient.gender' in case['demographic']:
@@ -232,8 +236,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     # create researchSubject to link Patient --> ResearchStudy
     research_subject = ResearchSubject.construct()
-    research_subject.status = "".join(['unknown-', case['ResearchSubject.status']])
-    # research_subject.status = "active"
+    # research_subject.status = "".join(['unknown-', case['ResearchSubject.status']])
+    research_subject.status = "active"
     research_subject.study = study_ref
     research_subject.subject = subject_ref
 
@@ -345,6 +349,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         if 'diagnoses' in case.keys():
             # condition staging
+            # staging grouping for observation.code https://build.fhir.org/ig/HL7/fhir-mCODE-ig/ValueSet-mcode-tnm-stage-group-staging-type-vs.html
             staging_list = []
             # print("case['diagnoses']", case['diagnoses'])
             for key, value in case['diagnoses'].items():
@@ -408,6 +413,46 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     staging_list.append(condition_stage)
 
             condition.stage = staging_list
+            observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])})]
+
+            # create medication administration and medication
+            # bug in MedicationAdministration.status
+            """
+            if 'treatments' in case['diagnoses'].keys():
+                treatments_med = []
+                treatments_medadmin = []
+
+                for treatment in case['diagnoses']['treatments']:
+                    # https://build.fhir.org/ig/HL7/fhir-mCODE-ig/artifacts.html
+                    med = Medication.construct()
+                    med.id = treatment['MedicationAdministration.id']  # confirm
+                    # med.code = treatment['Medication.code']
+                    # med.ingredient = treatment['Medication.active_agents']
+                    treatments_med.append(med)
+
+                    admin_status = CodeableConcept.construct()
+                    admin_status.coding = [{'system': "	http://hl7.org/fhir/CodeSystem/medication-admin-status",
+                                            'display': 'Completed',
+                                            'code': 'completed'}]
+
+                    med_admin = MedicationAdministration.construct()
+                    med_admin.status = admin_status  # if treatment['treatment_or_therapy'] == "yes" then completed, no "not-done"
+                    med_admin.occurenceDateTime = datetime.fromisoformat("2019-04-28T13:44:38.933790-05:00")
+                    med_admin.id = treatment['MedicationAdministration.id']
+
+                    med_admin.medication = Reference(**{"reference": "/".join(["Medication", med.id])})
+                    med_admin.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+                    med_admin.encounter = Reference(**{"reference": "/".join(["Encounter", encounter.id])})
+                    treatments_medadmin.append(med_admin)
+            """
+
+        # add procedure
+        procedure = None
+        if encounter:
+            procedure = Procedure.construct()
+            procedure.status = "completed"
+            procedure.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+            procedure.encounter = Reference(**{"reference": "/".join(["Encounter", encounter.id])})
 
     # create specimen
     def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specimens):
@@ -422,7 +467,27 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     if fhir_specimen not in all_fhir_specimens:
                         all_fhir_specimens.append(fhir_specimen)
 
+    def add_imaging_study(slide, patient, sample):
+        # SM	Slide Microscopy	Slide Microscopy
+        img = ImagingStudy.construct()
+        img.status = "available"
+        img.id = slide["ImagingStudy.id"]
+        img.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+
+        img_series = ImagingStudySeries.construct()
+        img_series.uid = sample.id
+
+        modality = CodeableConcept.construct()
+        modality.coding = [{"system": " http://dicom.nema.org/resources/ontology/DCM", "display": "Slide Microscopy", "code": "SM"}]
+        img_series.modality = modality
+
+        img_series.specimen = [Reference(**{"reference": "/".join(["Specimen", sample.id])})]
+        img.series = [img_series]
+
+        return img
+
     sample_list = None
+    slide_list = []
     if "samples" in case.keys():
         samples = case["samples"]
         all_samples = []
@@ -470,6 +535,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             if portion_specimen not in all_portions:
                                 all_portions.append(portion_specimen)
 
+                            if "slides" in portion.keys():
+                                for slide in portion["slides"]:
+                                    slide_list.append(add_imaging_study(slide=slide, patient=patient, sample=portion_specimen))
+
                             if "analytes" in portion.keys():
                                 for analyte in portion["analytes"]:
                                     if "Specimen.id.analyte" in analyte.keys():
@@ -487,6 +556,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 'display': analyte["Specimen.type.analyte"],
                                                 'code': "2513915"}]
                                             analyte_specimen.type = analyte_type
+
+                                        if "slides" in analyte.keys():
+                                            for slide in analyte["slides"]:
+                                                slide_list.append(
+                                                    add_imaging_study(slide=slide, patient=patient, sample=analyte_specimen))
 
                                         if analyte_specimen not in all_analytes:
                                             all_analytes.append(analyte_specimen)
@@ -506,7 +580,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
 
     return {'patient': patient, 'encounter': encounter, 'observation': observation, 'condition': condition,
-            'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list}
+            'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
+            'imaging_study': slide_list, "procedure": procedure}
 
 
 def fhir_ndjson(entity, out_path):
@@ -526,6 +601,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     patients = [orjson.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
     encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if
                   'encounter' in fhir_case.keys() and fhir_case['encounter']]
+    procedures = [orjson.loads(fhir_case['procedure'].json()) for fhir_case in all_fhir_case_obj]
     observations = [orjson.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if
                     'observation' in fhir_case.keys() and fhir_case['observation']]
     conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if
@@ -543,12 +619,41 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
             for specimen in fhir_case["specimens"]:
                 specimens.append(orjson.loads(specimen.json()))
 
-    if specimens:
-        fhir_ndjson(specimens, "".join([out_dir, "/Specimen.ndjson"]))
+    imaging_study = []
+    for fhir_case in all_fhir_case_obj:
+        if fhir_case["imaging_study"]:
+            for img in fhir_case["imaging_study"]:
+                imaging_study.append(orjson.loads(img.json()))
 
-    fhir_ndjson(patients, "".join([out_dir, "/Patient.ndjson"]))
-    fhir_ndjson(encounters, "".join([out_dir, "/Encounter.ndjson"]))
-    fhir_ndjson(observations, "".join([out_dir, "/Observation.ndjson"]))
-    fhir_ndjson(conditions, "".join([out_dir, "/Condition.ndjson"]))
-    fhir_ndjson(research_subjects, "".join([out_dir, "/ResearchSubject.ndjson"]))
-    fhir_ndjson(projects + programs, "".join([out_dir, "/ResearchStudy.ndjson"]))
+    if "/" not in out_dir[-1]:
+        out_dir = out_dir + "/"
+
+    if specimens:
+        fhir_ndjson(specimens, "".join([out_dir, "Specimen.ndjson"]))
+    if patients:
+        fhir_ndjson(patients, "".join([out_dir, "Patient.ndjson"]))
+    if encounters:
+        fhir_ndjson(encounters, "".join([out_dir, "Encounter.ndjson"]))
+    if observations:
+        fhir_ndjson(observations, "".join([out_dir, "Observation.ndjson"]))
+    if conditions:
+        fhir_ndjson(conditions, "".join([out_dir, "Condition.ndjson"]))
+    if research_subjects:
+        fhir_ndjson(research_subjects, "".join([out_dir, "ResearchSubject.ndjson"]))
+    if projects:
+        fhir_ndjson(projects + programs, "".join([out_dir, "ResearchStudy.ndjson"]))
+    if imaging_study:
+        fhir_ndjson(imaging_study, "".join([out_dir, "ImagingStudy.ndjson"]))
+    if procedures:
+        fhir_ndjson(procedures, "".join([out_dir, "Procedure.ndjson"]))
+
+    med_admin = []
+    fhir_ndjson(med_admin, "".join([out_dir, "MedicationAdministration.ndjson"]))
+
+    med = []
+    fhir_ndjson(med, "".join([out_dir, "Medication.ndjson"]))
+
+
+
+
+
