@@ -704,6 +704,42 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='diagnoses.treatments.submitter_id'
+        ),
+        destination=Destination(
+            name='MedicationAdministration.identifier'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.treatments.treatment_or_therapy'
+        ),
+        destination=Destination(
+            name='MedicationAdministration.status'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.treatments.treatment_type'
+        ),
+        destination=Destination(
+            name='MedicationAdministration.treatment_type'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.treatments.therapeutic_agents'
+        ),
+        destination=Destination(
+            name='Medication.code'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='diagnoses.diagnosis_id'
         ),
         destination=Destination(
@@ -952,7 +988,8 @@ case_maps = [Map(
 proceed with caution this code changes the state of current files under mapping
 """
 
-out_path = os.path.join(package_dir, 'mapping', 'case.json')
+# out_path = os.path.join(package_dir, 'mapping', 'case.json')
+out_path = '../../mapping/case.json'
 valid_case_maps = [Map.model_validate(c) for c in case_maps]
 [case_schema.mappings.append(i) for i in valid_case_maps]
 utils.validate_and_write(case_schema, out_path=out_path, update=True, generate=False)

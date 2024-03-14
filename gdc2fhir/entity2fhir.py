@@ -1,4 +1,3 @@
-import os
 import re
 import json
 import orjson
@@ -19,6 +18,7 @@ from fhir.resources.imagingstudy import ImagingStudy, ImagingStudySeries
 from fhir.resources.procedure import Procedure
 from fhir.resources.medicationadministration import MedicationAdministration
 from fhir.resources.medication import Medication
+from fhir.resources.codeablereference import CodeableReference
 from gdc2fhir import utils
 from datetime import datetime
 import icd10
@@ -416,35 +416,50 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])})]
 
             # create medication administration and medication
-            # bug in MedicationAdministration.status
-            """
             if 'treatments' in case['diagnoses'].keys():
                 treatments_med = []
                 treatments_medadmin = []
-
+                
                 for treatment in case['diagnoses']['treatments']:
                     # https://build.fhir.org/ig/HL7/fhir-mCODE-ig/artifacts.html
                     med = Medication.construct()
                     med.id = treatment['MedicationAdministration.id']  # confirm
-                    # med.code = treatment['Medication.code']
-                    # med.ingredient = treatment['Medication.active_agents']
                     treatments_med.append(med)
+                                            
+                    if 'Medication.code' in treatment.keys() and treatment['Medication.code']: 
+                        display = treatment['Medication.code']
+                    else: 
+                        display = "REPLACE_ME"
+                        
+                    med_code = CodeableConcept.construct()
+                    med_code.coding = [{'system': "https://cadsr.cancer.gov/onedata/Home.jsp",
+                                            'display': display,
+                                            'code': '2975232'}]
 
-                    admin_status = CodeableConcept.construct()
-                    admin_status.coding = [{'system': "	http://hl7.org/fhir/CodeSystem/medication-admin-status",
-                                            'display': 'Completed',
-                                            'code': 'completed'}]
+                    med_cr = CodeableReference.construct()
+                    med_cr.reference = Reference(**{"reference": "/".join(["Medication", med.id])})
+                    med_cr.concept = med_code
+                    med.code = med_code
 
-                    med_admin = MedicationAdministration.construct()
-                    med_admin.status = admin_status  # if treatment['treatment_or_therapy'] == "yes" then completed, no "not-done"
-                    med_admin.occurenceDateTime = datetime.fromisoformat("2019-04-28T13:44:38.933790-05:00")
-                    med_admin.id = treatment['MedicationAdministration.id']
+                    # if treatment['treatment_or_therapy'] == "yes" then completed, no "not-done"
+                    status = "unknown"
+                    if 'treatment_or_therapy' in treatment.keys() and treatment['treatment_or_therapy']:
+                        if treatment['treatment_or_therapy'] == "yes":
+                            status = "completed"
+                        if treatment['treatment_or_therapy'] == "no": 
+                            status = "not-done"
+                        if treatment['treatment_or_therapy'] in ["unknown", "not reported"]:
+                            status = "unknown"
 
-                    med_admin.medication = Reference(**{"reference": "/".join(["Medication", med.id])})
-                    med_admin.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
-                    med_admin.encounter = Reference(**{"reference": "/".join(["Encounter", encounter.id])})
+                    data = {"status": status,
+                            "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00", # placeholder - required fhir field is not required in GDC
+                            "medication": med_cr,
+                            "subject":  Reference(**{"reference": "/".join(["Patient", patient.id])}),
+                            "encounter": Reference(**{"reference": "/".join(["Encounter", encounter.id])}),
+                            "id": treatment['MedicationAdministration.id']}
+
+                    med_admin = MedicationAdministration(**data)
                     treatments_medadmin.append(med_admin)
-            """
 
         # add procedure
         procedure = None
@@ -468,7 +483,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         all_fhir_specimens.append(fhir_specimen)
 
     def add_imaging_study(slide, patient, sample):
-        # SM	Slide Microscopy	Slide Microscopy
         img = ImagingStudy.construct()
         img.status = "available"
         img.id = slide["ImagingStudy.id"]
@@ -477,6 +491,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         img_series = ImagingStudySeries.construct()
         img_series.uid = sample.id
 
+        # https://hl7.org/fhir/R4/codesystem-dicom-dcim.html#dicom-dcim-SM
+        # https://dicom.nema.org/medical/dicom/current/output/chtml/part16/chapter_D.html
         modality = CodeableConcept.construct()
         modality.coding = [{"system": " http://dicom.nema.org/resources/ontology/DCM", "display": "Slide Microscopy", "code": "SM"}]
         img_series.modality = modality
@@ -581,7 +597,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     return {'patient': patient, 'encounter': encounter, 'observation': observation, 'condition': condition,
             'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
-            'imaging_study': slide_list, "procedure": procedure}
+            'imaging_study': slide_list, "procedure": procedure, "med_admin": treatments_medadmin, "med": treatments_med}
 
 
 def fhir_ndjson(entity, out_path):
@@ -647,13 +663,16 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     if procedures:
         fhir_ndjson(procedures, "".join([out_dir, "Procedure.ndjson"]))
 
-    med_admin = []
-    fhir_ndjson(med_admin, "".join([out_dir, "MedicationAdministration.ndjson"]))
+    med_admins = []
+    for fhir_case in all_fhir_case_obj:
+        if fhir_case["med_admin"]:
+            for med_admin in fhir_case["med_admin"]:
+                med_admins.append(orjson.loads(med_admin.json()))
+    fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
 
-    med = []
-    fhir_ndjson(med, "".join([out_dir, "Medication.ndjson"]))
-
-
-
-
-
+    meds = []
+    for fhir_case in all_fhir_case_obj:
+        if fhir_case["med"]:
+            for med in fhir_case["med"]:
+                meds.append(orjson.loads(med.json()))
+    fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))

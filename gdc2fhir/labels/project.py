@@ -1,5 +1,4 @@
 import os
-from pydantic import NonNegativeInt
 from typing import List
 from gdc2fhir import utils
 from gdc2fhir.schema import Map, Source, Destination, Reference
@@ -8,13 +7,13 @@ from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.condition import Condition
 from fhir.resources.extension import Extension
-from fhir.resources.genomicstudy import GenomicStudy
 
 package_dir = utils.package_dir
 project_schema = utils.load_schema_from_json(path=os.path.join(package_dir, 'mapping', 'project.json'))
 keys_to_label_fields = [key for key in project_schema.obj_keys if
                         key not in [x.source.name for x in project_schema.mappings]]
-data_dict = utils.load_data_dictionary(path=os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary',  ''))
+data_dict = utils.load_data_dictionary(
+    path=os.path.join(package_dir, 'resources', 'gdc_resources', 'data_dictionary', ''))
 
 """
 Field labels mapped semi-computationally 
@@ -130,7 +129,7 @@ project_maps = [
             type=data_dict['administrative']['project']['properties']['released']['type']
         ),
         destination=Destination(
-            name='ResearchStudyProgressStatus.actual', # TODO will be part of ResearchStudy.status
+            name='ResearchStudyProgressStatus.actual',  # TODO will be part of ResearchStudy.status
             description=ResearchStudyProgressStatus.schema()['properties']['actual']['description'],
             module='Administration',
             title=ResearchStudyProgressStatus.schema()['properties']['actual']['title'],
@@ -216,8 +215,7 @@ project_maps = [
             description=ResearchStudyRecruitment.schema()['properties']['actualNumber']['title'],
             module='Administration',
             title=ResearchStudyRecruitment.schema()['properties']['actualNumber']['title'],
-            type=ResearchStudyRecruitment.schema()['properties']['actualNumber']['type'],
-            format=str(NonNegativeInt),
+            type=ResearchStudyRecruitment.schema()['properties']['actualNumber']['type']
         )
     ),
 
@@ -234,8 +232,7 @@ project_maps = [
             description=Extension.schema()['properties']['valueUnsignedInt']['description'],
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
-            type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            type=Extension.schema()['properties']['valueUnsignedInt']['type']
         )
     ),
 
@@ -252,8 +249,7 @@ project_maps = [
             description=Extension.schema()['properties']['valueUnsignedInt']['description'],
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
-            type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            type=Extension.schema()['properties']['valueUnsignedInt']['type']
         )
     ),
 
@@ -270,8 +266,7 @@ project_maps = [
             description=Extension.schema()['properties']['valueUnsignedInt']['description'],
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
-            type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            type=Extension.schema()['properties']['valueUnsignedInt']['type']
         )
     ),
 
@@ -288,8 +283,7 @@ project_maps = [
             description=Extension.schema()['properties']['valueUnsignedInt']['description'],
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
-            type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            type=Extension.schema()['properties']['valueUnsignedInt']['type']
         )
     ),
 
@@ -335,8 +329,7 @@ project_maps = [
             description=Extension.schema()['properties']['valueUnsignedInt']['description'],
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
-            type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            type=Extension.schema()['properties']['valueUnsignedInt']['type']
         )
     ),
 
@@ -366,8 +359,7 @@ project_maps = [
             module='Administration',
             title=ResearchStudy.schema()['properties']['focus']['title'],
             type=ResearchStudy.schema()['properties']['focus']['type'],
-            format=str(List[CodeableReference]),
-            reference=[Reference(reference_type=str(GenomicStudy))]
+            format=str(List[CodeableReference])
         )
     ),
 
@@ -384,15 +376,15 @@ project_maps = [
             description=Extension.schema()['properties']['valueUnsignedInt']['description'],
             module='Foundation',
             title=Extension.schema()['properties']['valueUnsignedInt']['title'],
-            type=Extension.schema()['properties']['valueUnsignedInt']['type'],
-            format=str(NonNegativeInt)
+            type=Extension.schema()['properties']['valueUnsignedInt']['type']
         )
     )]
 """
 proceed with caution this code changes the state of current files under mapping
 """
 
-out_path = os.path.join(package_dir, 'mapping', 'project.json')
+# out_path = os.path.join(package_dir, 'mapping', 'project.json')
+out_path = '../../mapping/project.json'
 valid_project_maps = [Map.model_validate(p) for p in project_maps]
 [project_schema.mappings.append(i) for i in valid_project_maps]
 utils.validate_and_write(project_schema, out_path=out_path, update=True, generate=False)

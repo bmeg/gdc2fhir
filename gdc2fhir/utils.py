@@ -11,6 +11,7 @@ from pathlib import Path
 
 DATA_DICT_PATH = "".join([str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'data_dictionary')), "/"])
 FIELDS_PATH = "".join([str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'fields')), "/"])
+package_dir = Path(importlib.resources.files('gdc2fhir').parent)
 
 
 def extract_keys(data, parent_key=None, seen_keys=None):
