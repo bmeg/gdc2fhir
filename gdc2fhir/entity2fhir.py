@@ -133,6 +133,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     # create patient **
     patient = Patient.construct()
     patient.id = case['Patient.id']
+    treatments_med = []
+    treatments_medadmin = []
+    procedure = None
 
     if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$",
                                                                                        case['Patient.identifier']):
@@ -417,8 +420,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
             # create medication administration and medication
             if 'treatments' in case['diagnoses'].keys():
-                treatments_med = []
-                treatments_medadmin = []
                 
                 for treatment in case['diagnoses']['treatments']:
                     # https://build.fhir.org/ig/HL7/fhir-mCODE-ig/artifacts.html
@@ -455,7 +456,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00", # placeholder - required fhir field is not required in GDC
                             "medication": med_cr,
                             "subject":  Reference(**{"reference": "/".join(["Patient", patient.id])}),
-                            "encounter": Reference(**{"reference": "/".join(["Encounter", encounter.id])}),
                             "id": treatment['MedicationAdministration.id']}
 
                     med_admin = MedicationAdministration(**data)
@@ -617,7 +617,8 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     patients = [orjson.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
     encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if
                   'encounter' in fhir_case.keys() and fhir_case['encounter']]
-    procedures = [orjson.loads(fhir_case['procedure'].json()) for fhir_case in all_fhir_case_obj]
+    procedures = [orjson.loads(fhir_case['procedure'].json()) for fhir_case in all_fhir_case_obj if
+                  'procedure' in fhir_case.keys() and fhir_case['procedure']]
     observations = [orjson.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if
                     'observation' in fhir_case.keys() and fhir_case['observation']]
     conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if
@@ -668,11 +669,13 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
         if fhir_case["med_admin"]:
             for med_admin in fhir_case["med_admin"]:
                 med_admins.append(orjson.loads(med_admin.json()))
-    fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
+    if med_admins:
+        fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
 
     meds = []
     for fhir_case in all_fhir_case_obj:
         if fhir_case["med"]:
             for med in fhir_case["med"]:
                 meds.append(orjson.loads(med.json()))
-    fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))
+    if meds:
+        fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))
