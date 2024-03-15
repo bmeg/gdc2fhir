@@ -23,6 +23,7 @@ setup(
         'click',
         'pathlib',
         'orjson',
+        'tqdm',
         'iteration_utilities',
         'icd10-cm',
         'beautifulsoup4',

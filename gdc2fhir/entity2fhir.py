@@ -19,6 +19,8 @@ from fhir.resources.procedure import Procedure
 from fhir.resources.medicationadministration import MedicationAdministration
 from fhir.resources.medication import Medication
 from fhir.resources.codeablereference import CodeableReference
+from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent
+from fhir.resources.attachment import Attachment
 from gdc2fhir import utils
 from datetime import datetime
 import icd10
@@ -420,22 +422,22 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
             # create medication administration and medication
             if 'treatments' in case['diagnoses'].keys():
-                
+
                 for treatment in case['diagnoses']['treatments']:
                     # https://build.fhir.org/ig/HL7/fhir-mCODE-ig/artifacts.html
                     med = Medication.construct()
                     med.id = treatment['MedicationAdministration.id']  # confirm
                     treatments_med.append(med)
-                                            
-                    if 'Medication.code' in treatment.keys() and treatment['Medication.code']: 
+
+                    if 'Medication.code' in treatment.keys() and treatment['Medication.code']:
                         display = treatment['Medication.code']
-                    else: 
+                    else:
                         display = "REPLACE_ME"
-                        
+
                     med_code = CodeableConcept.construct()
                     med_code.coding = [{'system': "https://cadsr.cancer.gov/onedata/Home.jsp",
-                                            'display': display,
-                                            'code': '2975232'}]
+                                        'display': display,
+                                        'code': '2975232'}]
 
                     med_cr = CodeableReference.construct()
                     med_cr.reference = Reference(**{"reference": "/".join(["Medication", med.id])})
@@ -447,15 +449,16 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     if 'treatment_or_therapy' in treatment.keys() and treatment['treatment_or_therapy']:
                         if treatment['treatment_or_therapy'] == "yes":
                             status = "completed"
-                        if treatment['treatment_or_therapy'] == "no": 
+                        if treatment['treatment_or_therapy'] == "no":
                             status = "not-done"
                         if treatment['treatment_or_therapy'] in ["unknown", "not reported"]:
                             status = "unknown"
 
                     data = {"status": status,
-                            "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00", # placeholder - required fhir field is not required in GDC
+                            "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00",
+                            # placeholder - required fhir field is not required in GDC
                             "medication": med_cr,
-                            "subject":  Reference(**{"reference": "/".join(["Patient", patient.id])}),
+                            "subject": Reference(**{"reference": "/".join(["Patient", patient.id])}),
                             "id": treatment['MedicationAdministration.id']}
 
                     med_admin = MedicationAdministration(**data)
@@ -494,7 +497,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         # https://hl7.org/fhir/R4/codesystem-dicom-dcim.html#dicom-dcim-SM
         # https://dicom.nema.org/medical/dicom/current/output/chtml/part16/chapter_D.html
         modality = CodeableConcept.construct()
-        modality.coding = [{"system": " http://dicom.nema.org/resources/ontology/DCM", "display": "Slide Microscopy", "code": "SM"}]
+        modality.coding = [
+            {"system": " http://dicom.nema.org/resources/ontology/DCM", "display": "Slide Microscopy", "code": "SM"}]
         img_series.modality = modality
 
         img_series.specimen = [Reference(**{"reference": "/".join(["Specimen", sample.id])})]
@@ -535,6 +539,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 if specimen not in all_samples:
                     all_samples.append(specimen)
 
+                if "slides" in sample.keys():
+                    for slide in sample["slides"]:
+                        slide_list.append(add_imaging_study(slide=slide, patient=patient, sample=specimen))
+
                 add_specimen(dat=sample, name="analytes", id_key="Specimen.id.analyte", has_parent=True,
                              parent=sample, patient=patient, all_fhir_specimens=all_analytes)
 
@@ -553,7 +561,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                             if "slides" in portion.keys():
                                 for slide in portion["slides"]:
-                                    slide_list.append(add_imaging_study(slide=slide, patient=patient, sample=portion_specimen))
+                                    slide_list.append(
+                                        add_imaging_study(slide=slide, patient=patient, sample=portion_specimen))
 
                             if "analytes" in portion.keys():
                                 for analyte in portion["analytes"]:
@@ -576,7 +585,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         if "slides" in analyte.keys():
                                             for slide in analyte["slides"]:
                                                 slide_list.append(
-                                                    add_imaging_study(slide=slide, patient=patient, sample=analyte_specimen))
+                                                    add_imaging_study(slide=slide, patient=patient,
+                                                                      sample=analyte_specimen))
 
                                         if analyte_specimen not in all_analytes:
                                             all_analytes.append(analyte_specimen)
@@ -597,7 +607,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     return {'patient': patient, 'encounter': encounter, 'observation': observation, 'condition': condition,
             'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
-            'imaging_study': slide_list, "procedure": procedure, "med_admin": treatments_medadmin, "med": treatments_med}
+            'imaging_study': slide_list, "procedure": procedure, "med_admin": treatments_medadmin,
+            "med": treatments_med}
 
 
 def fhir_ndjson(entity, out_path):
@@ -679,3 +690,95 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
                 meds.append(orjson.loads(med.json()))
     if meds:
         fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))
+
+
+# File ---------------------------------------------------------------
+# load file mapped key values
+# files = utils.load_ndjson("./tests/fixtures/file/file_key.ndjson")
+# file = files[0]
+
+
+def assign_fhir_for_file(file):
+    document = DocumentReference.construct()
+    document.status = "current"
+    document.id = file['DocumentReference.id']
+
+    ident = Identifier.construct()
+    ident.value = file['DocumentReference.Identifier']
+    ident.system = "".join(["https://gdc.cancer.gov/", "file"])
+
+    ident_name = Identifier.construct()
+    ident_name.value = file['DocumentReference.Identifier.file_name']
+    ident_name.system = "".join(["https://gdc.cancer.gov/", "file"])
+
+    document.identifier = [ident, ident_name]
+
+    category = []
+    if 'DocumentReference.category.data_category' in file.keys() and file['DocumentReference.category.data_category']:
+        cc = CodeableConcept.construct()
+        cc.coding = [{'system': "https://gdc.cancer.gov/",
+                      'display': file['DocumentReference.category.data_category'],
+                      'code': file['DocumentReference.category.data_category'],}]
+
+        category.append(cc)
+
+    if 'DocumentReference.category.platform' in file.keys() and file['DocumentReference.category.platform']:
+        cc_plat = CodeableConcept.construct()
+        cc_plat.coding = [{'system': "https://gdc.cancer.gov/",
+                           'display': file['DocumentReference.category.platform'],
+                           'code': file['DocumentReference.category.platform']}]
+
+        category.append(cc_plat)
+
+    if 'DocumentReference.category.experimental_strategy' in file.keys() and file['DocumentReference.category.experimental_strategy']:
+        cc_es = CodeableConcept.construct()
+        cc_es.coding = [{'system': "https://gdc.cancer.gov/",
+                         'display': file['DocumentReference.category.experimental_strategy'],
+                         'code': file['DocumentReference.category.experimental_strategy']}]
+
+        category.append(cc_es)
+
+    if category:
+        document.category = category
+
+    if 'DocumentReference.type' in file.keys() and file['DocumentReference.type']:
+        cc_type = CodeableConcept.construct()
+        cc_type.coding = [{'system': "https://gdc.cancer.gov/",
+                           'display': file['DocumentReference.type'],
+                           'code': file['DocumentReference.type']}]
+
+        document.type = cc_type
+
+    if 'DocumentReference.version' in file.keys() and file['DocumentReference.version']:
+        document.version = file['DocumentReference.version']
+
+    patients = []
+    if 'cases' in file.keys() and file['cases']:
+        for case in file['cases']:
+            patient_id = case['Patient.id']
+            patients.append(Reference(**{"reference": "/".join(["Patient", patient_id])}))
+
+    if patients and len(patients) == 1:
+        document.subject = patients[0]
+
+    attachment = Attachment.construct()
+    attachment.url = "https://api.gdc.cancer.gov/data/{}".format(file['DocumentReference.id'])
+    data = {'attachment': attachment}
+    document.content = [DocumentReferenceContent(**data)]
+
+    return document
+
+
+def file_gdc_to_fhir_ndjson(out_dir, files_path):
+    files = utils.load_ndjson(files_path)
+    all_fhir_file_obj = []
+    [all_fhir_file_obj.append(assign_fhir_for_file(f)) for f in files]
+
+    doc_refs = [orjson.loads(fhir_file.json()) for fhir_file in all_fhir_file_obj]
+
+    if "/" not in out_dir[-1]:
+        out_dir = out_dir + "/"
+
+    if doc_refs:
+        fhir_ndjson(doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
+

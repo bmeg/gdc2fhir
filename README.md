@@ -73,12 +73,22 @@ pip install .
 - convert GDC schema keys to fhir mapping
 - generate fhir object models ndjson files in directory
 
-  Example run - replace path's to ndjson files or directories. 
+  Example run for patient - replace path's to ndjson files or directories. 
  
 ```
-gdc2fhir convert --name project --in_path projects.ndjson --out_path project_key.ndjson --verbose True
+gdc2fhir convert --name case --in_path cases.ndjson --out_path cases_key.ndjson --verbose True
 
-gdc2fhir generate --name project --out_dir ./data --entity_path project_key.ndjson
+gdc2fhir generate --name case --out_dir ./data --entity_path cases_key.ndjson
+
+``` 
+
+- to generate document reference for the patients 
+
+ 
+```
+gdc2fhir convert --name file --in_path files.ndjson --out_path files_key.ndjson --verbose True
+
+gdc2fhir generate --name file --out_dir ./data --entity_path files_key.ndjson
 
 ``` 
 

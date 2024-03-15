@@ -47,12 +47,6 @@ Map(
         reference=''
     )
 )
-
-# days_to_index -> ?
-# annotations -> Extension or Annotation in FHIR - skipping to focus on current script
-# demographic -> Patient
-# case -> Patient
-# demographic.gender needs Coding.code for gender 
 """
 
 case_maps = [Map(

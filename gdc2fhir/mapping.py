@@ -316,7 +316,8 @@ def convert_maps(in_path, out_path, name, verbose):
         schema = utils.load_schema_from_json(path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'project.json')))
     elif name in 'case':
         schema = utils.load_schema_from_json(path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'case.json')))
-
+    elif name in 'file':
+        schema = utils.load_schema_from_json(path=str(Path(importlib.resources.files('gdc2fhir').parent / 'mapping' / 'file.json')))
     if schema:
         entities = utils.load_ndjson(path=in_path)
 

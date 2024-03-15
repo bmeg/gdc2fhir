@@ -90,6 +90,8 @@ def generate(name, out_dir, entity_path):
         entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path)
     if name in 'case':
         entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, cases_path=entity_path)
+    if name in 'file':
+        entity2fhir.file_gdc_to_fhir_ndjson(out_dir=out_dir, files_path=entity_path)
 
 
 if __name__ == '__main__':
