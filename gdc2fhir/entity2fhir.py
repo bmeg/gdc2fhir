@@ -1,6 +1,7 @@
 import re
 import json
 import orjson
+import requests
 from iteration_utilities import unique_everseen
 from fhir.resources.identifier import Identifier
 from fhir.resources.researchstudy import ResearchStudy
@@ -21,6 +22,7 @@ from fhir.resources.medication import Medication
 from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent
 from fhir.resources.attachment import Attachment
+from fhir.resources.age import Age
 from gdc2fhir import utils
 from datetime import datetime
 import icd10
@@ -718,7 +720,7 @@ def assign_fhir_for_file(file):
         cc = CodeableConcept.construct()
         cc.coding = [{'system': "https://gdc.cancer.gov/",
                       'display': file['DocumentReference.category.data_category'],
-                      'code': file['DocumentReference.category.data_category'],}]
+                      'code': file['DocumentReference.category.data_category'], }]
 
         category.append(cc)
 
@@ -730,7 +732,8 @@ def assign_fhir_for_file(file):
 
         category.append(cc_plat)
 
-    if 'DocumentReference.category.experimental_strategy' in file.keys() and file['DocumentReference.category.experimental_strategy']:
+    if 'DocumentReference.category.experimental_strategy' in file.keys() and file[
+        'DocumentReference.category.experimental_strategy']:
         cc_es = CodeableConcept.construct()
         cc_es.coding = [{'system': "https://gdc.cancer.gov/",
                          'display': file['DocumentReference.category.experimental_strategy'],
@@ -781,4 +784,292 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
 
     if doc_refs:
         fhir_ndjson(doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
+
+
+"""
+# obo syntax requires non-explicit data cleaning 
+
+def cellosaurus2fhir(path):
+    # condition -- subject --> patient <-- subject -- specimen
+    # https://www.cellosaurus.org/description.html
+    # example search: https://www.cellosaurus.org/CVCL_A5PT
+    # Resources that list cell lines as samples: 4DN, ABCD, ArrayExpress, BioGrid_ORCS_Cell_line,
+    # BioSample, BioSamples, ChEMBL (cells and targets), Cosmic, dbGAP, EGA, ENCODE, GEO, IARC_TP53, IGSR,
+    # LiGeA, MetaboLights, PharmacoDB, PRIDE, Progenetix and PubChem_Cell_line
+    
+    celline_sample = ["4DN", "ABCD", "ArrayExpress", "BioGrid_ORCS_Cell_line", "BioSample", "BioSamples",
+                   "Cosmic", "dbGAP", "EGA", "ENCODE", "GEO", "IARC_TP53", "IGSR", "LiGeA", "MetaboLights",
+                  "PharmacoDB", "PRIDE", "Progenetix", "PubChem_Cell_line"]
+
+    cl = utils.load_ndjson(path=path)
+    cl_human = [d for d in cl if "NCBI_TaxID:9606:Homo sapiens:Human" in d["xref"]]
+
+    cl_cancer = []
+    patients = []
+    conditions = []
+    samples = []
+    gender = None
+    for celline in cl_human:
+        for item in celline["xref"]:
+            if item.startswith("NCIt:"):
+                cl_cancer.append(celline)
+    # patient
+    for celline in cl_cancer:
+        for subset in celline["subset"]:
+            if subset in ["Female", "Male"]:
+                gender = subset.lower()
+            else:
+                sample_type = subset
+        if gender:
+            cl_cancer.append(celline)
+            # FHIR patient id doesn't allow '_' in id "^[A-Za-z0-9\-.]+$"
+            # https://stackoverflow.com/questions/55794252/allowing-underscore-in-the-id-datatype
+            patient_id = celline["id"][0].replace("_", "-")
+            patients.append(Patient(**{"id": patient_id, "gender": gender}))
+            patient_ref = Reference(**{"reference": "/".join(["Patient", patient_id])})
+
+            # condition
+            for item in celline["xref"]:
+                if item.startswith("NCIt:"):
+                    if item[-1] == ":":
+                        item = item[:-1]
+
+                    print(item)
+                    ncti_condition = item.strip().split(":")
+
+                    condition_clinicalstatus_code = CodeableConcept.construct()
+                    condition_clinicalstatus_code.coding = [
+                        {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": "unknown",
+                         "code": "unknown"}]
+
+                    code = ncti_condition[-2]
+                    display = ncti_condition[-1]
+                    print("Display", display, "\nEntire condition: ", ncti_condition)
+
+                    if "," in display:
+                        print("Condition Display with meta", display)
+                        display = display.strip(",")[0].strip() # knockout or other meta-data added to condition string
+
+                    coding = {'system': "https://ncit.nci.nih.gov/", 'display': display, 'code': code}
+                    cc = CodeableConcept.construct()
+                    cc.coding = [coding]
+                    # TODO: add mondo
+                    condition_id = "-".join([ncti_condition[0], ncti_condition[1]])
+                    conditions.append(Condition(**{"id": condition_id, "code": cc, "subject": patient_ref, "clinicalStatus": condition_clinicalstatus_code}))
+
+                # specimen
+                sample_parents = []
+                sample_parents_ref = []
+                if item.startswith(tuple(celline_sample)):
+                    if "relationship" in celline.keys():
+                        for parent in celline["relationship"]:
+                            parent_id = parent.split(" ")
+                            parent_id_list = [x for x in parent_id if "CVCL" in x]
+                            if len(parent_id_list) > 1:
+                                print("IT CAN BE GREATER THAN 1", parent_id_list)
+                            parent_id = parent_id_list[0]
+
+                            if "derived_from" in parent_id:
+                                parent_id = parent_id.replace("derived_from ", "")
+                                if ":" in parent_id:
+                                    parent_id = parent_id.split(":")[0]
+                            if "_" in parent_id:
+                                parent_id = parent_id.replace("_", "-")
+                                if ":" in parent_id:
+                                    parent_id = parent_id.split(":")[0]
+                            print("parent", parent_id)
+                            sample_parents.append(Specimen(**{"id": parent_id, "subject": patient_ref}))
+                            sample_parents_ref.append(Reference(**{"reference": "/".join(["Specimen", parent_id])}))
+
+                    sample_id = None
+                    if ":" in item:
+                        items = item.split(":")
+                        sample_id = items[-1]
+
+                        if "_" in sample_id:
+                            sample_id = sample_id.replace("_", "-")
+
+                    if sample_id:
+                        if sample_parents:
+                            print("IF sample", sample_id)
+                            samples.append(Specimen(**{"id": sample_id, "subject": patient_ref, "parent": sample_parents_ref}))
+                        else:
+                            if "ENC" in sample_id and " " in sample_id:
+                                sample_id = sample_id.replace(" ", "")
+                            print("ELSE sample", sample_id)
+                            samples.append(Specimen(**{"id": sample_id, "subject": patient_ref}))
+    return {"patients": patients, "conditions": conditions, "samples": samples}
+
+# rawr_fhir = cellosaurus2fhir(path)
+"""
+
+
+def fetch_cellines(cellosaurus_id, out_path, save=False):
+    # TODO: seperate data-fetch from cli 
+    api_url = f"https://api.cellosaurus.org/cell-line/{cellosaurus_id}?format=json"
+    response = requests.get(api_url)
+
+    dat = None
+    if response.status_code == 200:
+        dat = response.json()
+
+    if dat and save:
+        celline_json = json.dumps(dat, indent=4)
+        with open("".join([out_path, cellosaurus_id, ".json"]), "w") as outfile:
+            outfile.write(celline_json)
+    else:
+        return dat
+
+
+# save resources in json format - cleaner and more explicit data syntax apache dump
+# path = "KCRB/fhir/cellosaurus/cl.json" ~ 82MB
+
+def cellosaurus_cancer_jsons(path, out_path, verbose=True, save=False):
+    # condition -- subject --> patient <-- subject -- specimen
+    cl = utils.load_ndjson(path=path)
+
+    # filter human cell-lines with gender annotations
+    cl_human = [d for d in cl if "NCBI_TaxID:9606:Homo sapiens:Human" in d["xref"]]
+    cl_cancer = []
+    ids = []
+
+    for celline in cl_human:
+        for item in celline["xref"]:
+            if item.startswith("NCIt:"):
+                # ids.append(celline["id"][0])
+                cl_cancer.append(celline)
+
+    for celline in cl_cancer:
+        for subset in celline["subset"]:
+            if subset in ["Female", "Male"]:
+                ids.append(celline["id"][0])
+
+    # 67763 cell-lines
+    # 62019 cell-lines w gender
+
+    if verbose:
+        print("Cell-ines Count: ", len(ids))
+    cell_lines = []
+    for cellosaurus_id in ids[0:200]: # try subset first
+        if verbose:
+            print(cellosaurus_id)
+        cell_lines.append(fetch_cellines(cellosaurus_id, out_path, save))
+
+    if cell_lines:
+        return cell_lines
+
+
+def cellosaurus_fhir_mappping(cell_lines):
+    # cell_lines[0]["Cellosaurus"]["cell-line-list"][0]["accession-list"]
+    patients = []
+    conditions = []
+    samples = []
+    for cell_line in cell_lines:
+        for cl in cell_line["Cellosaurus"]["cell-line-list"]:
+            # if len(cl["accession-list"]) > 1:
+                # there are secondary keys in cellosaurus
+                # print(cl["accession-list"])
+
+            patient = None
+            patient_id = None
+            for accession in cl["accession-list"]:
+                if accession["type"] == "primary":
+                    # print(accession["value"])
+                    patient_id = accession["value"].replace("_", "-")
+
+                    ident_id = Identifier.construct()
+                    ident_id.value = accession["value"]
+                    ident_id.system = "https://www.cellosaurus.org/"
+
+            if patient_id:
+                for identifier in cl["name-list"]:
+                    if identifier["type"] == "identifier":
+                        patient_identifer = identifier["value"]
+                        ident_identifier = Identifier.construct()
+                        ident_identifier.value = patient_identifer
+                        ident_identifier.system = "https://www.cellosaurus.org/"
+
+                if "sex" in cl.keys() and cl["sex"]:
+                    gender = cl["sex"].lower()
+                    patient = Patient(
+                        **{"id": patient_id, "gender": gender, "identifier": [ident_identifier, ident_id]})
+                    patients.append(patient)
+                    patient_ref = Reference(**{"reference": "/".join(["Patient", patient_id])})
+
+                if patient:
+                    # add condition from disease-list
+                    if "disease-list" in cl.keys():
+                        for disease_annotation in cl["disease-list"]:
+                            if disease_annotation["terminology"] == "NCIt":
+                                condition_clinicalstatus_code = CodeableConcept.construct()
+                                condition_clinicalstatus_code.coding = [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": "unknown","code": "unknown"}]
+
+                                code = disease_annotation["accession"]
+                                display = disease_annotation["value"]
+                                coding = {'system': "https://ncit.nci.nih.gov/", 'display': display, 'code': code}
+                                cc = CodeableConcept.construct()
+                                cc.coding = [coding]
+                                 # TODO: add mondo coding from bmeg-etl
+
+                                onset_age = None
+                                if "age" in cl.keys() and cl["age"]:
+                                    if "Y" in cl["age"]:
+                                        age = cl["age"].split("Y")[0]
+                                        onset_age = Age(**{"value": age})
+                                    else:
+                                        print(cl["age"])
+
+                                if onset_age:
+                                    conditions.append(Condition(
+                                        **{"id": disease_annotation["accession"], "code": cc, "subject": patient_ref,
+                                           "clinicalStatus": condition_clinicalstatus_code, "onsetAge": onset_age}))
+                                else:
+                                    conditions.append(Condition(**{"id": disease_annotation["accession"], "code": cc, "subject": patient_ref,
+                                                       "clinicalStatus": condition_clinicalstatus_code}))
+
+                    sample_parents_ref = []
+                    # sample hierarchy
+                    if "derived-from" in cl.keys() and cl["derived-from"]:
+                        for parent_cell in cl["derived-from"]:
+                            if parent_cell["terminology"] == "Cellosaurus":
+                                parent_id = parent_cell["accession"].replace("_", "-")
+
+                                parent_id_identifier = Identifier.construct()
+                                parent_id_identifier.value = parent_cell["accession"]
+                                parent_id_identifier.system = "https://www.cellosaurus.org/"
+
+                                parent_identifier = Identifier.construct()
+                                parent_identifier.value = parent_cell["value"]
+                                parent_identifier.system = "https://www.cellosaurus.org/"
+
+                                parent_sample = Specimen(**{"id": parent_id, "identifier": [parent_id_identifier, parent_identifier]})
+                                if parent_sample not in samples:
+                                    samples.append(parent_sample)
+                                sample_parents_ref.append(Reference(**{"reference": "/".join(["Specimen", parent_id])}))
+
+                    if sample_parents_ref:
+                        samples.append(Specimen(**{"id": patient_id, "identifier": [ident_identifier, ident_id], "parent":sample_parents_ref}))
+                    else:
+                        samples.append(Specimen(**{"id": patient_id, "identifier": [ident_identifier, ident_id]}))
+
+    return {"patients": patients, "conditions": conditions, "samples": samples}
+
+
+def cellosaurus_to_fhir_ndjson(out_dir, obj):
+    patients = [orjson.loads(patient.json()) for patient in obj["patients"]]
+    samples = [orjson.loads(sample.json()) for sample in obj["samples"]]
+    conditions = [orjson.loads(condition.json()) for condition in obj["conditions"]]
+
+    if patients:
+        fhir_ndjson(patients, "".join([out_dir, "Patient.ndjson"]))
+    if samples:
+        fhir_ndjson(samples, "".join([out_dir, "Specimen.ndjson"]))
+    if conditions:
+        fhir_ndjson(conditions, "".join([out_dir, "Condition.ndjson"]))
+
+
+def cellosaurus2fhir(path, out_dir, out_path=None, verbose=False, save=False):
+    cell_lines = cellosaurus_cancer_jsons(path, out_path=out_path, verbose=verbose, save=save)
+    cellosaurus_fhir_objects = cellosaurus_fhir_mappping(cell_lines)
+    cellosaurus_to_fhir_ndjson(out_dir=out_dir, obj=cellosaurus_fhir_objects)
 
