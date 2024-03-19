@@ -1,4 +1,6 @@
 import os
+import time
+import random
 import json
 import glob
 import pprint
@@ -189,7 +191,7 @@ def _read_json(path):
     :param path: path to json file
     :return:
     """
-    
+
     try:
         with open(path, encoding='utf-8') as f:
             this_json = json.load(f)
@@ -938,3 +940,123 @@ def map_data(data, available_maps, verbose):
     if verbose:
         print('Available Map items of entity: ', len(available_maps), '\n')
     return {'mapped_data': mapped_data}
+
+
+# Cellosaurus
+
+def make_request(api_url, retries=3):
+    delay = 0.5
+    for _ in range(retries):
+        response = requests.get(api_url)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print(f"Received status code: {response.status_code}. Retrying...")
+            delay *= 2 ** retries # change delay
+            time.sleep(delay + random.uniform(0, 1)) # add jitter
+    raise Exception("Failed to fetch data after multiple retries")
+
+
+def write_dat(dat, path):
+    json_dat = json.dumps(dat, indent=4)
+    with open(path, "w") as f:
+        f.write(json_dat)
+
+
+def fetch_cellines(cellosaurus_ids, out_dir):
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    existing_ids = set(os.path.splitext(os.path.basename(file))[0] for file in os.listdir(out_dir) if file.endswith('.json'))
+    to_fetch_ids = set(cellosaurus_ids) - existing_ids
+
+    for cellosaurus_id in to_fetch_ids:
+        file_name = "".join([out_dir, f'{cellosaurus_id}.json'])
+        api_url = f"https://api.cellosaurus.org/cell-line/{cellosaurus_id}?format=json"
+
+        try:
+            response_data = make_request(api_url)
+            write_dat(response_data, file_name)
+            print(f"Json dat for {cellosaurus_id} successfully fetched and saved.")
+        except Exception as e:
+            print(f"Error fetching data for {cellosaurus_id}: {e}")
+
+
+def fetch_cellines_by_id(cellosaurus_id, out_path, save=False):
+    api_url = f"https://api.cellosaurus.org/cell-line/{cellosaurus_id}?format=json"
+    response = requests.get(api_url)
+
+    dat = None
+    if response.status_code == 200:
+        dat = response.json()
+
+    if dat and save:
+        celline_json = json.dumps(dat, indent=4)
+        with open("".join([out_path, cellosaurus_id, ".json"]), "w") as outfile:
+            outfile.write(celline_json)
+    else:
+        return dat
+
+
+def cellosaurus_cancer_ids(path, out_path, save=False):
+    # condition -- subject --> patient <-- subject -- specimen
+    cl = load_ndjson(path=path)
+    cl_cancer = []
+    cl_cancer_depmap = []
+    ids = []
+
+    # human
+    cl_human = [d for d in cl if "NCBI_TaxID:9606:Homo sapiens:Human" in d["xref"]]
+
+    # cancer
+    for celline in cl_human:
+        for item in celline["xref"]:
+            if item.startswith("NCIt:"):
+                cl_cancer.append(celline)
+
+    # depmap reference file
+    for celline in cl_cancer:
+        for item in celline["xref"]:
+            if item.startswith("DepMap:"):
+                cl_cancer_depmap.append(celline)
+
+    # has sex annotation
+    for celline in cl_cancer_depmap:
+        for subset in celline["subset"]:
+                if subset in ["Female", "Male"]:
+                    ids.append(celline["id"][0])
+
+    # 67763 cell-lines
+    # 62019 cell-lines w gender
+    # 1733 ids referenced in DepMap - broad Cancer Cell Line Encyclopedia (CCLE)
+    ids = list(set(ids))
+
+    if save:
+        write_dat(ids, out_path)
+
+    return ids
+
+
+def cellosaurus_cancer_jsons(ids, out_path, verbose):
+    # all_paths = glob.glob("".join([cell_resource_path, "**/*.json"])
+    """
+    cell_lines = []
+    for file in all_paths:
+        dat = _read_json(file_name)
+        if dat:
+            cell_lines.append(dat)
+    """
+    if verbose:
+        print("Cell-ines Count: ", len(ids))
+    cell_lines = []
+    for cellosaurus_id in ids:
+        if verbose:
+            print(cellosaurus_id)
+            file_name = os.path.join(out_path, "".join([cellosaurus_id, ".json"]))
+            dat = _read_json(file_name)
+            if dat:
+                cell_lines.append(dat)
+    if cell_lines:
+        return cell_lines
+

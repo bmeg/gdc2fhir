@@ -80,11 +80,12 @@ def convert(name, in_path, out_path, verbose):
 @click.option('--name', required=True,
               default='project',
               show_default=True,
-              help='project, case, or file GDC entity name to map')
+              help='entity name to map - project, case, file of GDC or cellosaurus')
 @click.option('--out_dir', required=True,
               help='Directory path to save mapped FHIR ndjson files.')
 @click.option('--entity_path', required=True,
-              help='Path to GDC entity with mapped FHIR like keys (converted file via convert).')
+              help='Path to GDC entity with mapped FHIR like keys (converted file via convert). '
+                   'or Cellosaurus ndjson file of human cell-lines of interest')
 def generate(name, out_dir, entity_path):
     if name in 'project':
         entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path)

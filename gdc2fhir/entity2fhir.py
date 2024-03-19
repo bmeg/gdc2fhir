@@ -1,7 +1,7 @@
+import os
 import re
 import json
 import orjson
-import requests
 from iteration_utilities import unique_everseen
 from fhir.resources.identifier import Identifier
 from fhir.resources.researchstudy import ResearchStudy
@@ -80,7 +80,6 @@ def assign_fhir_for_project(project, disease_types=disease_types):
         rs.condition = [cc]
 
     # create ResearchStudy -- partOf --> ResearchStudy
-    # TODO: check 1..1 relation
     rs_parent = ResearchStudy.construct()
 
     # assign required fields first
@@ -786,195 +785,25 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
         fhir_ndjson(doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
 
 
-"""
-# obo syntax requires non-explicit data cleaning 
+# Cellosaurus ---------------------------------------------------------------
 
-def cellosaurus2fhir(path):
-    # condition -- subject --> patient <-- subject -- specimen
-    # https://www.cellosaurus.org/description.html
-    # example search: https://www.cellosaurus.org/CVCL_A5PT
-    # Resources that list cell lines as samples: 4DN, ABCD, ArrayExpress, BioGrid_ORCS_Cell_line,
-    # BioSample, BioSamples, ChEMBL (cells and targets), Cosmic, dbGAP, EGA, ENCODE, GEO, IARC_TP53, IGSR,
-    # LiGeA, MetaboLights, PharmacoDB, PRIDE, Progenetix and PubChem_Cell_line
-    
-    celline_sample = ["4DN", "ABCD", "ArrayExpress", "BioGrid_ORCS_Cell_line", "BioSample", "BioSamples",
-                   "Cosmic", "dbGAP", "EGA", "ENCODE", "GEO", "IARC_TP53", "IGSR", "LiGeA", "MetaboLights",
-                  "PharmacoDB", "PRIDE", "Progenetix", "PubChem_Cell_line"]
-
-    cl = utils.load_ndjson(path=path)
-    cl_human = [d for d in cl if "NCBI_TaxID:9606:Homo sapiens:Human" in d["xref"]]
-
-    cl_cancer = []
-    patients = []
-    conditions = []
-    samples = []
-    gender = None
-    for celline in cl_human:
-        for item in celline["xref"]:
-            if item.startswith("NCIt:"):
-                cl_cancer.append(celline)
-    # patient
-    for celline in cl_cancer:
-        for subset in celline["subset"]:
-            if subset in ["Female", "Male"]:
-                gender = subset.lower()
-            else:
-                sample_type = subset
-        if gender:
-            cl_cancer.append(celline)
-            # FHIR patient id doesn't allow '_' in id "^[A-Za-z0-9\-.]+$"
-            # https://stackoverflow.com/questions/55794252/allowing-underscore-in-the-id-datatype
-            patient_id = celline["id"][0].replace("_", "-")
-            patients.append(Patient(**{"id": patient_id, "gender": gender}))
-            patient_ref = Reference(**{"reference": "/".join(["Patient", patient_id])})
-
-            # condition
-            for item in celline["xref"]:
-                if item.startswith("NCIt:"):
-                    if item[-1] == ":":
-                        item = item[:-1]
-
-                    print(item)
-                    ncti_condition = item.strip().split(":")
-
-                    condition_clinicalstatus_code = CodeableConcept.construct()
-                    condition_clinicalstatus_code.coding = [
-                        {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": "unknown",
-                         "code": "unknown"}]
-
-                    code = ncti_condition[-2]
-                    display = ncti_condition[-1]
-                    print("Display", display, "\nEntire condition: ", ncti_condition)
-
-                    if "," in display:
-                        print("Condition Display with meta", display)
-                        display = display.strip(",")[0].strip() # knockout or other meta-data added to condition string
-
-                    coding = {'system': "https://ncit.nci.nih.gov/", 'display': display, 'code': code}
-                    cc = CodeableConcept.construct()
-                    cc.coding = [coding]
-                    # TODO: add mondo
-                    condition_id = "-".join([ncti_condition[0], ncti_condition[1]])
-                    conditions.append(Condition(**{"id": condition_id, "code": cc, "subject": patient_ref, "clinicalStatus": condition_clinicalstatus_code}))
-
-                # specimen
-                sample_parents = []
-                sample_parents_ref = []
-                if item.startswith(tuple(celline_sample)):
-                    if "relationship" in celline.keys():
-                        for parent in celline["relationship"]:
-                            parent_id = parent.split(" ")
-                            parent_id_list = [x for x in parent_id if "CVCL" in x]
-                            if len(parent_id_list) > 1:
-                                print("IT CAN BE GREATER THAN 1", parent_id_list)
-                            parent_id = parent_id_list[0]
-
-                            if "derived_from" in parent_id:
-                                parent_id = parent_id.replace("derived_from ", "")
-                                if ":" in parent_id:
-                                    parent_id = parent_id.split(":")[0]
-                            if "_" in parent_id:
-                                parent_id = parent_id.replace("_", "-")
-                                if ":" in parent_id:
-                                    parent_id = parent_id.split(":")[0]
-                            print("parent", parent_id)
-                            sample_parents.append(Specimen(**{"id": parent_id, "subject": patient_ref}))
-                            sample_parents_ref.append(Reference(**{"reference": "/".join(["Specimen", parent_id])}))
-
-                    sample_id = None
-                    if ":" in item:
-                        items = item.split(":")
-                        sample_id = items[-1]
-
-                        if "_" in sample_id:
-                            sample_id = sample_id.replace("_", "-")
-
-                    if sample_id:
-                        if sample_parents:
-                            print("IF sample", sample_id)
-                            samples.append(Specimen(**{"id": sample_id, "subject": patient_ref, "parent": sample_parents_ref}))
-                        else:
-                            if "ENC" in sample_id and " " in sample_id:
-                                sample_id = sample_id.replace(" ", "")
-                            print("ELSE sample", sample_id)
-                            samples.append(Specimen(**{"id": sample_id, "subject": patient_ref}))
-    return {"patients": patients, "conditions": conditions, "samples": samples}
-
-# rawr_fhir = cellosaurus2fhir(path)
-"""
+def cellosaurus_resource(path, out_path):
+    ids = utils.cellosaurus_cancer_ids(path, out_path, save=True) # filter step
+    utils.fetch_cellines(ids, out_path) # api call intensive - 1s per request + 0.5s delay
+    cls = utils.cellosaurus_cancer_jsons(ids, out_path, verbose=True)
+    fhir_ndjson(cls, out_path)
 
 
-def fetch_cellines(cellosaurus_id, out_path, save=False):
-    # TODO: seperate data-fetch from cli 
-    api_url = f"https://api.cellosaurus.org/cell-line/{cellosaurus_id}?format=json"
-    response = requests.get(api_url)
-
-    dat = None
-    if response.status_code == 200:
-        dat = response.json()
-
-    if dat and save:
-        celline_json = json.dumps(dat, indent=4)
-        with open("".join([out_path, cellosaurus_id, ".json"]), "w") as outfile:
-            outfile.write(celline_json)
-    else:
-        return dat
-
-
-# save resources in json format - cleaner and more explicit data syntax apache dump
-# path = "KCRB/fhir/cellosaurus/cl.json" ~ 82MB
-
-def cellosaurus_cancer_jsons(path, out_path, verbose=True, save=False):
-    # condition -- subject --> patient <-- subject -- specimen
-    cl = utils.load_ndjson(path=path)
-
-    # filter human cell-lines with gender annotations
-    cl_human = [d for d in cl if "NCBI_TaxID:9606:Homo sapiens:Human" in d["xref"]]
-    cl_cancer = []
-    ids = []
-
-    for celline in cl_human:
-        for item in celline["xref"]:
-            if item.startswith("NCIt:"):
-                # ids.append(celline["id"][0])
-                cl_cancer.append(celline)
-
-    for celline in cl_cancer:
-        for subset in celline["subset"]:
-            if subset in ["Female", "Male"]:
-                ids.append(celline["id"][0])
-
-    # 67763 cell-lines
-    # 62019 cell-lines w gender
-
-    if verbose:
-        print("Cell-ines Count: ", len(ids))
-    cell_lines = []
-    for cellosaurus_id in ids[0:200]: # try subset first
-        if verbose:
-            print(cellosaurus_id)
-        cell_lines.append(fetch_cellines(cellosaurus_id, out_path, save))
-
-    if cell_lines:
-        return cell_lines
-
-
-def cellosaurus_fhir_mappping(cell_lines):
-    # cell_lines[0]["Cellosaurus"]["cell-line-list"][0]["accession-list"]
+def cellosaurus_fhir_mappping(cell_lines, verbose=False):
     patients = []
     conditions = []
     samples = []
     for cell_line in cell_lines:
         for cl in cell_line["Cellosaurus"]["cell-line-list"]:
-            # if len(cl["accession-list"]) > 1:
-                # there are secondary keys in cellosaurus
-                # print(cl["accession-list"])
-
             patient = None
             patient_id = None
             for accession in cl["accession-list"]:
                 if accession["type"] == "primary":
-                    # print(accession["value"])
                     patient_id = accession["value"].replace("_", "-")
 
                     ident_id = Identifier.construct()
@@ -989,10 +818,22 @@ def cellosaurus_fhir_mappping(cell_lines):
                         ident_identifier.value = patient_identifer
                         ident_identifier.system = "https://www.cellosaurus.org/"
 
+                for xref in cl["xref-list"]:
+                    if xref["database"] == "DepMap":
+                        depmap_identifier = Identifier.construct()
+                        depmap_identifier.value = xref["accession"]
+                        # dep_map_url = xref["url"] # ex. https://depmap.org/portal/cell_line/ACH-000035"
+                        depmap_identifier.system = "https://depmap.org/"
+
                 if "sex" in cl.keys() and cl["sex"]:
                     gender = cl["sex"].lower()
+
+                    if depmap_identifier:
+                        identifier_list = [ident_identifier, ident_id, depmap_identifier]
+                    else:
+                        identifier_list = [ident_identifier, ident_id]
                     patient = Patient(
-                        **{"id": patient_id, "gender": gender, "identifier": [ident_identifier, ident_id]})
+                        **{"id": patient_id, "gender": gender, "identifier": identifier_list})
                     patients.append(patient)
                     patient_ref = Reference(**{"reference": "/".join(["Patient", patient_id])})
 
@@ -1013,11 +854,19 @@ def cellosaurus_fhir_mappping(cell_lines):
 
                                 onset_age = None
                                 if "age" in cl.keys() and cl["age"]:
-                                    if "Y" in cl["age"]:
+                                    if "Y" not in cl["age"] and cl["age"][-1] == "M":
+                                        age = round(int(cl["age"].split("M")[0]) / 12, 2)
+                                        onset_age = Age(**{"value": age})
+                                    elif "Y" in cl["age"]:
                                         age = cl["age"].split("Y")[0]
+                                        if "-" in age:
+                                           age = age.split("-")[0]
+                                        if age.startswith(">"):
+                                            age = age.replace(">", "")
                                         onset_age = Age(**{"value": age})
                                     else:
-                                        print(cl["age"])
+                                        if verbose:
+                                            print("Age syntax doesn't match: ", cl["age"])
 
                                 if onset_age:
                                     conditions.append(Condition(
@@ -1061,15 +910,15 @@ def cellosaurus_to_fhir_ndjson(out_dir, obj):
     conditions = [orjson.loads(condition.json()) for condition in obj["conditions"]]
 
     if patients:
-        fhir_ndjson(patients, "".join([out_dir, "Patient.ndjson"]))
+        fhir_ndjson(patients, os.path.join(out_dir, "Patient.ndjson"))
     if samples:
-        fhir_ndjson(samples, "".join([out_dir, "Specimen.ndjson"]))
+        fhir_ndjson(samples, os.path.join(out_dir, "Specimen.ndjson"))
     if conditions:
-        fhir_ndjson(conditions, "".join([out_dir, "Condition.ndjson"]))
+        fhir_ndjson(conditions, os.path.join(out_dir, "Condition.ndjson"))
 
 
-def cellosaurus2fhir(path, out_dir, out_path=None, verbose=False, save=False):
-    cell_lines = cellosaurus_cancer_jsons(path, out_path=out_path, verbose=verbose, save=save)
+def cellosaurus2fhir(path, out_dir):
+    cell_lines = utils.load_ndjson(path=path)
     cellosaurus_fhir_objects = cellosaurus_fhir_mappping(cell_lines)
     cellosaurus_to_fhir_ndjson(out_dir=out_dir, obj=cellosaurus_fhir_objects)
 

@@ -2,7 +2,7 @@
 ![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
 
 ## Project overview: 
-Mapping GDC (Genomic Data Commons) schema to FHIR (Fast Healthcare Interoperability Resources) schema.
+Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fast Healthcare Interoperability Resources) schema.
 
 ### High-level mapping:
 - #### GDC schema 
@@ -25,8 +25,12 @@ gdc2fhir/
 |   |-- __init__.py
 |   |-- labels/
 |   |   |-- __init__.py
+|   |   |-- files.py
+|   |   |-- case.py
 |   |   └── project.py
+|   |   
 |   |-- schema.py
+|   |-- entity2fhir.py
 |   |-- mapping.py
 |   |-- utils.py
 |   └── cli.py
@@ -46,11 +50,12 @@ gdc2fhir/
 |-- tests/
 |   |-- __init__.py
 |   |-- unit/
-|   |-- __init__.py
-|   └── test_mapping.py
+|   |   |-- __init__.py
+|   |   └── test_mapping.py
 |   |-- integration/
-|   |-- __init__.py
-|   └── test_schema.py
+|   |   |-- __init__.py
+|   |   └── test_schema.py
+|   └── fixtures/
 |   
 |--README.md
 └── setup.py
