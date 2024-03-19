@@ -290,20 +290,22 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 condition_codes_list.append(icd10_annotation)
 
         # not all conditions of GDC have enumDef for it's resource code/system in data dictionary
-        """
-        if ('Condition.code_primary_diagnosis' in case['diagnoses'].keys() and
-                "Paget disease and infiltrating duct carcinoma of breast" not in case['diagnoses']['Condition.code_primary_diagnosis'])\
-                and "Infiltrating lobular mixed with other types of carcinoma" not in case['diagnoses']['Condition.code_primary_diagnosis']:
-            gdc_condition_display = data_dict['clinical']['diagnosis']['properties']['primary_diagnosis']["enumDef"][
-                case['diagnoses']['Condition.code_primary_diagnosis']]['termDef']['term']
-            gdc_condition_code = data_dict['clinical']['diagnosis']['properties']['primary_diagnosis']["enumDef"][
-                case['diagnoses']['Condition.code_primary_diagnosis']]['termDef']['term_id']
-            gdc_condition_system = data_dict['clinical']['diagnosis']['properties']['primary_diagnosis']["enumDef"][
-                case['diagnoses']['Condition.code_primary_diagnosis']]['termDef']['term_url']
-            gdc_condition_annotation = {"system": gdc_condition_system, "display": gdc_condition_display,
-                                        "code": gdc_condition_code}
-            condition_codes_list.append(gdc_condition_annotation)
-        """
+        if 'Condition.code_primary_diagnosis' in case['diagnoses'].keys() and case['diagnoses']['Condition.code_primary_diagnosis']:
+            if case['diagnoses']['Condition.code_primary_diagnosis'] in data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"].keys():
+                diagnosis_display = case['diagnoses']['Condition.code_primary_diagnosis']
+                ncit_condition_display = data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display]["termDef"]["term"]
+                ncit_condition_code = data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display]["termDef"]["term_id"]
+                ncit_condition = {"system": "https://ncit.nci.nih.gov", "display": ncit_condition_display,
+                                        "code": ncit_condition_code}
+                condition_codes_list.append(ncit_condition)
+
+                mondo = [d["mondo_id"] for d in ncit2mondo if d["ncit_id"] == ncit_condition_code]
+                if mondo:
+                    mondo_code = mondo[0]
+                    mondo_display = ncit_condition_display
+                    mondo_coding = {'system': "https://www.ebi.ac.uk/ols4/ontologies/mondo", 'display': mondo_display,
+                                    'code': mondo_code}
+                    condition_codes_list.append(mondo_coding)
 
         loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
         condition_codes_list.append(loinc_annotation)
