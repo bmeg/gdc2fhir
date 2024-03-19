@@ -34,6 +34,7 @@ setup(
             '../resources/gdc_resources/content_annotations/**/*.json',
             '../resources/gdc_resources/data_dictionary/**/*.json',
             '../resources/gdc_resources/fields/*.json',
+            '../resources/*.json.gz',
             '../mapping/*.json'
         ]
     },

@@ -3,6 +3,7 @@ import time
 import random
 import json
 import glob
+import gzip
 import pprint
 import requests
 from bs4 import BeautifulSoup
@@ -1060,3 +1061,8 @@ def cellosaurus_cancer_jsons(ids, out_path, verbose):
     if cell_lines:
         return cell_lines
 
+
+def ncit2mondo(path):
+    with gzip.open(path, 'r') as fin:
+        data = json.loads(fin.read().decode('utf-8'))
+        return data

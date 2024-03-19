@@ -42,6 +42,7 @@ gender = utils._read_json(str(Path(importlib.resources.files(
 data_dict = utils.load_data_dictionary(path=utils.DATA_DICT_PATH)
 cancer_pathological_staging = utils._read_json(str(Path(importlib.resources.files(
     'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'diagnosis' / 'cancer_pathological_staging.json')))
+ncit2mondo = utils.ncit2mondo(str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'ncit2mondo.json.gz')))
 
 
 def assign_fhir_for_project(project, disease_types=disease_types):
@@ -845,12 +846,22 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                 condition_clinicalstatus_code = CodeableConcept.construct()
                                 condition_clinicalstatus_code.coding = [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": "unknown","code": "unknown"}]
 
+                                disease_coding = []
                                 code = disease_annotation["accession"]
                                 display = disease_annotation["value"]
                                 coding = {'system': "https://ncit.nci.nih.gov/", 'display': display, 'code': code}
+
+                                disease_coding.append(coding)
+
+                                mondo = [d["mondo_id"] for d in ncit2mondo if d["ncit_id"] == disease_annotation["accession"]]
+                                if mondo:
+                                    mondo_code = mondo[0]
+                                    mondo_display = display
+                                    mondo_coding = {'system': "https://www.ebi.ac.uk/ols4/ontologies/mondo", 'display': mondo_display, 'code': mondo_code}
+                                    disease_coding.append(mondo_coding)
+
                                 cc = CodeableConcept.construct()
-                                cc.coding = [coding]
-                                 # TODO: add mondo coding from bmeg-etl
+                                cc.coding = disease_coding
 
                                 onset_age = None
                                 if "age" in cl.keys() and cl["age"]:
