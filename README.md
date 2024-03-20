@@ -73,6 +73,13 @@ source venv-fhirizer/bin/activate
 pip install . 
 ```
 
+- Dockerfile
+
+```
+(sudo) docker build -t <tag-name>:latest .
+(sudo) docker run -it --rm <tag-name>:latest
+```
+
 ### Convert and Generate
  
 - convert GDC schema keys to fhir mapping
