@@ -15,7 +15,7 @@ Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fas
 ### gdc2fhir structure:
 
 Data directories:
-- **mapping**: json data maps done by gdc2fhir
+- **mapping**: json data maps produced by fhirizer pydantic schema maps
 - **resources**: data resources generated or used in mappings
 
 ****
