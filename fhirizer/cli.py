@@ -4,7 +4,7 @@ import click
 
 @click.group()
 def cli():
-    """GDC to FHIR Key and Content Mapping"""
+    """GDC or Cellosaurus to FHIR Key and Content Mapping"""
     pass
 
 
