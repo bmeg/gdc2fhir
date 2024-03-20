@@ -1,7 +1,7 @@
 import os
 from typing import List, LiteralString
-from gdc2fhir import utils
-from gdc2fhir.schema import Map, Source, Destination, Reference
+from fhirizer import utils
+from fhirizer.schema import Map, Source, Destination, Reference
 from fhir.resources.patient import Patient
 from fhir.resources.extension import Extension
 from fhir.resources.researchstudy import ResearchStudy, ResearchStudyProgressStatus
@@ -354,7 +354,7 @@ case_maps = [Map(
                              'unknown',
                              'not reported',
                              'not allowed to collect']}],
-            content_annotation="@gdc2fhir/resources/gdc_resources/content_annotations/demographic/ethnicity.json"
+            content_annotation="@fhirizer/resources/gdc_resources/content_annotations/demographic/ethnicity.json"
         ),
         destination=Destination(
             name='Extension:extension.USCoreEthnicity',
@@ -377,7 +377,7 @@ case_maps = [Map(
             category=data_dict["clinical"]["demographic"]["category"],
             type=data_dict["clinical"]["demographic"]["properties"]["gender"]["termDef"]["term"],
             enums=[{'enum': ['female', 'male', 'unspecified', 'unknown', 'not reported']}],
-            content_annotation="@gdc2fhir/resources/gdc_resources/content_annotations/demographic/gender.json"
+            content_annotation="@fhirizer/resources/gdc_resources/content_annotations/demographic/gender.json"
         ),
         destination=Destination(
             name='Patient.gender',
@@ -404,7 +404,7 @@ case_maps = [Map(
                              'unknown',
                              'not reported',
                              'not allowed to collect']}],
-            content_annotation="@gdc2fhir/resources/gdc_resources/content_annotations/demographic/race.json"
+            content_annotation="@fhirizer/resources/gdc_resources/content_annotations/demographic/race.json"
         ),
         destination=Destination(
             name='Extension.extension:USCoreRaceExtension',

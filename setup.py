@@ -3,15 +3,15 @@ from setuptools import setup, find_packages
 __version__ = '0.0.0'
 
 setup(
-    name='gdc2fhir',
+    name='fhirizer',
     version=__version__,
     description="Mapping GDC's schema to FHIR schema.",
     long_description=open('README.md').read(),
-    url='https://github.com/bmeg/gdc2fhir',
+    url='https://github.com/bmeg/fhirizer',
     author='https://ellrottlab.org/',
     packages=find_packages(),
     entry_points={
-        'console_scripts': ['gdc2fhir = gdc2fhir.cli:cli']
+        'console_scripts': ['fhirizer = fhirizer.cli:cli']
     },
     install_requires=[
         'charset_normalizer',

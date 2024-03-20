@@ -1,6 +1,6 @@
 import os
-from gdc2fhir import utils
-from gdc2fhir.schema import Map, Source, Destination, Reference
+from fhirizer import utils
+from fhirizer.schema import Map, Source, Destination, Reference
 
 package_dir = utils.package_dir
 file_schema = utils.load_schema_from_json(path=os.path.join(package_dir, 'mapping', 'file.json'))

@@ -1,7 +1,7 @@
 import os
 from typing import List
-from gdc2fhir import utils
-from gdc2fhir.schema import Map, Source, Destination, Reference
+from fhirizer import utils
+from fhirizer.schema import Map, Source, Destination, Reference
 from fhir.resources.researchstudy import ResearchStudy, ResearchStudyProgressStatus, ResearchStudyRecruitment
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.codeablereference import CodeableReference

@@ -1,4 +1,4 @@
-from gdc2fhir import utils, mapping, entity2fhir
+from fhirizer import utils, mapping, entity2fhir
 import click
 
 

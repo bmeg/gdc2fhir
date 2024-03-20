@@ -23,26 +23,26 @@ from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent
 from fhir.resources.attachment import Attachment
 from fhir.resources.age import Age
-from gdc2fhir import utils
+from fhirizer import utils
 from datetime import datetime
 import icd10
 import importlib.resources
 from pathlib import Path
 
 disease_types = utils._read_json(str(Path(importlib.resources.files(
-    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'disease_types.json')))
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'disease_types.json')))
 primary_sites = utils._read_json(str(Path(importlib.resources.files(
-    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'primary_sites.json')))
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'primary_sites.json')))
 race = utils._read_json(str(Path(importlib.resources.files(
-    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'race.json')))
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'race.json')))
 ethnicity = utils._read_json(str(Path(importlib.resources.files(
-    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'ethnicity.json')))
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'ethnicity.json')))
 gender = utils._read_json(str(Path(importlib.resources.files(
-    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'gender.json')))
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'demographic' / 'gender.json')))
 data_dict = utils.load_data_dictionary(path=utils.DATA_DICT_PATH)
 cancer_pathological_staging = utils._read_json(str(Path(importlib.resources.files(
-    'gdc2fhir').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'diagnosis' / 'cancer_pathological_staging.json')))
-ncit2mondo = utils.ncit2mondo(str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'ncit2mondo.json.gz')))
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'diagnosis' / 'cancer_pathological_staging.json')))
+ncit2mondo = utils.ncit2mondo(str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'ncit2mondo.json.gz')))
 
 
 def assign_fhir_for_project(project, disease_types=disease_types):

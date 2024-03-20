@@ -20,8 +20,8 @@ Data directories:
 
 ****
 ```
-gdc2fhir/
-|-- gdc2fhir/
+fhirizer/
+|-- fhirizer/
 |   |-- __init__.py
 |   |-- labels/
 |   |   |-- __init__.py
@@ -66,10 +66,10 @@ gdc2fhir/
 - from source 
 ```
 git clone repo
-cd gdc2fhir
+cd fhirizer
 # create virtual env ex. 
 python -m venv venv-gdc2fhir
-source venv-gdc2fhir/bin/activate
+source venv-fhirizer/bin/activate
 pip install . 
 ```
 
@@ -81,9 +81,9 @@ pip install .
   Example run for patient - replace path's to ndjson files or directories. 
  
 ```
-gdc2fhir convert --name case --in_path cases.ndjson --out_path cases_key.ndjson --verbose True
+fhirizer convert --name case --in_path cases.ndjson --out_path cases_key.ndjson --verbose True
 
-gdc2fhir generate --name case --out_dir ./data --entity_path cases_key.ndjson
+fhirizer generate --name case --out_dir ./data --entity_path cases_key.ndjson
 
 ``` 
 
@@ -91,9 +91,9 @@ gdc2fhir generate --name case --out_dir ./data --entity_path cases_key.ndjson
 
  
 ```
-gdc2fhir convert --name file --in_path files.ndjson --out_path files_key.ndjson --verbose True
+fhirizer convert --name file --in_path files.ndjson --out_path files_key.ndjson --verbose True
 
-gdc2fhir generate --name file --out_dir ./data --entity_path files_key.ndjson
+fhirizer generate --name file --out_dir ./data --entity_path files_key.ndjson
 
 ``` 
 
@@ -102,9 +102,9 @@ gdc2fhir generate --name file --out_dir ./data --entity_path files_key.ndjson
 initialize initial structure of project, case, or file to add Maps
 
 ```
-gdc2fhir project_init 
-gdc2fhir case_init 
-gdc2fhir file_init 
+fhirizer project_init 
+fhirizer case_init 
+fhirizer file_init 
 # run ex. ./labels/project.py 
 ```
 

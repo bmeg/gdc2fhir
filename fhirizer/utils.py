@@ -7,14 +7,14 @@ import gzip
 import pprint
 import requests
 from bs4 import BeautifulSoup
-from gdc2fhir.schema import Schema
+from fhirizer.schema import Schema
 from importlib.resources import files
 import importlib
 from pathlib import Path
 
-DATA_DICT_PATH = "".join([str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'data_dictionary')), "/"])
-FIELDS_PATH = "".join([str(Path(importlib.resources.files('gdc2fhir').parent / 'resources' / 'gdc_resources' / 'fields')), "/"])
-package_dir = Path(importlib.resources.files('gdc2fhir').parent)
+DATA_DICT_PATH = "".join([str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'gdc_resources' / 'data_dictionary')), "/"])
+FIELDS_PATH = "".join([str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'gdc_resources' / 'fields')), "/"])
+package_dir = Path(importlib.resources.files('fhirizer').parent)
 
 
 def extract_keys(data, parent_key=None, seen_keys=None):
