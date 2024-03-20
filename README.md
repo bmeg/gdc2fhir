@@ -1,4 +1,4 @@
-# gdc2fhir
+# fhirizer
 ![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
 
 ## Project overview: 
