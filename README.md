@@ -12,7 +12,7 @@ Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fas
 ![mapping](./imgs/gdc-fhir.png)
 
 
-### gdc2fhir structure:
+### fhirizer structure:
 
 Data directories:
 - **mapping**: json data maps produced by fhirizer pydantic schema maps
@@ -68,7 +68,7 @@ fhirizer/
 git clone repo
 cd fhirizer
 # create virtual env ex. 
-python -m venv venv-gdc2fhir
+python -m venv venv-fhirizer
 source venv-fhirizer/bin/activate
 pip install . 
 ```
