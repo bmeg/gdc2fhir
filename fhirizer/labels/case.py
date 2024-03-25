@@ -572,7 +572,16 @@ case_maps = [Map(
 
     Map(
         source=Source(
-            name='samples.portions.analytes.analyte_id'
+            name='samples.portions.analytes.experimental_protocol_type'
+        ),
+        destination=Destination(
+            name='Specimen.processing.method.analyte'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.'
         ),
         destination=Destination(
             name='Specimen.id.analyte'

@@ -77,7 +77,7 @@ pip install .
 
 ```
 (sudo) docker build -t <tag-name>:latest .
-(sudo) docker run -it --rm <tag-name>:latest
+(sudo) docker run -it  --mount type=bind,source=<path-to-input-ndjson>,target=/opt/data --rm <tag-name>:latest
 ```
 
 - Singularity 

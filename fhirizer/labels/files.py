@@ -89,6 +89,15 @@ file_maps = [
         destination=Destination(
             name='Patient.id',
         )
+    ),
+
+    Map(
+        source=Source(
+            name='data_format',
+        ),
+        destination=Destination(
+            name='DocumentReference.content.profile',
+        )
     )
 ]
 

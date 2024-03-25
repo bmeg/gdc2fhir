@@ -12,7 +12,7 @@ from fhir.resources.reference import Reference
 from fhir.resources.condition import Condition, ConditionStage
 from fhir.resources.observation import Observation
 from fhir.resources.encounter import Encounter
-from fhir.resources.specimen import Specimen, SpecimenProcessing
+from fhir.resources.specimen import Specimen, SpecimenProcessing, SpecimenCollection
 from fhir.resources.patient import Patient
 from fhir.resources.researchsubject import ResearchSubject
 from fhir.resources.imagingstudy import ImagingStudy, ImagingStudySeries
@@ -468,14 +468,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     med_admin = MedicationAdministration(**data)
                     treatments_medadmin.append(med_admin)
 
-        # add procedure
-        procedure = None
-        if encounter:
-            procedure = Procedure.construct()
-            procedure.status = "completed"
-            procedure.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
-            procedure.encounter = Reference(**{"reference": "/".join(["Encounter", encounter.id])})
-
     # create specimen
     def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specimens):
         if name in dat.keys():
@@ -512,6 +504,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     sample_list = None
     slide_list = []
+    procedures = []
     if "samples" in case.keys():
         samples = case["samples"]
         all_samples = []
@@ -522,6 +515,19 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             if 'Specimen.id.sample' in sample.keys():
                 specimen = Specimen.construct()
                 specimen.id = sample["Specimen.id.sample"]
+
+                # add sample procedure
+                procedure = Procedure.construct()
+                procedure.status = "completed"
+                procedure.id = specimen.id
+                procedure.status = "completed"
+                procedure.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+                if encounter:
+                    procedure.encounter = Reference(**{"reference": "/".join(["Encounter", encounter.id])})
+                procedures.append(procedure)
+
+                specimen.collection = SpecimenCollection(**{"procedure": Reference(**{"reference": "/".join(["Procedure", procedure.id])})})
+
                 if "Specimen.type.sample" in sample.keys():
                     sample_type = CodeableConcept.construct()
                     sample_type.coding = [{
@@ -611,7 +617,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     return {'patient': patient, 'encounter': encounter, 'observation': observation, 'condition': condition,
             'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
-            'imaging_study': slide_list, "procedure": procedure, "med_admin": treatments_medadmin,
+            'imaging_study': slide_list, "procedures": procedures, "med_admin": treatments_medadmin,
             "med": treatments_med}
 
 
@@ -632,8 +638,6 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     patients = [orjson.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
     encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if
                   'encounter' in fhir_case.keys() and fhir_case['encounter']]
-    procedures = [orjson.loads(fhir_case['procedure'].json()) for fhir_case in all_fhir_case_obj if
-                  'procedure' in fhir_case.keys() and fhir_case['procedure']]
     observations = [orjson.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if
                     'observation' in fhir_case.keys() and fhir_case['observation']]
     conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if
@@ -650,6 +654,12 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
         if fhir_case["specimens"]:
             for specimen in fhir_case["specimens"]:
                 specimens.append(orjson.loads(specimen.json()))
+
+    procedures = []
+    for fhir_case in all_fhir_case_obj:
+        if fhir_case["procedures"]:
+            for procedure in fhir_case["procedures"]:
+                procedures.append(orjson.loads(procedure.json()))
 
     imaging_study = []
     for fhir_case in all_fhir_case_obj:
@@ -768,7 +778,10 @@ def assign_fhir_for_file(file):
 
     attachment = Attachment.construct()
     attachment.url = "https://api.gdc.cancer.gov/data/{}".format(file['DocumentReference.id'])
-    data = {'attachment': attachment}
+    profile = None
+    if 'DocumentReference.content.profile' in file.keys() and file['DocumentReference.content.profile']:
+        profile = file['DocumentReference.content.profile']
+    data = {'attachment': attachment, "profile": profile}
     document.content = [DocumentReferenceContent(**data)]
 
     return document
