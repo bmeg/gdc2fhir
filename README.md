@@ -80,6 +80,12 @@ pip install .
 (sudo) docker run -it --rm <tag-name>:latest
 ```
 
+- Singularity 
+```
+singularity build --remote fhirizer.sif fhirizer.def
+singularity shell --bind <local_path_to_resources>/fhirizer/resources:/usr/local/lib/python<version>/dist-packages/resources fhirizer.sif
+```
+
 ### Convert and Generate
  
 - convert GDC schema keys to fhir mapping
