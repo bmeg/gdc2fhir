@@ -326,6 +326,14 @@ def convert_maps(in_path, out_path, name, verbose):
         available_maps = [schema.find_map_by_source(k) for k in keys]
         available_maps.append(schema.obj_mapping)
 
+        profile = Map(
+            source=Source(name='data_format', description=None, description_url=None, category=None, type=None,
+                          format=None, enums=None, content_annotation=None, reference=None),
+            destination=Destination(name='DocumentReference.content.profile', description=None, description_url=None,
+                                    module=None, title=None, type=None, format=None, reference=None))
+        if name in 'file' and profile not in available_maps:
+            available_maps.append(profile)
+
         if verbose:
             print("available_maps: ", available_maps)
 

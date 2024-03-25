@@ -20,7 +20,7 @@ from fhir.resources.procedure import Procedure
 from fhir.resources.medicationadministration import MedicationAdministration
 from fhir.resources.medication import Medication
 from fhir.resources.codeablereference import CodeableReference
-from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent
+from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent, DocumentReferenceContentProfile
 from fhir.resources.attachment import Attachment
 from fhir.resources.age import Age
 from fhirizer import utils
@@ -778,10 +778,16 @@ def assign_fhir_for_file(file):
 
     attachment = Attachment.construct()
     attachment.url = "https://api.gdc.cancer.gov/data/{}".format(file['DocumentReference.id'])
+
     profile = None
     if 'DocumentReference.content.profile' in file.keys() and file['DocumentReference.content.profile']:
-        profile = file['DocumentReference.content.profile']
-    data = {'attachment': attachment, "profile": profile}
+        profile = DocumentReferenceContentProfile.construct()
+        profile.valueCoding = {"code": "0000", "display": file['DocumentReference.content.profile'],
+                               "system": "https://gdc.cancer.gov/"}
+    if profile:
+        data = {'attachment': attachment, "profile": [profile]}
+    else:
+        data = {'attachment': attachment}
     document.content = [DocumentReferenceContent(**data)]
 
     return document
