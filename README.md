@@ -1,15 +1,11 @@
 # fhirizer
-![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
+![Status](https://img.shields.io/badge/Status-Build%20Passing-lgreen)
 
 ## Project overview: 
 Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fast Healthcare Interoperability Resources) schema.
 
-### High-level mapping:
-- #### GDC schema 
-![mapping](./imgs/high-level.png)
-
-- #### FHIR simplified schema 
-![mapping](./imgs/gdc-fhir.png)
+- #### GDC study simplified FHIR graph 
+![mapping](./imgs/gdc_tcga_study_example_fhir_graph.png)
 
 
 ### fhirizer structure:
@@ -68,6 +64,7 @@ fhirizer/
 git clone repo
 cd fhirizer
 # create virtual env ex. 
+# NOTE: package_data folders must be in python path in virtual envs 
 python -m venv venv-fhirizer
 source venv-fhirizer/bin/activate
 pip install . 
