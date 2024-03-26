@@ -249,11 +249,9 @@ def gdc_available_fields(save=True):
         print(f"Failed to retrieve data. Status code: {response.status_code}")
 
 
-# TODO: other methods vs API get call data fetch
 def gdc_data_dict(entity_name):
     """
     Fetches data dictionary for a specified entity from GDC API.
-    TODO: pass version - or get data dict from python client
 
     :param entity_name: Name of GDC entity ex. project, case, file, annotation
     :return: Json schema data dictionary for the entity - none if error occurs
@@ -1039,25 +1037,18 @@ def cellosaurus_cancer_ids(path, out_path, save=False):
     return ids
 
 
-def cellosaurus_cancer_jsons(ids, out_path, verbose):
-    # all_paths = glob.glob("".join([cell_resource_path, "**/*.json"])
-    """
+def cellosaurus_cancer_jsons(out_path):
+    if "/" in out_path[-1]:
+        out_path = out_path[:-1]
+
+    all_paths = glob.glob("".join([out_path, "**/*.json"]))
+
     cell_lines = []
     for file in all_paths:
-        dat = _read_json(file_name)
+        dat = _read_json(file)
         if dat:
             cell_lines.append(dat)
-    """
-    if verbose:
-        print("Cell-ines Count: ", len(ids))
-    cell_lines = []
-    for cellosaurus_id in ids:
-        if verbose:
-            print(cellosaurus_id)
-            file_name = os.path.join(out_path, "".join([cellosaurus_id, ".json"]))
-            dat = _read_json(file_name)
-            if dat:
-                cell_lines.append(dat)
+
     if cell_lines:
         return cell_lines
 

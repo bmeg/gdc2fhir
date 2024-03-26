@@ -812,7 +812,7 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
 def cellosaurus_resource(path, out_path):
     ids = utils.cellosaurus_cancer_ids(path, out_path, save=True) # filter step
     utils.fetch_cellines(ids, out_path) # api call intensive - 1s per request + 0.5s delay
-    cls = utils.cellosaurus_cancer_jsons(ids, out_path, verbose=True)
+    cls = utils.cellosaurus_cancer_jsons(out_path)
     fhir_ndjson(cls, out_path)
 
 
@@ -929,9 +929,9 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                 sample_parents_ref.append(Reference(**{"reference": "/".join(["Specimen", parent_id])}))
 
                     if sample_parents_ref:
-                        samples.append(Specimen(**{"id": patient_id, "identifier": [ident_identifier, ident_id], "parent":sample_parents_ref}))
+                        samples.append(Specimen(**{"id": patient_id, "subject": patient_ref, "identifier": [ident_identifier, ident_id], "parent":sample_parents_ref}))
                     else:
-                        samples.append(Specimen(**{"id": patient_id, "identifier": [ident_identifier, ident_id]}))
+                        samples.append(Specimen(**{"id": patient_id, "subject": patient_ref, "identifier": [ident_identifier, ident_id]}))
 
     return {"patients": patients, "conditions": conditions, "samples": samples}
 

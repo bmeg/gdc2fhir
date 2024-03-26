@@ -1,8 +1,8 @@
 # fhirizer
 ![Status](https://img.shields.io/badge/Status-Build%20Passing-lgreen)
 
-## Project overview: 
-Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fast Healthcare Interoperability Resources) schema.
+### Project overview: 
+Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fast Healthcare Interoperability Resources).
 
 - #### GDC study simplified FHIR graph 
 ![mapping](./imgs/gdc_tcga_study_example_fhir_graph.png)
@@ -10,10 +10,9 @@ Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fas
 
 ### fhirizer structure:
 
-Data directories:
-- **mapping**: json data maps produced by fhirizer pydantic schema maps
+Data directories included in package data:
 - **resources**: data resources generated or used in mappings
-
+- **mapping**: json data maps produced by fhirizer pydantic schema maps
 ****
 ```
 fhirizer/
@@ -50,14 +49,15 @@ fhirizer/
 |   |   └── test_mapping.py
 |   |-- integration/
 |   |   |-- __init__.py
-|   |   └── test_schema.py
+|   |   |-- test_generate.py
+|   |   └── test_convert.py
 |   └── fixtures/
 |   
 |--README.md
 └── setup.py
 ```
 
-## Installation
+### Installation
 
 - from source 
 ```
@@ -84,38 +84,44 @@ singularity shell --bind <local_path_to_resources>/fhirizer/resources:/usr/local
 ```
 
 ### Convert and Generate
+
+- GDC 
+  - convert GDC schema keys to fhir mapping
+  - generate fhir object models ndjson files in directory
+
+    Example run for patient - replace path's to ndjson files or directories. 
  
-- convert GDC schema keys to fhir mapping
-- generate fhir object models ndjson files in directory
+  ```
+  fhirizer convert --name case --in_path cases.ndjson --out_path cases_key.ndjson --verbose True
+  
+  fhirizer generate --name case --out_dir ./data --entity_path cases_key.ndjson
+  ``` 
 
-  Example run for patient - replace path's to ndjson files or directories. 
- 
-```
-fhirizer convert --name case --in_path cases.ndjson --out_path cases_key.ndjson --verbose True
+  - to generate document reference for the patients
+  ```
+  fhirizer convert --name file --in_path files.ndjson --out_path files_key.ndjson --verbose True
+  
+  fhirizer generate --name file --out_dir ./data --entity_path files_key.ndjson
+  ``` 
 
-fhirizer generate --name case --out_dir ./data --entity_path cases_key.ndjson
+- Cellosaurus 
 
-``` 
+  - Cellosaurus ndjson follows [Cellosaurus GET API](https://api.cellosaurus.org/)  json format
+  ```
+  generate --name cellosaurus --out_dir ./data --entity_path <path-to-cellosaurus-celllines-ndjson>
+  ```
 
-- to generate document reference for the patients 
-
- 
-```
-fhirizer convert --name file --in_path files.ndjson --out_path files_key.ndjson --verbose True
-
-fhirizer generate --name file --out_dir ./data --entity_path files_key.ndjson
-
-``` 
-
-### click cmds for constructing maps
+### Constructing GDC maps cli cmds 
 
 initialize initial structure of project, case, or file to add Maps
 
 ```
 fhirizer project_init 
+# run ex. ./labels/project.py 
+
 fhirizer case_init 
 fhirizer file_init 
-# run ex. ./labels/project.py 
+
 ```
 
 
