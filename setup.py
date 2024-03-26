@@ -43,6 +43,8 @@ setup(
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
@@ -52,3 +54,4 @@ setup(
     platforms=['any'],
     python_requires='>=3.9, <4.0',
 )
+
