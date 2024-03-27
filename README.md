@@ -79,8 +79,8 @@ pip install .
 
 - Singularity 
 ```
-singularity build --remote fhirizer.sif fhirizer.def
-singularity shell --bind <local_path_to_resources>/fhirizer/resources:/usr/local/lib/python<version>/dist-packages/resources fhirizer.sif
+singularity build fhirizer.sif docker://quay.io/ohsu-comp-bio/fhirizer
+singularity shell fhirizer.sif
 ```
 
 ### Convert and Generate
@@ -117,11 +117,10 @@ initialize initial structure of project, case, or file to add Maps
 
 ```
 fhirizer project_init 
-# run ex. ./labels/project.py 
+# to update Mappings run associated labels script ex ./labels/project.py 
 
 fhirizer case_init 
 fhirizer file_init 
-
 ```
 
 
