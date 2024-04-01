@@ -1,6 +1,9 @@
 # fhirizer
 ![Status](https://img.shields.io/badge/Status-Build%20Passing-lgreen)
 
+![mapping](./imgs/fhir_flame.png)
+
+
 ### Project overview: 
 Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fast Healthcare Interoperability Resources).
 
