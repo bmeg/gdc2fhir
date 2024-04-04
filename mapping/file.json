@@ -1043,29 +1043,6 @@
         },
         {
             "source": {
-                "name": "data_format",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.content.profile",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
                 "name": "data_category",
                 "description": null,
                 "description_url": null,
@@ -1239,6 +1216,52 @@
             },
             "destination": {
                 "name": "Patient.id",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "cases.samples.portions.analytes.aliquots.aliquot_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.id",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "data_format",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "DocumentReference.content.profile",
                 "description": null,
                 "description_url": null,
                 "module": null,

@@ -11,8 +11,8 @@ data_dict = utils.load_data_dictionary(path=utils.DATA_DICT_PATH)
 
 
 def initialize_project(field_path=utils.FIELDS_PATH,
-                       out_path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'project_test.json'))):
-
+                       out_path=str(
+                           Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'project_test.json'))):
     """
     initial Schema structure of GDC project
 
@@ -168,7 +168,8 @@ def initialize_case(field_path=utils.FIELDS_PATH,
     utils.validate_and_write(case_schema, out_path=out_path, update=False, generate=True)
 
 
-def initialize_file(field_path=utils.FIELDS_PATH, out_path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'file_test.json'))):
+def initialize_file(field_path=utils.FIELDS_PATH,
+                    out_path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'file_test.json'))):
     """
     initial Schema structure of GDC File
 
@@ -312,11 +313,14 @@ def convert_maps(in_path, out_path, name, verbose):
     schema = None
 
     if name in 'project':
-        schema = utils.load_schema_from_json(path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'project.json')))
+        schema = utils.load_schema_from_json(
+            path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'project.json')))
     elif name in 'case':
-        schema = utils.load_schema_from_json(path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'case.json')))
+        schema = utils.load_schema_from_json(
+            path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'case.json')))
     elif name in 'file':
-        schema = utils.load_schema_from_json(path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'file.json')))
+        schema = utils.load_schema_from_json(
+            path=str(Path(importlib.resources.files('fhirizer').parent / 'mapping' / 'file.json')))
     if schema:
         entities = utils.load_ndjson(path=in_path)
 
@@ -331,8 +335,23 @@ def convert_maps(in_path, out_path, name, verbose):
                           format=None, enums=None, content_annotation=None, reference=None),
             destination=Destination(name='DocumentReference.content.profile', description=None, description_url=None,
                                     module=None, title=None, type=None, format=None, reference=None))
+
+        specimen = Map(
+            source=Source(name='cases.samples.portions.analytes.aliquots.aliquot_id'),
+            destination=Destination(name='Specimen.id'))
+
+        treatmen_type = Map(
+            source=Source(name='diagnoses.treatments.treatment_type'),
+            destination=Destination(name='MedicationAdministration.treatment_type'))
+
         if name in 'file' and profile not in available_maps:
             available_maps.append(profile)
+
+        if name in 'file' and specimen not in available_maps:
+            available_maps.append(specimen)
+
+        if name in 'case':
+            available_maps.append(treatmen_type)
 
         if verbose:
             print("available_maps: ", available_maps)
@@ -344,4 +363,3 @@ def convert_maps(in_path, out_path, name, verbose):
                 file.write('\n'.join(map(json.dumps, mapped_entity_list)))
 
     return mapped_entity_list
-

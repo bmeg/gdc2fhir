@@ -458,12 +458,27 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         if treatment['treatment_or_therapy'] in ["unknown", "not reported"]:
                             status = "unknown"
 
-                    data = {"status": status,
-                            "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00",
-                            # placeholder - required fhir field is not required in GDC
-                            "medication": med_cr,
-                            "subject": Reference(**{"reference": "/".join(["Patient", patient.id])}),
-                            "id": treatment['MedicationAdministration.id']}
+                    medadmin_category_code = None
+                    if 'MedicationAdministration.treatment_type' in treatment.keys() and treatment['MedicationAdministration.treatment_type']:
+                        medadmin_category_code = CodeableConcept.construct()
+                        medadmin_category_code.coding = [{'system': "https://cadsr.cancer.gov/onedata/Home.jsp",
+                                            'display': treatment['MedicationAdministration.treatment_type'],
+                                            'code': '5102381'}]
+                    if medadmin_category_code:
+                        data = {"status": status,
+                                "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00",
+                                "category": [medadmin_category_code],
+                                # placeholder - required fhir field is not required in GDC
+                                "medication": med_cr,
+                                "subject": Reference(**{"reference": "/".join(["Patient", patient.id])}),
+                                "id": treatment['MedicationAdministration.id']}
+                    else:
+                        data = {"status": status,
+                                "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00",
+                                # placeholder - required fhir field is not required in GDC
+                                "medication": med_cr,
+                                "subject": Reference(**{"reference": "/".join(["Patient", patient.id])}),
+                                "id": treatment['MedicationAdministration.id']}
 
                     med_admin = MedicationAdministration(**data)
                     treatments_medadmin.append(med_admin)
@@ -531,7 +546,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 if "Specimen.type.sample" in sample.keys():
                     sample_type = CodeableConcept.construct()
                     sample_type.coding = [{
-                        'system': "https://cadsr.cancer.gov",
+                        'system': "https://cadsr.cancer.gov/sample_type",
                         'display': sample["Specimen.type.sample"],
                         'code': "3111302"}]
                     specimen.type = sample_type
@@ -539,7 +554,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     sample_processing = CodeableConcept.construct()
                     sp = SpecimenProcessing.construct()
                     sample_processing.coding = [{
-                        'system': "https://cadsr.cancer.gov",
+                        'system': "https://cadsr.cancer.gov/preservation_method",
                         'display': sample["Specimen.processing.method"],
                         'code': "5432521"}]
                     sp.method = sample_processing
@@ -587,7 +602,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         if "Specimen.type.analyte" in analyte.keys():
                                             analyte_type = CodeableConcept.construct()
                                             analyte_type.coding = [{
-                                                'system': "https://cadsr.cancer.gov",
+                                                'system': "https://cadsr.cancer.gov/experimental_protocol_type",
                                                 'display': analyte["Specimen.type.analyte"],
                                                 'code': "2513915"}]
                                             analyte_specimen.type = analyte_type
@@ -710,8 +725,8 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
 # load file mapped key values
 # files = utils.load_ndjson("./tests/fixtures/file/file_key.ndjson")
 # file = files[0]
-
-
+files = utils.load_ndjson("../TCGA-ESCA2/files_keys.ndjson")
+file = files[0]
 def assign_fhir_for_file(file):
     document = DocumentReference.construct()
     document.status = "current"
@@ -730,7 +745,8 @@ def assign_fhir_for_file(file):
     category = []
     if 'DocumentReference.category.data_category' in file.keys() and file['DocumentReference.category.data_category']:
         cc = CodeableConcept.construct()
-        cc.coding = [{'system': "https://gdc.cancer.gov/",
+        system = "".join(["https://gdc.cancer.gov/", "data_category"])
+        cc.coding = [{'system': system,
                       'display': file['DocumentReference.category.data_category'],
                       'code': file['DocumentReference.category.data_category'], }]
 
@@ -738,7 +754,8 @@ def assign_fhir_for_file(file):
 
     if 'DocumentReference.category.platform' in file.keys() and file['DocumentReference.category.platform']:
         cc_plat = CodeableConcept.construct()
-        cc_plat.coding = [{'system': "https://gdc.cancer.gov/",
+        system = "".join(["https://gdc.cancer.gov/", "platform"])
+        cc_plat.coding = [{'system': system,
                            'display': file['DocumentReference.category.platform'],
                            'code': file['DocumentReference.category.platform']}]
 
@@ -747,7 +764,8 @@ def assign_fhir_for_file(file):
     if 'DocumentReference.category.experimental_strategy' in file.keys() and file[
         'DocumentReference.category.experimental_strategy']:
         cc_es = CodeableConcept.construct()
-        cc_es.coding = [{'system': "https://gdc.cancer.gov/",
+        system = "".join(["https://gdc.cancer.gov/", "experimental_strategy"])
+        cc_es.coding = [{'system': system,
                          'display': file['DocumentReference.category.experimental_strategy'],
                          'code': file['DocumentReference.category.experimental_strategy']}]
 
@@ -758,7 +776,8 @@ def assign_fhir_for_file(file):
 
     if 'DocumentReference.type' in file.keys() and file['DocumentReference.type']:
         cc_type = CodeableConcept.construct()
-        cc_type.coding = [{'system': "https://gdc.cancer.gov/",
+        system = "".join(["https://gdc.cancer.gov/", "data_type"])
+        cc_type.coding = [{'system': system,
                            'display': file['DocumentReference.type'],
                            'code': file['DocumentReference.type']}]
 
@@ -768,13 +787,22 @@ def assign_fhir_for_file(file):
         document.version = file['DocumentReference.version']
 
     patients = []
+    sample_ref = []
     if 'cases' in file.keys() and file['cases']:
         for case in file['cases']:
             patient_id = case['Patient.id']
             patients.append(Reference(**{"reference": "/".join(["Patient", patient_id])}))
+            if 'samples' in case.keys():
+                for sample in case['samples']:
+                    if 'Specimen.id' in sample['portions'][0]['analytes'][0]['aliquots'][0].keys() and sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']:
+                        sample_id = sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']
+                        sample_ref.append(Reference(**{"reference": "/".join(["Specimen", sample_id])}))
 
     if patients and len(patients) == 1:
         document.subject = patients[0]
+
+    if sample_ref:
+        document.basedOn = sample_ref
 
     attachment = Attachment.construct()
     attachment.url = "https://api.gdc.cancer.gov/data/{}".format(file['DocumentReference.id'])
@@ -782,8 +810,9 @@ def assign_fhir_for_file(file):
     profile = None
     if 'DocumentReference.content.profile' in file.keys() and file['DocumentReference.content.profile']:
         profile = DocumentReferenceContentProfile.construct()
+        system = "".join(["https://gdc.cancer.gov/", "data_format"])
         profile.valueCoding = {"code": "0000", "display": file['DocumentReference.content.profile'],
-                               "system": "https://gdc.cancer.gov/"}
+                               "system":  system}
     if profile:
         data = {'attachment': attachment, "profile": [profile]}
     else:

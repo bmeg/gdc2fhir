@@ -93,6 +93,15 @@ file_maps = [
 
     Map(
         source=Source(
+            name='cases.samples.portions.analytes.aliquots.aliquot_id',
+        ),
+        destination=Destination(
+            name='Specimen.id',
+        )
+    ),
+
+    Map(
+        source=Source(
             name='data_format',
         ),
         destination=Destination(
