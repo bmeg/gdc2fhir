@@ -111,7 +111,7 @@ singularity shell fhirizer.sif
 
   - Cellosaurus ndjson follows [Cellosaurus GET API](https://api.cellosaurus.org/)  json format
   ```
-  generate --name cellosaurus --out_dir ./data --entity_path <path-to-cellosaurus-celllines-ndjson>
+   fhirizer generate --name cellosaurus --out_dir ./data --entity_path <path-to-cellosaurus-celllines-ndjson>
   ```
 
 ### Constructing GDC maps cli cmds 
