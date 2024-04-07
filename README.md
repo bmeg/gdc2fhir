@@ -1,5 +1,8 @@
 # fhirizer
 ![Status](https://img.shields.io/badge/Status-Build%20Passing-lgreen)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
 
 ![mapping](./imgs/fhir_flame.png)
 
