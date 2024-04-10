@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from gdc2fhir.schema import Schema, Source, Destination, Map, Metadata, Version
+from fhirizer.schema import Schema, Source, Destination, Map, Metadata, Version
 
 
 @pytest.fixture

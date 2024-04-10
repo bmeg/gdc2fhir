@@ -1,6 +1,6 @@
 import pytest
 import filecmp
-from gdc2fhir import mapping, utils
+from fhirizer import mapping, utils
 
 
 @pytest.fixture

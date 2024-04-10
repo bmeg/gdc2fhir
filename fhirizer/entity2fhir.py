@@ -48,12 +48,12 @@ ncit2mondo = utils.ncit2mondo(str(Path(importlib.resources.files('fhirizer').par
 def assign_fhir_for_project(project, disease_types=disease_types):
     # create ResearchStudy
     rs = ResearchStudy.construct()
-    if project['ResearchStudyProgressStatus.actual']:
+    if 'ResearchStudyProgressStatus.actual' in project.keys() and project['ResearchStudyProgressStatus.actual']:
         rs.status = "-".join([project['ResearchStudy.status'], "released"])
     else:
         rs.status = project['ResearchStudy.status']
 
-    if project['ResearchStudy.id'] in ["EXCEPTIONAL_RESPONDERS-ER", "CDDP_EAGLE-1"]:
+    if 'ResearchStudy.id' in project.keys() and project['ResearchStudy.id'] in ["EXCEPTIONAL_RESPONDERS-ER", "CDDP_EAGLE-1"]:
         rs.id = project['ResearchStudy']['ResearchStudy.id']
     else:
         rs.id = project['ResearchStudy.id']

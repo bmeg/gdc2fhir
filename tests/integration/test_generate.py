@@ -1,5 +1,5 @@
 import pytest
-from gdc2fhir import entity2fhir, utils
+from fhirizer import entity2fhir, utils
 
 
 @pytest.fixture
