@@ -725,8 +725,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
 # load file mapped key values
 # files = utils.load_ndjson("./tests/fixtures/file/file_key.ndjson")
 # file = files[0]
-files = utils.load_ndjson("../TCGA-ESCA2/files_keys.ndjson")
-file = files[0]
+
 def assign_fhir_for_file(file):
     document = DocumentReference.construct()
     document.status = "current"
