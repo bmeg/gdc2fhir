@@ -98,23 +98,23 @@ singularity shell fhirizer.sif
     Example run for patient - replace path's to ndjson files or directories. 
  
   ```
-  fhirizer convert --name case --in_path cases.ndjson --out_path cases_key.ndjson --verbose True
+  fhirizer convert --name case --in_path ./projects/<my-project>/cases.ndjson --out_path ./projects/<my-project>/cases_key.ndjson --verbose True
   
-  fhirizer generate --name case --out_dir ./data --entity_path cases_key.ndjson
+  fhirizer generate --name case --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/cases_key.ndjson
   ``` 
 
   - to generate document reference for the patients
   ```
-  fhirizer convert --name file --in_path files.ndjson --out_path files_key.ndjson --verbose True
+  fhirizer convert --name file --in_path ./projects/<my-project>/files.ndjson --out_path ./projects/<my-project>/files_key.ndjson --verbose True
   
-  fhirizer generate --name file --out_dir ./data --entity_path files_key.ndjson
+  fhirizer generate --name file --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/files_key.ndjson
   ``` 
 
 - Cellosaurus 
 
   - Cellosaurus ndjson follows [Cellosaurus GET API](https://api.cellosaurus.org/)  json format
   ```
-   fhirizer generate --name cellosaurus --out_dir ./data --entity_path <path-to-cellosaurus-celllines-ndjson>
+   fhirizer generate --name cellosaurus --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/<cellosaurus-celllines-ndjson>
   ```
 
 ### Constructing GDC maps cli cmds 
