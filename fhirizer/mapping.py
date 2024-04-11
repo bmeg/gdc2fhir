@@ -330,29 +330,6 @@ def convert_maps(in_path, out_path, name, verbose):
         available_maps = [schema.find_map_by_source(k) for k in keys]
         available_maps.append(schema.obj_mapping)
 
-        profile = Map(
-            source=Source(name='data_format', description=None, description_url=None, category=None, type=None,
-                          format=None, enums=None, content_annotation=None, reference=None),
-            destination=Destination(name='DocumentReference.content.profile', description=None, description_url=None,
-                                    module=None, title=None, type=None, format=None, reference=None))
-
-        specimen = Map(
-            source=Source(name='cases.samples.portions.analytes.aliquots.aliquot_id'),
-            destination=Destination(name='Specimen.id'))
-
-        treatmen_type = Map(
-            source=Source(name='diagnoses.treatments.treatment_type'),
-            destination=Destination(name='MedicationAdministration.treatment_type'))
-
-        if name in 'file' and profile not in available_maps:
-            available_maps.append(profile)
-
-        if name in 'file' and specimen not in available_maps:
-            available_maps.append(specimen)
-
-        if name in 'case':
-            available_maps.append(treatmen_type)
-
         if verbose:
             print("available_maps: ", available_maps)
 
@@ -361,5 +338,6 @@ def convert_maps(in_path, out_path, name, verbose):
         if out_path:
             with open(out_path, 'w') as file:
                 file.write('\n'.join(map(json.dumps, mapped_entity_list)))
+                print(f"Successfully created mappings and saved to {out_path}")
 
     return mapped_entity_list

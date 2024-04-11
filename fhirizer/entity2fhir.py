@@ -125,7 +125,7 @@ def project_gdc_to_fhir_ndjson(out_dir, projects_path):
 
     with open("".join([out_dir, "/ResearchStudy.ndjson"]), 'w') as file:
         file.write('\n'.join(map(json.dumps, rs_e2f)))
-
+    print("Successfully converted GDC projetcs/programs to FHIR's models ndjson file!")
 
 # Case ---------------------------------------------------------------
 # load case mapped key values
@@ -307,8 +307,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                     'code': mondo_code}
                     condition_codes_list.append(mondo_coding)
 
-        loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
-        condition_codes_list.append(loinc_annotation)
+        # loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
+        # condition_codes_list.append(loinc_annotation)
 
         observation_code.coding = condition_codes_list
         # observation_code.coding = [loinc_annotation]
@@ -350,12 +350,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 else:
                     code = p['sctid']
                 if body_site in p['value'] and 'sctid' in p.keys():
+                    if code == "0000":
+                        print(f"Condition body-site code for {body_site} for patient-id: {patient.id} not found.")
                     l_body_site.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
 
         cc_body_site = CodeableConcept.construct()
         cc_body_site.coding = l_body_site
         condition.bodySite = [cc_body_site]
-
+        diagnosis_content_bool = False
         if 'diagnoses' in case.keys():
             # condition staging
             # staging grouping for observation.code https://build.fhir.org/ig/HL7/fhir-mCODE-ig/ValueSet-mcode-tnm-stage-group-staging-type-vs.html
@@ -384,6 +386,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                              'display': case['diagnoses'][key],
                                              'code': stage_type_sctid_code}
                                             ]
+                    if sctid_code in "0000":
+                        print(f"Condition stage codeableConcet code for {cancer_pathological_staging} not found.")
+
+                    if stage_type_sctid_code in "0000":
+                        print(f"Condition stage codeableConcet code for {cancer_pathological_staging} not found.")
 
                     # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
                     if case_stage_display and case_stage_display in \
@@ -399,6 +406,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         display = case['diagnoses'][key]
                     else:
                         display = "replace-me"
+                        diagnosis_content_bool = True
 
                     if not re.match("^[^\s]+(\s[^\s]+)*$", sctid_code):
                         sctid_code = "0000"
@@ -421,10 +429,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         condition_stage.assessment = [observation_ref]
                     staging_list.append(condition_stage)
 
+                if diagnosis_content_bool:
+                    print(f"Diagnosis codableConcept display of {key} for patient-id: {patient.id} was not found!")
+
             condition.stage = staging_list
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])})]
 
             # create medication administration and medication
+            treatment_content_bool = False
             if 'treatments' in case['diagnoses'].keys():
 
                 for treatment in case['diagnoses']['treatments']:
@@ -436,7 +448,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     if 'Medication.code' in treatment.keys() and treatment['Medication.code']:
                         display = treatment['Medication.code']
                     else:
-                        display = "REPLACE_ME"
+                        display = "replace-me"
+                        treatment_content_bool = True
 
                     med_code = CodeableConcept.construct()
                     med_code.coding = [{'system': "https://cadsr.cancer.gov/onedata/Home.jsp",
@@ -447,6 +460,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     med_cr.reference = Reference(**{"reference": "/".join(["Medication", med.id])})
                     med_cr.concept = med_code
                     med.code = med_code
+
+                    if treatment_content_bool:
+                        print(f"Medication codableConcept display for patient-id: {patient.id} was not found!")
 
                     # if treatment['treatment_or_therapy'] == "yes" then completed, no "not-done"
                     status = "unknown"
@@ -687,22 +703,31 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
 
     if specimens:
         fhir_ndjson(specimens, "".join([out_dir, "Specimen.ndjson"]))
+        print("Successfully converted GDC case sample to FHIR's Specimen ndjson file!")
     if patients:
         fhir_ndjson(patients, "".join([out_dir, "Patient.ndjson"]))
+        print("Successfully converted GDC case patient to FHIR's Patient ndjson file!")
     if encounters:
         fhir_ndjson(encounters, "".join([out_dir, "Encounter.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
     if observations:
         fhir_ndjson(observations, "".join([out_dir, "Observation.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Observation ndjson file!")
     if conditions:
         fhir_ndjson(conditions, "".join([out_dir, "Condition.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Condition ndjson file!")
     if research_subjects:
         fhir_ndjson(research_subjects, "".join([out_dir, "ResearchSubject.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson file!")
     if projects:
         fhir_ndjson(projects + programs, "".join([out_dir, "ResearchStudy.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's ResearchStudy ndjson file!")
     if imaging_study:
         fhir_ndjson(imaging_study, "".join([out_dir, "ImagingStudy.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's ImagingStudy ndjson file!")
     if procedures:
         fhir_ndjson(procedures, "".join([out_dir, "Procedure.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Procedure ndjson file!")
 
     med_admins = []
     for fhir_case in all_fhir_case_obj:
@@ -711,6 +736,8 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
                 med_admins.append(orjson.loads(med_admin.json()))
     if med_admins:
         fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's MedicationAdministration ndjson file!")
+
 
     meds = []
     for fhir_case in all_fhir_case_obj:
@@ -719,6 +746,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
                 meds.append(orjson.loads(med.json()))
     if meds:
         fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Medication ndjson file!")
 
 
 # File ---------------------------------------------------------------
@@ -833,6 +861,7 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
 
     if doc_refs:
         fhir_ndjson(doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
+        print("Successfully converted GDC file info to FHIR's DocumentReference ndjson file!")
 
 
 # Cellosaurus ---------------------------------------------------------------
@@ -971,10 +1000,13 @@ def cellosaurus_to_fhir_ndjson(out_dir, obj):
 
     if patients:
         fhir_ndjson(patients, os.path.join(out_dir, "Patient.ndjson"))
+        print("Successfully converted Cellosaurus info to FHIR's Patient ndjson file!")
     if samples:
         fhir_ndjson(samples, os.path.join(out_dir, "Specimen.ndjson"))
+        print("Successfully converted Cellosaurus info to FHIR's Specimen ndjson file!")
     if conditions:
         fhir_ndjson(conditions, os.path.join(out_dir, "Condition.ndjson"))
+        print("Successfully converted Cellosaurus info to FHIR's Condition ndjson file!")
 
 
 def cellosaurus2fhir(path, out_dir):

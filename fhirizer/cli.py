@@ -70,7 +70,7 @@ def file_init(field_path, out_path):
               show_default=True,
               help='Path to save mapped result')
 @click.option('--verbose', required=False,
-              default=True,
+              default=False,
               show_default=True)
 def convert(name, in_path, out_path, verbose):
     mapping.convert_maps(name=name, in_path=in_path, out_path=out_path, verbose=verbose)
