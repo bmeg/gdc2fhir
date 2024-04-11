@@ -20,7 +20,8 @@ from fhir.resources.procedure import Procedure
 from fhir.resources.medicationadministration import MedicationAdministration
 from fhir.resources.medication import Medication
 from fhir.resources.codeablereference import CodeableReference
-from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent, DocumentReferenceContentProfile
+from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent, \
+    DocumentReferenceContentProfile
 from fhir.resources.attachment import Attachment
 from fhir.resources.age import Age
 from fhirizer import utils
@@ -42,7 +43,8 @@ gender = utils._read_json(str(Path(importlib.resources.files(
 data_dict = utils.load_data_dictionary(path=utils.DATA_DICT_PATH)
 cancer_pathological_staging = utils._read_json(str(Path(importlib.resources.files(
     'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'diagnosis' / 'cancer_pathological_staging.json')))
-ncit2mondo = utils.ncit2mondo(str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'ncit2mondo.json.gz')))
+ncit2mondo = utils.ncit2mondo(
+    str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'ncit2mondo.json.gz')))
 
 
 def assign_fhir_for_project(project, disease_types=disease_types):
@@ -53,7 +55,8 @@ def assign_fhir_for_project(project, disease_types=disease_types):
     else:
         rs.status = project['ResearchStudy.status']
 
-    if 'ResearchStudy.id' in project.keys() and project['ResearchStudy.id'] in ["EXCEPTIONAL_RESPONDERS-ER", "CDDP_EAGLE-1"]:
+    if 'ResearchStudy.id' in project.keys() and project['ResearchStudy.id'] in ["EXCEPTIONAL_RESPONDERS-ER",
+                                                                                "CDDP_EAGLE-1"]:
         rs.id = project['ResearchStudy']['ResearchStudy.id']
     else:
         rs.id = project['ResearchStudy.id']
@@ -126,6 +129,7 @@ def project_gdc_to_fhir_ndjson(out_dir, projects_path):
     with open("".join([out_dir, "/ResearchStudy.ndjson"]), 'w') as file:
         file.write('\n'.join(map(json.dumps, rs_e2f)))
     print("Successfully converted GDC projetcs/programs to FHIR's models ndjson file!")
+
 
 # Case ---------------------------------------------------------------
 # load case mapped key values
@@ -290,13 +294,19 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 condition_codes_list.append(icd10_annotation)
 
         # not all conditions of GDC have enumDef for it's resource code/system in data dictionary
-        if 'Condition.code_primary_diagnosis' in case['diagnoses'].keys() and case['diagnoses']['Condition.code_primary_diagnosis']:
-            if case['diagnoses']['Condition.code_primary_diagnosis'] in data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"].keys():
+        if 'Condition.code_primary_diagnosis' in case['diagnoses'].keys() and case['diagnoses'][
+            'Condition.code_primary_diagnosis']:
+            if case['diagnoses']['Condition.code_primary_diagnosis'] in \
+                    data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"].keys():
                 diagnosis_display = case['diagnoses']['Condition.code_primary_diagnosis']
-                ncit_condition_display = data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display]["termDef"]["term"]
-                ncit_condition_code = data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display]["termDef"]["term_id"]
+                ncit_condition_display = \
+                data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display][
+                    "termDef"]["term"]
+                ncit_condition_code = \
+                data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display][
+                    "termDef"]["term_id"]
                 ncit_condition = {"system": "https://ncit.nci.nih.gov", "display": ncit_condition_display,
-                                        "code": ncit_condition_code}
+                                  "code": ncit_condition_code}
                 condition_codes_list.append(ncit_condition)
 
                 mondo = [d["mondo_id"] for d in ncit2mondo if d["ncit_id"] == ncit_condition_code]
@@ -430,7 +440,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     staging_list.append(condition_stage)
 
                 if diagnosis_content_bool:
-                    print(f"Diagnosis codableConcept display of {key} for patient-id: {patient.id} was not found!")
+                    log_output_diag = f"Diagnosis codableConcept display of {key} for patient-id: {patient.id} doesn't exist or was not found!\n"
+                    with open('output.log', 'a') as f:
+                        f.write(log_output_diag)
 
             condition.stage = staging_list
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])})]
@@ -462,7 +474,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     med.code = med_code
 
                     if treatment_content_bool:
-                        print(f"Medication codableConcept display for patient-id: {patient.id} was not found!")
+                        log_output = f"Medication codableConcept display for patient-id: {patient.id} doesn't exist or was not found!\n"
+                        with open('output.log', 'a') as f:
+                            f.write(log_output)
 
                     # if treatment['treatment_or_therapy'] == "yes" then completed, no "not-done"
                     status = "unknown"
@@ -475,11 +489,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             status = "unknown"
 
                     medadmin_category_code = None
-                    if 'MedicationAdministration.treatment_type' in treatment.keys() and treatment['MedicationAdministration.treatment_type']:
+                    if 'MedicationAdministration.treatment_type' in treatment.keys() and treatment[
+                        'MedicationAdministration.treatment_type']:
                         medadmin_category_code = CodeableConcept.construct()
                         medadmin_category_code.coding = [{'system': "https://cadsr.cancer.gov/onedata/Home.jsp",
-                                            'display': treatment['MedicationAdministration.treatment_type'],
-                                            'code': '5102381'}]
+                                                          'display': treatment[
+                                                              'MedicationAdministration.treatment_type'],
+                                                          'code': '5102381'}]
                     if medadmin_category_code:
                         data = {"status": status,
                                 "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00",
@@ -557,7 +573,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     procedure.encounter = Reference(**{"reference": "/".join(["Encounter", encounter.id])})
                 procedures.append(procedure)
 
-                specimen.collection = SpecimenCollection(**{"procedure": Reference(**{"reference": "/".join(["Procedure", procedure.id])})})
+                specimen.collection = SpecimenCollection(
+                    **{"procedure": Reference(**{"reference": "/".join(["Procedure", procedure.id])})})
 
                 if "Specimen.type.sample" in sample.keys():
                     sample_type = CodeableConcept.construct()
@@ -738,7 +755,6 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
         fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
         print("Successfully converted GDC case info to FHIR's MedicationAdministration ndjson file!")
 
-
     meds = []
     for fhir_case in all_fhir_case_obj:
         if fhir_case["med"]:
@@ -821,7 +837,8 @@ def assign_fhir_for_file(file):
             patients.append(Reference(**{"reference": "/".join(["Patient", patient_id])}))
             if 'samples' in case.keys():
                 for sample in case['samples']:
-                    if 'Specimen.id' in sample['portions'][0]['analytes'][0]['aliquots'][0].keys() and sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']:
+                    if 'Specimen.id' in sample['portions'][0]['analytes'][0]['aliquots'][0].keys() and \
+                            sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']:
                         sample_id = sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']
                         sample_ref.append(Reference(**{"reference": "/".join(["Specimen", sample_id])}))
 
@@ -839,7 +856,7 @@ def assign_fhir_for_file(file):
         profile = DocumentReferenceContentProfile.construct()
         system = "".join(["https://gdc.cancer.gov/", "data_format"])
         profile.valueCoding = {"code": "0000", "display": file['DocumentReference.content.profile'],
-                               "system":  system}
+                               "system": system}
     if profile:
         data = {'attachment': attachment, "profile": [profile]}
     else:
@@ -867,8 +884,8 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
 # Cellosaurus ---------------------------------------------------------------
 
 def cellosaurus_resource(path, out_path):
-    ids = utils.cellosaurus_cancer_ids(path, out_path, save=True) # filter step
-    utils.fetch_cellines(ids, out_path) # api call intensive - 1s per request + 0.5s delay
+    ids = utils.cellosaurus_cancer_ids(path, out_path, save=True)  # filter step
+    utils.fetch_cellines(ids, out_path)  # api call intensive - 1s per request + 0.5s delay
     cls = utils.cellosaurus_cancer_jsons(out_path)
     fhir_ndjson(cls, out_path)
 
@@ -922,7 +939,9 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                         for disease_annotation in cl["disease-list"]:
                             if disease_annotation["terminology"] == "NCIt":
                                 condition_clinicalstatus_code = CodeableConcept.construct()
-                                condition_clinicalstatus_code.coding = [{"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": "unknown","code": "unknown"}]
+                                condition_clinicalstatus_code.coding = [
+                                    {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                     "display": "unknown", "code": "unknown"}]
 
                                 disease_coding = []
                                 code = disease_annotation["accession"]
@@ -931,11 +950,13 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                                 disease_coding.append(coding)
 
-                                mondo = [d["mondo_id"] for d in ncit2mondo if d["ncit_id"] == disease_annotation["accession"]]
+                                mondo = [d["mondo_id"] for d in ncit2mondo if
+                                         d["ncit_id"] == disease_annotation["accession"]]
                                 if mondo:
                                     mondo_code = mondo[0]
                                     mondo_display = display
-                                    mondo_coding = {'system': "https://www.ebi.ac.uk/ols4/ontologies/mondo", 'display': mondo_display, 'code': mondo_code}
+                                    mondo_coding = {'system': "https://www.ebi.ac.uk/ols4/ontologies/mondo",
+                                                    'display': mondo_display, 'code': mondo_code}
                                     disease_coding.append(mondo_coding)
 
                                 cc = CodeableConcept.construct()
@@ -949,7 +970,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                     elif "Y" in cl["age"]:
                                         age = cl["age"].split("Y")[0]
                                         if "-" in age:
-                                           age = age.split("-")[0]
+                                            age = age.split("-")[0]
                                         if age.startswith(">"):
                                             age = age.replace(">", "")
                                         onset_age = Age(**{"value": age})
@@ -962,8 +983,9 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                         **{"id": disease_annotation["accession"], "code": cc, "subject": patient_ref,
                                            "clinicalStatus": condition_clinicalstatus_code, "onsetAge": onset_age}))
                                 else:
-                                    conditions.append(Condition(**{"id": disease_annotation["accession"], "code": cc, "subject": patient_ref,
-                                                       "clinicalStatus": condition_clinicalstatus_code}))
+                                    conditions.append(Condition(
+                                        **{"id": disease_annotation["accession"], "code": cc, "subject": patient_ref,
+                                           "clinicalStatus": condition_clinicalstatus_code}))
 
                     sample_parents_ref = []
                     # sample hierarchy
@@ -980,15 +1002,19 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                 parent_identifier.value = parent_cell["value"]
                                 parent_identifier.system = "https://www.cellosaurus.org/"
 
-                                parent_sample = Specimen(**{"id": parent_id, "identifier": [parent_id_identifier, parent_identifier]})
+                                parent_sample = Specimen(
+                                    **{"id": parent_id, "identifier": [parent_id_identifier, parent_identifier]})
                                 if parent_sample not in samples:
                                     samples.append(parent_sample)
                                 sample_parents_ref.append(Reference(**{"reference": "/".join(["Specimen", parent_id])}))
 
                     if sample_parents_ref:
-                        samples.append(Specimen(**{"id": patient_id, "subject": patient_ref, "identifier": [ident_identifier, ident_id], "parent":sample_parents_ref}))
+                        samples.append(Specimen(
+                            **{"id": patient_id, "subject": patient_ref, "identifier": [ident_identifier, ident_id],
+                               "parent": sample_parents_ref}))
                     else:
-                        samples.append(Specimen(**{"id": patient_id, "subject": patient_ref, "identifier": [ident_identifier, ident_id]}))
+                        samples.append(Specimen(
+                            **{"id": patient_id, "subject": patient_ref, "identifier": [ident_identifier, ident_id]}))
 
     return {"patients": patients, "conditions": conditions, "samples": samples}
 
@@ -1013,4 +1039,3 @@ def cellosaurus2fhir(path, out_dir):
     cell_lines = utils.load_ndjson(path=path)
     cellosaurus_fhir_objects = cellosaurus_fhir_mappping(cell_lines)
     cellosaurus_to_fhir_ndjson(out_dir=out_dir, obj=cellosaurus_fhir_objects)
-

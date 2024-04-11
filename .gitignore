@@ -176,3 +176,6 @@ venv/
 
 # .vscode settings
 .vscode/
+
+# output logging file for content 
+output.log
