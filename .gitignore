@@ -127,6 +127,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+venv*
 
 # Spyder project settings
 .spyderproject
@@ -175,3 +176,6 @@ venv/
 
 # .vscode settings
 .vscode/
+
+# output logging file for content 
+output.log
