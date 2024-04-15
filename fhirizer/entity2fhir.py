@@ -316,12 +316,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     mondo_coding = {'system': "https://www.ebi.ac.uk/ols4/ontologies/mondo", 'display': mondo_display,
                                     'code': mondo_code}
                     condition_codes_list.append(mondo_coding)
-
-        # loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
-        # condition_codes_list.append(loinc_annotation)
+                    
+        # required placeholder
+        loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
+        condition_codes_list.append(loinc_annotation)
 
         observation_code.coding = condition_codes_list
-        # observation_code.coding = [loinc_annotation]
         observation.code = observation_code
         observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
 
