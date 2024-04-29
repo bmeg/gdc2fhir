@@ -51,7 +51,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "126655004"
     },
     {
         "value": "Bones, joints and articular cartilage of other and unspecified sites",
@@ -258,7 +258,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": ""
+        "sctid": "187828007"
     },
     {
         "value": "Nasopharynx",
@@ -294,7 +294,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": "0000"
+        "sctid": "74964007"
     },
     {
         "value": "Other and ill-defined sites in lip, oral cavity and pharynx",
@@ -330,7 +330,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": "0000"
+        "sctid": "126787005"
     },
     {
         "value": "Other and unspecified male genital organs",
@@ -438,7 +438,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": "0000"
+        "sctid": "188321006"
     },
     {
         "value": "Placenta",
@@ -501,7 +501,7 @@
         "annotation_type": "caDSR",
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
-        "sctid": "0000"
+        "sctid": "236019001"
     },
     {
         "value": "Skin",
@@ -626,7 +626,7 @@
         "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998",
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C17998",
-        "sctid": "0000"
+        "sctid": "54690008"
     },
     {
         "value": "Not Reported",
@@ -634,7 +634,7 @@
         "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234",
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234",
-        "sctid": "0000"
+        "sctid": "54690008"
     },
     {
         "value": "Not Applicable",
@@ -642,6 +642,6 @@
         "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C48660",
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C48660",
-        "sctid": "0000"
+        "sctid": "385432009"
     }
 ]
