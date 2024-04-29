@@ -397,12 +397,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                              'code': stage_type_sctid_code}
                                             ]
                     if sctid_code in "0000":
-                        log_output_diag = f"Condition stage - sctid_code codeableConcet code in sctid_code for {case['diagnoses'][key]} not found! {case_stage_display}\n"
+                        log_output_diag = f"Condition stage - sctid_code codeableConcept code in sctid_code for {case['diagnoses'][key]} not found! {case_stage_display}\n"
                         with open('output.log', 'a') as f:
                             f.write(log_output_diag)
 
                     if stage_type_sctid_code in "0000":
-                        log_output_diag = f"Condition stage - stage_type_sctid_code codeableConcet code in stage_type_sctid_code for {case['diagnoses'][key]} not found! {case_stage_display}\n"
+                        log_output_diag = f"Condition stage - stage_type_sctid_code codeableConcept code in stage_type_sctid_code for {case['diagnoses'][key]} not found! {case_stage_display}\n"
                         with open('output.log', 'a') as f:
                             f.write(log_output_diag)
 
