@@ -891,7 +891,7 @@ def cellosaurus_resource(path, out_path):
     ids = utils.cellosaurus_cancer_ids(path, out_path, save=True)  # filter step
     utils.fetch_cellines(ids, out_path)  # api call intensive - 1s per request + 0.5s delay
     cls = utils.cellosaurus_cancer_jsons(out_path)
-    fhir_ndjson(cls, out_path)
+    fhir_ndjson(cls, os.path.join(out_path, "cellosaurus_cellines.ndjson"))
 
 
 def cellosaurus_fhir_mappping(cell_lines, verbose=False):
@@ -941,7 +941,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                     # add condition from disease-list
                     if "disease-list" in cl.keys():
                         for disease_annotation in cl["disease-list"]:
-                            if disease_annotation["terminology"] == "NCIt":
+                            if "database" in disease_annotation.keys() and disease_annotation["database"] == "NCIt":
                                 condition_clinicalstatus_code = CodeableConcept.construct()
                                 condition_clinicalstatus_code.coding = [
                                     {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
@@ -949,7 +949,15 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                                 disease_coding = []
                                 code = disease_annotation["accession"]
-                                display = disease_annotation["value"]
+
+                                if "value" in disease_annotation.keys():
+                                    display = disease_annotation["value"]
+                                elif "label" in disease_annotation.keys():
+                                    display = disease_annotation["label"]
+                                else:
+                                    print(disease_annotation)
+                                    display = "place_holder"
+
                                 coding = {'system': "https://ncit.nci.nih.gov/", 'display': display, 'code': code}
 
                                 disease_coding.append(coding)
@@ -995,7 +1003,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                     # sample hierarchy
                     if "derived-from" in cl.keys() and cl["derived-from"]:
                         for parent_cell in cl["derived-from"]:
-                            if parent_cell["terminology"] == "Cellosaurus":
+                            if "terminology" in parent_cell.keys() and parent_cell["terminology"] == "Cellosaurus":
                                 parent_id = parent_cell["accession"].replace("_", "-")
 
                                 parent_id_identifier = Identifier.construct()
