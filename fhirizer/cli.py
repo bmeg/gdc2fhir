@@ -58,6 +58,22 @@ def file_init(field_path, out_path):
     mapping.initialize_file(field_path, out_path)
 
 
+@cli.command('resource')
+@click.option('--name', required=True,
+              default='cellosaurus',
+              show_default=True,
+              help='Name of resource')
+@click.option('--path', required=True,
+              show_default=True,
+              help='Path to cell-lines ndjson file')
+@click.option('--out_dir', required=False,
+              show_default=True,
+              help='Directory path to save generated resources')
+def resource(name, path, out_dir):
+    if name in 'cellosaurus':
+        entity2fhir.cellosaurus_resource(path=path, out_dir=out_dir)
+
+
 @cli.command('convert')
 @click.option('--name', required=True,
               default='project',

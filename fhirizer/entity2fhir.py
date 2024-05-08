@@ -887,11 +887,24 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
 
 # Cellosaurus ---------------------------------------------------------------
 
-def cellosaurus_resource(path, out_path):
-    ids = utils.cellosaurus_cancer_ids(path, out_path, save=True)  # filter step
-    utils.fetch_cellines(ids, out_path)  # api call intensive - 1s per request + 0.5s delay
-    cls = utils.cellosaurus_cancer_jsons(out_path)
-    fhir_ndjson(cls, os.path.join(out_path, "cellosaurus_cellines.ndjson"))
+def cellosaurus_resource(path, out_dir):
+    out_dir = os.path.abspath(out_dir)
+    out_dir = os.path.join(out_dir, "")
+
+    ids = utils.cellosaurus_cancer_ids(path, os.path.join(out_dir, "ids.json"), save=True)  # filter step
+    if ids:
+        print("Successfully saved cellosaurus ids!")
+    else:
+        print("There aren't any cancer human cell-lines with sex annotation and depmap reference.")
+        return
+
+    utils.fetch_cellines(ids, out_dir)  # api call intensive - 1s per request + 0.5s delay
+    cls = utils.cellosaurus_cancer_jsons(out_dir)
+    ndjson_path = os.path.join(out_dir, "cellosaurus_cellines.ndjson")
+    fhir_ndjson(cls, os.path.join(out_dir, "cellosaurus_cellines.ndjson"))
+
+    if os.path.exists(ndjson_path):
+        print("Successfully saved cell lines in cellosaurus_cellines.ndjson!")
 
 
 def cellosaurus_fhir_mappping(cell_lines, verbose=False):
