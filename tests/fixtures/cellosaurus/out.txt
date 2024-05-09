@@ -1,0 +1,7 @@
+resources:
+  summary:
+    Specimen: 9
+    Condition: 9
+    Patient: 9
+msg: OK
+

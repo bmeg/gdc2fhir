@@ -1,0 +1,278 @@
+{
+    "Cellosaurus": {
+        "cell-line-list": [
+            {
+                "accession-list": [
+                    {
+                        "type": "primary",
+                        "value": "CVCL_VR16"
+                    }
+                ],
+                "age": "83Y",
+                "category": "Cancer cell line",
+                "child-list": [],
+                "comment-list": [
+                    {
+                        "category": "Omics",
+                        "value": "Deep proteome analysis"
+                    },
+                    {
+                        "category": "Senescence",
+                        "value": "It is possible that this cell line is not immortal and has a finite life span (personal communication of Kondo T.)"
+                    },
+                    {
+                        "category": "Characteristics",
+                        "value": "Established from a third generation xenograft established by subcutaneous injection in female SCID mice"
+                    },
+                    {
+                        "category": "Population",
+                        "value": "Japanese"
+                    },
+                    {
+                        "category": "Part of",
+                        "value": "NCC sarcoma cell line panel"
+                    },
+                    {
+                        "category": "Part of",
+                        "value": "Cancer Dependency Map project (DepMap) (includes Cancer Cell Line Encyclopedia - CCLE)"
+                    }
+                ],
+                "created": "2018-11-13",
+                "disease-list": [
+                    {
+                        "accession": "C4247",
+                        "category": "Medical resources",
+                        "database": "NCIt",
+                        "label": "Undifferentiated pleomorphic sarcoma",
+                        "url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C4247"
+                    },
+                    {
+                        "accession": "Orphanet_2023",
+                        "category": "Medical resources",
+                        "database": "ORDO",
+                        "label": "Undifferentiated pleomorphic sarcoma",
+                        "url": "https://www.ebi.ac.uk/ols/ontologies/ordo/terms?iri=http://www.orpha.net/ORDO/Orphanet_2023"
+                    }
+                ],
+                "doubling-time-list": [
+                    {
+                        "doubling-time-value": "~40 hours",
+                        "source-list": [
+                            {
+                                "reference": {
+                                    "resource-internal-ref": "DOI=10.11418/jtca.37.133"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "entry-version": "7",
+                "last-updated": "2024-01-30",
+                "name-list": [
+                    {
+                        "type": "identifier",
+                        "value": "NCC-UPS1-X3-C1"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "NCCUPS1X3C1"
+                    }
+                ],
+                "reference-list": [
+                    {
+                        "resource-internal-ref": "DOI=10.11418/jtca.37.133"
+                    }
+                ],
+                "same-origin-as": [
+                    {
+                        "accession": "CVCL_B3TP",
+                        "category": "Cell line databases/resources",
+                        "database": "Cellosaurus",
+                        "label": "NCC-UPS1-C1",
+                        "url": "https://www.cellosaurus.org/CVCL_B3TP"
+                    }
+                ],
+                "sex": "Male",
+                "species-list": [
+                    {
+                        "accession": "9606",
+                        "category": "Taxonomy",
+                        "database": "NCBI_TaxID",
+                        "label": "Homo sapiens (Human)",
+                        "url": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=9606&lvl=3"
+                    }
+                ],
+                "str-list": {
+                    "marker-list": [
+                        {
+                            "conflict": "false",
+                            "id": "Amelogenin",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "X,Y"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "CSF1PO",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D13S317",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "12"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D16S539",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "9,12"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D21S11",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "28.2"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D5S818",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D7S820",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "TH01",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "6,7"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "TPOX",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "8"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "vWA",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "20"
+                                }
+                            ]
+                        }
+                    ],
+                    "source-list": [
+                        {
+                            "reference": {
+                                "resource-internal-ref": "DOI=10.11418/jtca.37.133"
+                            }
+                        }
+                    ]
+                },
+                "web-page-list": [
+                    "https://en.cellline.jp/product/ncc-ups1-x3-c1/"
+                ],
+                "xref-list": [
+                    {
+                        "accession": "ACH-002783",
+                        "category": "Cell line databases/resources",
+                        "database": "DepMap",
+                        "url": "https://depmap.org/portal/cell_line/ACH-002783"
+                    },
+                    {
+                        "accession": "Q95992631",
+                        "category": "Encyclopedic resources",
+                        "database": "Wikidata",
+                        "url": "https://www.wikidata.org/wiki/Q95992631"
+                    }
+                ]
+            }
+        ],
+        "publication-list": [
+            {
+                "author-list": [
+                    {
+                        "name": "Kito F."
+                    },
+                    {
+                        "name": "Oyama R."
+                    },
+                    {
+                        "name": "Takahashi M."
+                    },
+                    {
+                        "name": "Shiozawa K."
+                    },
+                    {
+                        "name": "Sakumoto M."
+                    },
+                    {
+                        "name": "Yoshida A."
+                    },
+                    {
+                        "name": "Setsu N."
+                    },
+                    {
+                        "name": "Kobayashi E."
+                    },
+                    {
+                        "name": "Kawai A."
+                    },
+                    {
+                        "name": "Kondo T."
+                    }
+                ],
+                "date": "2018",
+                "first-page": "133",
+                "internal-id": "DOI=10.11418/jtca.37.133",
+                "journal-name": "Tissue Cult. Res. Commun.",
+                "last-page": "145",
+                "title": "Establishment and characterization of a patient-derived cancer model of undifferentiated pleomorphic sarcoma.",
+                "type": "article",
+                "volume": "37",
+                "xref-list": [
+                    {
+                        "accession": "10.11418/jtca.37.133",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.11418/jtca.37.133"
+                    }
+                ]
+            }
+        ]
+    }
+}
