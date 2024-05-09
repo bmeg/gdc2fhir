@@ -898,8 +898,14 @@ def cellosaurus_resource(path, out_dir):
         print("There aren't any cancer human cell-lines with sex annotation and depmap reference.")
         return
 
-    utils.fetch_cellines(ids, out_dir)  # api call intensive - 1s per request + 0.5s delay
-    cls = utils.cellosaurus_cancer_jsons(out_dir)
+    cells_dir = os.path.join(out_dir, "cells")
+    if not os.path.exists(cells_dir):
+        os.makedirs(cells_dir)
+    cells_dir = os.path.abspath(cells_dir)
+    cells_dir = os.path.join(cells_dir, "")
+
+    utils.fetch_cellines(ids, cells_dir)  # api call intensive - 1s per request + 0.5s delay
+    cls = utils.cellosaurus_cancer_jsons(cells_dir)
     ndjson_path = os.path.join(out_dir, "cellosaurus_cellines.ndjson")
     fhir_ndjson(cls, os.path.join(out_dir, "cellosaurus_cellines.ndjson"))
 
