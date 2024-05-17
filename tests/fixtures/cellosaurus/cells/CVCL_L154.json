@@ -1,0 +1,668 @@
+{
+    "Cellosaurus": {
+        "cell-line-list": [
+            {
+                "accession-list": [
+                    {
+                        "type": "primary",
+                        "value": "CVCL_L154"
+                    }
+                ],
+                "age": "61Y",
+                "category": "Cancer cell line",
+                "child-list": [],
+                "comment-list": [
+                    {
+                        "category": "Anecdotal",
+                        "source-list": [
+                            {
+                                "reference": {
+                                    "resource-internal-ref": "CelloPub=CLPUB00390"
+                                }
+                            }
+                        ],
+                        "value": "Established in 2009 from a chordoma tumor sample originating from Susan L. Garbett who wrote about her successful fight against cancer in an autobiographical book (CelloPub=CLPUB00390)"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "Transcriptome analysis by RNAseq"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "Genome sequenced"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "Deep exome analysis"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "CNV analysis"
+                    },
+                    {
+                        "category": "Population",
+                        "value": "Caucasian"
+                    },
+                    {
+                        "category": "Part of",
+                        "value": "Cancer Dependency Map project (DepMap) (includes Cancer Cell Line Encyclopedia - CCLE)"
+                    }
+                ],
+                "created": "2013-05-06",
+                "derived-from-site-list": [
+                    {
+                        "site": {
+                            "site-type": "In situ",
+                            "value": "Bone, sacrum",
+                            "xref-list": [
+                                {
+                                    "accession": "UBERON_0003690",
+                                    "category": "Anatomy/cell type resources",
+                                    "database": "UBERON",
+                                    "label": "fused sacrum",
+                                    "url": "https://www.ebi.ac.uk/ols/ontologies/cl/terms?iri=http://purl.obolibrary.org/obo/UBERON_0003690"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "disease-list": [
+                    {
+                        "accession": "C129927",
+                        "category": "Medical resources",
+                        "database": "NCIt",
+                        "label": "Sacral chordoma",
+                        "url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C129927"
+                    },
+                    {
+                        "accession": "Orphanet_178",
+                        "category": "Medical resources",
+                        "database": "ORDO",
+                        "label": "Chordoma",
+                        "url": "https://www.ebi.ac.uk/ols/ontologies/ordo/terms?iri=http://www.orpha.net/ORDO/Orphanet_178"
+                    }
+                ],
+                "doubling-time-list": [
+                    {
+                        "doubling-time-value": "3.5-4 days",
+                        "source-list": [
+                            "Chordoma Foundation"
+                        ]
+                    },
+                    {
+                        "doubling-time-value": "~5 days",
+                        "source-list": [
+                            {
+                                "reference": {
+                                    "resource-internal-ref": "PubMed=21699479"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "entry-version": "23",
+                "hla-typing-list": [
+                    {
+                        "hla-gene-alleles-list": [
+                            {
+                                "alleles": "24",
+                                "gene": "HLA-A"
+                            }
+                        ],
+                        "source": "Chordoma Foundation"
+                    }
+                ],
+                "last-updated": "2024-05-02",
+                "name-list": [
+                    {
+                        "type": "identifier",
+                        "value": "JHC7"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "Johns Hopkins Chordoma line 7"
+                    }
+                ],
+                "reference-list": [
+                    {
+                        "resource-internal-ref": "CelloPub=CLPUB00390"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=21699479"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=27102572"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=28835717"
+                    }
+                ],
+                "sequence-variation-list": [
+                    {
+                        "mutation-description": "p.Arg213Leu (c.638G>T)",
+                        "mutation-type": "Simple",
+                        "source-list": [
+                            {
+                                "xref": {
+                                    "accession": "ACH-001955",
+                                    "category": "Cell line databases/resources",
+                                    "database": "DepMap",
+                                    "url": "https://depmap.org/portal/cell_line/ACH-001955"
+                                }
+                            }
+                        ],
+                        "variation-type": "Mutation",
+                        "xref-list": [
+                            {
+                                "accession": "11998",
+                                "category": "Organism-specific databases",
+                                "database": "HGNC",
+                                "label": "TP53",
+                                "url": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:11998"
+                            },
+                            {
+                                "accession": "VCV000376650",
+                                "category": "Polymorphism and mutation databases",
+                                "database": "ClinVar",
+                                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/VCV000376650"
+                            }
+                        ],
+                        "zygosity-type": "Unspecified"
+                    }
+                ],
+                "sex": "Female",
+                "species-list": [
+                    {
+                        "accession": "9606",
+                        "category": "Taxonomy",
+                        "database": "NCBI_TaxID",
+                        "label": "Homo sapiens (Human)",
+                        "url": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=9606&lvl=3"
+                    }
+                ],
+                "str-list": {
+                    "marker-list": [
+                        {
+                            "conflict": "false",
+                            "id": "Amelogenin",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "X"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "CSF1PO",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D13S317",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D16S539",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D18S51",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "12"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D19S433",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "13,13.2"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D21S11",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "27,31.2"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D2S1338",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "18,20"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D3S1358",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "17"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D5S818",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "13"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D7S820",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "7,10"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D8S1179",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "13,14"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "FGA",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "21,23"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "Penta D",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "6,11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "Penta E",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "15"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "TH01",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "6,8"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "TPOX",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "10,11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "vWA",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "17"
+                                }
+                            ]
+                        }
+                    ],
+                    "source-list": [
+                        {
+                            "xref": {
+                                "accession": "CRL-3267",
+                                "category": "Cell line collections (Providers)",
+                                "database": "ATCC",
+                                "url": "https://www.atcc.org/Products/CRL-3267"
+                            }
+                        },
+                        {
+                            "reference": {
+                                "resource-internal-ref": "PubMed=28835717"
+                            }
+                        },
+                        {
+                            "reference": {
+                                "resource-internal-ref": "PubMed=27102572"
+                            }
+                        }
+                    ]
+                },
+                "web-page-list": [
+                    "https://www.chordomafoundation.org/researchers/disease-models/jhc7/",
+                    "https://www.youtube.com/watch?v=6w-iamlS8k8"
+                ],
+                "xref-list": [
+                    {
+                        "accession": "CRL-3267",
+                        "category": "Cell line collections (Providers)",
+                        "database": "ATCC",
+                        "url": "https://www.atcc.org/Products/CRL-3267"
+                    },
+                    {
+                        "accession": "CVCL_L154",
+                        "category": "Cell line databases/resources",
+                        "database": "cancercelllines",
+                        "url": "https://cancercelllines.org/cellline/?id=cellosaurus:CVCL_L154"
+                    },
+                    {
+                        "accession": "SIDM01802",
+                        "category": "Cell line databases/resources",
+                        "database": "Cell_Model_Passport",
+                        "url": "https://cellmodelpassports.sanger.ac.uk/passports/SIDM01802"
+                    },
+                    {
+                        "accession": "2663862",
+                        "category": "Polymorphism and mutation databases",
+                        "database": "Cosmic",
+                        "url": "https://cancer.sanger.ac.uk/cosmic/sample/overview?id=2663862"
+                    },
+                    {
+                        "accession": "ACH-001955",
+                        "category": "Cell line databases/resources",
+                        "database": "DepMap",
+                        "url": "https://depmap.org/portal/cell_line/ACH-001955"
+                    },
+                    {
+                        "accession": "Q54898635",
+                        "category": "Encyclopedic resources",
+                        "database": "Wikidata",
+                        "url": "https://www.wikidata.org/wiki/Q54898635"
+                    }
+                ]
+            }
+        ],
+        "publication-list": [
+            {
+                "author-list": [
+                    {
+                        "name": "Hsu W."
+                    },
+                    {
+                        "name": "Mohyeldin A."
+                    },
+                    {
+                        "name": "Shah S.R."
+                    },
+                    {
+                        "name": "ap Rhys C.M.J."
+                    },
+                    {
+                        "name": "Johnson L.F."
+                    },
+                    {
+                        "name": "Sedora-Roman N.I."
+                    },
+                    {
+                        "name": "Kosztowski T.A."
+                    },
+                    {
+                        "name": "Awad O.A."
+                    },
+                    {
+                        "name": "McCarthy E.F."
+                    },
+                    {
+                        "name": "Loeb D.M."
+                    },
+                    {
+                        "name": "Wolinsky J.-P."
+                    },
+                    {
+                        "name": "Gokaslan Z.L."
+                    },
+                    {
+                        "name": "Quinones-Hinojosa A."
+                    }
+                ],
+                "date": "2011",
+                "first-page": "760",
+                "internal-id": "PubMed=21699479",
+                "journal-name": "J. Neurosurg.",
+                "last-page": "769",
+                "title": "Generation of chordoma cell line JHC7 and the identification of Brachyury as a novel molecular target.",
+                "type": "article",
+                "volume": "115",
+                "xref-list": [
+                    {
+                        "accession": "10.3171/2011.5.JNS11185",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.3171/2011.5.JNS11185"
+                    },
+                    {
+                        "accession": "21699479",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/21699479"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Garbett S.L."
+                    }
+                ],
+                "city": "Tallevast",
+                "date": "2015",
+                "first-page": "1",
+                "internal-id": "CelloPub=CLPUB00390",
+                "journal-name": "ISBN 9780983617198",
+                "last-page": "264",
+                "publisher": "Parquetry Press",
+                "title": "Confronting chordoma cancer. An uncommon journey.",
+                "type": "book chapter",
+                "xref-list": [
+                    {
+                        "accession": "CLPUB00390",
+                        "category": "Reference resources",
+                        "database": "CelloPub",
+                        "url": "https://www.cellosaurus.org/cellopub/CLPUB00390"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Bosotti R."
+                    },
+                    {
+                        "name": "Magnaghi P."
+                    },
+                    {
+                        "name": "Di Bella S."
+                    },
+                    {
+                        "name": "Cozzi L."
+                    },
+                    {
+                        "name": "Cusi C."
+                    },
+                    {
+                        "name": "Bozzi F."
+                    },
+                    {
+                        "name": "Beltrami N."
+                    },
+                    {
+                        "name": "Carapezza G."
+                    },
+                    {
+                        "name": "Ballinari D."
+                    },
+                    {
+                        "name": "Amboldi N."
+                    },
+                    {
+                        "name": "Lupi R."
+                    },
+                    {
+                        "name": "Somaschini A."
+                    },
+                    {
+                        "name": "Raddrizzani L."
+                    },
+                    {
+                        "name": "Salom B."
+                    },
+                    {
+                        "name": "Galvani A."
+                    },
+                    {
+                        "name": "Stacchiotti S."
+                    },
+                    {
+                        "name": "Tamborini E."
+                    },
+                    {
+                        "name": "Isacchi A."
+                    }
+                ],
+                "date": "2017",
+                "first-page": "9226",
+                "internal-id": "PubMed=28835717",
+                "journal-name": "Sci. Rep.",
+                "last-page": "9226",
+                "title": "Establishment and genomic characterization of the new chordoma cell line Chor-IN-1.",
+                "type": "article",
+                "volume": "7",
+                "xref-list": [
+                    {
+                        "accession": "10.1038/s41598-017-10044-3",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1038/s41598-017-10044-3"
+                    },
+                    {
+                        "accession": "28835717",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/28835717"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Scheipl S."
+                    },
+                    {
+                        "name": "Barnard M."
+                    },
+                    {
+                        "name": "Cottone L."
+                    },
+                    {
+                        "name": "Jorgensen M."
+                    },
+                    {
+                        "name": "Drewry D.H."
+                    },
+                    {
+                        "name": "Zuercher W.J."
+                    },
+                    {
+                        "name": "Turlais F."
+                    },
+                    {
+                        "name": "Ye H.-T."
+                    },
+                    {
+                        "name": "Leite A.P."
+                    },
+                    {
+                        "name": "Smith J.A."
+                    },
+                    {
+                        "name": "Leithner A."
+                    },
+                    {
+                        "name": "Moller P."
+                    },
+                    {
+                        "name": "Bruderlein S."
+                    },
+                    {
+                        "name": "Guppy N."
+                    },
+                    {
+                        "name": "Amary F."
+                    },
+                    {
+                        "name": "Tirabosco R."
+                    },
+                    {
+                        "name": "Strauss S.J."
+                    },
+                    {
+                        "name": "Pillay N."
+                    },
+                    {
+                        "name": "Flanagan A.M."
+                    }
+                ],
+                "date": "2016",
+                "first-page": "320",
+                "internal-id": "PubMed=27102572",
+                "journal-name": "J. Pathol.",
+                "last-page": "334",
+                "title": "EGFR inhibitors identified as a potential treatment for chordoma in a focused compound screen.",
+                "type": "article",
+                "volume": "239",
+                "xref-list": [
+                    {
+                        "accession": "10.1002/path.4729",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1002/path.4729"
+                    },
+                    {
+                        "accession": "27102572",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/27102572"
+                    }
+                ]
+            }
+        ]
+    }
+}

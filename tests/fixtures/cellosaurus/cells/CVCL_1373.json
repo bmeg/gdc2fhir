@@ -1,0 +1,1312 @@
+{
+    "Cellosaurus": {
+        "cell-line-list": [
+            {
+                "accession-list": [
+                    {
+                        "type": "primary",
+                        "value": "CVCL_1373"
+                    }
+                ],
+                "age": "51Y",
+                "category": "Cancer cell line",
+                "child-list": [
+                    {
+                        "accession": {
+                            "type": "primary",
+                            "value": "CVCL_C4AM"
+                        },
+                        "name": {
+                            "type": "identifier",
+                            "value": "LC-2/ad-cis"
+                        }
+                    }
+                ],
+                "comment-list": [
+                    {
+                        "category": "Caution",
+                        "value": "Indicated to have a EGFR p.Leu858Arg (c.2573T>G) mutation according to PubMed=16105816) but this is in contradiction of results of exome sequencing in CCLE and Cosmic-CLP"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "Transcriptome analysis by microarray"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "SNP array analysis"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "DNA methylation analysis"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "Deep quantitative proteome analysis"
+                    },
+                    {
+                        "category": "Omics",
+                        "value": "Deep exome analysis"
+                    },
+                    {
+                        "category": "Population",
+                        "value": "Japanese"
+                    },
+                    {
+                        "category": "Part of",
+                        "value": "COSMIC cell lines project"
+                    },
+                    {
+                        "category": "Part of",
+                        "value": "Cancer Dependency Map project (DepMap) (includes Cancer Cell Line Encyclopedia - CCLE)"
+                    }
+                ],
+                "created": "2012-04-04",
+                "derived-from-site-list": [
+                    {
+                        "site": {
+                            "site-type": "Metastatic",
+                            "value": "Pleural effusion",
+                            "xref-list": [
+                                {
+                                    "accession": "UBERON_0000175",
+                                    "category": "Anatomy/cell type resources",
+                                    "database": "UBERON",
+                                    "label": "pleural effusion",
+                                    "url": "https://www.ebi.ac.uk/ols/ontologies/cl/terms?iri=http://purl.obolibrary.org/obo/UBERON_0000175"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "disease-list": [
+                    {
+                        "accession": "C3512",
+                        "category": "Medical resources",
+                        "database": "NCIt",
+                        "label": "Lung adenocarcinoma",
+                        "url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C3512"
+                    }
+                ],
+                "doubling-time-list": [
+                    {
+                        "doubling-time-note": "At 32th passage",
+                        "doubling-time-value": "58 hours",
+                        "source-list": [
+                            {
+                                "reference": {
+                                    "resource-internal-ref": "PubMed=8291444"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "entry-version": "35",
+                "genome-ancestry": {
+                    "population-list": [
+                        {
+                            "population-name": "African",
+                            "population-percentage": "3.51"
+                        },
+                        {
+                            "population-name": "Native American",
+                            "population-percentage": "0.63"
+                        },
+                        {
+                            "population-name": "East Asian, North",
+                            "population-percentage": "76.2"
+                        },
+                        {
+                            "population-name": "East Asian, South",
+                            "population-percentage": "13.98"
+                        },
+                        {
+                            "population-name": "South Asian",
+                            "population-percentage": "0.14"
+                        },
+                        {
+                            "population-name": "European, North",
+                            "population-percentage": "0.91"
+                        },
+                        {
+                            "population-name": "European, South",
+                            "population-percentage": "4.65"
+                        }
+                    ],
+                    "source": {
+                        "reference": {
+                            "resource-internal-ref": "PubMed=30894373"
+                        }
+                    }
+                },
+                "last-updated": "2024-05-02",
+                "microsatellite-instability-list": [
+                    {
+                        "msi-value": "Stable (MSS)",
+                        "source-list": [
+                            "Sanger"
+                        ]
+                    }
+                ],
+                "name-list": [
+                    {
+                        "type": "identifier",
+                        "value": "LC-2/ad"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "LC-2-Ad"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "LC-2-ad"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "LC-2 ad"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "LC2/Ad"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "LC2/AD"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "LC2AD"
+                    }
+                ],
+                "reference-list": [
+                    {
+                        "resource-internal-ref": "PubMed=8291444"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=8348978"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=16105816"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=20164919"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=22313637"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=23154560"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=23578175"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=27397505"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=30894373"
+                    },
+                    {
+                        "resource-internal-ref": "PubMed=35839778"
+                    }
+                ],
+                "sequence-variation-list": [
+                    {
+                        "mutation-description": "CCDC6-RET, RET/PTC1",
+                        "source-list": [
+                            {
+                                "reference": {
+                                    "resource-internal-ref": "PubMed=23578175"
+                                }
+                            }
+                        ],
+                        "variation-type": "Gene fusion",
+                        "xref-list": [
+                            {
+                                "accession": "18782",
+                                "category": "Organism-specific databases",
+                                "database": "HGNC",
+                                "label": "CCDC6",
+                                "url": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:18782"
+                            },
+                            {
+                                "accession": "9967",
+                                "category": "Organism-specific databases",
+                                "database": "HGNC",
+                                "label": "RET",
+                                "url": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:9967"
+                            }
+                        ]
+                    },
+                    {
+                        "mutation-description": "p.Ser241Cys (c.722C>G)",
+                        "mutation-type": "Simple",
+                        "source-list": [
+                            {
+                                "xref": {
+                                    "accession": "ACH-002157",
+                                    "category": "Cell line databases/resources",
+                                    "database": "DepMap",
+                                    "url": "https://depmap.org/portal/cell_line/ACH-002157"
+                                }
+                            },
+                            {
+                                "xref": {
+                                    "accession": "907786",
+                                    "category": "Cell line databases/resources",
+                                    "database": "Cosmic-CLP",
+                                    "url": "https://cancer.sanger.ac.uk/cell_lines/sample/overview?id=907786"
+                                }
+                            }
+                        ],
+                        "variation-type": "Mutation",
+                        "xref-list": [
+                            {
+                                "accession": "11998",
+                                "category": "Organism-specific databases",
+                                "database": "HGNC",
+                                "label": "TP53",
+                                "url": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:11998"
+                            },
+                            {
+                                "accession": "VCV000177791",
+                                "category": "Polymorphism and mutation databases",
+                                "database": "ClinVar",
+                                "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/VCV000177791"
+                            }
+                        ],
+                        "zygosity-type": "Homozygous"
+                    }
+                ],
+                "sex": "Female",
+                "species-list": [
+                    {
+                        "accession": "9606",
+                        "category": "Taxonomy",
+                        "database": "NCBI_TaxID",
+                        "label": "Homo sapiens (Human)",
+                        "url": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=9606&lvl=3"
+                    }
+                ],
+                "str-list": {
+                    "marker-list": [
+                        {
+                            "conflict": "false",
+                            "id": "Amelogenin",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "X"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "CSF1PO",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "10,11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D13S317",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "10,12"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D16S539",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "9"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D5S818",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "10"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D7S820",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "TH01",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "7"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "TPOX",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "vWA",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "16,19"
+                                }
+                            ]
+                        }
+                    ],
+                    "source-list": [
+                        {
+                            "xref": {
+                                "accession": "RCB0440",
+                                "category": "Cell line collections (Providers)",
+                                "database": "RCB",
+                                "url": "http://cellbank.brc.riken.jp/cell_bank/CellInfo/?cellNo=RCB0440&lang=En"
+                            }
+                        },
+                        {
+                            "xref": {
+                                "accession": "94072247",
+                                "category": "Cell line collections (Providers)",
+                                "database": "ECACC",
+                                "url": "https://www.culturecollections.org.uk/products/celllines/detail.jsp?refId=94072247"
+                            }
+                        },
+                        {
+                            "xref": {
+                                "accession": "907786",
+                                "category": "Cell line databases/resources",
+                                "database": "Cosmic-CLP",
+                                "url": "https://cancer.sanger.ac.uk/cell_lines/sample/overview?id=907786"
+                            }
+                        }
+                    ]
+                },
+                "xref-list": [
+                    {
+                        "accession": "BTO:0006466",
+                        "category": "Anatomy/cell type resources",
+                        "database": "BTO",
+                        "url": "https://bioportal.bioontology.org/ontologies/BTO?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBTO_0006466"
+                    },
+                    {
+                        "accession": "CLO_0037020",
+                        "category": "Cell line databases/resources",
+                        "database": "CLO",
+                        "url": "https://www.ebi.ac.uk/ols/ontologies/clo/terms?iri=http://purl.obolibrary.org/obo/CLO_0037020"
+                    },
+                    {
+                        "accession": "CLO_0050073",
+                        "category": "Cell line databases/resources",
+                        "database": "CLO",
+                        "url": "https://www.ebi.ac.uk/ols/ontologies/clo/terms?iri=http://purl.obolibrary.org/obo/CLO_0050073"
+                    },
+                    {
+                        "accession": "EFO_0003140",
+                        "category": "Experimental variables resources",
+                        "database": "EFO",
+                        "url": "https://www.ebi.ac.uk/efo/EFO_0003140"
+                    },
+                    {
+                        "accession": "E-MTAB-3610",
+                        "category": "Gene expression databases",
+                        "database": "ArrayExpress",
+                        "url": "https://www.ebi.ac.uk/biostudies/ArrayExpress/studies/E-MTAB-3610"
+                    },
+                    {
+                        "accession": "SAMN03472314",
+                        "category": "Biological sample resources",
+                        "database": "BioSample",
+                        "url": "https://www.ncbi.nlm.nih.gov/biosample/?term=SAMN03472314"
+                    },
+                    {
+                        "accession": "CVCL_1373",
+                        "category": "Cell line databases/resources",
+                        "database": "cancercelllines",
+                        "url": "https://cancercelllines.org/cellline/?id=cellosaurus:CVCL_1373"
+                    },
+                    {
+                        "accession": "SIDM00297",
+                        "category": "Cell line databases/resources",
+                        "database": "Cell_Model_Passport",
+                        "url": "https://cellmodelpassports.sanger.ac.uk/passports/SIDM00297"
+                    },
+                    {
+                        "accession": "CHEMBL3308545",
+                        "category": "Chemistry resources",
+                        "database": "ChEMBL-Cells",
+                        "url": "https://www.ebi.ac.uk/chembldb/cell/inspect/CHEMBL3308545"
+                    },
+                    {
+                        "accession": "CHEMBL2366260",
+                        "category": "Chemistry resources",
+                        "database": "ChEMBL-Targets",
+                        "url": "https://www.ebi.ac.uk/chembldb/target/inspect/CHEMBL2366260"
+                    },
+                    {
+                        "accession": "907786",
+                        "category": "Polymorphism and mutation databases",
+                        "database": "Cosmic",
+                        "url": "https://cancer.sanger.ac.uk/cosmic/sample/overview?id=907786"
+                    },
+                    {
+                        "accession": "946052",
+                        "category": "Polymorphism and mutation databases",
+                        "database": "Cosmic",
+                        "url": "https://cancer.sanger.ac.uk/cosmic/sample/overview?id=946052"
+                    },
+                    {
+                        "accession": "1154602",
+                        "category": "Polymorphism and mutation databases",
+                        "database": "Cosmic",
+                        "url": "https://cancer.sanger.ac.uk/cosmic/sample/overview?id=1154602"
+                    },
+                    {
+                        "accession": "1571726",
+                        "category": "Polymorphism and mutation databases",
+                        "database": "Cosmic",
+                        "url": "https://cancer.sanger.ac.uk/cosmic/sample/overview?id=1571726"
+                    },
+                    {
+                        "accession": "1656903",
+                        "category": "Polymorphism and mutation databases",
+                        "database": "Cosmic",
+                        "url": "https://cancer.sanger.ac.uk/cosmic/sample/overview?id=1656903"
+                    },
+                    {
+                        "accession": "1995480",
+                        "category": "Polymorphism and mutation databases",
+                        "database": "Cosmic",
+                        "url": "https://cancer.sanger.ac.uk/cosmic/sample/overview?id=1995480"
+                    },
+                    {
+                        "accession": "907786",
+                        "category": "Cell line databases/resources",
+                        "database": "Cosmic-CLP",
+                        "url": "https://cancer.sanger.ac.uk/cell_lines/sample/overview?id=907786"
+                    },
+                    {
+                        "accession": "ACH-002157",
+                        "category": "Cell line databases/resources",
+                        "database": "DepMap",
+                        "url": "https://depmap.org/portal/cell_line/ACH-002157"
+                    },
+                    {
+                        "accession": "94072247",
+                        "category": "Cell line collections (Providers)",
+                        "database": "ECACC",
+                        "url": "https://www.culturecollections.org.uk/products/celllines/detail.jsp?refId=94072247"
+                    },
+                    {
+                        "accession": "EGAS00001000978",
+                        "category": "Sequence databases",
+                        "database": "EGA",
+                        "url": "https://ega-archive.org/studies/EGAS00001000978"
+                    },
+                    {
+                        "accession": "907786",
+                        "category": "Chemistry resources",
+                        "database": "GDSC",
+                        "url": "https://www.cancerrxgene.org/translation/CellLine/907786"
+                    },
+                    {
+                        "accession": "GSM1670043",
+                        "category": "Gene expression databases",
+                        "database": "GEO",
+                        "url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1670043"
+                    },
+                    {
+                        "accession": "21470",
+                        "category": "Polymorphism and mutation databases",
+                        "database": "IARC_TP53"
+                    },
+                    {
+                        "accession": "LCL-1667",
+                        "category": "Cell line databases/resources",
+                        "database": "LINCS_LDP",
+                        "url": "http://lincsportal.ccs.miami.edu/cells/#/view/LCL-1667"
+                    },
+                    {
+                        "accession": "LC2ad_831_2019",
+                        "category": "Chemistry resources",
+                        "database": "PharmacoDB",
+                        "url": "https://pharmacodb.ca/cell_lines/LC2ad_831_2019"
+                    },
+                    {
+                        "accession": "PXD030304",
+                        "category": "Proteomic databases",
+                        "database": "PRIDE",
+                        "url": "https://www.ebi.ac.uk/pride/archive/projects/PXD030304"
+                    },
+                    {
+                        "accession": "CVCL_1373",
+                        "category": "Chemistry resources",
+                        "database": "PubChem_Cell_line",
+                        "url": "https://pubchem.ncbi.nlm.nih.gov/cell/CVCL_1373"
+                    },
+                    {
+                        "accession": "RCB0440",
+                        "category": "Cell line collections (Providers)",
+                        "database": "RCB",
+                        "url": "http://cellbank.brc.riken.jp/cell_bank/CellInfo/?cellNo=RCB0440&lang=En"
+                    },
+                    {
+                        "accession": "Q54902124",
+                        "category": "Encyclopedic resources",
+                        "database": "Wikidata",
+                        "url": "https://www.wikidata.org/wiki/Q54902124"
+                    }
+                ]
+            }
+        ],
+        "publication-list": [
+            {
+                "author-list": [
+                    {
+                        "name": "Matsubara D."
+                    },
+                    {
+                        "name": "Kanai Y."
+                    },
+                    {
+                        "name": "Ishikawa S."
+                    },
+                    {
+                        "name": "Ohara S."
+                    },
+                    {
+                        "name": "Yoshimoto T."
+                    },
+                    {
+                        "name": "Sakatani T."
+                    },
+                    {
+                        "name": "Oguni S."
+                    },
+                    {
+                        "name": "Tamura T."
+                    },
+                    {
+                        "name": "Kataoka H."
+                    },
+                    {
+                        "name": "Endo S."
+                    },
+                    {
+                        "name": "Murakami Y."
+                    },
+                    {
+                        "name": "Aburatani H."
+                    },
+                    {
+                        "name": "Fukayama M."
+                    },
+                    {
+                        "name": "Niki T."
+                    }
+                ],
+                "date": "2012",
+                "first-page": "1872",
+                "internal-id": "PubMed=23154560",
+                "journal-name": "J. Thorac. Oncol.",
+                "last-page": "1876",
+                "title": "Identification of CCDC6-RET fusion in the human lung adenocarcinoma cell line, LC-2/ad.",
+                "type": "article",
+                "volume": "7",
+                "xref-list": [
+                    {
+                        "accession": "10.1097/JTO.0b013e3182721ed1",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1097/JTO.0b013e3182721ed1"
+                    },
+                    {
+                        "accession": "23154560",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/23154560"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Takata M."
+                    },
+                    {
+                        "name": "Chikumi H."
+                    },
+                    {
+                        "name": "Miyake N."
+                    },
+                    {
+                        "name": "Adachi K."
+                    },
+                    {
+                        "name": "Kanamori Y."
+                    },
+                    {
+                        "name": "Yamasaki A."
+                    },
+                    {
+                        "name": "Igishi T."
+                    },
+                    {
+                        "name": "Burioka N."
+                    },
+                    {
+                        "name": "Nanba E."
+                    },
+                    {
+                        "name": "Shimizu E."
+                    }
+                ],
+                "date": "2012",
+                "first-page": "369",
+                "internal-id": "PubMed=22313637",
+                "journal-name": "Cancer Biol. Ther.",
+                "last-page": "378",
+                "title": "Lack of AKT activation in lung cancer cells with EGFR mutation is a novel marker of cetuximab sensitivity.",
+                "type": "article",
+                "volume": "13",
+                "xref-list": [
+                    {
+                        "accession": "10.4161/cbt.19238",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.4161/cbt.19238"
+                    },
+                    {
+                        "accession": "22313637",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/22313637"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Dutil J."
+                    },
+                    {
+                        "name": "Chen Z.-H."
+                    },
+                    {
+                        "name": "Monteiro A.N.A."
+                    },
+                    {
+                        "name": "Teer J.K."
+                    },
+                    {
+                        "name": "Eschrich S.A."
+                    }
+                ],
+                "date": "2019",
+                "first-page": "1263",
+                "internal-id": "PubMed=30894373",
+                "journal-name": "Cancer Res.",
+                "last-page": "1273",
+                "title": "An interactive resource to probe genetic diversity and estimated ancestry in cancer cell lines.",
+                "type": "article",
+                "volume": "79",
+                "xref-list": [
+                    {
+                        "accession": "10.1158/0008-5472.CAN-18-2747",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1158/0008-5472.CAN-18-2747"
+                    },
+                    {
+                        "accession": "30894373",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/30894373"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Suzuki M."
+                    },
+                    {
+                        "name": "Makinoshima H."
+                    },
+                    {
+                        "name": "Matsumoto S."
+                    },
+                    {
+                        "name": "Suzuki A."
+                    },
+                    {
+                        "name": "Mimaki S."
+                    },
+                    {
+                        "name": "Matsushima K."
+                    },
+                    {
+                        "name": "Yoh K."
+                    },
+                    {
+                        "name": "Goto K."
+                    },
+                    {
+                        "name": "Suzuki Y."
+                    },
+                    {
+                        "name": "Ishii G."
+                    },
+                    {
+                        "name": "Ochiai A."
+                    },
+                    {
+                        "name": "Tsuta K."
+                    },
+                    {
+                        "name": "Shibata T."
+                    },
+                    {
+                        "name": "Kohno T."
+                    },
+                    {
+                        "name": "Esumi H."
+                    },
+                    {
+                        "name": "Tsuchihara K."
+                    }
+                ],
+                "date": "2013",
+                "first-page": "896",
+                "internal-id": "PubMed=23578175",
+                "journal-name": "Cancer Sci.",
+                "last-page": "903",
+                "title": "Identification of a lung adenocarcinoma cell line with CCDC6-RET fusion gene and the effect of RET inhibitors in vitro and in vivo.",
+                "type": "article",
+                "volume": "104",
+                "xref-list": [
+                    {
+                        "accession": "10.1111/cas.12175",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1111/cas.12175"
+                    },
+                    {
+                        "accession": "23578175",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/23578175"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Iorio F."
+                    },
+                    {
+                        "name": "Knijnenburg T.A."
+                    },
+                    {
+                        "name": "Vis D.J."
+                    },
+                    {
+                        "name": "Bignell G.R."
+                    },
+                    {
+                        "name": "Menden M.P."
+                    },
+                    {
+                        "name": "Schubert M."
+                    },
+                    {
+                        "name": "Aben N."
+                    },
+                    {
+                        "name": "Goncalves E."
+                    },
+                    {
+                        "name": "Barthorpe S."
+                    },
+                    {
+                        "name": "Lightfoot H."
+                    },
+                    {
+                        "name": "Cokelaer T."
+                    },
+                    {
+                        "name": "Greninger P."
+                    },
+                    {
+                        "name": "van Dyk E."
+                    },
+                    {
+                        "name": "Chang H."
+                    },
+                    {
+                        "name": "de Silva H."
+                    },
+                    {
+                        "name": "Heyn H."
+                    },
+                    {
+                        "name": "Deng X.-M."
+                    },
+                    {
+                        "name": "Egan R.K."
+                    },
+                    {
+                        "name": "Liu Q.-S."
+                    },
+                    {
+                        "name": "Mironenko T."
+                    },
+                    {
+                        "name": "Mitropoulos X."
+                    },
+                    {
+                        "name": "Richardson L."
+                    },
+                    {
+                        "name": "Wang J.-H."
+                    },
+                    {
+                        "name": "Zhang T.-H."
+                    },
+                    {
+                        "name": "Moran S."
+                    },
+                    {
+                        "name": "Sayols S."
+                    },
+                    {
+                        "name": "Soleimani M."
+                    },
+                    {
+                        "name": "Tamborero D."
+                    },
+                    {
+                        "name": "Lopez-Bigas N."
+                    },
+                    {
+                        "name": "Ross-Macdonald P."
+                    },
+                    {
+                        "name": "Esteller M."
+                    },
+                    {
+                        "name": "Gray N.S."
+                    },
+                    {
+                        "name": "Haber D.A."
+                    },
+                    {
+                        "name": "Stratton M.R."
+                    },
+                    {
+                        "name": "Benes C.H."
+                    },
+                    {
+                        "name": "Wessels L.F.A."
+                    },
+                    {
+                        "name": "Saez-Rodriguez J."
+                    },
+                    {
+                        "name": "McDermott U."
+                    },
+                    {
+                        "name": "Garnett M.J."
+                    }
+                ],
+                "date": "2016",
+                "first-page": "740",
+                "internal-id": "PubMed=27397505",
+                "journal-name": "Cell",
+                "last-page": "754",
+                "title": "A landscape of pharmacogenomic interactions in cancer.",
+                "type": "article",
+                "volume": "166",
+                "xref-list": [
+                    {
+                        "accession": "10.1016/j.cell.2016.06.017",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1016/j.cell.2016.06.017"
+                    },
+                    {
+                        "accession": "27397505",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/27397505"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Goncalves E."
+                    },
+                    {
+                        "name": "Poulos R.C."
+                    },
+                    {
+                        "name": "Cai Z.-X."
+                    },
+                    {
+                        "name": "Barthorpe S."
+                    },
+                    {
+                        "name": "Manda S.S."
+                    },
+                    {
+                        "name": "Lucas N."
+                    },
+                    {
+                        "name": "Beck A."
+                    },
+                    {
+                        "name": "Bucio-Noble D."
+                    },
+                    {
+                        "name": "Dausmann M."
+                    },
+                    {
+                        "name": "Hall C."
+                    },
+                    {
+                        "name": "Hecker M."
+                    },
+                    {
+                        "name": "Koh J."
+                    },
+                    {
+                        "name": "Lightfoot H."
+                    },
+                    {
+                        "name": "Mahboob S."
+                    },
+                    {
+                        "name": "Mali I."
+                    },
+                    {
+                        "name": "Morris J."
+                    },
+                    {
+                        "name": "Richardson L."
+                    },
+                    {
+                        "name": "Seneviratne A.J."
+                    },
+                    {
+                        "name": "Shepherd R."
+                    },
+                    {
+                        "name": "Sykes E."
+                    },
+                    {
+                        "name": "Thomas F."
+                    },
+                    {
+                        "name": "Valentini S."
+                    },
+                    {
+                        "name": "Williams S.G."
+                    },
+                    {
+                        "name": "Wu Y.-X."
+                    },
+                    {
+                        "name": "Xavier D."
+                    },
+                    {
+                        "name": "MacKenzie K.L."
+                    },
+                    {
+                        "name": "Hains P.G."
+                    },
+                    {
+                        "name": "Tully B."
+                    },
+                    {
+                        "name": "Robinson P.J."
+                    },
+                    {
+                        "name": "Zhong Q."
+                    },
+                    {
+                        "name": "Garnett M.J."
+                    },
+                    {
+                        "name": "Reddel R.R."
+                    }
+                ],
+                "date": "2022",
+                "first-page": "835",
+                "internal-id": "PubMed=35839778",
+                "journal-name": "Cancer Cell",
+                "last-page": "849.e8",
+                "title": "Pan-cancer proteomic map of 949 human cell lines.",
+                "type": "article",
+                "volume": "40",
+                "xref-list": [
+                    {
+                        "accession": "10.1016/j.ccell.2022.06.010",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1016/j.ccell.2022.06.010"
+                    },
+                    {
+                        "accession": "35839778",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/35839778"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Kataoka H."
+                    },
+                    {
+                        "name": "Itoh H."
+                    },
+                    {
+                        "name": "Seguchi K."
+                    },
+                    {
+                        "name": "Koono M."
+                    }
+                ],
+                "date": "1993",
+                "first-page": "566",
+                "internal-id": "PubMed=8291444",
+                "journal-name": "Acta Pathol. Jpn.",
+                "last-page": "573",
+                "title": "Establishment and characterization of a human lung adenocarcinoma cell line (LC-2/ad) producing alpha 1-antitrypsin in vitro.",
+                "type": "article",
+                "volume": "43",
+                "xref-list": [
+                    {
+                        "accession": "10.1111/j.1440-1827.1993.tb03232.x",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1111/j.1440-1827.1993.tb03232.x"
+                    },
+                    {
+                        "accession": "8291444",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/8291444"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Bignell G.R."
+                    },
+                    {
+                        "name": "Greenman C.D."
+                    },
+                    {
+                        "name": "Davies H."
+                    },
+                    {
+                        "name": "Butler A.P."
+                    },
+                    {
+                        "name": "Edkins S."
+                    },
+                    {
+                        "name": "Andrews J.M."
+                    },
+                    {
+                        "name": "Buck G."
+                    },
+                    {
+                        "name": "Chen L."
+                    },
+                    {
+                        "name": "Beare D."
+                    },
+                    {
+                        "name": "Latimer C."
+                    },
+                    {
+                        "name": "Widaa S."
+                    },
+                    {
+                        "name": "Hinton J."
+                    },
+                    {
+                        "name": "Fahey C."
+                    },
+                    {
+                        "name": "Fu B.-Y."
+                    },
+                    {
+                        "name": "Swamy S."
+                    },
+                    {
+                        "name": "Dalgliesh G.L."
+                    },
+                    {
+                        "name": "Teh B.T."
+                    },
+                    {
+                        "name": "Deloukas P."
+                    },
+                    {
+                        "name": "Yang F.-T."
+                    },
+                    {
+                        "name": "Campbell P.J."
+                    },
+                    {
+                        "name": "Futreal P.A."
+                    },
+                    {
+                        "name": "Stratton M.R."
+                    }
+                ],
+                "date": "2010",
+                "first-page": "893",
+                "internal-id": "PubMed=20164919",
+                "journal-name": "Nature",
+                "last-page": "898",
+                "title": "Signatures of mutation and selection in the cancer genome.",
+                "type": "article",
+                "volume": "463",
+                "xref-list": [
+                    {
+                        "accession": "10.1038/nature08768",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1038/nature08768"
+                    },
+                    {
+                        "accession": "20164919",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/20164919"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Nagai Y."
+                    },
+                    {
+                        "name": "Miyazawa H."
+                    },
+                    {
+                        "name": "Huqun X."
+                    },
+                    {
+                        "name": "Tanaka T."
+                    },
+                    {
+                        "name": "Udagawa K."
+                    },
+                    {
+                        "name": "Kato M."
+                    },
+                    {
+                        "name": "Fukuyama S."
+                    },
+                    {
+                        "name": "Yokote A."
+                    },
+                    {
+                        "name": "Kobayashi K."
+                    },
+                    {
+                        "name": "Kanazawa M."
+                    },
+                    {
+                        "name": "Hagiwara K."
+                    }
+                ],
+                "date": "2005",
+                "first-page": "7276",
+                "internal-id": "PubMed=16105816",
+                "journal-name": "Cancer Res.",
+                "last-page": "7282",
+                "title": "Genetic heterogeneity of the epidermal growth factor receptor in non-small cell lung cancer cell lines revealed by a rapid and sensitive detection system, the peptide nucleic acid-locked nucleic acid PCR clamp.",
+                "type": "article",
+                "volume": "65",
+                "xref-list": [
+                    {
+                        "accession": "10.1158/0008-5472.CAN-05-0331",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1158/0008-5472.CAN-05-0331"
+                    },
+                    {
+                        "accession": "16105816",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/16105816"
+                    }
+                ]
+            },
+            {
+                "author-list": [
+                    {
+                        "name": "Kataoka H."
+                    },
+                    {
+                        "name": "Seguchi K."
+                    },
+                    {
+                        "name": "Inoue T."
+                    },
+                    {
+                        "name": "Koono M."
+                    }
+                ],
+                "date": "1993",
+                "first-page": "291",
+                "internal-id": "PubMed=8348978",
+                "journal-name": "FEBS Lett.",
+                "last-page": "295",
+                "title": "Properties of alpha 1-antitrypsin secreted by human adenocarcinoma cell lines.",
+                "type": "article",
+                "volume": "328",
+                "xref-list": [
+                    {
+                        "accession": "10.1016/0014-5793(93)80946-R",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1016/0014-5793(93)80946-R"
+                    },
+                    {
+                        "accession": "8348978",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/8348978"
+                    }
+                ]
+            }
+        ]
+    }
+}

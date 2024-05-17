@@ -662,6 +662,16 @@ def load_ndjson(path):
         print(e)
 
 
+def load_ndjsongz(path):
+    try:
+        with gzip.open(path, 'rt') as file:
+            obj = [json.loads(line) for line in file]
+            return obj
+    except json.JSONDecodeError as e:
+        print(e)
+        return None
+
+
 def is_deeply_nested_dict_list(nested_value):
     return isinstance(nested_value, list) and all(isinstance(item, dict) for item in nested_value)
 
@@ -1000,7 +1010,7 @@ def fetch_cellines_by_id(cellosaurus_id, out_path, save=False):
 
 def cellosaurus_cancer_ids(path, out_path, save=False):
     # condition -- subject --> patient <-- subject -- specimen
-    cl = load_ndjson(path=path)
+    cl = load_ndjsongz(path=path)
     cl_cancer = []
     cl_cancer_depmap = []
     ids = []

@@ -887,11 +887,30 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
 
 # Cellosaurus ---------------------------------------------------------------
 
-def cellosaurus_resource(path, out_path):
-    ids = utils.cellosaurus_cancer_ids(path, out_path, save=True)  # filter step
-    utils.fetch_cellines(ids, out_path)  # api call intensive - 1s per request + 0.5s delay
-    cls = utils.cellosaurus_cancer_jsons(out_path)
-    fhir_ndjson(cls, out_path)
+def cellosaurus_resource(path, out_dir):
+    out_dir = os.path.abspath(out_dir)
+    out_dir = os.path.join(out_dir, "")
+
+    ids = utils.cellosaurus_cancer_ids(path, os.path.join(out_dir, "ids.json"), save=True)  # filter step
+    if ids:
+        print("Successfully saved cellosaurus ids!")
+    else:
+        print("There aren't any cancer human cell-lines with sex annotation and depmap reference.")
+        return
+
+    cells_dir = os.path.join(out_dir, "cells")
+    if not os.path.exists(cells_dir):
+        os.makedirs(cells_dir)
+    cells_dir = os.path.abspath(cells_dir)
+    cells_dir = os.path.join(cells_dir, "")
+
+    utils.fetch_cellines(ids, cells_dir)  # api call intensive - 1s per request + 0.5s delay
+    cls = utils.cellosaurus_cancer_jsons(cells_dir)
+    ndjson_path = os.path.join(out_dir, "cellosaurus_cellines.ndjson")
+    fhir_ndjson(cls, os.path.join(out_dir, "cellosaurus_cellines.ndjson"))
+
+    if os.path.exists(ndjson_path):
+        print("Successfully saved cell lines in cellosaurus_cellines.ndjson!")
 
 
 def cellosaurus_fhir_mappping(cell_lines, verbose=False):
@@ -902,6 +921,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
         for cl in cell_line["Cellosaurus"]["cell-line-list"]:
             patient = None
             patient_id = None
+            ident_list = []
             for accession in cl["accession-list"]:
                 if accession["type"] == "primary":
                     patient_id = accession["value"].replace("_", "-")
@@ -909,7 +929,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                     ident_id = Identifier.construct()
                     ident_id.value = accession["value"]
                     ident_id.system = "https://www.cellosaurus.org/"
-
+                    ident_list.append(ident_id)
             if patient_id:
                 for identifier in cl["name-list"]:
                     if identifier["type"] == "identifier":
@@ -917,6 +937,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                         ident_identifier = Identifier.construct()
                         ident_identifier.value = patient_identifer
                         ident_identifier.system = "https://www.cellosaurus.org/"
+                        ident_list.append(ident_identifier)
 
                 for xref in cl["xref-list"]:
                     if xref["database"] == "DepMap":
@@ -924,16 +945,18 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                         depmap_identifier.value = xref["accession"]
                         # dep_map_url = xref["url"] # ex. https://depmap.org/portal/cell_line/ACH-000035"
                         depmap_identifier.system = "https://depmap.org/"
+                        ident_list.append(depmap_identifier)
+
+                    if xref["database"] == "Cosmic":
+                        cosmic_identifier = Identifier.construct()
+                        cosmic_identifier.value = xref["accession"]
+                        cosmic_identifier.system = "https://cancer.sanger.ac.uk/cosmic/"
+                        ident_list.append(cosmic_identifier)
 
                 if "sex" in cl.keys() and cl["sex"]:
                     gender = cl["sex"].lower()
-
-                    if depmap_identifier:
-                        identifier_list = [ident_identifier, ident_id, depmap_identifier]
-                    else:
-                        identifier_list = [ident_identifier, ident_id]
                     patient = Patient(
-                        **{"id": patient_id, "gender": gender, "identifier": identifier_list})
+                        **{"id": patient_id, "gender": gender, "identifier": ident_list})
                     patients.append(patient)
                     patient_ref = Reference(**{"reference": "/".join(["Patient", patient_id])})
 
@@ -941,7 +964,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                     # add condition from disease-list
                     if "disease-list" in cl.keys():
                         for disease_annotation in cl["disease-list"]:
-                            if disease_annotation["terminology"] == "NCIt":
+                            if "database" in disease_annotation.keys() and disease_annotation["database"] == "NCIt":
                                 condition_clinicalstatus_code = CodeableConcept.construct()
                                 condition_clinicalstatus_code.coding = [
                                     {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
@@ -949,7 +972,15 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                                 disease_coding = []
                                 code = disease_annotation["accession"]
-                                display = disease_annotation["value"]
+
+                                if "value" in disease_annotation.keys():
+                                    display = disease_annotation["value"]
+                                elif "label" in disease_annotation.keys():
+                                    display = disease_annotation["label"]
+                                else:
+                                    print(disease_annotation)
+                                    display = "place_holder"
+
                                 coding = {'system': "https://ncit.nci.nih.gov/", 'display': display, 'code': code}
 
                                 disease_coding.append(coding)
@@ -995,7 +1026,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                     # sample hierarchy
                     if "derived-from" in cl.keys() and cl["derived-from"]:
                         for parent_cell in cl["derived-from"]:
-                            if parent_cell["terminology"] == "Cellosaurus":
+                            if "terminology" in parent_cell.keys() and parent_cell["terminology"] == "Cellosaurus":
                                 parent_id = parent_cell["accession"].replace("_", "-")
 
                                 parent_id_identifier = Identifier.construct()
@@ -1014,11 +1045,11 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                     if sample_parents_ref:
                         samples.append(Specimen(
-                            **{"id": patient_id, "subject": patient_ref, "identifier": [ident_identifier, ident_id],
+                            **{"id": patient_id, "subject": patient_ref, "identifier": ident_list,
                                "parent": sample_parents_ref}))
                     else:
                         samples.append(Specimen(
-                            **{"id": patient_id, "subject": patient_ref, "identifier": [ident_identifier, ident_id]}))
+                            **{"id": patient_id, "subject": patient_ref, "identifier": ident_list}))
 
     return {"patients": patients, "conditions": conditions, "samples": samples}
 

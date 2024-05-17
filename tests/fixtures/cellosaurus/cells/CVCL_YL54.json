@@ -1,0 +1,318 @@
+{
+    "Cellosaurus": {
+        "cell-line-list": [
+            {
+                "accession-list": [
+                    {
+                        "type": "primary",
+                        "value": "CVCL_YL54"
+                    }
+                ],
+                "age": "29Y",
+                "category": "Cancer cell line",
+                "child-list": [],
+                "comment-list": [
+                    {
+                        "category": "Omics",
+                        "value": "Deep proteome analysis"
+                    },
+                    {
+                        "category": "Senescence",
+                        "value": "It is possible that this cell line is not immortal and has a finite life span (personal communication of Kondo T.)"
+                    },
+                    {
+                        "category": "Characteristics",
+                        "value": "Established from a first generation xenograft established by subcutaneous injection in female NOD/Shi-scid IL-2Rgammanull mice"
+                    },
+                    {
+                        "category": "Population",
+                        "value": "Japanese"
+                    },
+                    {
+                        "category": "Part of",
+                        "value": "NCC sarcoma cell line panel"
+                    },
+                    {
+                        "category": "Part of",
+                        "value": "Cancer Dependency Map project (DepMap) (includes Cancer Cell Line Encyclopedia - CCLE)"
+                    }
+                ],
+                "created": "2020-03-12",
+                "disease-list": [
+                    {
+                        "accession": "C165663",
+                        "category": "Medical resources",
+                        "database": "NCIt",
+                        "label": "CIC-DUX4 sarcoma",
+                        "url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C165663"
+                    }
+                ],
+                "doubling-time-list": [
+                    {
+                        "doubling-time-value": "~40 hours",
+                        "source-list": [
+                            {
+                                "reference": {
+                                    "resource-internal-ref": "PubMed=28680140"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "entry-version": "8",
+                "last-updated": "2024-01-30",
+                "name-list": [
+                    {
+                        "type": "identifier",
+                        "value": "NCC-CDS1-X1-C1"
+                    },
+                    {
+                        "type": "synonym",
+                        "value": "NCCCDS1X1C1"
+                    }
+                ],
+                "reference-list": [
+                    {
+                        "resource-internal-ref": "PubMed=28680140"
+                    }
+                ],
+                "same-origin-as": [
+                    {
+                        "accession": "CVCL_YL55",
+                        "category": "Cell line databases/resources",
+                        "database": "Cellosaurus",
+                        "label": "NCC-CDS1-X3-C1",
+                        "url": "https://www.cellosaurus.org/CVCL_YL55"
+                    }
+                ],
+                "sequence-variation-list": [
+                    {
+                        "mutation-description": "CIC-DUX4",
+                        "source-list": [
+                            {
+                                "reference": {
+                                    "resource-internal-ref": "PubMed=28680140"
+                                }
+                            }
+                        ],
+                        "variation-type": "Gene fusion",
+                        "xref-list": [
+                            {
+                                "accession": "14214",
+                                "category": "Organism-specific databases",
+                                "database": "HGNC",
+                                "label": "CIC",
+                                "url": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:14214"
+                            },
+                            {
+                                "accession": "50800",
+                                "category": "Organism-specific databases",
+                                "database": "HGNC",
+                                "label": "DUX4",
+                                "url": "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:50800"
+                            }
+                        ]
+                    }
+                ],
+                "sex": "Female",
+                "species-list": [
+                    {
+                        "accession": "9606",
+                        "category": "Taxonomy",
+                        "database": "NCBI_TaxID",
+                        "label": "Homo sapiens (Human)",
+                        "url": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=9606&lvl=3"
+                    }
+                ],
+                "str-list": {
+                    "marker-list": [
+                        {
+                            "conflict": "false",
+                            "id": "Amelogenin",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "X"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "CSF1PO",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11,13"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D13S317",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "11,12"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D16S539",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "9,13"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D21S11",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "30"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D5S818",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "10,12"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "D7S820",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "12,13"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "TH01",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "7,9"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "TPOX",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "8"
+                                }
+                            ]
+                        },
+                        {
+                            "conflict": "false",
+                            "id": "vWA",
+                            "marker-data-list": [
+                                {
+                                    "marker-alleles": "14,16"
+                                }
+                            ]
+                        }
+                    ],
+                    "source-list": [
+                        {
+                            "reference": {
+                                "resource-internal-ref": "PubMed=28680140"
+                            }
+                        }
+                    ]
+                },
+                "web-page-list": [
+                    "https://en.cellline.jp/product/ncc-cds1-x1-c1/"
+                ],
+                "xref-list": [
+                    {
+                        "accession": "ACH-002795",
+                        "category": "Cell line databases/resources",
+                        "database": "DepMap",
+                        "url": "https://depmap.org/portal/cell_line/ACH-002795"
+                    },
+                    {
+                        "accession": "Q95992505",
+                        "category": "Encyclopedic resources",
+                        "database": "Wikidata",
+                        "url": "https://www.wikidata.org/wiki/Q95992505"
+                    }
+                ]
+            }
+        ],
+        "publication-list": [
+            {
+                "author-list": [
+                    {
+                        "name": "Oyama R."
+                    },
+                    {
+                        "name": "Takahashi M."
+                    },
+                    {
+                        "name": "Yoshida A."
+                    },
+                    {
+                        "name": "Sakumoto M."
+                    },
+                    {
+                        "name": "Takai Y."
+                    },
+                    {
+                        "name": "Kito F."
+                    },
+                    {
+                        "name": "Shiozawa K."
+                    },
+                    {
+                        "name": "Qiao Z.-W."
+                    },
+                    {
+                        "name": "Arai Y."
+                    },
+                    {
+                        "name": "Shibata T."
+                    },
+                    {
+                        "name": "Araki Y."
+                    },
+                    {
+                        "name": "Endo M."
+                    },
+                    {
+                        "name": "Kawai A."
+                    },
+                    {
+                        "name": "Kondo T."
+                    }
+                ],
+                "date": "2017",
+                "first-page": "4712",
+                "internal-id": "PubMed=28680140",
+                "journal-name": "Sci. Rep.",
+                "last-page": "4712",
+                "title": "Generation of novel patient-derived CIC-DUX4 sarcoma xenografts and cell lines.",
+                "type": "article",
+                "volume": "7",
+                "xref-list": [
+                    {
+                        "accession": "10.1038/s41598-017-04967-0",
+                        "category": "Reference resources",
+                        "database": "DOI",
+                        "url": "https://dx.doi.org/10.1038/s41598-017-04967-0"
+                    },
+                    {
+                        "accession": "28680140",
+                        "category": "Reference resources",
+                        "database": "PubMed",
+                        "url": "https://www.ncbi.nlm.nih.gov/pubmed/28680140"
+                    }
+                ]
+            }
+        ]
+    }
+}

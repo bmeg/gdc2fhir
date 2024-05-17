@@ -43,7 +43,11 @@ Below is an example of the data-schema conversion and generation flow for a sing
 
 ##### - Cellosaurus
 
-Valid data input for cellosaurus cell-lines follows [Cellosaurus GET API](https://api.cellosaurus.org/) format.
+- preprocessing 
+  - The [Cellosaurus GET API](https://api.cellosaurus.org/) provides access to the purest data format available. Utilizing Cellosaurus's `fhirizer resource`, you can transform a subset of cell-lines, that have previously been filtered from cellosaurus.obo to cells.json.gz, into a refined cellosaurus ndjson file. This file can then be used with `fhirizer generate` to create Cellosaurus FHIR objects. 
+  ```
+   fhirizer resource --name cellosaurus --path tests/fixtures/cellosaurus/cells.json.gz  --out_dir tests/fixtures/cellosaurus
+  ```
 
 1. User input to fhirizer client: 
    - ./projects/cellosaurus-STUDY/cellosaurus_celllines.ndjson
