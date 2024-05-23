@@ -251,6 +251,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     research_subject.status = "active"
     research_subject.study = study_ref
     research_subject.subject = subject_ref
+    research_subject.id = case['Patient.id']
 
     # create Encounter **
     encounter = None
