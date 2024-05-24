@@ -18,6 +18,7 @@ from fhir.resources.researchsubject import ResearchSubject
 from fhir.resources.imagingstudy import ImagingStudy, ImagingStudySeries
 from fhir.resources.procedure import Procedure
 from fhir.resources.medicationadministration import MedicationAdministration
+from fhir.resources.bodystructure import BodyStructure, BodyStructureIncludedStructure
 from fhir.resources.medication import Medication
 from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent, \
@@ -45,6 +46,10 @@ cancer_pathological_staging = utils._read_json(str(Path(importlib.resources.file
     'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'diagnosis' / 'cancer_pathological_staging.json')))
 ncit2mondo = utils.ncit2mondo(
     str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'ncit2mondo.json.gz')))
+biospecimen_observation = utils._read_json(str(Path(importlib.resources.files(
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_observation.json')))
+aliquot = utils._read_json(str(Path(importlib.resources.files(
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'aliquot.json')))
 
 
 def assign_fhir_for_project(project, disease_types=disease_types):
@@ -144,6 +149,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     treatments_med = []
     treatments_medadmin = []
     procedure = None
+    observations = []
 
     if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$",
                                                                                        case['Patient.identifier']):
@@ -301,11 +307,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"].keys():
                 diagnosis_display = case['diagnoses']['Condition.code_primary_diagnosis']
                 ncit_condition_display = \
-                data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display][
-                    "termDef"]["term"]
+                    data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display][
+                        "termDef"]["term"]
                 ncit_condition_code = \
-                data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display][
-                    "termDef"]["term_id"]
+                    data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"][diagnosis_display][
+                        "termDef"]["term_id"]
                 ncit_condition = {"system": "https://ncit.nci.nih.gov", "display": ncit_condition_display,
                                   "code": ncit_condition_code}
                 condition_codes_list.append(ncit_condition)
@@ -317,7 +323,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     mondo_coding = {'system': "https://www.ebi.ac.uk/ols4/ontologies/mondo", 'display': mondo_display,
                                     'code': mondo_code}
                     condition_codes_list.append(mondo_coding)
-                    
+
         # required placeholder
         loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
         condition_codes_list.append(loinc_annotation)
@@ -327,6 +333,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
 
     condition = None  # normal tissue don't/shouldn't  have diagnoses or condition
+    body_structure = None
     if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
 
         # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
@@ -349,8 +356,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if 'diagnoses' in case.keys() and 'Condition.onsetAge' in case['diagnoses'].keys():
             condition.onsetString = str(case['diagnoses']['Condition.onsetAge'])
 
+        body_structure = []
+
         # condition.bodySite <-- primary_site snomed
         l_body_site = []
+        bd_coding = []
         for body_site in case['ResearchStudy']['Condition.bodySite']:
             # print("body_site", body_site)
             for p in primary_sites:
@@ -364,6 +374,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     if code == "0000":
                         print(f"Condition body-site code for {body_site} for patient-id: {patient.id} not found.")
                     l_body_site.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
+                    bd_coding.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
+
+        body_structure = BodyStructure(
+            **{"includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": bd_coding}})],
+               "patient": subject_ref
+               })
 
         cc_body_site = CodeableConcept.construct()
         cc_body_site.coding = l_body_site
@@ -520,6 +536,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     med_admin = MedicationAdministration(**data)
                     treatments_medadmin.append(med_admin)
 
+    if observation:
+        observations.append(observation)
+
     # create specimen
     def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specimens):
         if name in dat.keys():
@@ -554,9 +573,39 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         return img
 
+    def get_component(key, value=None, component_type=None):
+        if component_type == 'string':
+            value = {"valueString": value}
+        elif component_type == 'int':
+            value = {"valueInteger": value}
+        elif component_type == 'float':
+            value = {"valueQuantity": {"value": value}}
+        elif component_type == 'bool':
+            value = {"valueBoolean": value}
+        else:
+            pass
+
+        component = {
+            "code": {
+                "coding": [
+                    {
+                        "system": "https://cadsr.cancer.gov/sample_laboratory_observation",
+                        "code": key,
+                        "display": key
+                    }
+                ],
+                "text": key
+            }
+        }
+        if value:
+            component.update(value)
+
+        return component
+
     sample_list = None
     slide_list = []
     procedures = []
+    specimen_laboratory_observations = []
     if "samples" in case.keys():
         samples = case["samples"]
         all_samples = []
@@ -597,6 +646,26 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         'code': "5432521"}]
                     sp.method = sample_processing
                     specimen.processing = [sp]
+                sample_observation_components = []
+
+                if "Observation.sample.composition" in sample.keys():
+                    c = get_component('composition', value=sample["Observation.sample.composition"],
+                                      component_type='string')
+                    sample_observation_components.append(c)
+                if "Observation.sample.is_ffpe" in sample.keys():
+                    c = get_component('is_ffpe', value=sample["Observation.sample.is_ffpe"], component_type='bool')
+                    sample_observation_components.append(c)
+
+                sample_observation = None
+                if sample_observation_components:
+                    sample_observation = biospecimen_observation
+                    sample_observation['component'] = sample_observation_components
+
+                    sample_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
+                    sample_observation['specimen'] = {"reference": "/".join(["Specimen", specimen.id])}
+                    sample_observation['focus'][0] = {"reference": "/".join(["Specimen", specimen.id])}
+
+                    observations.append(sample_observation)
 
                 specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
                 if specimen not in all_samples:
@@ -666,12 +735,36 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     if aliquot_specimen not in all_aliquots:
                                                         all_aliquots.append(aliquot_specimen)
 
+                                                aliquot_observation_components = []
+                                                if "Observation.aliquot.analyte_type" in aliquot.keys():
+                                                    c = get_component('analyte_type',
+                                                                      value=aliquot["Observation.aliquot.analyte_type"],
+                                                                      component_type='string')
+                                                    aliquot_observation_components.append(c)
+                                                if "Observation.aliquot.concentration" in sample.keys():
+                                                    c = get_component('concentration',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.concentration"],
+                                                                      component_type='float')
+                                                    aliquot_observation_components.append(c)
+
+                                                aliquot_observation = None
+                                                if aliquot_observation_components:
+                                                    aliquot_observation = biospecimen_observation
+                                                    aliquot_observation['component'] = aliquot_observation_components
+
+                                                    aliquot_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
+                                                    aliquot_observation['specimen'] = {"reference": "/".join(["Specimen", aliquot_specimen.id])}
+                                                    aliquot_observation['focus'][0] = {"reference": "/".join(["Specimen", aliquot_specimen.id])}
+
+                                                    observations.append(aliquot_observation)
+
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
 
-    return {'patient': patient, 'encounter': encounter, 'observation': observation, 'condition': condition,
+    return {'patient': patient, 'encounter': encounter, 'observations': observations, 'condition': condition,
             'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
             'imaging_study': slide_list, "procedures": procedures, "med_admin": treatments_medadmin,
-            "med": treatments_med}
+            "med": treatments_med, "body_structure": body_structure}
 
 
 def fhir_ndjson(entity, out_path):
@@ -691,8 +784,8 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     patients = [orjson.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
     encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if
                   'encounter' in fhir_case.keys() and fhir_case['encounter']]
-    observations = [orjson.loads(fhir_case['observation'].json()) for fhir_case in all_fhir_case_obj if
-                    'observation' in fhir_case.keys() and fhir_case['observation']]
+#   observations = [orjson.loads(fhir_case['observations'].json()) for fhir_case in all_fhir_case_obj if
+#                    'observations' in fhir_case.keys() and fhir_case['observations']]
     conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if
                   'condition' in fhir_case.keys() and fhir_case['condition']]
     research_subjects = [orjson.loads(fhir_case['research_subject'].json()) for fhir_case in all_fhir_case_obj]
@@ -702,11 +795,25 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
         [orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].json()) for fhir_case in
          all_fhir_case_obj]))
 
+    body_structure = [orjson.loads(fhir_case['body_structure'].json()) for fhir_case in all_fhir_case_obj if
+                      'body_structure' in fhir_case.keys() and fhir_case['body_structure']]
+
     specimens = []
     for fhir_case in all_fhir_case_obj:
         if fhir_case["specimens"]:
             for specimen in fhir_case["specimens"]:
                 specimens.append(orjson.loads(specimen.json()))
+
+    observations = []
+    l = []
+    for fhir_case in all_fhir_case_obj:
+        if fhir_case["observations"]:
+            for obs in fhir_case["observations"]:
+                l.append(type(obs))
+                if isinstance(obs, dict):
+                    observations.append(obs)
+                else:
+                    observations.append(orjson.loads(obs.json()))
 
     procedures = []
     for fhir_case in all_fhir_case_obj:
@@ -750,6 +857,9 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     if procedures:
         fhir_ndjson(procedures, "".join([out_dir, "Procedure.ndjson"]))
         print("Successfully converted GDC case info to FHIR's Procedure ndjson file!")
+    if body_structure:
+        fhir_ndjson(body_structure, "".join([out_dir, "BodyStructure.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's BodyStructure ndjson file!")
 
     med_admins = []
     for fhir_case in all_fhir_case_obj:
@@ -829,7 +939,7 @@ def assign_fhir_for_file(file):
                            'display': file['DocumentReference.type'],
                            'code': file['DocumentReference.type']}]
 
-        document.type = cc_type
+        # document.type = cc_type
 
     if 'DocumentReference.version' in file.keys() and file['DocumentReference.version']:
         document.version = file['DocumentReference.version']
@@ -862,6 +972,15 @@ def assign_fhir_for_file(file):
         system = "".join(["https://gdc.cancer.gov/", "data_format"])
         profile.valueCoding = {"code": "0000", "display": file['DocumentReference.content.profile'],
                                "system": system}
+
+        cc_type = CodeableConcept.construct()
+        system = "".join(["https://gdc.cancer.gov/", "data_type"])
+        cc_type.coding = [{'system': system,
+                           'display': file['DocumentReference.content.profile'],
+                           'code': file['DocumentReference.content.profile']}]
+
+        document.type = cc_type
+
     if profile:
         data = {'attachment': attachment, "profile": [profile]}
     else:
