@@ -1,5 +1,6 @@
 import os
 import re
+import uuid
 import json
 import orjson
 from iteration_utilities import unique_everseen
@@ -667,10 +668,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 sample_observation = None
                 if sample_observation_components:
                     sample_observation = biospecimen_observation
+                    sample_observation['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, specimen.id))
                     sample_observation['component'] = sample_observation_components
 
                     sample_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
-                    sample_observation['specimen'] = {"reference": "/".join(["Specimen", specimen.id])}
                     sample_observation['focus'][0] = {"reference": "/".join(["Specimen", specimen.id])}
 
                     observations.append(sample_observation)
@@ -699,10 +700,50 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             if portion_specimen not in all_portions:
                                 all_portions.append(portion_specimen)
 
+                            portions_observation_components = []
+                            if "Observation.portions.weight" in sample.keys():
+                                c = get_component('weight', value=sample["Observation.portions.weight"],
+                                                  component_type='int')
+                                portions_observation_components.append(c)
+                            if "Observation.portions.is_ffpe" in sample.keys():
+                                c = get_component('is_ffpe', value=sample["Observation.portions.is_ffpe"],
+                                                  component_type='bool')
+                                portions_observation_components.append(c)
+
+                            portions_observation = None
+                            if portions_observation_components:
+                                portions_observation = biospecimen_observation
+                                portions_observation['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, portion_specimen.id))
+                                portions_observation['component'] = portions_observation_components
+
+                                portions_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
+                                portions_observation['focus'][0] = {"reference": "/".join(["Specimen", portion_specimen.id])}
+
+                                observations.append(portions_observation)
+
                             if "slides" in portion.keys():
                                 for slide in portion["slides"]:
                                     slide_list.append(
                                         add_imaging_study(slide=slide, patient=patient, sample=portion_specimen))
+
+                                    slides_observation_components = []
+                                    if "Observation.slides.section_location" in sample.keys():
+                                        c = get_component('section_location', value=sample["Observation.slides.section_location"],
+                                                          component_type='string')
+                                        slides_observation_components.append(c)
+
+                                    slides_observation = None
+                                    if slides_observation_components:
+                                        slides_observation = biospecimen_observation
+                                        slides_observation['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, slide["ImagingStudy.id"]))
+                                        slides_observation['component'] = slides_observation_components
+
+                                        slides_observation['subject'] = {
+                                            "reference": "/".join(["Patient", patient.id])}
+                                        slides_observation['focus'][0] = {
+                                            "reference": "/".join(["ImagingStudy", slide["ImagingStudy.id"]])}
+
+                                        observations.append(slides_observation)
 
                             if "analytes" in portion.keys():
                                 for analyte in portion["analytes"]:
@@ -737,7 +778,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                               value=analyte["Specimen.type.analyte"],
                                                               component_type='string')
                                             analyte_observation_components.append(c)
-                                            print("in analyte type")
 
                                         if "Observation.analyte.concentration" in analyte.keys() and analyte[
                                                                   "Observation.analyte.concentration"]:
@@ -746,7 +786,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                   "Observation.analyte.concentration"],
                                                               component_type='float')
                                             analyte_observation_components.append(c)
-                                            print("in analyte concentration")
 
                                         if "Observation.analyte.experimental_protocol_type" in analyte.keys() and analyte["Observation.analyte.experimental_protocol_type"]:
                                             c = get_component('experimental_protocol_type',
@@ -754,8 +793,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                   "Observation.analyte.experimental_protocol_type"],
                                                               component_type='string')
                                             analyte_observation_components.append(c)
-                                            print("in analyte experimental_protocol_type")
-                                        print("component_len: ", len(analyte_observation_components), "\n")
 
                                         if "Observation.analyte.normal_tumor_genotype_snp_match" in analyte.keys() and analyte["Observation.analyte.normal_tumor_genotype_snp_match"]:
                                             c = get_component('Observation.analyte.normal_tumor_genotype_snp_match',
@@ -788,6 +825,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         analyte_observation = None
                                         if analyte_observation_components:
                                             analyte_observation = biospecimen_observation
+                                            analyte_observation['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, analyte_specimen.id))
                                             analyte_observation['component'] = analyte_observation_components
 
                                             analyte_observation['subject'] = {
@@ -798,7 +836,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 "reference": "/".join(["Specimen", analyte_specimen.id])}
 
                                             observations.append(analyte_observation)
-                                            print("Observations: ", observations, "\n\n")
 
                                         if "aliquots" in analyte.keys():
                                             for aliquot in analyte["aliquots"]:
@@ -829,10 +866,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 aliquot_observation = None
                                                 if aliquot_observation_components:
                                                     aliquot_observation = biospecimen_observation
+                                                    aliquot_observation['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, aliquot_specimen.id))
                                                     aliquot_observation['component'] = aliquot_observation_components
 
                                                     aliquot_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
-                                                    aliquot_observation['specimen'] = {"reference": "/".join(["Specimen", aliquot_specimen.id])}
                                                     aliquot_observation['focus'][0] = {"reference": "/".join(["Specimen", aliquot_specimen.id])}
 
                                                     observations.append(aliquot_observation)

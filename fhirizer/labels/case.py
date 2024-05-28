@@ -599,6 +599,15 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='samples.portions.weight'
+        ),
+        destination=Destination(
+            name='Observation.portions.weight'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='samples.days_to_collection'
         ),
         destination=Destination(
@@ -774,6 +783,15 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='ImagingStudy.id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.slides.section_location'
+        ),
+        destination=Destination(
+            name='Observation.slides.section_location'
         )
     ),
 

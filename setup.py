@@ -24,6 +24,7 @@ setup(
         'pathlib',
         'orjson',
         'tqdm',
+        'uuid',
         'iteration_utilities',
         'icd10-cm',
         'beautifulsoup4',
