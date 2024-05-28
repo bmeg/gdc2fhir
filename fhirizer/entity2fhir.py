@@ -466,7 +466,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         f.write(log_output_diag)
 
             condition.stage = staging_list
-            observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])})]
+            observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])}), subject_ref]
 
             # create medication administration and medication
             treatment_content_bool = False
