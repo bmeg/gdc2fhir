@@ -1,0 +1,1 @@
+{"resourceType": "BodyStructure", "includedStructure": [{"structure": {"coding": [{"system": "http://snomed.info/sct", "code": "76752008", "display": "Breast"}]}}], "patient": {"reference": "Patient/17f275c1-a0d4-487d-8f02-ea279584b4cd"}}

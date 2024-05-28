@@ -689,15 +689,6 @@ case_maps = [Map(
 
     Map(
         source=Source(
-            name='samples.portions.analytes.spectrophotometer_method'
-        ),
-        destination=Destination(
-            name='Observation.analyte.spectrophotometer_method'
-        )
-    ),
-
-    Map(
-        source=Source(
             name='samples.portions.analytes.aliquots.analyte_type'
         ),
         destination=Destination(

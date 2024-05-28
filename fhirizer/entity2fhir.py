@@ -602,10 +602,18 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         return component
 
+    def add_component(key, value, component_type, component_list):
+        c = get_component(key,
+                          value=value,
+                          component_type=component_type)
+        component_list.append(c)
+        return component_list
+
+
     sample_list = None
     slide_list = []
     procedures = []
-    specimen_laboratory_observations = []
+    # specimen_laboratory_observations = []
     if "samples" in case.keys():
         samples = case["samples"]
         all_samples = []
@@ -646,8 +654,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         'code': "5432521"}]
                     sp.method = sample_processing
                     specimen.processing = [sp]
-                sample_observation_components = []
 
+                sample_observation_components = []
                 if "Observation.sample.composition" in sample.keys():
                     c = get_component('composition', value=sample["Observation.sample.composition"],
                                       component_type='string')
@@ -723,6 +731,75 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         if analyte_specimen not in all_analytes:
                                             all_analytes.append(analyte_specimen)
 
+                                        analyte_observation_components = []
+                                        if "Specimen.type.analyte" in analyte.keys() and analyte["Specimen.type.analyte"]:
+                                            c = get_component('analyte_type',
+                                                              value=analyte["Specimen.type.analyte"],
+                                                              component_type='string')
+                                            analyte_observation_components.append(c)
+                                            print("in analyte type")
+
+                                        if "Observation.analyte.concentration" in analyte.keys() and analyte[
+                                                                  "Observation.analyte.concentration"]:
+                                            c = get_component('concentration',
+                                                              value=analyte[
+                                                                  "Observation.analyte.concentration"],
+                                                              component_type='float')
+                                            analyte_observation_components.append(c)
+                                            print("in analyte concentration")
+
+                                        if "Observation.analyte.experimental_protocol_type" in analyte.keys() and analyte["Observation.analyte.experimental_protocol_type"]:
+                                            c = get_component('experimental_protocol_type',
+                                                              value=analyte[
+                                                                  "Observation.analyte.experimental_protocol_type"],
+                                                              component_type='string')
+                                            analyte_observation_components.append(c)
+                                            print("in analyte experimental_protocol_type")
+                                        print("component_len: ", len(analyte_observation_components), "\n")
+
+                                        if "Observation.analyte.normal_tumor_genotype_snp_match" in analyte.keys() and analyte["Observation.analyte.normal_tumor_genotype_snp_match"]:
+                                            c = get_component('Observation.analyte.normal_tumor_genotype_snp_match',
+                                                              value=analyte[
+                                                                  "Observation.analyte.normal_tumor_genotype_snp_match"],
+                                                              component_type='string')
+                                            analyte_observation_components.append(c)
+
+                                        if "Observation.analyte.ribosomal_rna_28s_16s_ratio" in analyte.keys() and analyte["Observation.analyte.ribosomal_rna_28s_16s_ratio"]:
+                                            c = get_component('ribosomal_rna_28s_16s_ratio',
+                                                              value=analyte[
+                                                                  "Observation.analyte.ribosomal_rna_28s_16s_ratio"],
+                                                              component_type='float')
+                                            analyte_observation_components.append(c)
+
+                                        if "Observation.analyte.rna_integrity_number" in analyte.keys() and analyte["Observation.analyte.rna_integrity_number"]:
+                                            c = get_component('rna_integrity_number',
+                                                              value=analyte[
+                                                                  "Observation.analyte.rna_integrity_number"],
+                                                              component_type='float')
+                                            analyte_observation_components.append(c)
+
+                                        if "Observation.analyte.spectrophotometer_method" in analyte.keys() and analyte["Observation.analyte.spectrophotometer_method"]:
+                                            c = get_component('spectrophotometer_method',
+                                                              value=analyte[
+                                                                  "Observation.analyte.spectrophotometer_method"],
+                                                              component_type='string')
+                                            analyte_observation_components.append(c)
+
+                                        analyte_observation = None
+                                        if analyte_observation_components:
+                                            analyte_observation = biospecimen_observation
+                                            analyte_observation['component'] = analyte_observation_components
+
+                                            analyte_observation['subject'] = {
+                                                "reference": "/".join(["Patient", patient.id])}
+                                            analyte_observation['specimen'] = {
+                                                "reference": "/".join(["Specimen", analyte_specimen.id])}
+                                            analyte_observation['focus'][0] = {
+                                                "reference": "/".join(["Specimen", analyte_specimen.id])}
+
+                                            observations.append(analyte_observation)
+                                            print("Observations: ", observations, "\n\n")
+
                                         if "aliquots" in analyte.keys():
                                             for aliquot in analyte["aliquots"]:
                                                 if "Specimen.id.aliquot" in aliquot.keys():
@@ -736,12 +813,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         all_aliquots.append(aliquot_specimen)
 
                                                 aliquot_observation_components = []
-                                                if "Observation.aliquot.analyte_type" in aliquot.keys():
+                                                if "Observation.aliquot.analyte_type" in aliquot.keys() and aliquot["Observation.aliquot.analyte_type"]:
                                                     c = get_component('analyte_type',
                                                                       value=aliquot["Observation.aliquot.analyte_type"],
                                                                       component_type='string')
                                                     aliquot_observation_components.append(c)
-                                                if "Observation.aliquot.concentration" in sample.keys():
+                                                if "Observation.aliquot.concentration" in sample.keys() and aliquot[
+                                                                          "Observation.aliquot.concentration"]:
                                                     c = get_component('concentration',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.concentration"],
@@ -805,11 +883,9 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
                 specimens.append(orjson.loads(specimen.json()))
 
     observations = []
-    l = []
     for fhir_case in all_fhir_case_obj:
         if fhir_case["observations"]:
             for obs in fhir_case["observations"]:
-                l.append(type(obs))
                 if isinstance(obs, dict):
                     observations.append(obs)
                 else:
