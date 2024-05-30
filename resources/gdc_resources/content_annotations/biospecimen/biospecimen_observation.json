@@ -25,6 +25,9 @@
   "subject": {
     "reference": "Patient/"
   },
+  "specimen": {
+    "reference": "Specimen/example"
+  },
   "focus": [{
     "reference": "Specimen/"
   }],

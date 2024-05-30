@@ -603,13 +603,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         return component
 
-    def add_component(key, value, component_type, component_list):
-        c = get_component(key,
-                          value=value,
-                          component_type=component_type)
-        component_list.append(c)
-        return component_list
-
 
     sample_list = None
     slide_list = []
@@ -672,6 +665,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     sample_observation['component'] = sample_observation_components
 
                     sample_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
+                    sample_observation['specimen'] = {"reference": "/".join(["Specimen", specimen.id])}
                     sample_observation['focus'][0] = {"reference": "/".join(["Specimen", specimen.id])}
 
                     observations.append(sample_observation)
@@ -717,6 +711,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 portions_observation['component'] = portions_observation_components
 
                                 portions_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
+                                portions_observation['specimen'] = {"reference": "/".join(["Specimen", portion_specimen.id])}
                                 portions_observation['focus'][0] = {"reference": "/".join(["Specimen", portion_specimen.id])}
 
                                 observations.append(portions_observation)
@@ -740,6 +735,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         slides_observation['subject'] = {
                                             "reference": "/".join(["Patient", patient.id])}
+                                        slides_observation['specimen'] = {
+                                            "reference": "/".join(["Specimen", portion_specimen.id])}
                                         slides_observation['focus'][0] = {
                                             "reference": "/".join(["ImagingStudy", slide["ImagingStudy.id"]])}
 
@@ -870,6 +867,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     aliquot_observation['component'] = aliquot_observation_components
 
                                                     aliquot_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
+                                                    aliquot_observation['specimen'] = {"reference": "/".join(["Specimen", aliquot_specimen.id])}
                                                     aliquot_observation['focus'][0] = {"reference": "/".join(["Specimen", aliquot_specimen.id])}
 
                                                     observations.append(aliquot_observation)
@@ -882,8 +880,20 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             "med": treatments_med, "body_structure": body_structure}
 
 
+def remove_duplicates(entities):
+    seen = set()
+    unique_entities = []
+    for e in entities:
+        fhir_model = json.dumps(e, sort_keys=True)
+        if fhir_model not in seen:
+            seen.add(fhir_model)
+            unique_entities.append(e)
+    return unique_entities
+
+
 def fhir_ndjson(entity, out_path):
     if isinstance(entity, list):
+        entity = remove_duplicates(entity)
         with open(out_path, 'w', encoding='utf8') as file:
             file.write('\n'.join(map(lambda e: json.dumps(e, ensure_ascii=False), entity)))
     else:
@@ -926,7 +936,9 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
                 if isinstance(obs, dict):
                     observations.append(obs)
                 else:
+                    print(orjson.loads(obs.json()))
                     observations.append(orjson.loads(obs.json()))
+    observations = list({v['id']: v for v in observations}.values())
 
     procedures = []
     for fhir_case in all_fhir_case_obj:
@@ -962,7 +974,9 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
         fhir_ndjson(research_subjects, "".join([out_dir, "ResearchSubject.ndjson"]))
         print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson file!")
     if projects:
-        fhir_ndjson(projects + programs, "".join([out_dir, "ResearchStudy.ndjson"]))
+        rs = projects + programs
+        rs = list({v['id']: v for v in rs}.values())
+        fhir_ndjson(rs, "".join([out_dir, "ResearchStudy.ndjson"]))
         print("Successfully converted GDC case info to FHIR's ResearchStudy ndjson file!")
     if imaging_study:
         fhir_ndjson(imaging_study, "".join([out_dir, "ImagingStudy.ndjson"]))
