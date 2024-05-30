@@ -358,8 +358,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if 'diagnoses' in case.keys() and 'Condition.onsetAge' in case['diagnoses'].keys():
             condition.onsetString = str(case['diagnoses']['Condition.onsetAge'])
 
-        body_structure = []
-
         # condition.bodySite <-- primary_site snomed
         l_body_site = []
         bd_coding = []
@@ -378,9 +376,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     l_body_site.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
                     bd_coding.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
 
-
         body_structure = BodyStructure(
-            **{"includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": bd_coding}})],
+            **{"id": str(uuid.uuid3(uuid.NAMESPACE_DNS, patient.id)), "includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": bd_coding}})],
                "patient": subject_ref
                })
 
