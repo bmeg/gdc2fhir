@@ -625,6 +625,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             if 'Specimen.id.sample' in sample.keys():
                 specimen = Specimen.construct()
                 specimen.id = sample["Specimen.id.sample"]
+
+                specimen_ident = Identifier.construct()
+                specimen_ident.value = sample["Specimen.id.sample"]
+                specimen_ident.system = "".join(["https://gdc.cancer.gov/", "sample"])
+                specimen.identifier = [specimen_ident]
+
                 # if specimen_exists(specimen.id, all_samples):
                 #    print("Sample exists", specimen.id)
 
@@ -708,6 +714,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                             portion_specimen = Specimen.construct()
                             portion_specimen.id = portion["Specimen.id.portion"]
+
+                            portion_ident = Identifier.construct()
+                            portion_ident.value = portion["Specimen.id.portion"]
+                            portion_ident.system = "".join(["https://gdc.cancer.gov/", "portion"])
+                            portion_specimen.identifier = [portion_ident]
 
                             # if specimen_exists(portion_specimen.id, all_portions):
                             #    print("Portion exists", portion_specimen.id)
@@ -795,6 +806,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                     if "Specimen.id.analyte" in analyte.keys():
                                         analyte_specimen = Specimen.construct()
                                         analyte_specimen.id = analyte["Specimen.id.analyte"]
+
+                                        analyte_ident = Identifier.construct()
+                                        analyte_ident.value = analyte["Specimen.id.analyte"]
+                                        analyte_ident.system = "".join(["https://gdc.cancer.gov/", "analyte"])
+                                        analyte_specimen.identifier = [analyte_ident]
 
                                         # if specimen_exists(analyte_specimen.id, all_analytes):
                                         #    print("Analyte exists", analyte_specimen.id)
@@ -905,6 +921,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 if "Specimen.id.aliquot" in aliquot.keys():
                                                     aliquot_specimen = Specimen.construct()
                                                     aliquot_specimen.id = aliquot["Specimen.id.aliquot"]
+
+                                                    aliquot_ident = Identifier.construct()
+                                                    aliquot_ident.value = aliquot["Specimen.id.aliquot"]
+                                                    aliquot_ident.system = "".join(
+                                                        ["https://gdc.cancer.gov/", "aliquot"])
+                                                    aliquot_specimen.identifier = [aliquot_ident]
+
                                                     aliquot_specimen.subject = Reference(
                                                         **{"reference": "/".join(["Patient", patient.id])})
                                                     aliquot_specimen.parent = [Reference(
