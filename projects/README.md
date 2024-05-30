@@ -57,5 +57,5 @@ Below is an example of the data-schema conversion and generation flow for a sing
     ```
 3. Validate output:
    ```
-    g3t utilities meta validate > out.txt
+    g3t meta validate
     ```

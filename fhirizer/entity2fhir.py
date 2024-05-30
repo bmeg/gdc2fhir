@@ -2,6 +2,7 @@ import os
 import re
 import uuid
 import json
+import copy
 import orjson
 from iteration_utilities import unique_everseen
 from fhir.resources.identifier import Identifier
@@ -150,7 +151,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     treatments_med = []
     treatments_medadmin = []
     procedure = None
-    observations = []
+    condition_observations = []
 
     if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$",
                                                                                        case['Patient.identifier']):
@@ -377,6 +378,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     l_body_site.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
                     bd_coding.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
 
+
         body_structure = BodyStructure(
             **{"includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": bd_coding}})],
                "patient": subject_ref
@@ -538,7 +540,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     treatments_medadmin.append(med_admin)
 
     if observation:
-        observations.append(observation)
+        condition_observations.append(orjson.loads(observation.json()))
 
     # create specimen
     def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specimens):
@@ -603,22 +605,33 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         return component
 
+    def specimen_exists(specimen_id, specimen_list):
+        return any(specimen.id == specimen_id for specimen in specimen_list)
 
     sample_list = None
     slide_list = []
     procedures = []
-    # specimen_laboratory_observations = []
     if "samples" in case.keys():
         samples = case["samples"]
         all_samples = []
         all_portions = []
         all_analytes = []
         all_aliquots = []
+
+        sample_observations = []
+        portion_observations = []
+        analyte_observations = []
+        aliquot_observations = []
+        slides_observations = []
+
         for sample in samples:
             if 'Specimen.id.sample' in sample.keys():
                 specimen = Specimen.construct()
                 specimen.id = sample["Specimen.id.sample"]
+                # if specimen_exists(specimen.id, all_samples):
+                #    print("Sample exists", specimen.id)
 
+                # print("SAMPLE: ", specimen.id)
                 # add sample procedure
                 procedure = Procedure.construct()
                 procedure.status = "completed"
@@ -668,39 +681,56 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     sample_observation['specimen'] = {"reference": "/".join(["Specimen", specimen.id])}
                     sample_observation['focus'][0] = {"reference": "/".join(["Specimen", specimen.id])}
 
-                    observations.append(sample_observation)
+                    # sample_observations.append(sample_observation)
+                    # print("ADDED SAMPLE OBSERVATION: \n", sample_observation)
+                    if sample_observation not in sample_observations:
+                        sample_observations.append(copy.deepcopy(sample_observation))
+                        # print("ADDED SAMPLE OBSERVATION: \n", json.dumps(sample_observation, indent=2))
 
                 specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
-                if specimen not in all_samples:
+                # if specimen not in all_samples:
+                #    all_samples.append(specimen)
+
+                if not specimen_exists(specimen.id, all_samples):
                     all_samples.append(specimen)
 
                 if "slides" in sample.keys():
                     for slide in sample["slides"]:
                         slide_list.append(add_imaging_study(slide=slide, patient=patient, sample=specimen))
-
+                """
                 add_specimen(dat=sample, name="analytes", id_key="Specimen.id.analyte", has_parent=True,
                              parent=sample, patient=patient, all_fhir_specimens=all_analytes)
 
                 add_specimen(dat=sample, name="aliquots", id_key="Specimen.id.aliquot", has_parent=True,
                              parent=sample, patient=patient, all_fhir_specimens=all_aliquots)
+                """
 
                 if "portions" in sample.keys():
                     for portion in sample['portions']:
                         if "Specimen.id.portion" in portion.keys():
+
                             portion_specimen = Specimen.construct()
                             portion_specimen.id = portion["Specimen.id.portion"]
+
+                            # if specimen_exists(portion_specimen.id, all_portions):
+                            #    print("Portion exists", portion_specimen.id)
+
                             portion_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
                             portion_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", specimen.id])})]
-                            if portion_specimen not in all_portions:
+
+                            #if portion_specimen not in all_portions:
+                            #    all_portions.append(portion_specimen)
+
+                            if not specimen_exists(portion_specimen.id, all_portions):
                                 all_portions.append(portion_specimen)
 
                             portions_observation_components = []
-                            if "Observation.portions.weight" in sample.keys():
-                                c = get_component('weight', value=sample["Observation.portions.weight"],
+                            if "Observation.portions.weight" in portion.keys():
+                                c = get_component('weight', value=portion["Observation.portions.weight"],
                                                   component_type='int')
                                 portions_observation_components.append(c)
-                            if "Observation.portions.is_ffpe" in sample.keys():
-                                c = get_component('is_ffpe', value=sample["Observation.portions.is_ffpe"],
+                            if "Observation.portions.is_ffpe" in portion.keys():
+                                c = get_component('is_ffpe', value=portion["Observation.portions.is_ffpe"],
                                                   component_type='bool')
                                 portions_observation_components.append(c)
 
@@ -711,10 +741,16 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 portions_observation['component'] = portions_observation_components
 
                                 portions_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
-                                portions_observation['specimen'] = {"reference": "/".join(["Specimen", portion_specimen.id])}
-                                portions_observation['focus'][0] = {"reference": "/".join(["Specimen", portion_specimen.id])}
+                                portions_observation['specimen'] = {
+                                    "reference": "/".join(["Specimen", portion_specimen.id])}
+                                portions_observation['focus'][0] = {
+                                    "reference": "/".join(["Specimen", portion_specimen.id])}
 
-                                observations.append(portions_observation)
+                                # portion_observations.append(portions_observation)
+
+                                if portions_observation not in portion_observations:
+                                    portion_observations.append(copy.deepcopy(portions_observation))
+                                    # print("ADDED PORTIONS OBSERVATION: \n", json.dumps(portions_observation, indent=2))
 
                             if "slides" in portion.keys():
                                 for slide in portion["slides"]:
@@ -722,16 +758,27 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         add_imaging_study(slide=slide, patient=patient, sample=portion_specimen))
 
                                     slides_observation_components = []
-                                    if "Observation.slides.section_location" in sample.keys():
-                                        c = get_component('section_location', value=sample["Observation.slides.section_location"],
+                                    if "Observation.slides.section_location" in slide.keys():
+                                        c = get_component('section_location',
+                                                          value=slide["Observation.slides.section_location"],
                                                           component_type='string')
                                         slides_observation_components.append(c)
 
                                     slides_observation = None
                                     if slides_observation_components:
                                         slides_observation = biospecimen_observation
-                                        slides_observation['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, slide["ImagingStudy.id"]))
+                                        slides_observation['id'] = str(
+                                            uuid.uuid3(uuid.NAMESPACE_DNS, slide["ImagingStudy.id"]))
                                         slides_observation['component'] = slides_observation_components
+                                        slides_observation['category'] = [{
+                                            "coding": [
+                                                {
+                                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                                    "code": "imaging",
+                                                    "display": "imaging"
+                                                }
+                                            ]
+                                        }]
 
                                         slides_observation['subject'] = {
                                             "reference": "/".join(["Patient", patient.id])}
@@ -740,13 +787,21 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         slides_observation['focus'][0] = {
                                             "reference": "/".join(["ImagingStudy", slide["ImagingStudy.id"]])}
 
-                                        observations.append(slides_observation)
+                                        if slides_observation not in slides_observations:
+                                            slides_observations.append(copy.deepcopy(slides_observation))
+                                            # print("ADDED SLIDES OBSERVATION: \n", json.dumps(slides_observation, indent=2))
+
+                                        # observations.append(slides_observation)
 
                             if "analytes" in portion.keys():
                                 for analyte in portion["analytes"]:
                                     if "Specimen.id.analyte" in analyte.keys():
                                         analyte_specimen = Specimen.construct()
                                         analyte_specimen.id = analyte["Specimen.id.analyte"]
+
+                                        # if specimen_exists(analyte_specimen.id, all_analytes):
+                                        #    print("Analyte exists", analyte_specimen.id)
+
                                         analyte_specimen.subject = Reference(
                                             **{"reference": "/".join(["Patient", patient.id])})
                                         analyte_specimen.parent = [
@@ -766,53 +821,62 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     add_imaging_study(slide=slide, patient=patient,
                                                                       sample=analyte_specimen))
 
-                                        if analyte_specimen not in all_analytes:
+                                        #if analyte_specimen not in all_analytes:
+                                        #    all_analytes.append(analyte_specimen)
+
+                                        if not specimen_exists(analyte_specimen.id, all_analytes):
                                             all_analytes.append(analyte_specimen)
 
                                         analyte_observation_components = []
-                                        if "Specimen.type.analyte" in analyte.keys() and analyte["Specimen.type.analyte"]:
+                                        if "Specimen.type.analyte" in analyte.keys() and analyte[
+                                            "Specimen.type.analyte"]:
                                             c = get_component('analyte_type',
                                                               value=analyte["Specimen.type.analyte"],
                                                               component_type='string')
                                             analyte_observation_components.append(c)
 
                                         if "Observation.analyte.concentration" in analyte.keys() and analyte[
-                                                                  "Observation.analyte.concentration"]:
+                                            "Observation.analyte.concentration"]:
                                             c = get_component('concentration',
                                                               value=analyte[
                                                                   "Observation.analyte.concentration"],
                                                               component_type='float')
                                             analyte_observation_components.append(c)
 
-                                        if "Observation.analyte.experimental_protocol_type" in analyte.keys() and analyte["Observation.analyte.experimental_protocol_type"]:
+                                        if "Observation.analyte.experimental_protocol_type" in analyte.keys() and \
+                                                analyte["Observation.analyte.experimental_protocol_type"]:
                                             c = get_component('experimental_protocol_type',
                                                               value=analyte[
                                                                   "Observation.analyte.experimental_protocol_type"],
                                                               component_type='string')
                                             analyte_observation_components.append(c)
 
-                                        if "Observation.analyte.normal_tumor_genotype_snp_match" in analyte.keys() and analyte["Observation.analyte.normal_tumor_genotype_snp_match"]:
+                                        if "Observation.analyte.normal_tumor_genotype_snp_match" in analyte.keys() and \
+                                                analyte["Observation.analyte.normal_tumor_genotype_snp_match"]:
                                             c = get_component('Observation.analyte.normal_tumor_genotype_snp_match',
                                                               value=analyte[
                                                                   "Observation.analyte.normal_tumor_genotype_snp_match"],
                                                               component_type='string')
                                             analyte_observation_components.append(c)
 
-                                        if "Observation.analyte.ribosomal_rna_28s_16s_ratio" in analyte.keys() and analyte["Observation.analyte.ribosomal_rna_28s_16s_ratio"]:
+                                        if "Observation.analyte.ribosomal_rna_28s_16s_ratio" in analyte.keys() and \
+                                                analyte["Observation.analyte.ribosomal_rna_28s_16s_ratio"]:
                                             c = get_component('ribosomal_rna_28s_16s_ratio',
                                                               value=analyte[
                                                                   "Observation.analyte.ribosomal_rna_28s_16s_ratio"],
                                                               component_type='float')
                                             analyte_observation_components.append(c)
 
-                                        if "Observation.analyte.rna_integrity_number" in analyte.keys() and analyte["Observation.analyte.rna_integrity_number"]:
+                                        if "Observation.analyte.rna_integrity_number" in analyte.keys() and analyte[
+                                            "Observation.analyte.rna_integrity_number"]:
                                             c = get_component('rna_integrity_number',
                                                               value=analyte[
                                                                   "Observation.analyte.rna_integrity_number"],
                                                               component_type='float')
                                             analyte_observation_components.append(c)
 
-                                        if "Observation.analyte.spectrophotometer_method" in analyte.keys() and analyte["Observation.analyte.spectrophotometer_method"]:
+                                        if "Observation.analyte.spectrophotometer_method" in analyte.keys() and analyte[
+                                            "Observation.analyte.spectrophotometer_method"]:
                                             c = get_component('spectrophotometer_method',
                                                               value=analyte[
                                                                   "Observation.analyte.spectrophotometer_method"],
@@ -822,7 +886,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         analyte_observation = None
                                         if analyte_observation_components:
                                             analyte_observation = biospecimen_observation
-                                            analyte_observation['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, analyte_specimen.id))
+                                            analyte_observation['id'] = str(
+                                                uuid.uuid3(uuid.NAMESPACE_DNS, analyte_specimen.id))
                                             analyte_observation['component'] = analyte_observation_components
 
                                             analyte_observation['subject'] = {
@@ -832,7 +897,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                             analyte_observation['focus'][0] = {
                                                 "reference": "/".join(["Specimen", analyte_specimen.id])}
 
-                                            observations.append(analyte_observation)
+                                            # print("ANALYTE:", analyte_observation)
+                                            # analyte_observations.append(analyte_observation)
+                                            if analyte_observation not in analyte_observations:
+                                                analyte_observations.append(copy.deepcopy(analyte_observation))
+                                                # print("ADDED ANALYTES OBSERVATION: \n", json.dumps(analyte_observation, indent=2))
 
                                         if "aliquots" in analyte.keys():
                                             for aliquot in analyte["aliquots"]:
@@ -846,33 +915,71 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     if aliquot_specimen not in all_aliquots:
                                                         all_aliquots.append(aliquot_specimen)
 
+                                                    # if specimen_exists(aliquot_specimen.id, all_aliquots):
+                                                    #    print("Aliquot exists", aliquot_specimen.id)
+
+                                                    if not specimen_exists(aliquot_specimen.id, all_aliquots):
+                                                        all_analytes.append(aliquot_specimen)
+
                                                 aliquot_observation_components = []
-                                                if "Observation.aliquot.analyte_type" in aliquot.keys() and aliquot["Observation.aliquot.analyte_type"]:
-                                                    c = get_component('analyte_type',
-                                                                      value=aliquot["Observation.aliquot.analyte_type"],
-                                                                      component_type='string')
-                                                    aliquot_observation_components.append(c)
-                                                if "Observation.aliquot.concentration" in sample.keys() and aliquot[
-                                                                          "Observation.aliquot.concentration"]:
+                                                if "Observation.aliquot.analyte_type" in aliquot.keys() and aliquot[
+                                                    "Observation.aliquot.analyte_type"]:
+                                                    c_aliquot_analyte_type = get_component('analyte_type',
+                                                                                           value=aliquot[
+                                                                                               "Observation.aliquot.analyte_type"],
+                                                                                           component_type='string')
+                                                    aliquot_observation_components.append(c_aliquot_analyte_type)
+                                                if "Observation.aliquot.concentration" in aliquot.keys() and aliquot[
+                                                    "Observation.aliquot.concentration"]:
                                                     c = get_component('concentration',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.concentration"],
                                                                       component_type='float')
                                                     aliquot_observation_components.append(c)
 
+                                                if "Observation.aliquot.aliquot_quantity" in aliquot.keys() and aliquot[
+                                                    "Observation.aliquot.aliquot_quantity"]:
+                                                    c = get_component('aliquot_quantity',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.aliquot_quantity"],
+                                                                      component_type='float')
+                                                    aliquot_observation_components.append(c)
+
+                                                # print("ALL", aliquot_observation_components)
                                                 aliquot_observation = None
                                                 if aliquot_observation_components:
                                                     aliquot_observation = biospecimen_observation
-                                                    aliquot_observation['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, aliquot_specimen.id))
+                                                    aliquot_observation['id'] = str(
+                                                        uuid.uuid3(uuid.NAMESPACE_DNS, aliquot_specimen.id))
+                                                    # print(aliquot_observation['id'])
                                                     aliquot_observation['component'] = aliquot_observation_components
 
-                                                    aliquot_observation['subject'] = {"reference": "/".join(["Patient", patient.id])}
-                                                    aliquot_observation['specimen'] = {"reference": "/".join(["Specimen", aliquot_specimen.id])}
-                                                    aliquot_observation['focus'][0] = {"reference": "/".join(["Specimen", aliquot_specimen.id])}
+                                                    aliquot_observation['subject'] = {
+                                                        "reference": "/".join(["Patient", patient.id])}
+                                                    aliquot_observation['specimen'] = {
+                                                        "reference": "/".join(["Specimen", aliquot_specimen.id])}
+                                                    aliquot_observation['focus'][0] = {
+                                                        "reference": "/".join(["Specimen", aliquot_specimen.id])}
+                                                    # print(len(observations))
+                                                    # aliquot_observations.append(aliquot_observation)
+                                                    # print(len(observations))
 
-                                                    observations.append(aliquot_observation)
+                                                    if aliquot_observation not in aliquot_observations:
+                                                        aliquot_observations.append(copy.deepcopy(aliquot_observation))
+                                                        # print("ADDED ALIQUOT OBSERVATION: \n", json.dumps(aliquot_observation, indent=2))
+
 
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
+        all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations
+
+        unique_observations_set = set()
+        observations = []
+
+        for obs in all_observations:
+            obs_json = json.dumps(obs, sort_keys=True)
+            if obs_json not in unique_observations_set:
+                unique_observations_set.add(obs_json)
+                observations.append(obs)
 
     return {'patient': patient, 'encounter': encounter, 'observations': observations, 'condition': condition,
             'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
@@ -909,8 +1016,9 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     patients = [orjson.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
     encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if
                   'encounter' in fhir_case.keys() and fhir_case['encounter']]
-#   observations = [orjson.loads(fhir_case['observations'].json()) for fhir_case in all_fhir_case_obj if
-#                    'observations' in fhir_case.keys() and fhir_case['observations']]
+    encounters = list({v['id']: v for v in encounters}.values())
+    #   observations = [orjson.loads(fhir_case['observations'].json()) for fhir_case in all_fhir_case_obj if
+    #                    'observations' in fhir_case.keys() and fhir_case['observations']]
     conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if
                   'condition' in fhir_case.keys() and fhir_case['condition']]
     research_subjects = [orjson.loads(fhir_case['research_subject'].json()) for fhir_case in all_fhir_case_obj]
@@ -936,7 +1044,6 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
                 if isinstance(obs, dict):
                     observations.append(obs)
                 else:
-                    print(orjson.loads(obs.json()))
                     observations.append(orjson.loads(obs.json()))
     observations = list({v['id']: v for v in observations}.values())
 
@@ -951,6 +1058,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
         if fhir_case["imaging_study"]:
             for img in fhir_case["imaging_study"]:
                 imaging_study.append(orjson.loads(img.json()))
+    imaging_study = list({v['id']: v for v in imaging_study}.values())
 
     if "/" not in out_dir[-1]:
         out_dir = out_dir + "/"
