@@ -646,7 +646,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 procedures.append(procedure)
 
                 specimen.collection = SpecimenCollection(
-                    **{"procedure": Reference(**{"reference": "/".join(["Procedure", procedure.id])})})
+                    **{"procedure": Reference(**{"reference": "/".join(["Procedure", procedure.id])}), "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
 
                 if "Specimen.type.sample" in sample.keys():
                     sample_type = CodeableConcept.construct()
@@ -726,6 +726,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             portion_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
                             portion_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", specimen.id])})]
 
+                            portion_specimen.collection = SpecimenCollection(
+                                **{"procedure": Reference(**{"reference": "/".join(["Procedure", procedure.id])}),
+                                   "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
+
+                            portion_specimen.processing = [sp]
+
                             #if portion_specimen not in all_portions:
                             #    all_portions.append(portion_specimen)
 
@@ -778,6 +784,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         slides_observation['id'] = str(
                                             uuid.uuid3(uuid.NAMESPACE_DNS, slide["ImagingStudy.id"]))
                                         slides_observation['component'] = slides_observation_components
+                                        """
                                         slides_observation['category'] = [{
                                             "coding": [
                                                 {
@@ -787,6 +794,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 }
                                             ]
                                         }]
+                                        """
 
                                         slides_observation['subject'] = {
                                             "reference": "/".join(["Patient", patient.id])}
@@ -819,6 +827,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                             **{"reference": "/".join(["Patient", patient.id])})
                                         analyte_specimen.parent = [
                                             Reference(**{"reference": "/".join(["Specimen", portion_specimen.id])})]
+
+                                        analyte_specimen.collection = SpecimenCollection(
+                                            **{"procedure": Reference(
+                                                **{"reference": "/".join(["Procedure", procedure.id])}),
+                                               "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
+
+                                        analyte_specimen.processing = [sp]
 
                                         if "Specimen.type.analyte" in analyte.keys():
                                             analyte_type = CodeableConcept.construct()
@@ -927,6 +942,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     aliquot_ident.system = "".join(
                                                         ["https://gdc.cancer.gov/", "aliquot"])
                                                     aliquot_specimen.identifier = [aliquot_ident]
+
+                                                    aliquot_specimen.collection = SpecimenCollection(
+                                                        **{"procedure": Reference(
+                                                            **{"reference": "/".join(["Procedure", procedure.id])}),
+                                                            "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
+
+                                                    aliquot_specimen.processing = [sp]
 
                                                     aliquot_specimen.subject = Reference(
                                                         **{"reference": "/".join(["Patient", patient.id])})
