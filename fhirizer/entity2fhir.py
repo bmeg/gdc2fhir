@@ -173,10 +173,19 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     patient.gender = patient_gender
 
+    race_ethnicity_sex = []
+    if patient_gender:
+        female = {"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex", "valueCode": "F"}
+        male = {"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex", "valueCode": "M"}
+
+        if patient_gender == 'female':
+            race_ethnicity_sex.append(female)
+        elif patient_gender == 'male':
+            race_ethnicity_sex.append(male)
+
     if 'demographic' in case.keys() and 'Patient.deceasedDateTime' in case['demographic']:
         patient.deceasedDateTime = case['demographic']['Patient.deceasedDateTime']
 
-    race_ethnicity = []
     if 'demographic' in case.keys() and 'Extension.extension:USCoreRaceExtension' in case['demographic'].keys():
         #  race and ethnicity
         race_ext = Extension.construct()
@@ -209,7 +218,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                        "code": gdc_race_code,
                                        "display": gdc_race_display
                                    }}]
-        race_ethnicity.append(race_ext)
+        race_ethnicity_sex.append(race_ext)
 
     if 'demographic' in case.keys() and 'Extension:extension.USCoreEthnicity' in case['demographic'].keys():
         ethnicity_ext = Extension.construct()
@@ -243,10 +252,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                             "display": gdc_ethnicity_display
                                         }}]
 
-            race_ethnicity.append(ethnicity_ext)
+            race_ethnicity_sex.append(ethnicity_ext)
 
-        if race_ethnicity:
-            patient.extension = race_ethnicity
+        if race_ethnicity_sex:
+            patient.extension = race_ethnicity_sex
 
     # gdc project for patient
     project_relations = assign_fhir_for_project(project=case['ResearchStudy'], disease_types=disease_types)
@@ -1077,7 +1086,10 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
     for fhir_case in all_fhir_case_obj:
         if fhir_case["specimens"]:
             for specimen in fhir_case["specimens"]:
-                specimens.append(orjson.loads(specimen.json()))
+                s = orjson.loads(specimen.json())
+                # if 'parent' in s.keys():
+                #     s['parent'] = s['parent'][0]
+                specimens.append(s)
 
     observations = []
     for fhir_case in all_fhir_case_obj:
