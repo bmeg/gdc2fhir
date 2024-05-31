@@ -57,6 +57,15 @@ file_maps = [
 
     Map(
         source=Source(
+            name='wgs_coverage',
+        ),
+        destination=Destination(
+            name='DocumentReference.category.wgs_coverage',
+        )
+    ),
+
+    Map(
+        source=Source(
             name='version',
         ),
         destination=Destination(

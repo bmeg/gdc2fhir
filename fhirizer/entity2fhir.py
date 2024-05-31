@@ -386,7 +386,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     bd_coding.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
 
         body_structure = BodyStructure(
-            **{"id": str(uuid.uuid3(uuid.NAMESPACE_DNS, patient.id)), "includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": bd_coding}})],
+            **{"id": str(uuid.uuid3(uuid.NAMESPACE_DNS, patient.id)),
+               "includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": bd_coding}})],
                "patient": subject_ref
                })
 
@@ -655,7 +656,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 procedures.append(procedure)
 
                 specimen.collection = SpecimenCollection(
-                    **{"procedure": Reference(**{"reference": "/".join(["Procedure", procedure.id])}), "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
+                    **{"procedure": Reference(**{"reference": "/".join(["Procedure", procedure.id])}),
+                       "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
 
                 if "Specimen.type.sample" in sample.keys():
                     sample_type = CodeableConcept.construct()
@@ -741,7 +743,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                             portion_specimen.processing = [sp]
 
-                            #if portion_specimen not in all_portions:
+                            # if portion_specimen not in all_portions:
                             #    all_portions.append(portion_specimen)
 
                             if not specimen_exists(portion_specimen.id, all_portions):
@@ -840,7 +842,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         analyte_specimen.collection = SpecimenCollection(
                                             **{"procedure": Reference(
                                                 **{"reference": "/".join(["Procedure", procedure.id])}),
-                                               "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
+                                                "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
 
                                         analyte_specimen.processing = [sp]
 
@@ -858,7 +860,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     add_imaging_study(slide=slide, patient=patient,
                                                                       sample=analyte_specimen))
 
-                                        #if analyte_specimen not in all_analytes:
+                                        # if analyte_specimen not in all_analytes:
                                         #    all_analytes.append(analyte_specimen)
 
                                         if not specimen_exists(analyte_specimen.id, all_analytes):
@@ -1018,7 +1020,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     if aliquot_observation not in aliquot_observations:
                                                         aliquot_observations.append(copy.deepcopy(aliquot_observation))
                                                         # print("ADDED ALIQUOT OBSERVATION: \n", json.dumps(aliquot_observation, indent=2))
-
 
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
         all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations
@@ -1208,13 +1209,21 @@ def assign_fhir_for_file(file):
 
         category.append(cc_plat)
 
-    if 'DocumentReference.category.experimental_strategy' in file.keys() and file[
-        'DocumentReference.category.experimental_strategy']:
+    if 'DocumentReference.category.experimental_strategy' in file.keys() and file['DocumentReference.category.experimental_strategy']:
         cc_es = CodeableConcept.construct()
         system = "".join(["https://gdc.cancer.gov/", "experimental_strategy"])
         cc_es.coding = [{'system': system,
                          'display': file['DocumentReference.category.experimental_strategy'],
                          'code': file['DocumentReference.category.experimental_strategy']}]
+
+        category.append(cc_es)
+
+    if 'DocumentReference.category.wgs_coverage' in file.keys() and file['DocumentReference.category.wgs_coverage']:
+        cc_es = CodeableConcept.construct()
+        system = "".join(["https://gdc.cancer.gov/", "wgs_coverage"])
+        cc_es.coding = [{'system': system,
+                         'display': file['DocumentReference.category.wgs_coverage'],
+                         'code': file['DocumentReference.category.wgs_coverage']}]
 
         category.append(cc_es)
 
