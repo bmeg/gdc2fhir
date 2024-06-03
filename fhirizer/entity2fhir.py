@@ -570,21 +570,25 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     if 'exposures' in case.keys():
         if 'Observation.patient.pack_years_smoked' in case['exposures'][0] and case['exposures'][0]['Observation.patient.pack_years_smoked']:
             sm_obs = social_histody_smoking_observation
+            if 'valueQuantity' in sm_obs.keys():
+                sm_obs.pop('valueQuantity', None)
             sm_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id, orjson.loads(study_ref.json())['reference'], 'Observation.patient.pack_years_smoked'])
             sm_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_obs_code))
             sm_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             sm_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
             sm_obs['valueInteger'] = int(case['exposures'][0]['Observation.patient.pack_years_smoked'])
-            smoking_observation.append(sm_obs)
+            smoking_observation.append(copy.deepcopy(sm_obs))
 
-        """
+
         if 'Observation.patient.cigarettes_per_day' in case['exposures'][0] and isinstance(case['exposures'][0]['Observation.patient.cigarettes_per_day'], float):
             sm_pd_obs = social_histody_smoking_observation
+            if 'valueInteger' in sm_pd_obs.keys():
+                sm_pd_obs.pop('valueInteger', None)
             sm_pd_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id, orjson.loads(study_ref.json())['reference'], 'Observation.patient.cigarettes_per_day'])
             sm_pd_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_pd_obs_code))
             sm_pd_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             sm_pd_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
-            sm_pd_obs['valueQuantity'] = round(case['exposures'][0]['Observation.patient.cigarettes_per_day'], 2)
+            sm_pd_obs['valueQuantity'] = {"value": round(float(case['exposures'][0]['Observation.patient.cigarettes_per_day']), 2)}
             sm_pd_obs['code'] = {
                 "coding": [
                     {
@@ -594,8 +598,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     }
                 ]
             }
-            smoking_observation.append(sm_pd_obs)
-        """
+            smoking_observation.append(copy.deepcopy(sm_pd_obs))
+
 
     alcohol_observation = []
     if 'exposures' in case.keys():
