@@ -545,6 +545,60 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='exposures.pack_years_smoked'
+        ),
+        destination=Destination(
+            name='Observation.patient.pack_years_smoked'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.cigarettes_per_day'
+        ),
+        destination=Destination(
+            name='Observation.patient.cigarettes_per_day'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.years_smoked'
+        ),
+        destination=Destination(
+            name='Observation.patient.years_smoked'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.exposure_id'
+        ),
+        destination=Destination(
+            name='Observation.patient.exposure_id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.alcohol_history'
+        ),
+        destination=Destination(
+            name='Observation.patient.alcohol_history'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.alcohol_intensity'
+        ),
+        destination=Destination(
+            name='Observation.patient.alcohol_intensity'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='samples.sample_id'
         ),
         destination=Destination(

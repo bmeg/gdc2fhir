@@ -52,6 +52,10 @@ biospecimen_observation = utils._read_json(str(Path(importlib.resources.files(
     'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_observation.json')))
 biospecimen_imaging_observation = utils._read_json(str(Path(importlib.resources.files(
     'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_imaging_observation.json')))
+social_histody_smoking_observation = utils._read_json(str(Path(importlib.resources.files(
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'social_history_smoking_observations.json')))
+social_histody_alcohol_observation = utils._read_json(str(Path(importlib.resources.files(
+   'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'social_history_alcohol_observations.json')))
 aliquot = utils._read_json(str(Path(importlib.resources.files(
     'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'aliquot.json')))
 
@@ -299,6 +303,16 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation = Observation.construct()
         observation.status = 'final'
         observation.subject = subject_ref
+        observation.category = [{
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "exam",
+                        "display": "exam"
+                    }
+                ]
+            }]
+
         if encounter_ref:
             observation.encounter = encounter_ref
         observation.id = obs_identifier
@@ -551,6 +565,50 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     if observation:
         condition_observations.append(orjson.loads(observation.json()))
 
+    # exposures
+    smoking_observation = []
+    if 'exposures' in case.keys():
+        if 'Observation.patient.pack_years_smoked' in case['exposures'][0] and case['exposures'][0]['Observation.patient.pack_years_smoked']:
+            sm_obs = social_histody_smoking_observation
+            sm_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id, orjson.loads(study_ref.json())['reference'], 'Observation.patient.pack_years_smoked'])
+            sm_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_obs_code))
+            sm_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
+            sm_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
+            sm_obs['valueInteger'] = int(case['exposures'][0]['Observation.patient.pack_years_smoked'])
+            smoking_observation.append(sm_obs)
+
+        """
+        if 'Observation.patient.cigarettes_per_day' in case['exposures'][0] and isinstance(case['exposures'][0]['Observation.patient.cigarettes_per_day'], float):
+            sm_pd_obs = social_histody_smoking_observation
+            sm_pd_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id, orjson.loads(study_ref.json())['reference'], 'Observation.patient.cigarettes_per_day'])
+            sm_pd_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_pd_obs_code))
+            sm_pd_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
+            sm_pd_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
+            sm_pd_obs['valueQuantity'] = round(case['exposures'][0]['Observation.patient.cigarettes_per_day'], 2)
+            sm_pd_obs['code'] = {
+                "coding": [
+                    {
+                        "system": "http://loinc.org",
+                        "code": "64218-1",
+                        "display": "How many cigarettes do you smoke per day now"
+                    }
+                ]
+            }
+            smoking_observation.append(sm_pd_obs)
+        """
+
+    alcohol_observation = []
+    if 'exposures' in case.keys():
+        if 'Observation.patient.alcohol_history' in case['exposures'][0] and case['exposures'][0]['Observation.patient.alcohol_history']:
+            al_obs = social_histody_alcohol_observation
+            al_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id, orjson.loads(study_ref.json())['reference'], 'Observation.patient.alcohol_history'])
+            al_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, al_obs_code))
+            al_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
+            al_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
+            al_obs['valueString'] = case['exposures'][0]['Observation.patient.alcohol_history']
+            alcohol_observation.append(al_obs)
+
+
     # create specimen
     def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specimens):
         if name in dat.keys():
@@ -683,7 +741,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     c = get_component('composition', value=sample["Observation.sample.composition"],
                                       component_type='string')
                     sample_observation_components.append(c)
-                if "Observation.sample.is_ffpe" in sample.keys() and isinstance(sample["Observation.sample.is_ffpe"], bool):
+                if "Observation.sample.is_ffpe" in sample.keys() and isinstance(sample["Observation.sample.is_ffpe"],
+                                                                                bool):
                     c = get_component('is_ffpe', value=sample["Observation.sample.is_ffpe"], component_type='bool')
                     sample_observation_components.append(c)
 
@@ -752,11 +811,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 all_portions.append(portion_specimen)
 
                             portions_observation_components = []
-                            if "Observation.portions.weight" in portion.keys() and portion["Observation.portions.weight"]:
+                            if "Observation.portions.weight" in portion.keys() and portion[
+                                "Observation.portions.weight"]:
                                 c = get_component('weight', value=portion["Observation.portions.weight"],
                                                   component_type='int')
                                 portions_observation_components.append(c)
-                            if "Observation.portions.is_ffpe" in portion.keys() and isinstance(portion["Observation.portions.is_ffpe"], bool):
+                            if "Observation.portions.is_ffpe" in portion.keys() and isinstance(
+                                    portion["Observation.portions.is_ffpe"], bool):
                                 c = get_component('is_ffpe', value=portion["Observation.portions.is_ffpe"],
                                                   component_type='bool')
                                 portions_observation_components.append(c)
@@ -997,64 +1058,75 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                       component_type='float')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Observation.aliquot.no_matched_normal_wgs" in aliquot.keys() and isinstance(aliquot[
-                                                    "Observation.aliquot.no_matched_normal_wgs"], bool):
+                                                if "Observation.aliquot.no_matched_normal_wgs" in aliquot.keys() and isinstance(
+                                                        aliquot[
+                                                            "Observation.aliquot.no_matched_normal_wgs"], bool):
                                                     c = get_component('no_matched_normal_wgs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.no_matched_normal_wgs"],
                                                                       component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Observation.aliquot.no_matched_normal_wxs" in aliquot.keys() and isinstance(aliquot[
-                                                    "Observation.aliquot.no_matched_normal_wxs"], bool):
+                                                if "Observation.aliquot.no_matched_normal_wxs" in aliquot.keys() and isinstance(
+                                                        aliquot[
+                                                            "Observation.aliquot.no_matched_normal_wxs"], bool):
                                                     c = get_component('no_matched_normal_wxs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.no_matched_normal_wxs"],
                                                                       component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Observation.aliquot.no_matched_normal_low_pass_wgs" in aliquot.keys() and isinstance(aliquot[
-                                                    "Observation.aliquot.no_matched_normal_low_pass_wgs"], bool):
+                                                if "Observation.aliquot.no_matched_normal_low_pass_wgs" in aliquot.keys() and isinstance(
+                                                        aliquot[
+                                                            "Observation.aliquot.no_matched_normal_low_pass_wgs"],
+                                                        bool):
                                                     c = get_component('no_matched_normal_low_pass_wgs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.no_matched_normal_low_pass_wgs"],
                                                                       component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Observation.aliquot.no_matched_normal_targeted_sequencing" in aliquot.keys() and isinstance(aliquot[
-                                                    "Observation.aliquot.no_matched_normal_targeted_sequencing"], bool):
+                                                if "Observation.aliquot.no_matched_normal_targeted_sequencing" in aliquot.keys() and isinstance(
+                                                        aliquot[
+                                                            "Observation.aliquot.no_matched_normal_targeted_sequencing"],
+                                                        bool):
                                                     c = get_component('no_matched_normal_targeted_sequencing',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.no_matched_normal_targeted_sequencing"],
                                                                       component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Observation.aliquot.selected_normal_low_pass_wgs" in aliquot.keys() and isinstance(aliquot[
-                                                    "Observation.aliquot.selected_normal_low_pass_wgs"], bool):
+                                                if "Observation.aliquot.selected_normal_low_pass_wgs" in aliquot.keys() and isinstance(
+                                                        aliquot[
+                                                            "Observation.aliquot.selected_normal_low_pass_wgs"], bool):
                                                     c = get_component('selected_normal_low_pass_wgs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.selected_normal_low_pass_wgs"],
                                                                       component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Observation.aliquot.selected_normal_targeted_sequencing" in aliquot.keys() and isinstance(aliquot[
-                                                    "Observation.aliquot.selected_normal_targeted_sequencing"], bool):
+                                                if "Observation.aliquot.selected_normal_targeted_sequencing" in aliquot.keys() and isinstance(
+                                                        aliquot[
+                                                            "Observation.aliquot.selected_normal_targeted_sequencing"],
+                                                        bool):
                                                     c = get_component('selected_normal_targeted_sequencing',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.selected_normal_targeted_sequencing"],
                                                                       component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Observation.aliquot.selected_normal_wgs" in aliquot.keys() and isinstance(aliquot[
-                                                    "Observation.aliquot.selected_normal_wgs"], bool):
+                                                if "Observation.aliquot.selected_normal_wgs" in aliquot.keys() and isinstance(
+                                                        aliquot[
+                                                            "Observation.aliquot.selected_normal_wgs"], bool):
                                                     c = get_component('selected_normal_wgs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.selected_normal_wgs"],
                                                                       component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Observation.aliquot.selected_normal_wxs" in aliquot.keys() and isinstance(aliquot[
-                                                    "Observation.aliquot.selected_normal_wxs"], bool):
+                                                if "Observation.aliquot.selected_normal_wxs" in aliquot.keys() and isinstance(
+                                                        aliquot[
+                                                            "Observation.aliquot.selected_normal_wxs"], bool):
                                                     c = get_component('selected_normal_wxs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.selected_normal_wxs"],
@@ -1085,7 +1157,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         # print("ADDED ALIQUOT OBSERVATION: \n", json.dumps(aliquot_observation, indent=2))
 
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
-        all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations
+        all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations + smoking_observation + alcohol_observation
 
         unique_observations_set = set()
         observations = []
@@ -1272,7 +1344,8 @@ def assign_fhir_for_file(file):
 
         category.append(cc_plat)
 
-    if 'DocumentReference.category.experimental_strategy' in file.keys() and file['DocumentReference.category.experimental_strategy']:
+    if 'DocumentReference.category.experimental_strategy' in file.keys() and file[
+        'DocumentReference.category.experimental_strategy']:
         cc_es = CodeableConcept.construct()
         system = "".join(["https://gdc.cancer.gov/", "experimental_strategy"])
         cc_es.coding = [{'system': system,
