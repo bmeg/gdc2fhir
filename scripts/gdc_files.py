@@ -11,7 +11,7 @@ from tqdm import tqdm
 URL_BASE = "https://api.gdc.cancer.gov/"
 TOKEN = None
 client = requests
-study = "TCGA-ACC"
+study = "TCGA-LUAD"
 
 
 def query_gdc(endpoint, params):
@@ -74,7 +74,7 @@ def query_gdc(endpoint, params):
 
 def scrapeFiles(outfile):
     parameters = {'expand': ",".join(
-        ["cases", "cases.aliquot_ids", "cases.project", "cases.samples.portions.analytes.aliquots", "index_files"]),
+        ["cases", "cases.aliquot_ids", "cases.project", "cases.samples.portions.analytes.aliquots", "index_files", "analysis.metadata.read_groups"]),
         'filters': {
             "op": "in",
             "content": {

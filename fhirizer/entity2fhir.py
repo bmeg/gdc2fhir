@@ -50,6 +50,8 @@ ncit2mondo = utils.ncit2mondo(
     str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'ncit2mondo.json.gz')))
 biospecimen_observation = utils._read_json(str(Path(importlib.resources.files(
     'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_observation.json')))
+biospecimen_imaging_observation = utils._read_json(str(Path(importlib.resources.files(
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_imaging_observation.json')))
 aliquot = utils._read_json(str(Path(importlib.resources.files(
     'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'aliquot.json')))
 
@@ -677,11 +679,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     specimen.processing = [sp]
 
                 sample_observation_components = []
-                if "Observation.sample.composition" in sample.keys():
+                if "Observation.sample.composition" in sample.keys() and sample["Observation.sample.composition"]:
                     c = get_component('composition', value=sample["Observation.sample.composition"],
                                       component_type='string')
                     sample_observation_components.append(c)
-                if "Observation.sample.is_ffpe" in sample.keys():
+                if "Observation.sample.is_ffpe" in sample.keys() and isinstance(sample["Observation.sample.is_ffpe"], bool):
                     c = get_component('is_ffpe', value=sample["Observation.sample.is_ffpe"], component_type='bool')
                     sample_observation_components.append(c)
 
@@ -750,11 +752,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 all_portions.append(portion_specimen)
 
                             portions_observation_components = []
-                            if "Observation.portions.weight" in portion.keys():
+                            if "Observation.portions.weight" in portion.keys() and portion["Observation.portions.weight"]:
                                 c = get_component('weight', value=portion["Observation.portions.weight"],
                                                   component_type='int')
                                 portions_observation_components.append(c)
-                            if "Observation.portions.is_ffpe" in portion.keys():
+                            if "Observation.portions.is_ffpe" in portion.keys() and isinstance(portion["Observation.portions.is_ffpe"], bool):
                                 c = get_component('is_ffpe', value=portion["Observation.portions.is_ffpe"],
                                                   component_type='bool')
                                 portions_observation_components.append(c)
@@ -791,21 +793,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                     slides_observation = None
                                     if slides_observation_components:
-                                        slides_observation = biospecimen_observation
+                                        slides_observation = biospecimen_imaging_observation
                                         slides_observation['id'] = str(
                                             uuid.uuid3(uuid.NAMESPACE_DNS, slide["ImagingStudy.id"]))
                                         slides_observation['component'] = slides_observation_components
-                                        """
-                                        slides_observation['category'] = [{
-                                            "coding": [
-                                                {
-                                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                                    "code": "imaging",
-                                                    "display": "imaging"
-                                                }
-                                            ]
-                                        }]
-                                        """
 
                                         slides_observation['subject'] = {
                                             "reference": "/".join(["Patient", patient.id])}
@@ -892,7 +883,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         if "Observation.analyte.normal_tumor_genotype_snp_match" in analyte.keys() and \
                                                 analyte["Observation.analyte.normal_tumor_genotype_snp_match"]:
-                                            c = get_component('Observation.analyte.normal_tumor_genotype_snp_match',
+                                            c = get_component('normal_tumor_genotype_snp_match',
                                                               value=analyte[
                                                                   "Observation.analyte.normal_tumor_genotype_snp_match"],
                                                               component_type='string')
@@ -977,7 +968,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 aliquot_observation_components = []
                                                 if "Observation.aliquot.analyte_type" in aliquot.keys() and aliquot[
                                                     "Observation.aliquot.analyte_type"]:
-                                                    c_aliquot_analyte_type = get_component('analyte_type',
+                                                    c_aliquot_analyte_type = get_component('aliquot.analyte_type',
                                                                                            value=aliquot[
                                                                                                "Observation.aliquot.analyte_type"],
                                                                                            component_type='string')
@@ -996,6 +987,78 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                       value=aliquot[
                                                                           "Observation.aliquot.aliquot_quantity"],
                                                                       component_type='float')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.aliquot_volume" in aliquot.keys() and aliquot[
+                                                    "Observation.aliquot.aliquot_volume"]:
+                                                    c = get_component('aliquot_volume',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.aliquot_volume"],
+                                                                      component_type='float')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.no_matched_normal_wgs" in aliquot.keys() and isinstance(aliquot[
+                                                    "Observation.aliquot.no_matched_normal_wgs"], bool):
+                                                    c = get_component('no_matched_normal_wgs',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.no_matched_normal_wgs"],
+                                                                      component_type='bool')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.no_matched_normal_wxs" in aliquot.keys() and isinstance(aliquot[
+                                                    "Observation.aliquot.no_matched_normal_wxs"], bool):
+                                                    c = get_component('no_matched_normal_wxs',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.no_matched_normal_wxs"],
+                                                                      component_type='bool')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.no_matched_normal_low_pass_wgs" in aliquot.keys() and isinstance(aliquot[
+                                                    "Observation.aliquot.no_matched_normal_low_pass_wgs"], bool):
+                                                    c = get_component('no_matched_normal_low_pass_wgs',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.no_matched_normal_low_pass_wgs"],
+                                                                      component_type='bool')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.no_matched_normal_targeted_sequencing" in aliquot.keys() and isinstance(aliquot[
+                                                    "Observation.aliquot.no_matched_normal_targeted_sequencing"], bool):
+                                                    c = get_component('no_matched_normal_targeted_sequencing',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.no_matched_normal_targeted_sequencing"],
+                                                                      component_type='bool')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.selected_normal_low_pass_wgs" in aliquot.keys() and isinstance(aliquot[
+                                                    "Observation.aliquot.selected_normal_low_pass_wgs"], bool):
+                                                    c = get_component('selected_normal_low_pass_wgs',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.selected_normal_low_pass_wgs"],
+                                                                      component_type='bool')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.selected_normal_targeted_sequencing" in aliquot.keys() and isinstance(aliquot[
+                                                    "Observation.aliquot.selected_normal_targeted_sequencing"], bool):
+                                                    c = get_component('selected_normal_targeted_sequencing',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.selected_normal_targeted_sequencing"],
+                                                                      component_type='bool')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.selected_normal_wgs" in aliquot.keys() and isinstance(aliquot[
+                                                    "Observation.aliquot.selected_normal_wgs"], bool):
+                                                    c = get_component('selected_normal_wgs',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.selected_normal_wgs"],
+                                                                      component_type='bool')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.selected_normal_wxs" in aliquot.keys() and isinstance(aliquot[
+                                                    "Observation.aliquot.selected_normal_wxs"], bool):
+                                                    c = get_component('selected_normal_wxs',
+                                                                      value=aliquot[
+                                                                          "Observation.aliquot.selected_normal_wxs"],
+                                                                      component_type='bool')
                                                     aliquot_observation_components.append(c)
 
                                                 # print("ALL", aliquot_observation_components)

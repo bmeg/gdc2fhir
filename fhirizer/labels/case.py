@@ -698,10 +698,127 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='samples.portions.analytes.a260_a280_ratio'
+        ),
+        destination=Destination(
+            name='Observation.analyte.a260_a280_ratio'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='samples.portions.analytes.aliquots.analyte_type'
         ),
         destination=Destination(
             name='Observation.aliquot.analyte_type'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.center.name'
+        ),
+        destination=Destination(
+            name='Specimen.aliquot.center_name'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.center.short_name'
+        ),
+        destination=Destination(
+            name='Specimen.aliquot.short_name'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.center.namespace'
+        ),
+        destination=Destination(
+            name='Specimen.aliquot.namespace'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.center.id'
+        ),
+        destination=Destination(
+            name='Specimen.aliquot.center_id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_wxs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_wxs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_low_pass_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_low_pass_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_targeted_sequencing'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_targeted_sequencing'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.selected_normal_low_pass_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.selected_normal_low_pass_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.selected_normal_targeted_sequencing'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.selected_normal_targeted_sequencing'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.selected_normal_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.selected_normal_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.selected_normal_wxs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.selected_normal_wxs'
         )
     ),
 
