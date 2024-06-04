@@ -768,10 +768,10 @@ def append_data_to_key(data, target_key, data_to_append, verbose):
                                 else:
                                     # check membership
                                     if not data_to_append.items() <= data[key][-1].items():
-                                        print("00000")
+                                        # print("00000")
                                         data[key][-1].update(data_to_append)
 
-                                print(f"======== instance Dict {target_key} ============== case E AFTER", "data[key]: ", data[key], "\n\n")
+                                # print(f"======== instance Dict {target_key} ============== case E AFTER", "data[key]: ", data[key], "\n\n")
                                 continue
 
                             elif isinstance(data[key][0][shared_keys_items], list) and isinstance(

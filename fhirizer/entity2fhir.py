@@ -157,6 +157,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     treatments_med = []
     treatments_medadmin = []
     procedure = None
+    observations = []
     condition_observations = []
 
     if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$",
@@ -730,6 +731,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         'display': sample["Specimen.type.sample"],
                         'code': "3111302"}]
                     specimen.type = sample_type
+
+                sp = None
                 if "Specimen.processing.method" in sample.keys():
                     sample_processing = CodeableConcept.construct()
                     sp = SpecimenProcessing.construct()
@@ -741,6 +744,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     specimen.processing = [sp]
 
                 sample_observation_components = []
+                c = None
                 if "Observation.sample.composition" in sample.keys() and sample["Observation.sample.composition"]:
                     c = get_component('composition', value=sample["Observation.sample.composition"],
                                       component_type='string')
@@ -1016,19 +1020,19 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                             "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
 
                                                     aliquot_specimen.processing = [sp]
+                                                    # if aliquot_specimen.id == "3fc2bd45-8cf9-420d-b900-a0fee703731d":
+                                                        # print("Patient", patient)
 
                                                     aliquot_specimen.subject = Reference(
                                                         **{"reference": "/".join(["Patient", patient.id])})
                                                     aliquot_specimen.parent = [Reference(
                                                         **{"reference": "/".join(["Specimen", analyte_specimen.id])})]
-                                                    if aliquot_specimen not in all_aliquots:
-                                                        all_aliquots.append(aliquot_specimen)
 
                                                     # if specimen_exists(aliquot_specimen.id, all_aliquots):
                                                     #    print("Aliquot exists", aliquot_specimen.id)
 
                                                     if not specimen_exists(aliquot_specimen.id, all_aliquots):
-                                                        all_analytes.append(aliquot_specimen)
+                                                        all_aliquots.append(aliquot_specimen)
 
                                                 aliquot_observation_components = []
                                                 if "Observation.aliquot.analyte_type" in aliquot.keys() and aliquot[
@@ -1160,12 +1164,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         aliquot_observations.append(copy.deepcopy(aliquot_observation))
                                                         # print("ADDED ALIQUOT OBSERVATION: \n", json.dumps(aliquot_observation, indent=2))
 
+        # all_aliquots = remove_duplicates(all_aliquots)
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
         all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations + smoking_observation + alcohol_observation
 
         unique_observations_set = set()
-        observations = []
-
         for obs in all_observations:
             obs_json = json.dumps(obs, sort_keys=True)
             if obs_json not in unique_observations_set:
@@ -1182,7 +1185,11 @@ def remove_duplicates(entities):
     seen = set()
     unique_entities = []
     for e in entities:
-        fhir_model = json.dumps(e, sort_keys=True)
+        if isinstance(e, dict):
+            print(e)
+            fhir_model = e
+        else:
+            fhir_model = json.dumps(e.json(), sort_keys=True)
         if fhir_model not in seen:
             seen.add(fhir_model)
             unique_entities.append(e)
@@ -1191,7 +1198,7 @@ def remove_duplicates(entities):
 
 def fhir_ndjson(entity, out_path):
     if isinstance(entity, list):
-        entity = remove_duplicates(entity)
+        # entity = remove_duplicates(entity)
         with open(out_path, 'w', encoding='utf8') as file:
             file.write('\n'.join(map(lambda e: json.dumps(e, ensure_ascii=False), entity)))
     else:
