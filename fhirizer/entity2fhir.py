@@ -162,9 +162,19 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$",
                                                                                        case['Patient.identifier']):
+        patient_submitter_id_identifier = Identifier.construct()
+        patient_submitter_id_identifier.value = case['Patient.identifier']
+        patient_submitter_id_identifier.system = "".join(["https://gdc.cancer.gov/", "case_submitter_id"])
+
+        patient_id_identifier = Identifier.construct()
+        patient_id_identifier.value = case['Patient.id']
+        patient_id_identifier.system = "".join(["https://gdc.cancer.gov/", "case_id"])
+
+        patient.identifier = [patient_submitter_id_identifier, patient_id_identifier]
+    else:
         patient_identifier = Identifier.construct()
-        patient_identifier.value = case['Patient.identifier']
-        patient_identifier.system = "".join(["https://gdc.cancer.gov/", "case"])
+        patient_identifier.value = case['Patient.id']
+        patient_identifier.system = "".join(["https://gdc.cancer.gov/", "case_id"])
         patient.identifier = [patient_identifier]
 
     if 'demographic' in case.keys() and 'Patient.birthDate' in case['demographic']:
