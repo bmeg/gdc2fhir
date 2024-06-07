@@ -1,4 +1,5 @@
 import os
+import re
 import glob
 import pathlib
 import inflection
@@ -10,6 +11,7 @@ import copy
 from fhir.resources.identifier import Identifier
 from fhir.resources.researchstudy import ResearchStudy
 from fhir.resources.codeableconcept import CodeableConcept
+from fhir.resources.encounter import Encounter
 from fhir.resources.extension import Extension
 from fhir.resources.reference import Reference
 from fhir.resources.condition import Condition, ConditionStage
@@ -33,7 +35,7 @@ from pathlib import Path
 
 # smoking_obs = utils._read_json(str(Path(importlib.resources.files(
 #    'fhirizer').parent / 'resources' / 'icgc' / 'observations' / 'smoking.json')))
-#alcohol_obs = utils._read_json(str(Path(importlib.resources.files(
+# alcohol_obs = utils._read_json(str(Path(importlib.resources.files(
 #    'fhirizer').parent / 'resources' / 'icgc' / 'observations' / 'alcohol.json')))
 
 smoking_obs = utils._read_json("resources/icgc/observations/smoking.json")
@@ -45,7 +47,6 @@ this_project_path = "../ICGC/"
 map_path = f"./projects/ICGC/{project_name}/*.xlsx"
 dat_path = f"./projects/ICGC/{project_name}/*.csv"
 out_path = f"./projects/ICGC/{project_name}"
-
 
 conditionoccurredFollowing = {
     "extension": [
@@ -65,26 +66,30 @@ conditionoccurredFollowing = {
 conditionoccurredFollowing_snomed_code = {"disease progression": "246450006", "stable disease": "58158008",
                                           "unknown": "261665006", "partial response": "399204005"}
 
-# for each patient create bodyStructure with either of these general bodySites
-body_site_snomed_code = {"Esophagus": "32849002", "Bronchus and lung": "110736001"}
-snomed_system = "http://snomed.info/sct"
-
 # ResearchStudy condition codes
-SC = {
+SC = [{
     "system": "http://snomed.info/sct",
     "code": "118286007",
     "display": "Squamous Cell Neoplasms"
-}
+},
+    {
+        "system": "http://snomed.info/sct",
+        "code": "115215004",
+        "display": "Adenomas and Adenocarcinomas"
+    }]
 
-LU = {
+ES = [{
     "system": "http://snomed.info/sct",
-    "code": "254626006",
-    "display": "Adenocarcinoma of lung"
-}
+    "code": "276803003",
+    "display": "Adenocarcinoma of esophagus"},
+    {
+        "system": "http://snomed.info/sct",
+        "code": "115215004",
+        "display": "Adenomas and Adenocarcinomas"
+    }]
 
 relapse_type_snomed = {"Local recurrence of malignant tumor of esophagus": "314960002",
                        "Distant metastasis present": "399409002"}
-
 
 smoking_snomed_codes = [
     {
@@ -127,6 +132,32 @@ alcohol_snomed_codes = [
         "note_text": "Daily Drinker"
     }
 ]
+
+exam = {
+    "resourceType": "Observation",
+    "id": "f026c5e8-d485-593f-af5c-38080d0ea4f9",
+    "status": "final",
+    "category": [
+        {
+            "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                    "code": "exam",
+                    "display": "exam"
+                }
+            ]
+        }
+    ],
+    "code": {
+        "coding": [
+            {
+                "system": "https://terminology.hl7.org/5.1.0/NamingSystem-icd10CM.html",
+                "code": "C34.1",
+                "display": "Malignant neoplasm of upper lobe, bronchus or lung"
+            }
+        ]
+    }
+}
 
 dictionary_cols = ['csv_column_name',
                    'csv_description',
@@ -275,7 +306,7 @@ dat_dict = fetch_data(dat_paths, project_name=project_name)
 
 # combine sample and specimen relations
 df_specimen = pd.merge(dat_dict['specimen'], dat_dict['sample'], on='icgc_specimen_id', how='left',
-                       suffixes=('_specimen', '_sample'))
+                     suffixes=('_specimen', '_sample'))
 
 # combine patient and exposure observations
 # https://loinc.org/LG41856-2
@@ -285,6 +316,7 @@ if 'donor_exposure' in dat_dict.keys():
     df_patient.fillna('')
 else:
     df_patient = dat_dict['donor']
+
 
 # TODO: family cancer history observation link confirmation
 # df_patient_exposure_family = pd.merge(dat_dict['donor'], dat_dict['donor_family'], on='icgc_donor_id', how='left',
@@ -296,10 +328,13 @@ def fhir_research_study(df=dat_dict['donor']):
     name = df["project_code"].unique()[0]
 
     rs_name = "icgc_project"
+    condition = None
     if name in ["ESAD-UK", "ESCA-CN"]:
         rs_name = "Esophageal Adenocarcinoma"
+        condition = CodeableConcept(**{"coding": ES})
     elif name in ["LUSC-KR", "LUSC-CN"]:
         rs_name = "Lung Squamous cell carcinoma"
+        condition = CodeableConcept(**{"coding": SC})
 
     research_study_list = []
     icgc_program = ResearchStudy(**{"id": str(uuid.uuid3(uuid.NAMESPACE_DNS, "ICGC")),
@@ -312,7 +347,8 @@ def fhir_research_study(df=dat_dict['donor']):
                                     "identifier": [
                                         Identifier(**{"system": "https://dcc.icgc.org/project", "value": name})],
                                     "name": rs_name, "status": "active", "partOf": [
-            Reference(**{"reference": "/".join(["ResearchStudy", icgc_program.id])})]})
+            Reference(**{"reference": "/".join(["ResearchStudy", icgc_program.id])})],
+                                    "condition": [condition]})
     research_study_list.append(icgc_project)
 
     studies = [value for value in df['study_donor_involved_in'].unique() if value]
@@ -340,7 +376,6 @@ def exposure_observation(obs, row, snomed, smoking):
     obs["subject"] = {"reference": "".join(["Patient/", patient_id])}
     obs["focus"] = [{"reference": "".join(["Patient/", patient_id])}]
     obs["id"] = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([patient_id, row['project_code'], obs["note"][0]["text"]])))
-    print(obs["id"])
 
     if snomed:
         obs["valueCodeableConcept"]["coding"][0]["code"] = snomed["snomed_code"]
@@ -387,10 +422,11 @@ def fhir_alcohol_exposure_observations(row):
             obs = exposure_observation(obs=copy.deepcopy(alcohol_obs), row=row, snomed=snomed, smoking=False)
         elif 'Occasional Drinker' in row['alcohol_history_intensity']:
             snomed = \
-            [code for code in alcohol_snomed_codes if code['note_text'] == 'Occasional Drinker (< once a month)'][0]
+                [code for code in alcohol_snomed_codes if code['note_text'] == 'Occasional Drinker (< once a month)'][0]
             obs = exposure_observation(obs=copy.deepcopy(alcohol_obs), row=row, snomed=snomed, smoking=False)
     if obs:
         return obs
+
 
 def fhir_patient(row):
     sex_code = None
@@ -425,13 +461,194 @@ def fhir_research_subject(row):
            "subject": Reference(**{"reference": "/".join(["Patient", patient_id])})})
 
 
+relapse_type = ["distant recurrence/metastasis",
+                "local recurrence",
+                "local recurrence and distant metastasis",
+                "progression (liquid tumours)"]
+
+# for each patient create bodyStructure with either of these general bodySites
+body_site_snomed_code = {"Esophagus": "32849002", "Bronchus and lung": "110736001"}
+snomed_system = "http://snomed.info/sct"
+
+
+def fhir_body_structure(row):
+    patient_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id'], row['project_code']])))
+
+    body_site = None
+    if row['project_code'] in ["ESAD-UK", "ESCA-CN"]:
+        body_site = {
+            "system": "http://snomed.info/sct",
+            "code": "32849002",
+            "display": "Esophagus"
+        }
+    elif row['project_code'] in ["LUSC-KR", "LUSC-CN"]:
+        body_site = {
+            "system": "http://snomed.info/sct",
+            "code": "110736001",
+            "display": "Bronchus and lung"
+        }
+
+    body_structure = BodyStructure(
+        **{"id": str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id'], row['project_code']]))),
+           "includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": [body_site]}})],
+           "patient": Reference(**{"reference": "/".join(["Patient", patient_id])})
+           })
+    return body_structure
+
+
+def get_component(key, value=None, component_type=None):
+    if component_type == 'string':
+        value = {"valueString": value}
+    elif component_type == 'int':
+        value = {"valueInteger": value}
+    elif component_type == 'float':
+        value = {"valueQuantity": {"value": value}}
+    elif component_type == 'bool':
+        value = {"valueBoolean": value}
+    else:
+        pass
+
+    component = {
+        "code": {
+            "coding": [
+                {
+                    "system": "https://cadsr.cancer.gov/sample_laboratory_observation",
+                    "code": key,
+                    "display": key
+                }
+            ],
+            "text": key
+        }
+    }
+    if value:
+        component.update(value)
+
+    return component
+
+
+def fhir_condition(row):
+    # condition, condition observation, encounter
+    icd10 = None
+    if row['icgc_donor_id']:
+        icd10 = row['donor_diagnosis_icd10'].upper()
+
+    patient_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id'], row['project_code']])))
+    condition_id = str(uuid.uuid3(uuid.NAMESPACE_DNS,
+                                  "".join([row['icgc_donor_id'], row['project_code'], icd10])))
+
+    clinicalStatus = None
+    if 'donor_relapse_type' in row.keys() and pd.notna(row['donor_relapse_type']) and row[
+        'donor_relapse_type'] in relapse_type:
+        clinicalStatus_code = {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "relapse",
+            "display": "Relapse"
+        }
+        clinicalStatus = CodeableConcept(**{"coding": [clinicalStatus_code], "text": row['donor_relapse_type']})
+
+    elif pd.notna(row['disease_status_last_followup']) and row['disease_status_last_followup'] in [
+        'no evidence of disease', 'stable']:
+        clinicalStatus_code = {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "remission",
+            "display": "Remission"
+        }
+        clinicalStatus = CodeableConcept(**{"coding": [clinicalStatus_code], "text": "".join(
+            ["Since last follow-up: ", row['disease_status_last_followup']])})
+
+    else:
+        clinicalStatus = CodeableConcept(**{"coding": [{
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "active",
+            "display": "Active"
+        }]})
+
+    body_site = None
+    if row['project_code'] in ["ESAD-UK", "ESCA-CN"]:
+        body_site = CodeableConcept(**{"coding": [{
+            "system": "http://snomed.info/sct",
+            "code": "32849002",
+            "display": "Esophagus"
+        }]})
+    elif row['project_code'] in ["LUSC-KR", "LUSC-CN"]:
+        body_site = CodeableConcept(**{"coding": [{
+            "system": "http://snomed.info/sct",
+            "code": "110736001",
+            "display": "Bronchus and lung"
+        }]})
+
+    condition_code = None
+    encounter = None
+    obs_exam = None
+    if 'donor_diagnosis_icd10' in row.keys() and pd.notna(row['donor_diagnosis_icd10']) and re.match(r"^[A-Za-z0-9\-.]+$",
+                                                                                       row['donor_diagnosis_icd10']):
+        condition_code = CodeableConcept(**{"coding": [{
+            "system": "https://terminology.hl7.org/5.1.0/NamingSystem-icd10CM.html",
+            "code": str(icd10),
+            "display": str(icd10)
+        }]})
+
+        encounter = Encounter.construct()
+        encounter.status = 'completed'
+        encounter.id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join(
+            [row['icgc_donor_id'], row['project_code'], row['donor_diagnosis_icd10']])))
+        encounter.subject = Reference(**{"reference": "/".join(["Patient", patient_id])})
+
+        obs_exam = copy.deepcopy(exam)
+        obs_exam["subject"] = {"reference": "/".join(["Patient", patient_id])}
+        obs_exam["focus"] = [{"reference": "/".join(["Patient", patient_id])},
+                             {"reference": "/".join(["Condition", condition_id])}]
+
+        comp = []
+        if row['donor_survival_time'] and isinstance(row['donor_survival_time'], float):
+            a_comp = get_component('donor_survival_time', value=row['donor_survival_time'], component_type='float')
+            comp.append(a_comp)
+        if row['donor_interval_of_last_followup'] and isinstance(row['donor_interval_of_last_followup'], float):
+            b_comp = get_component('donor_interval_of_last_followup', value=row['donor_interval_of_last_followup'], component_type='float')
+            comp.append(b_comp)
+        if comp:
+            obs_exam["component"] = comp
+
+        if encounter:
+            obs_exam["encounter"] = {"reference": "/".join(["Encounter", encounter.id])}
+
+    age_string = None
+    if row['donor_age_at_diagnosis'] and isinstance(row['donor_age_at_diagnosis'], float):
+        age_string = str(int(row['donor_age_at_diagnosis']))
+
+    condition = Condition(**{"id": condition_id,
+                             "clinicalStatus": clinicalStatus,
+                             "subject": Reference(**{"reference": "/".join(["Patient", patient_id])}),
+                             "bodySite": [body_site], "code": condition_code, "onsetString": age_string})
+
+    return {"condition": condition, "encounter": encounter, "observation": obs_exam}
+
+
+def fhir_specimen(row):
+    # specimen, specimen Observation
+    return
+
+
+def fhir_medAdmin(row):
+    return
+
+
 patients = [orjson.loads(p.json()) for p in list(df_patient.apply(fhir_patient, axis=1)) if p]
 obs_smoking = [os for os in list(df_patient.apply(fhir_smoking_exposure_observations, axis=1)) if os]
 obs_alc = [ol for ol in list(df_patient.apply(fhir_alcohol_exposure_observations, axis=1)) if ol]
-observations = obs_alc + obs_smoking
-observations = list({v['id']: v for v in observations}.values())
+
 rsub = [orjson.loads(rs.json()) for rs in list(df_patient.apply(fhir_research_subject, axis=1)) if rs]
 rs = [orjson.loads(r.json()) for r in fhir_research_study(df=dat_dict['donor'])]
+
+cond_obs_encont = df_patient.apply(fhir_condition, axis=1)
+conditions = [orjson.loads(c['condition'].json()) for c in cond_obs_encont if c['condition']]
+encounters = [orjson.loads(c['encounter'].json()) for c in cond_obs_encont if c['encounter']]
+obs_exam = [c['observation'] for c in cond_obs_encont if c['observation']]
+
+observations = obs_alc + obs_smoking + obs_exam
+observations = list({v['id']: v for v in observations}.values())
+
+body_structures = [orjson.loads(b.json()) for b in list(df_patient.apply(fhir_body_structure, axis=1)) if b]
 
 out_dir = os.path.join(out_path, "META")
 if not os.path.exists(out_dir):
@@ -459,15 +676,11 @@ print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson fil
 fhir_ndjson(observations, "/".join([out_dir, "Observation.ndjson"]))
 print("Successfully converted GDC case info to FHIR's Observation ndjson file!")
 
+fhir_ndjson(conditions, "/".join([out_dir, "Condition.ndjson"]))
+print("Successfully converted GDC case info to FHIR's Condition ndjson file!")
 
-def fhir_condition(row):
-    return
+fhir_ndjson(body_structures, "/".join([out_dir, "BodyStructure.ndjson"]))
+print("Successfully converted GDC case info to FHIR's body_structures ndjson file!")
 
-def fhir_bodyStructure(row):
-    return
-
-def fhir_specimen(row):
-    return
-
-def fhir_medAdmin(row):
-    return
+fhir_ndjson(encounters, "/".join([out_dir, "Encounter.ndjson"]))
+print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
