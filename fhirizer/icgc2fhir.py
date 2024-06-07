@@ -3,6 +3,7 @@ import re
 import glob
 import pathlib
 import inflection
+import itertools
 import pandas as pd
 import uuid
 import json
@@ -19,6 +20,7 @@ from fhir.resources.observation import Observation
 from fhir.resources.specimen import Specimen, SpecimenProcessing, SpecimenCollection
 from fhir.resources.patient import Patient
 from fhir.resources.researchsubject import ResearchSubject
+from fhir.resources.duration import Duration
 from fhir.resources.procedure import Procedure
 from fhir.resources.medicationadministration import MedicationAdministration
 from fhir.resources.bodystructure import BodyStructure, BodyStructureIncludedStructure
@@ -37,6 +39,9 @@ from pathlib import Path
 #    'fhirizer').parent / 'resources' / 'icgc' / 'observations' / 'smoking.json')))
 # alcohol_obs = utils._read_json(str(Path(importlib.resources.files(
 #    'fhirizer').parent / 'resources' / 'icgc' / 'observations' / 'alcohol.json')))
+biospecimen_observation = utils._read_json(str(Path(importlib.resources.files(
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_observation.json')))
+
 
 smoking_obs = utils._read_json("resources/icgc/observations/smoking.json")
 alcohol_obs = utils._read_json("resources/icgc/observations/alcohol.json")
@@ -306,7 +311,7 @@ dat_dict = fetch_data(dat_paths, project_name=project_name)
 
 # combine sample and specimen relations
 df_specimen = pd.merge(dat_dict['specimen'], dat_dict['sample'], on='icgc_specimen_id', how='left',
-                     suffixes=('_specimen', '_sample'))
+                       suffixes=('_specimen', '_sample'))
 
 # combine patient and exposure observations
 # https://loinc.org/LG41856-2
@@ -580,8 +585,9 @@ def fhir_condition(row):
     condition_code = None
     encounter = None
     obs_exam = None
-    if 'donor_diagnosis_icd10' in row.keys() and pd.notna(row['donor_diagnosis_icd10']) and re.match(r"^[A-Za-z0-9\-.]+$",
-                                                                                       row['donor_diagnosis_icd10']):
+    if 'donor_diagnosis_icd10' in row.keys() and pd.notna(row['donor_diagnosis_icd10']) and re.match(
+            r"^[A-Za-z0-9\-.]+$",
+            row['donor_diagnosis_icd10']):
         condition_code = CodeableConcept(**{"coding": [{
             "system": "https://terminology.hl7.org/5.1.0/NamingSystem-icd10CM.html",
             "code": str(icd10),
@@ -604,7 +610,8 @@ def fhir_condition(row):
             a_comp = get_component('donor_survival_time', value=row['donor_survival_time'], component_type='float')
             comp.append(a_comp)
         if row['donor_interval_of_last_followup'] and isinstance(row['donor_interval_of_last_followup'], float):
-            b_comp = get_component('donor_interval_of_last_followup', value=row['donor_interval_of_last_followup'], component_type='float')
+            b_comp = get_component('donor_interval_of_last_followup', value=row['donor_interval_of_last_followup'],
+                                   component_type='float')
             comp.append(b_comp)
         if comp:
             obs_exam["component"] = comp
@@ -626,11 +633,125 @@ def fhir_condition(row):
 
 def fhir_specimen(row):
     # specimen, specimen Observation
-    return
+    # SpecimenContainer() # don't have device info/schema atm -> observation component
+    # https://terminology.hl7.org/5.5.0/ValueSet-v2-0493.html
 
+    observations = []
+    # parent sample
+    sample_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join(
+        [row['icgc_sample_id'], row['project_code_sample'], row['icgc_donor_id_sample']])))
+    sample_patient = str(
+        uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id_sample'], row['project_code_sample']])))
+    sample_identifiers = Identifier(**{"system": "https://dcc.icgc.org/program", "value": row['submitted_sample_id']})
+    sample = Specimen(**{"id": sample_id, "identifier": [sample_identifiers],
+                         "subject": Reference(**{"reference": "/".join(["Patient", sample_patient])})})
 
-def fhir_medAdmin(row):
-    return
+    sample_components = []
+    if 'percentage_cellularity' in row.keys() and pd.notna(row['percentage_cellularity']) and isinstance(row['percentage_cellularity'], str):
+        cpc = get_component('percentage_cellularity', value=row['percentage_cellularity'],
+                                   component_type='string')
+        sample_components.append(cpc)
+    if 'level_of_cellularity' in row.keys() and pd.notna(row['level_of_cellularity']) and isinstance(row['level_of_cellularity'], float):
+        # if not isinstance(row['level_of_cellularity'], float):
+            # float(row['level_of_cellularity'])
+        cpc = get_component('level_of_cellularity', value=row['level_of_cellularity'],
+                                   component_type='float')
+        sample_components.append(cpc)
+
+    if 'analyzed_sample_interval' in row.keys() and pd.notna(row['analyzed_sample_interval']) and isinstance(row['analyzed_sample_interval'], float):
+        cpc = get_component('analyzed_sample_interval', value=row['analyzed_sample_interval'],
+                                   component_type='float')
+        sample_components.append(cpc)
+
+    if sample_components:
+        sample_observation = copy.deepcopy(biospecimen_observation)
+        print(sample_components)
+
+        sample_observation['id'] = str(
+            uuid.uuid3(uuid.NAMESPACE_DNS, sample_id))
+        sample_observation['component'] = sample_components
+
+        sample_observation['subject'] = {
+            "reference": "/".join(["Patient", sample_patient])}
+        sample_observation['specimen'] = {
+            "reference": "/".join(["Specimen", sample_id])}
+        sample_observation['focus'][0] = {
+            "reference": "/".join(["Specimen", sample_id])}
+        observations.append(copy.deepcopy(sample_observation))
+
+    # child specimen
+    specimen_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join(
+        [row['icgc_specimen_id'], row['project_code_specimen'], row['icgc_donor_id_specimen']])))
+    specimen_patient = str(
+        uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id_specimen'], row['project_code_specimen']])))
+    sample_identifiers = Identifier(
+        **{"system": "https://dcc.icgc.org/program", "value": row['submitted_specimen_id_specimen']})
+
+    sc = None
+    if row['specimen_interval'] and pd.notna(row['specimen_interval']) and isinstance(row['specimen_interval'], float):
+        sc = SpecimenCollection(**{"duration": Duration(**{"value": row['specimen_interval']})})
+
+    processing_list = []
+    sp = []
+    if 'specimen_processing' in row.keys() and pd.notna(row['specimen_processing']) and re.match(r"^[A-Za-z0-9\-.]+$",
+                                                                                                 row[
+                                                                                                     'specimen_processing']):
+        processing_list.append({
+            'system': "https://dcc.icgc.org/processing_method",
+            'display': row['specimen_processing'],
+            'code': row['specimen_processing']})
+    if 'specimen_processing_other' in row.keys() and pd.notna(row['specimen_processing_other']) and re.match(
+            r"^[A-Za-z0-9\-.]+$", row['specimen_processing']):
+        processing_list.append({
+            'system': "https://dcc.icgc.org/processing_method",
+            'display': row['specimen_processing_other'],
+            'code': row['specimen_processing_other']})
+
+    if processing_list:
+        sp = [SpecimenProcessing(**{"method": CodeableConcept(**{"coding": processing_list})})]
+
+    parent = None
+    if sample_id:
+        parent = [Reference(**{"reference": "/".join(["Specimen", sample_id])})]
+
+    st = None
+    if 'specimen_type' in row.keys() and pd.notna(row['specimen_type']):
+        st = CodeableConcept(**{"coding": [
+            {"code": row['specimen_type'], "system": "https://dcc.icgc.org/specimen_type",
+             "display": row['specimen_type']}]})
+
+    specimen_components = []
+    if 'specimen_storage' in row.keys() and pd.notna(row['specimen_storage']) and isinstance(row['specimen_storage'], str):
+        if "," in row['specimen_storage']:
+            row['specimen_storage'] = row['specimen_storage'].replace(",", "")
+
+        if re.match(r"[ \r\n\t\S]+", row['specimen_storage']):
+
+            cpc = get_component('specimen_storage', value=row['specimen_storage'],
+                                       component_type='string')
+            specimen_components.append(cpc)
+
+    if specimen_components:
+        specimen_observation = copy.deepcopy(biospecimen_observation)
+        specimen_observation['id'] = str(
+            uuid.uuid3(uuid.NAMESPACE_DNS, specimen_id))
+        specimen_observation['component'] = specimen_components
+
+        specimen_observation['subject'] = {
+            "reference": "/".join(["Patient", specimen_patient])}
+        specimen_observation['specimen'] = {
+            "reference": "/".join(["Specimen", specimen_id])}
+        specimen_observation['focus'][0] = {
+            "reference": "/".join(["Specimen", specimen_id])}
+
+        if specimen_observation:
+            observations.append(copy.deepcopy(specimen_observation))
+
+    specimen = Specimen(**{"id": specimen_id, "identifier": [sample_identifiers], "parent": parent,
+                           "type": st, "processing": sp, "collection": sc,
+                           "subject": Reference(**{"reference": "/".join(["Patient", specimen_patient])})})
+
+    return {"samples": [specimen, sample], "observations": observations}
 
 
 patients = [orjson.loads(p.json()) for p in list(df_patient.apply(fhir_patient, axis=1)) if p]
@@ -645,10 +766,21 @@ conditions = [orjson.loads(c['condition'].json()) for c in cond_obs_encont if c[
 encounters = [orjson.loads(c['encounter'].json()) for c in cond_obs_encont if c['encounter']]
 obs_exam = [c['observation'] for c in cond_obs_encont if c['observation']]
 
-observations = obs_alc + obs_smoking + obs_exam
-observations = list({v['id']: v for v in observations}.values())
-
 body_structures = [orjson.loads(b.json()) for b in list(df_patient.apply(fhir_body_structure, axis=1)) if b]
+
+sample_observations_nested_list = [s["observations"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if s["observations"]]
+sample_observations_list = list(itertools.chain.from_iterable(sample_observations_nested_list))
+sample_observations = list({v['id']: v for v in sample_observations_list}.values())
+
+
+samples_nested_list = [s["samples"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if s["samples"]]
+samples_list = list(itertools.chain.from_iterable(samples_nested_list))
+samples_list_json = [orjson.loads(s.json()) for s in samples_list]
+samples = list({v['id']: v for v in samples_list_json}.values())
+
+
+observations = obs_alc + obs_smoking + obs_exam + sample_observations
+observations = list({v['id']: v for v in observations}.values())
 
 out_dir = os.path.join(out_path, "META")
 if not os.path.exists(out_dir):
@@ -684,3 +816,6 @@ print("Successfully converted GDC case info to FHIR's body_structures ndjson fil
 
 fhir_ndjson(encounters, "/".join([out_dir, "Encounter.ndjson"]))
 print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
+
+fhir_ndjson(samples, "/".join([out_dir, "Specimen.ndjson"]))
+print("Successfully converted GDC case info to FHIR's Specimen ndjson file!")
