@@ -57,5 +57,6 @@ Below is an example of the data-schema conversion and generation flow for a sing
     ```
 3. Validate output:
    ```
-    g3t meta validate
+    g3t meta validate <path_to_META_folder>
+    g3t --debug meta dataframe --data_type Observation
     ```

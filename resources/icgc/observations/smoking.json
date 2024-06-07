@@ -1,6 +1,6 @@
 {
   "resourceType": "Observation",
-  "id": "observation_smoking_social_history",
+  "id": "smokingstatus",
   "meta": {
     "profile": [
       "http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus"
@@ -22,24 +22,31 @@
     "coding": [
       {
         "system": "http://loinc.org",
-        "code": "8664-5",
-        "display": "Cigarettes smoked total (pack per year) - Reported"
+        "code": "72166-2",
+        "display": "Tobacco smoking status"
       }
     ],
-    "text": "Smoking history pack years"
+    "text": "Tobacco smoking status"
   },
   "subject": {
     "reference": "Patient/example"
   },
-  "valueQuantity": {
-    "value": 0,
-    "unit": "pack-years",
-    "system": "http://unitsofmeasure.org",
-    "code": "pack-years"
+  "focus": [{
+    "reference": "Patient/"
+  }],
+  "valueCodeableConcept": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "8517006",
+        "display": "Former smoker"
+      }
+    ],
+    "text": "Former smoker"
   },
   "note": [
     {
-      "text": "pack-years: "
+      "text": "for > 15 years"
     }
   ]
 }

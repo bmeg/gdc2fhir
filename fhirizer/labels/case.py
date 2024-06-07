@@ -390,6 +390,24 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='demographic.vital_status'
+        ),
+        destination=Destination(
+            name='Patient.deceasedBoolean'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='demographic.age_at_index'
+        ),
+        destination=Destination(
+            name='Patient.extension.age'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='demographic.race',
             description=data_dict["clinical"]["demographic"]["properties"]["race"]["description"],
             category=data_dict["clinical"]["demographic"]["category"],
@@ -1098,6 +1116,15 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Condition.id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnosis.tissue_or_organ_of_origin'
+        ),
+        destination=Destination(
+            name='Condition.bodySite'
         )
     ),
 

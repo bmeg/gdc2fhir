@@ -1,6 +1,6 @@
 {
   "resourceType": "Observation",
-  "id": "observation_smoking_social_history",
+  "id": "smokingstatus",
   "meta": {
     "profile": [
       "http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus"
@@ -22,24 +22,31 @@
     "coding": [
       {
         "system": "http://loinc.org",
-        "code": "8664-5",
-        "display": "Cigarettes smoked total (pack per year) - Reported"
+        "code": "11331-6",
+        "display": "History of Alcohol use"
       }
     ],
-    "text": "Smoking history pack years"
+    "text": "History of Alcohol use"
   },
   "subject": {
     "reference": "Patient/example"
   },
-  "valueQuantity": {
-    "value": 0,
-    "unit": "pack-years",
-    "system": "http://unitsofmeasure.org",
-    "code": "pack-years"
+  "focus": [{
+    "reference": "Patient/"
+  }],
+  "valueCodeableConcept": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "28127009",
+        "display": "Social drinker"
+      }
+    ],
+    "text": "Social drinker"
   },
   "note": [
     {
-      "text": "pack-years: "
+      "text": "Social Drinker (> once a month, < once a week)"
     }
   ]
 }

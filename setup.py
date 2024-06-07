@@ -25,8 +25,11 @@ setup(
         'orjson',
         'tqdm',
         'uuid',
+        'openpyxl',
+        'pandas',
         'iteration_utilities',
         'icd10-cm',
+
         'beautifulsoup4',
         'fhir.resources>=7.1.0'  # FHIR® (Release R5, version 5.0.0)
     ],
@@ -35,6 +38,7 @@ setup(
             '../resources/gdc_resources/content_annotations/**/*.json',
             '../resources/gdc_resources/data_dictionary/**/*.json',
             '../resources/gdc_resources/fields/*.json',
+            '../resources/icgc/observations/*.json',
             '../resources/*.json.gz',
             '../mapping/*.json'
         ]

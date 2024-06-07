@@ -63,10 +63,13 @@ aliquot = utils._read_json(str(Path(importlib.resources.files(
 def assign_fhir_for_project(project, disease_types=disease_types):
     # create ResearchStudy
     rs = ResearchStudy.construct()
+    """
     if 'ResearchStudyProgressStatus.actual' in project.keys() and project['ResearchStudyProgressStatus.actual']:
         rs.status = "-".join([project['ResearchStudy.status'], "released"])
     else:
         rs.status = project['ResearchStudy.status']
+    """
+    rs.status = "active" # temp harmonization
 
     if 'ResearchStudy.id' in project.keys() and project['ResearchStudy.id'] in ["EXCEPTIONAL_RESPONDERS-ER",
                                                                                 "CDDP_EAGLE-1"]:
@@ -203,6 +206,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     if 'demographic' in case.keys() and 'Patient.deceasedDateTime' in case['demographic']:
         patient.deceasedDateTime = case['demographic']['Patient.deceasedDateTime']
 
+    """
+    if 'demographic' in case.keys() and 'Patient.deceasedBoolean' in case['demographic']:
+        if case['demographic']['Patient.deceasedBoolean'] == "Alive":
+            patient.deceasedBoolean = False
+        elif case['demographic']['Patient.deceasedBoolean'] == "Dead":
+            patient.deceasedBoolean = True
+    """
+
     if 'demographic' in case.keys() and 'Extension.extension:USCoreRaceExtension' in case['demographic'].keys():
         #  race and ethnicity
         race_ext = Extension.construct()
@@ -271,8 +282,15 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
             race_ethnicity_sex.append(ethnicity_ext)
 
-        if race_ethnicity_sex:
-            patient.extension = race_ethnicity_sex
+    if 'demographic' in case.keys() and 'Patient.extension.age' in case['demographic'].keys():
+        # alternative way(s) of defining age vs birthDate in patient field
+        # "url": "http://hl7.org/fhir/us/icsr-ae-reporting/StructureDefinition/icsr-ext-ageattimeofonset"
+        age = {"url": "http://hl7.org/fhir/SearchParameter/patient-extensions-Patient-age",
+               'valueQuantity': {"value": case['demographic']['Patient.extension.age']}}
+        race_ethnicity_sex.append(age)
+
+    if race_ethnicity_sex:
+        patient.extension = race_ethnicity_sex
 
     # gdc project for patient
     project_relations = assign_fhir_for_project(project=case['ResearchStudy'], disease_types=disease_types)
@@ -580,19 +598,18 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     smoking_observation = []
     if 'exposures' in case.keys():
         if 'Observation.patient.pack_years_smoked' in case['exposures'][0] and case['exposures'][0]['Observation.patient.pack_years_smoked']:
-            sm_obs = social_histody_smoking_observation
-            if 'valueQuantity' in sm_obs.keys():
-                sm_obs.pop('valueQuantity', None)
+            sm_obs = copy.deepcopy(social_histody_smoking_observation)
+            # if 'valueQuantity' in sm_obs.keys():
+            #    sm_obs.pop('valueQuantity', None)
             sm_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id, orjson.loads(study_ref.json())['reference'], 'Observation.patient.pack_years_smoked'])
             sm_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_obs_code))
             sm_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             sm_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
-            sm_obs['valueInteger'] = int(case['exposures'][0]['Observation.patient.pack_years_smoked'])
+            sm_obs['valueQuantity']['value'] = int(case['exposures'][0]['Observation.patient.pack_years_smoked'])
             smoking_observation.append(copy.deepcopy(sm_obs))
 
-
         if 'Observation.patient.cigarettes_per_day' in case['exposures'][0] and isinstance(case['exposures'][0]['Observation.patient.cigarettes_per_day'], float):
-            sm_pd_obs = social_histody_smoking_observation
+            sm_pd_obs = copy.deepcopy(social_histody_smoking_observation)
             if 'valueInteger' in sm_pd_obs.keys():
                 sm_pd_obs.pop('valueInteger', None)
             sm_pd_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id, orjson.loads(study_ref.json())['reference'], 'Observation.patient.cigarettes_per_day'])
@@ -611,11 +628,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             }
             smoking_observation.append(copy.deepcopy(sm_pd_obs))
 
-
+    # todo: change to alcohol intensity
+    # https://docs.gdc.cancer.gov/Data_Dictionary/viewer/#?view=table-definition-view&id=exposure&anchor=alcohol_intensity
     alcohol_observation = []
     if 'exposures' in case.keys():
         if 'Observation.patient.alcohol_history' in case['exposures'][0] and case['exposures'][0]['Observation.patient.alcohol_history']:
-            al_obs = social_histody_alcohol_observation
+            al_obs = copy.deepcopy(social_histody_alcohol_observation)
             al_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id, orjson.loads(study_ref.json())['reference'], 'Observation.patient.alcohol_history'])
             al_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, al_obs_code))
             al_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
