@@ -205,14 +205,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     if 'demographic' in case.keys() and 'Patient.deceasedDateTime' in case['demographic']:
         patient.deceasedDateTime = case['demographic']['Patient.deceasedDateTime']
-
-    """
-    if 'demographic' in case.keys() and 'Patient.deceasedBoolean' in case['demographic']:
-        if case['demographic']['Patient.deceasedBoolean'] == "Alive":
-            patient.deceasedBoolean = False
-        elif case['demographic']['Patient.deceasedBoolean'] == "Dead":
-            patient.deceasedBoolean = True
-    """
+    else:
+        if 'demographic' in case.keys() and 'Patient.deceasedBoolean' in case['demographic']:
+            if case['demographic']['Patient.deceasedBoolean'] == "Alive":
+                patient.deceasedBoolean = False
+            elif case['demographic']['Patient.deceasedBoolean'] == "Dead":
+                patient.deceasedBoolean = True
 
     if 'demographic' in case.keys() and 'Extension.extension:USCoreRaceExtension' in case['demographic'].keys():
         #  race and ethnicity
