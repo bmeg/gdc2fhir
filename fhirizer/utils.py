@@ -1067,3 +1067,41 @@ def ncit2mondo(path):
     with gzip.open(path, 'r') as fin:
         data = json.loads(fin.read().decode('utf-8'))
         return data
+
+
+def get_component(key, value=None, component_type=None):
+    if component_type == 'string':
+        value = {"valueString": value}
+    elif component_type == 'int':
+        value = {"valueInteger": value}
+    elif component_type == 'float':
+        value = {"valueQuantity": {"value": value}}
+    elif component_type == 'bool':
+        value = {"valueBoolean": value}
+    else:
+        pass
+
+    component = {
+        "code": {
+            "coding": [
+                {
+                    "system": "https://cadsr.cancer.gov/sample_laboratory_observation",
+                    "code": key,
+                    "display": key
+                }
+            ],
+            "text": key
+        }
+    }
+    if value:
+        component.update(value)
+
+    return component
+
+def fhir_ndjson(entity, out_path):
+    if isinstance(entity, list):
+        with open(out_path, 'w', encoding='utf8') as file:
+            file.write('\n'.join(map(lambda e: json.dumps(e, ensure_ascii=False), entity)))
+    else:
+        with open(out_path, 'w', encoding='utf8') as file:
+            file.write(json.dumps(entity, ensure_ascii=False))

@@ -42,15 +42,19 @@ from pathlib import Path
 biospecimen_observation = utils._read_json(str(Path(importlib.resources.files(
     'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_observation.json')))
 
-
 smoking_obs = utils._read_json("resources/icgc/observations/smoking.json")
 alcohol_obs = utils._read_json("resources/icgc/observations/alcohol.json")
 
-project_name = ""
+project_name = "LUSC-KR"
+has_files = True
+file_name = "score-manifest.tsv"
+file_table_name = "file-table.tsv"
 
 this_project_path = "../ICGC/"
-map_path = f"./projects/ICGC/{project_name}/*.xlsx"
-dat_path = f"./projects/ICGC/{project_name}/*.csv"
+map_path = f"./projects/ICGC/{project_name}/data/*.xlsx"
+dat_path = f"./projects/ICGC/{project_name}/data/*.csv"
+file_path = f"./projects/ICGC/{project_name}/data/{file_name}"
+file_table_path = f"./projects/ICGC/{project_name}/data/{file_table_name}"
 out_path = f"./projects/ICGC/{project_name}"
 
 conditionoccurredFollowing = {
@@ -163,6 +167,15 @@ exam = {
         ]
     }
 }
+
+relapse_type = ["distant recurrence/metastasis",
+                "local recurrence",
+                "local recurrence and distant metastasis",
+                "progression (liquid tumours)"]
+
+# for each patient create bodyStructure with either of these general bodySites
+body_site_snomed_code = {"Esophagus": "32849002", "Bronchus and lung": "110736001"}
+snomed_system = "http://snomed.info/sct"
 
 dictionary_cols = ['csv_column_name',
                    'csv_description',
@@ -466,16 +479,6 @@ def fhir_research_subject(row):
            "subject": Reference(**{"reference": "/".join(["Patient", patient_id])})})
 
 
-relapse_type = ["distant recurrence/metastasis",
-                "local recurrence",
-                "local recurrence and distant metastasis",
-                "progression (liquid tumours)"]
-
-# for each patient create bodyStructure with either of these general bodySites
-body_site_snomed_code = {"Esophagus": "32849002", "Bronchus and lung": "110736001"}
-snomed_system = "http://snomed.info/sct"
-
-
 def fhir_body_structure(row):
     patient_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id'], row['project_code']])))
 
@@ -499,36 +502,6 @@ def fhir_body_structure(row):
            "patient": Reference(**{"reference": "/".join(["Patient", patient_id])})
            })
     return body_structure
-
-
-def get_component(key, value=None, component_type=None):
-    if component_type == 'string':
-        value = {"valueString": value}
-    elif component_type == 'int':
-        value = {"valueInteger": value}
-    elif component_type == 'float':
-        value = {"valueQuantity": {"value": value}}
-    elif component_type == 'bool':
-        value = {"valueBoolean": value}
-    else:
-        pass
-
-    component = {
-        "code": {
-            "coding": [
-                {
-                    "system": "https://cadsr.cancer.gov/sample_laboratory_observation",
-                    "code": key,
-                    "display": key
-                }
-            ],
-            "text": key
-        }
-    }
-    if value:
-        component.update(value)
-
-    return component
 
 
 def fhir_condition(row):
@@ -607,11 +580,13 @@ def fhir_condition(row):
 
         comp = []
         if row['donor_survival_time'] and isinstance(row['donor_survival_time'], float):
-            a_comp = get_component('donor_survival_time', value=row['donor_survival_time'], component_type='float')
+            a_comp = utils.get_component('donor_survival_time', value=row['donor_survival_time'],
+                                         component_type='float')
             comp.append(a_comp)
         if row['donor_interval_of_last_followup'] and isinstance(row['donor_interval_of_last_followup'], float):
-            b_comp = get_component('donor_interval_of_last_followup', value=row['donor_interval_of_last_followup'],
-                                   component_type='float')
+            b_comp = utils.get_component('donor_interval_of_last_followup',
+                                         value=row['donor_interval_of_last_followup'],
+                                         component_type='float')
             comp.append(b_comp)
         if comp:
             obs_exam["component"] = comp
@@ -647,25 +622,28 @@ def fhir_specimen(row):
                          "subject": Reference(**{"reference": "/".join(["Patient", sample_patient])})})
 
     sample_components = []
-    if 'percentage_cellularity' in row.keys() and pd.notna(row['percentage_cellularity']) and isinstance(row['percentage_cellularity'], str):
-        cpc = get_component('percentage_cellularity', value=row['percentage_cellularity'],
-                                   component_type='string')
+    if 'percentage_cellularity' in row.keys() and pd.notna(row['percentage_cellularity']) and isinstance(
+            row['percentage_cellularity'], str):
+        cpc = utils.get_component('percentage_cellularity', value=row['percentage_cellularity'],
+                                  component_type='string')
         sample_components.append(cpc)
-    if 'level_of_cellularity' in row.keys() and pd.notna(row['level_of_cellularity']) and isinstance(row['level_of_cellularity'], float):
+    if 'level_of_cellularity' in row.keys() and pd.notna(row['level_of_cellularity']) and isinstance(
+            row['level_of_cellularity'], float):
         # if not isinstance(row['level_of_cellularity'], float):
-            # float(row['level_of_cellularity'])
-        cpc = get_component('level_of_cellularity', value=row['level_of_cellularity'],
-                                   component_type='float')
+        # float(row['level_of_cellularity'])
+        cpc = utils.get_component('level_of_cellularity', value=row['level_of_cellularity'],
+                                  component_type='float')
         sample_components.append(cpc)
 
-    if 'analyzed_sample_interval' in row.keys() and pd.notna(row['analyzed_sample_interval']) and isinstance(row['analyzed_sample_interval'], float):
-        cpc = get_component('analyzed_sample_interval', value=row['analyzed_sample_interval'],
-                                   component_type='float')
+    if 'analyzed_sample_interval' in row.keys() and pd.notna(row['analyzed_sample_interval']) and isinstance(
+            row['analyzed_sample_interval'], float):
+        cpc = utils.get_component('analyzed_sample_interval', value=row['analyzed_sample_interval'],
+                                  component_type='float')
         sample_components.append(cpc)
 
     if sample_components:
         sample_observation = copy.deepcopy(biospecimen_observation)
-        print(sample_components)
+        # print(sample_components)
 
         sample_observation['id'] = str(
             uuid.uuid3(uuid.NAMESPACE_DNS, sample_id))
@@ -721,14 +699,14 @@ def fhir_specimen(row):
              "display": row['specimen_type']}]})
 
     specimen_components = []
-    if 'specimen_storage' in row.keys() and pd.notna(row['specimen_storage']) and isinstance(row['specimen_storage'], str):
+    if 'specimen_storage' in row.keys() and pd.notna(row['specimen_storage']) and isinstance(row['specimen_storage'],
+                                                                                             str):
         if "," in row['specimen_storage']:
             row['specimen_storage'] = row['specimen_storage'].replace(",", "")
 
         if re.match(r"[ \r\n\t\S]+", row['specimen_storage']):
-
-            cpc = get_component('specimen_storage', value=row['specimen_storage'],
-                                       component_type='string')
+            cpc = utils.get_component('specimen_storage', value=row['specimen_storage'],
+                                      component_type='string')
             specimen_components.append(cpc)
 
     if specimen_components:
@@ -754,6 +732,50 @@ def fhir_specimen(row):
     return {"samples": [specimen, sample], "observations": observations}
 
 
+def fhir_document_reference(row):
+    # ICGC website in midst of data transition.
+    # files via https://platform.icgc-argo.org/ site
+    # associated clinical data via https://dcc.icgc.org/ (deprecated)
+
+    dr_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id'], row['project_code'],
+                                                        row['File ID']])))  # TODO add file_id
+
+    # sample_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_sample_id'], row['project_code'], row['icgc_donor_id']])))
+    # patient_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id'], row['project_code']])))
+    # Data Type & Experimental Strategy
+    category_list = []
+    if "Data Type" in row.keys() and pd.notna(row['Data Type']):
+        category_list.append(CodeableConcept(**{"coding": [{"code": row['Data Type'], "display":row['Data Type'],
+                                                "system": "https://platform.icgc-argo.org/data_type" }]}))
+    if "Experimental Strategy" in row.keys() and pd.notna(row['Experimental Strategy']):
+        category_list.append(CodeableConcept(**{"coding": [{"code": row['Experimental Strategy'], "display": row['Experimental Strategy'],
+                                                "system": "https://platform.icgc-argo.org/experimental_strategy"}]}))
+
+    dr = DocumentReference(**{"id": dr_id, "identifier": [
+        Identifier(**{"system": "https://platform.icgc-argo.org/file_id", "value": row['File ID']})],
+                              "status": "current",
+                              "basedOn": [{"reference": "/".join(["Specimen", row["sample_uuid"]])}],
+                              "content": [DocumentReferenceContent(**{"attachment": Attachment(
+                                  **{"title": row["file_name"],
+                                     "url": "".join(["https://platform.icgc-argo.org/file/", row['File ID']]),
+                                     "size": str(row["file_size"]), "hash": str(row["md5sum"])})})],
+                              "subject": {"reference": "/".join(["Patient", row["patient_uuid"]])},
+                              "category": category_list,
+                              "type": CodeableConcept(**{"coding": [
+                                  {"code": row["file_type"], "display": row["file_type"],
+                                   "system": "https://platform.icgc-argo.org/file_type"}]})
+                              })
+    return dr
+
+
+def patient_id(row):
+    return str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id'], row['project_code']])))
+
+
+def sample_id(row):
+    return str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_sample_id'], row['project_code_sample'], row['icgc_donor_id_sample']])))
+
+
 patients = [orjson.loads(p.json()) for p in list(df_patient.apply(fhir_patient, axis=1)) if p]
 obs_smoking = [os for os in list(df_patient.apply(fhir_smoking_exposure_observations, axis=1)) if os]
 obs_alc = [ol for ol in list(df_patient.apply(fhir_alcohol_exposure_observations, axis=1)) if ol]
@@ -768,54 +790,71 @@ obs_exam = [c['observation'] for c in cond_obs_encont if c['observation']]
 
 body_structures = [orjson.loads(b.json()) for b in list(df_patient.apply(fhir_body_structure, axis=1)) if b]
 
-sample_observations_nested_list = [s["observations"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if s["observations"]]
+sample_observations_nested_list = [s["observations"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if
+                                   s["observations"]]
 sample_observations_list = list(itertools.chain.from_iterable(sample_observations_nested_list))
 sample_observations = list({v['id']: v for v in sample_observations_list}.values())
-
 
 samples_nested_list = [s["samples"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if s["samples"]]
 samples_list = list(itertools.chain.from_iterable(samples_nested_list))
 samples_list_json = [orjson.loads(s.json()) for s in samples_list]
 samples = list({v['id']: v for v in samples_list_json}.values())
 
-
 observations = obs_alc + obs_smoking + obs_exam + sample_observations
 observations = list({v['id']: v for v in observations}.values())
+
+# url https://platform.icgc-argo.org/file/FL37616
+document_references = None
+if has_files:
+    file_metadata = pd.read_csv(file_path, sep="\t")
+    file_metadata = file_metadata.fillna('')
+    file_metadata.rename(
+        columns={"donor_id": "icgc_donor_id", "program_id": "project_code", "sample_id(s)": "icgc_sample_id"},
+        inplace=True)
+
+    file_table = pd.read_csv(file_table_path, sep="\t")
+    file_table = file_table.fillna('')
+    file_table.rename(columns={"Object ID": "object_id"}, inplace=True)
+    file_metadata = file_metadata.merge(file_table, on='object_id', how="left")
+    file_metadata = file_metadata.fillna('')
+
+    df_patient["patient_uuid"] = df_patient.apply(patient_id, axis=1)
+    file_metadata_patient_info = file_metadata.merge(df_patient, on="icgc_donor_id", how="left", suffixes=["", "_p"])
+
+    df_specimen["sample_uuid"] = df_specimen.apply(sample_id, axis=1)
+    file_metadata_patient_specimen_info = file_metadata_patient_info.merge(df_specimen, on='icgc_sample_id', how="left")
+
+    document_references = [orjson.loads(f.json()) for f in list(file_metadata_patient_specimen_info.apply(fhir_document_reference, axis=1)) if
+                           f]
 
 out_dir = os.path.join(out_path, "META")
 if not os.path.exists(out_dir):
     os.makedirs(out_dir)
 
-
-def fhir_ndjson(entity, out_path):
-    if isinstance(entity, list):
-        with open(out_path, 'w', encoding='utf8') as file:
-            file.write('\n'.join(map(lambda e: json.dumps(e, ensure_ascii=False), entity)))
-    else:
-        with open(out_path, 'w', encoding='utf8') as file:
-            file.write(json.dumps(entity, ensure_ascii=False))
-
-
-fhir_ndjson(patients, "/".join([out_dir, "Patient.ndjson"]))
-print("Successfully converted GDC case info to FHIR's Patient ndjson file!")
-
-fhir_ndjson(rs, "/".join([out_dir, "ResearchStudy.ndjson"]))
-print("Successfully converted GDC case info to FHIR's ResearchStudy ndjson file!")
-
-fhir_ndjson(rsub, "/".join([out_dir, "ResearchSubject.ndjson"]))
-print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson file!")
-
-fhir_ndjson(observations, "/".join([out_dir, "Observation.ndjson"]))
-print("Successfully converted GDC case info to FHIR's Observation ndjson file!")
-
-fhir_ndjson(conditions, "/".join([out_dir, "Condition.ndjson"]))
-print("Successfully converted GDC case info to FHIR's Condition ndjson file!")
-
-fhir_ndjson(body_structures, "/".join([out_dir, "BodyStructure.ndjson"]))
-print("Successfully converted GDC case info to FHIR's body_structures ndjson file!")
-
-fhir_ndjson(encounters, "/".join([out_dir, "Encounter.ndjson"]))
-print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
-
-fhir_ndjson(samples, "/".join([out_dir, "Specimen.ndjson"]))
-print("Successfully converted GDC case info to FHIR's Specimen ndjson file!")
+if patients:
+    utils.fhir_ndjson(patients, "/".join([out_dir, "Patient.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's Patient ndjson file!")
+if rs:
+    utils.fhir_ndjson(rs, "/".join([out_dir, "ResearchStudy.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's ResearchStudy ndjson file!")
+if rsub:
+    utils.fhir_ndjson(rsub, "/".join([out_dir, "ResearchSubject.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson file!")
+if observations:
+    utils.fhir_ndjson(observations, "/".join([out_dir, "Observation.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's Observation ndjson file!")
+if conditions:
+    utils.fhir_ndjson(conditions, "/".join([out_dir, "Condition.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's Condition ndjson file!")
+if body_structures:
+    utils.fhir_ndjson(body_structures, "/".join([out_dir, "BodyStructure.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's body_structures ndjson file!")
+if encounters:
+    utils.fhir_ndjson(encounters, "/".join([out_dir, "Encounter.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
+if samples:
+    utils.fhir_ndjson(samples, "/".join([out_dir, "Specimen.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's Specimen ndjson file!")
+if document_references:
+    utils.fhir_ndjson(document_references, "/".join([out_dir, "DocumentReference.ndjson"]))
+    print("Successfully converted GDC case info to FHIR's DocumentReference ndjson file!")

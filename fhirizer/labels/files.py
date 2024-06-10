@@ -116,6 +116,33 @@ file_maps = [
         destination=Destination(
             name='DocumentReference.content.profile',
         )
+    ),
+
+    Map(
+        source=Source(
+            name='file_name',
+        ),
+        destination=Destination(
+            name='Attachment.title',
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='md5sum',
+        ),
+        destination=Destination(
+            name='Attachment.hash',
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='file_size',
+        ),
+        destination=Destination(
+            name='Attachment.size',
+        )
     )
 ]
 

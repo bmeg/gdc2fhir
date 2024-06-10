@@ -676,35 +676,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         return img
 
-    def get_component(key, value=None, component_type=None):
-        if component_type == 'string':
-            value = {"valueString": value}
-        elif component_type == 'int':
-            value = {"valueInteger": value}
-        elif component_type == 'float':
-            value = {"valueQuantity": {"value": value}}
-        elif component_type == 'bool':
-            value = {"valueBoolean": value}
-        else:
-            pass
-
-        component = {
-            "code": {
-                "coding": [
-                    {
-                        "system": "https://cadsr.cancer.gov/sample_laboratory_observation",
-                        "code": key,
-                        "display": key
-                    }
-                ],
-                "text": key
-            }
-        }
-        if value:
-            component.update(value)
-
-        return component
-
     def specimen_exists(specimen_id, specimen_list):
         return any(specimen.id == specimen_id for specimen in specimen_list)
 
@@ -774,12 +745,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 sample_observation_components = []
                 c = None
                 if "Observation.sample.composition" in sample.keys() and sample["Observation.sample.composition"]:
-                    c = get_component('composition', value=sample["Observation.sample.composition"],
+                    c = utils.get_component('composition', value=sample["Observation.sample.composition"],
                                       component_type='string')
                     sample_observation_components.append(c)
                 if "Observation.sample.is_ffpe" in sample.keys() and isinstance(sample["Observation.sample.is_ffpe"],
                                                                                 bool):
-                    c = get_component('is_ffpe', value=sample["Observation.sample.is_ffpe"], component_type='bool')
+                    c = utils.get_component('is_ffpe', value=sample["Observation.sample.is_ffpe"], component_type='bool')
                     sample_observation_components.append(c)
 
                 sample_observation = None
@@ -849,12 +820,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             portions_observation_components = []
                             if "Observation.portions.weight" in portion.keys() and portion[
                                 "Observation.portions.weight"]:
-                                c = get_component('weight', value=portion["Observation.portions.weight"],
+                                c = utils.get_component('weight', value=portion["Observation.portions.weight"],
                                                   component_type='int')
                                 portions_observation_components.append(c)
                             if "Observation.portions.is_ffpe" in portion.keys() and isinstance(
                                     portion["Observation.portions.is_ffpe"], bool):
-                                c = get_component('is_ffpe', value=portion["Observation.portions.is_ffpe"],
+                                c = utils.get_component('is_ffpe', value=portion["Observation.portions.is_ffpe"],
                                                   component_type='bool')
                                 portions_observation_components.append(c)
 
@@ -883,7 +854,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                     slides_observation_components = []
                                     if "Observation.slides.section_location" in slide.keys():
-                                        c = get_component('section_location',
+                                        c = utils.get_component('section_location',
                                                           value=slide["Observation.slides.section_location"],
                                                           component_type='string')
                                         slides_observation_components.append(c)
@@ -957,14 +928,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         analyte_observation_components = []
                                         if "Specimen.type.analyte" in analyte.keys() and analyte[
                                             "Specimen.type.analyte"]:
-                                            c = get_component('analyte_type',
+                                            c = utils.get_component('analyte_type',
                                                               value=analyte["Specimen.type.analyte"],
                                                               component_type='string')
                                             analyte_observation_components.append(c)
 
                                         if "Observation.analyte.concentration" in analyte.keys() and analyte[
                                             "Observation.analyte.concentration"]:
-                                            c = get_component('concentration',
+                                            c = utils.get_component('concentration',
                                                               value=analyte[
                                                                   "Observation.analyte.concentration"],
                                                               component_type='float')
@@ -972,7 +943,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         if "Observation.analyte.experimental_protocol_type" in analyte.keys() and \
                                                 analyte["Observation.analyte.experimental_protocol_type"]:
-                                            c = get_component('experimental_protocol_type',
+                                            c = utils.get_component('experimental_protocol_type',
                                                               value=analyte[
                                                                   "Observation.analyte.experimental_protocol_type"],
                                                               component_type='string')
@@ -980,7 +951,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         if "Observation.analyte.normal_tumor_genotype_snp_match" in analyte.keys() and \
                                                 analyte["Observation.analyte.normal_tumor_genotype_snp_match"]:
-                                            c = get_component('normal_tumor_genotype_snp_match',
+                                            c = utils.get_component('normal_tumor_genotype_snp_match',
                                                               value=analyte[
                                                                   "Observation.analyte.normal_tumor_genotype_snp_match"],
                                                               component_type='string')
@@ -988,7 +959,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         if "Observation.analyte.ribosomal_rna_28s_16s_ratio" in analyte.keys() and \
                                                 analyte["Observation.analyte.ribosomal_rna_28s_16s_ratio"]:
-                                            c = get_component('ribosomal_rna_28s_16s_ratio',
+                                            c = utils.get_component('ribosomal_rna_28s_16s_ratio',
                                                               value=analyte[
                                                                   "Observation.analyte.ribosomal_rna_28s_16s_ratio"],
                                                               component_type='float')
@@ -996,7 +967,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         if "Observation.analyte.rna_integrity_number" in analyte.keys() and analyte[
                                             "Observation.analyte.rna_integrity_number"]:
-                                            c = get_component('rna_integrity_number',
+                                            c = utils.get_component('rna_integrity_number',
                                                               value=analyte[
                                                                   "Observation.analyte.rna_integrity_number"],
                                                               component_type='float')
@@ -1004,7 +975,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         if "Observation.analyte.spectrophotometer_method" in analyte.keys() and analyte[
                                             "Observation.analyte.spectrophotometer_method"]:
-                                            c = get_component('spectrophotometer_method',
+                                            c = utils.get_component('spectrophotometer_method',
                                                               value=analyte[
                                                                   "Observation.analyte.spectrophotometer_method"],
                                                               component_type='string')
@@ -1065,14 +1036,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 aliquot_observation_components = []
                                                 if "Observation.aliquot.analyte_type" in aliquot.keys() and aliquot[
                                                     "Observation.aliquot.analyte_type"]:
-                                                    c_aliquot_analyte_type = get_component('aliquot.analyte_type',
+                                                    c_aliquot_analyte_type = utils.get_component('aliquot.analyte_type',
                                                                                            value=aliquot[
                                                                                                "Observation.aliquot.analyte_type"],
                                                                                            component_type='string')
                                                     aliquot_observation_components.append(c_aliquot_analyte_type)
                                                 if "Observation.aliquot.concentration" in aliquot.keys() and aliquot[
                                                     "Observation.aliquot.concentration"]:
-                                                    c = get_component('concentration',
+                                                    c = utils.get_component('concentration',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.concentration"],
                                                                       component_type='float')
@@ -1080,7 +1051,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                                 if "Observation.aliquot.aliquot_quantity" in aliquot.keys() and aliquot[
                                                     "Observation.aliquot.aliquot_quantity"]:
-                                                    c = get_component('aliquot_quantity',
+                                                    c = utils.get_component('aliquot_quantity',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.aliquot_quantity"],
                                                                       component_type='float')
@@ -1088,7 +1059,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                                 if "Observation.aliquot.aliquot_volume" in aliquot.keys() and aliquot[
                                                     "Observation.aliquot.aliquot_volume"]:
-                                                    c = get_component('aliquot_volume',
+                                                    c = utils.get_component('aliquot_volume',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.aliquot_volume"],
                                                                       component_type='float')
@@ -1097,7 +1068,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 if "Observation.aliquot.no_matched_normal_wgs" in aliquot.keys() and isinstance(
                                                         aliquot[
                                                             "Observation.aliquot.no_matched_normal_wgs"], bool):
-                                                    c = get_component('no_matched_normal_wgs',
+                                                    c = utils.get_component('no_matched_normal_wgs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.no_matched_normal_wgs"],
                                                                       component_type='bool')
@@ -1106,7 +1077,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 if "Observation.aliquot.no_matched_normal_wxs" in aliquot.keys() and isinstance(
                                                         aliquot[
                                                             "Observation.aliquot.no_matched_normal_wxs"], bool):
-                                                    c = get_component('no_matched_normal_wxs',
+                                                    c = utils.get_component('no_matched_normal_wxs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.no_matched_normal_wxs"],
                                                                       component_type='bool')
@@ -1116,7 +1087,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         aliquot[
                                                             "Observation.aliquot.no_matched_normal_low_pass_wgs"],
                                                         bool):
-                                                    c = get_component('no_matched_normal_low_pass_wgs',
+                                                    c = utils.get_component('no_matched_normal_low_pass_wgs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.no_matched_normal_low_pass_wgs"],
                                                                       component_type='bool')
@@ -1126,7 +1097,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         aliquot[
                                                             "Observation.aliquot.no_matched_normal_targeted_sequencing"],
                                                         bool):
-                                                    c = get_component('no_matched_normal_targeted_sequencing',
+                                                    c = utils.get_component('no_matched_normal_targeted_sequencing',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.no_matched_normal_targeted_sequencing"],
                                                                       component_type='bool')
@@ -1135,7 +1106,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 if "Observation.aliquot.selected_normal_low_pass_wgs" in aliquot.keys() and isinstance(
                                                         aliquot[
                                                             "Observation.aliquot.selected_normal_low_pass_wgs"], bool):
-                                                    c = get_component('selected_normal_low_pass_wgs',
+                                                    c = utils.get_component('selected_normal_low_pass_wgs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.selected_normal_low_pass_wgs"],
                                                                       component_type='bool')
@@ -1145,7 +1116,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         aliquot[
                                                             "Observation.aliquot.selected_normal_targeted_sequencing"],
                                                         bool):
-                                                    c = get_component('selected_normal_targeted_sequencing',
+                                                    c = utils.get_component('selected_normal_targeted_sequencing',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.selected_normal_targeted_sequencing"],
                                                                       component_type='bool')
@@ -1154,7 +1125,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 if "Observation.aliquot.selected_normal_wgs" in aliquot.keys() and isinstance(
                                                         aliquot[
                                                             "Observation.aliquot.selected_normal_wgs"], bool):
-                                                    c = get_component('selected_normal_wgs',
+                                                    c = utils.get_component('selected_normal_wgs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.selected_normal_wgs"],
                                                                       component_type='bool')
@@ -1163,7 +1134,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 if "Observation.aliquot.selected_normal_wxs" in aliquot.keys() and isinstance(
                                                         aliquot[
                                                             "Observation.aliquot.selected_normal_wxs"], bool):
-                                                    c = get_component('selected_normal_wxs',
+                                                    c = utils.get_component('selected_normal_wxs',
                                                                       value=aliquot[
                                                                           "Observation.aliquot.selected_normal_wxs"],
                                                                       component_type='bool')
@@ -1222,16 +1193,6 @@ def remove_duplicates(entities):
             seen.add(fhir_model)
             unique_entities.append(e)
     return unique_entities
-
-
-def fhir_ndjson(entity, out_path):
-    if isinstance(entity, list):
-        # entity = remove_duplicates(entity)
-        with open(out_path, 'w', encoding='utf8') as file:
-            file.write('\n'.join(map(lambda e: json.dumps(e, ensure_ascii=False), entity)))
-    else:
-        with open(out_path, 'w', encoding='utf8') as file:
-            file.write(json.dumps(entity, ensure_ascii=False))
 
 
 def case_gdc_to_fhir_ndjson(out_dir, cases_path):
@@ -1293,36 +1254,36 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
         out_dir = out_dir + "/"
 
     if specimens:
-        fhir_ndjson(specimens, "".join([out_dir, "Specimen.ndjson"]))
+        utils.fhir_ndjson(specimens, "".join([out_dir, "Specimen.ndjson"]))
         print("Successfully converted GDC case sample to FHIR's Specimen ndjson file!")
     if patients:
-        fhir_ndjson(patients, "".join([out_dir, "Patient.ndjson"]))
+        utils.fhir_ndjson(patients, "".join([out_dir, "Patient.ndjson"]))
         print("Successfully converted GDC case patient to FHIR's Patient ndjson file!")
     if encounters:
-        fhir_ndjson(encounters, "".join([out_dir, "Encounter.ndjson"]))
+        utils.fhir_ndjson(encounters, "".join([out_dir, "Encounter.ndjson"]))
         print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
     if observations:
-        fhir_ndjson(observations, "".join([out_dir, "Observation.ndjson"]))
+        utils.fhir_ndjson(observations, "".join([out_dir, "Observation.ndjson"]))
         print("Successfully converted GDC case info to FHIR's Observation ndjson file!")
     if conditions:
-        fhir_ndjson(conditions, "".join([out_dir, "Condition.ndjson"]))
+        utils.fhir_ndjson(conditions, "".join([out_dir, "Condition.ndjson"]))
         print("Successfully converted GDC case info to FHIR's Condition ndjson file!")
     if research_subjects:
-        fhir_ndjson(research_subjects, "".join([out_dir, "ResearchSubject.ndjson"]))
+        utils.fhir_ndjson(research_subjects, "".join([out_dir, "ResearchSubject.ndjson"]))
         print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson file!")
     if projects:
         rs = projects + programs
         rs = list({v['id']: v for v in rs}.values())
-        fhir_ndjson(rs, "".join([out_dir, "ResearchStudy.ndjson"]))
+        utils.fhir_ndjson(rs, "".join([out_dir, "ResearchStudy.ndjson"]))
         print("Successfully converted GDC case info to FHIR's ResearchStudy ndjson file!")
     if imaging_study:
-        fhir_ndjson(imaging_study, "".join([out_dir, "ImagingStudy.ndjson"]))
+        utils.fhir_ndjson(imaging_study, "".join([out_dir, "ImagingStudy.ndjson"]))
         print("Successfully converted GDC case info to FHIR's ImagingStudy ndjson file!")
     if procedures:
-        fhir_ndjson(procedures, "".join([out_dir, "Procedure.ndjson"]))
+        utils.fhir_ndjson(procedures, "".join([out_dir, "Procedure.ndjson"]))
         print("Successfully converted GDC case info to FHIR's Procedure ndjson file!")
     if body_structure:
-        fhir_ndjson(body_structure, "".join([out_dir, "BodyStructure.ndjson"]))
+        utils.fhir_ndjson(body_structure, "".join([out_dir, "BodyStructure.ndjson"]))
         print("Successfully converted GDC case info to FHIR's BodyStructure ndjson file!")
 
     med_admins = []
@@ -1331,7 +1292,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
             for med_admin in fhir_case["med_admin"]:
                 med_admins.append(orjson.loads(med_admin.json()))
     if med_admins:
-        fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
+        utils.fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
         print("Successfully converted GDC case info to FHIR's MedicationAdministration ndjson file!")
 
     meds = []
@@ -1340,7 +1301,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
             for med in fhir_case["med"]:
                 meds.append(orjson.loads(med.json()))
     if meds:
-        fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))
+        utils.fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))
         print("Successfully converted GDC case info to FHIR's Medication ndjson file!")
 
 
@@ -1359,7 +1320,7 @@ def assign_fhir_for_file(file):
     ident.system = "".join(["https://gdc.cancer.gov/", "file"])
 
     ident_name = Identifier.construct()
-    ident_name.value = file['DocumentReference.Identifier.file_name']
+    ident_name.value = file['Attachment.title']
     ident_name.system = "".join(["https://gdc.cancer.gov/", "file"])
 
     document.identifier = [ident, ident_name]
@@ -1439,11 +1400,19 @@ def assign_fhir_for_file(file):
     attachment = Attachment.construct()
     attachment.url = "https://api.gdc.cancer.gov/data/{}".format(file['DocumentReference.id'])
 
+    if 'Attachment.title' in file.keys() and file['Attachment.title']:
+        attachment.title = file['Attachment.title']
+    if 'Attachment.hash' in file.keys() and file['Attachment.hash']:
+        attachment.hash = file['Attachment.hash']
+    if 'Attachment.size' in file.keys() and file['Attachment.size']:
+        attachment.size = file['Attachment.size']
+
+
     profile = None
     if 'DocumentReference.content.profile' in file.keys() and file['DocumentReference.content.profile']:
         profile = DocumentReferenceContentProfile.construct()
         system = "".join(["https://gdc.cancer.gov/", "data_format"])
-        profile.valueCoding = {"code": "0000", "display": file['DocumentReference.content.profile'],
+        profile.valueCoding = {"code": file['DocumentReference.content.profile'], "display": file['DocumentReference.content.profile'],
                                "system": system}
 
         cc_type = CodeableConcept.construct()
@@ -1474,7 +1443,7 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
         out_dir = out_dir + "/"
 
     if doc_refs:
-        fhir_ndjson(doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
+        utils.fhir_ndjson(doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
         print("Successfully converted GDC file info to FHIR's DocumentReference ndjson file!")
 
 
@@ -1500,7 +1469,7 @@ def cellosaurus_resource(path, out_dir):
     utils.fetch_cellines(ids, cells_dir)  # api call intensive - 1s per request + 0.5s delay
     cls = utils.cellosaurus_cancer_jsons(cells_dir)
     ndjson_path = os.path.join(out_dir, "cellosaurus_cellines.ndjson")
-    fhir_ndjson(cls, os.path.join(out_dir, "cellosaurus_cellines.ndjson"))
+    utils.fhir_ndjson(cls, os.path.join(out_dir, "cellosaurus_cellines.ndjson"))
 
     if os.path.exists(ndjson_path):
         print("Successfully saved cell lines in cellosaurus_cellines.ndjson!")
@@ -1653,13 +1622,13 @@ def cellosaurus_to_fhir_ndjson(out_dir, obj):
     conditions = [orjson.loads(condition.json()) for condition in obj["conditions"]]
 
     if patients:
-        fhir_ndjson(patients, os.path.join(out_dir, "Patient.ndjson"))
+        utils.fhir_ndjson(patients, os.path.join(out_dir, "Patient.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Patient ndjson file!")
     if samples:
-        fhir_ndjson(samples, os.path.join(out_dir, "Specimen.ndjson"))
+        utils.fhir_ndjson(samples, os.path.join(out_dir, "Specimen.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Specimen ndjson file!")
     if conditions:
-        fhir_ndjson(conditions, os.path.join(out_dir, "Condition.ndjson"))
+        utils.fhir_ndjson(conditions, os.path.join(out_dir, "Condition.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Condition ndjson file!")
 
 
