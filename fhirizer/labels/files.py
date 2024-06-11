@@ -57,6 +57,15 @@ file_maps = [
 
     Map(
         source=Source(
+            name='wgs_coverage',
+        ),
+        destination=Destination(
+            name='DocumentReference.category.wgs_coverage',
+        )
+    ),
+
+    Map(
+        source=Source(
             name='version',
         ),
         destination=Destination(
@@ -107,7 +116,44 @@ file_maps = [
         destination=Destination(
             name='DocumentReference.content.profile',
         )
+    ),
+
+    Map(
+        source=Source(
+            name='file_name',
+        ),
+        destination=Destination(
+            name='Attachment.title',
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='md5sum',
+        ),
+        destination=Destination(
+            name='Attachment.hash',
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='file_size',
+        ),
+        destination=Destination(
+            name='Attachment.size',
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='created_datetime',
+        ),
+        destination=Destination(
+            name='DocumentReference.date',
+        )
     )
+
 ]
 
 # out_path = os.path.join(package_dir, 'mapping', 'case.json')

@@ -79,7 +79,7 @@ case_maps = [Map(
                 Reference(reference_type=data_dict["biospecimen"]["analyte"]["links"][0]["subgroup"][1]["target_type"])]
         ),
         destination=Destination(
-            name='Specimen.id.analyte',
+            name='Specimen.ids.analyte',
             description=Specimen.schema()["properties"]["id"]["description"],
             module='Diagnostics',
             title=Specimen.schema()["properties"]["id"]["title"],
@@ -390,6 +390,24 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='demographic.vital_status'
+        ),
+        destination=Destination(
+            name='Patient.deceasedBoolean'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='demographic.age_at_index'
+        ),
+        destination=Destination(
+            name='Patient.extension.age'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='demographic.race',
             description=data_dict["clinical"]["demographic"]["properties"]["race"]["description"],
             category=data_dict["clinical"]["demographic"]["category"],
@@ -545,6 +563,60 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='exposures.pack_years_smoked'
+        ),
+        destination=Destination(
+            name='Observation.patient.pack_years_smoked'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.cigarettes_per_day'
+        ),
+        destination=Destination(
+            name='Observation.patient.cigarettes_per_day'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.years_smoked'
+        ),
+        destination=Destination(
+            name='Observation.patient.years_smoked'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.exposure_id'
+        ),
+        destination=Destination(
+            name='Observation.patient.exposure_id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.alcohol_history'
+        ),
+        destination=Destination(
+            name='Observation.patient.alcohol_history'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='exposures.alcohol_intensity'
+        ),
+        destination=Destination(
+            name='Observation.patient.alcohol_intensity'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='samples.sample_id'
         ),
         destination=Destination(
@@ -554,10 +626,55 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='samples.composition'
+        ),
+        destination=Destination(
+            name='Observation.sample.composition'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.is_ffpe'
+        ),
+        destination=Destination(
+            name='Observation.sample.is_ffpe'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.preservation_method'
+        ),
+        destination=Destination(
+            name='Observation.sample.preservation_method'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='samples.portions.portion_id'
         ),
         destination=Destination(
             name='Specimen.id.portion'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.is_ffpe'
+        ),
+        destination=Destination(
+            name='Observation.portions.is_ffpe'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.weight'
+        ),
+        destination=Destination(
+            name='Observation.portions.weight'
         )
     ),
 
@@ -581,7 +698,7 @@ case_maps = [Map(
 
     Map(
         source=Source(
-            name='samples.portions.analytes.'
+            name='samples.portions.analytes.analyte_id'
         ),
         destination=Destination(
             name='Specimen.id.analyte'
@@ -594,6 +711,249 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Specimen.type.analyte'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.concentration'
+        ),
+        destination=Destination(
+            name='Observation.analyte.concentration'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.experimental_protocol_type'
+        ),
+        destination=Destination(
+            name='Observation.analyte.experimental_protocol_type'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.normal_tumor_genotype_snp_match'
+        ),
+        destination=Destination(
+            name='Observation.analyte.normal_tumor_genotype_snp_match'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.ribosomal_rna_28s_16s_ratio'
+        ),
+        destination=Destination(
+            name='Observation.analyte.ribosomal_rna_28s_16s_ratio'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.rna_integrity_number'
+        ),
+        destination=Destination(
+            name='Observation.analyte.rna_integrity_number'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.spectrophotometer_method'
+        ),
+        destination=Destination(
+            name='Observation.analyte.spectrophotometer_method'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.a260_a280_ratio'
+        ),
+        destination=Destination(
+            name='Observation.analyte.a260_a280_ratio'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.analyte_type'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.analyte_type'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.center.name'
+        ),
+        destination=Destination(
+            name='Specimen.aliquot.center_name'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.center.short_name'
+        ),
+        destination=Destination(
+            name='Specimen.aliquot.short_name'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.center.namespace'
+        ),
+        destination=Destination(
+            name='Specimen.aliquot.namespace'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.center.id'
+        ),
+        destination=Destination(
+            name='Specimen.aliquot.center_id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_wxs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_wxs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_low_pass_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_low_pass_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_targeted_sequencing'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_targeted_sequencing'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.selected_normal_low_pass_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.selected_normal_low_pass_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.selected_normal_targeted_sequencing'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.selected_normal_targeted_sequencing'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.selected_normal_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.selected_normal_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.selected_normal_wxs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.selected_normal_wxs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.concentration'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.concentration'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.aliquot_volume'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.aliquot_volume'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.aliquot_quantity'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.aliquot_quantity'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_low_pass_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_low_pass_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_wgs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_wgs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_targeted_sequencing'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_targeted_sequencing'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.no_matched_normal_wxs'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.no_matched_normal_wxs'
         )
     ),
 
@@ -612,6 +972,15 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='ImagingStudy.id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.slides.section_location'
+        ),
+        destination=Destination(
+            name='Observation.slides.section_location'
         )
     ),
 
@@ -747,6 +1116,15 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Condition.id'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnosis.tissue_or_organ_of_origin'
+        ),
+        destination=Destination(
+            name='Condition.bodySite'
         )
     ),
 

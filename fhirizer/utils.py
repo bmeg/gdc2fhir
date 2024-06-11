@@ -768,10 +768,10 @@ def append_data_to_key(data, target_key, data_to_append, verbose):
                                 else:
                                     # check membership
                                     if not data_to_append.items() <= data[key][-1].items():
-                                        print("00000")
+                                        # print("00000")
                                         data[key][-1].update(data_to_append)
 
-                                print(f"======== instance Dict {target_key} ============== case E AFTER", "data[key]: ", data[key], "\n\n")
+                                # print(f"======== instance Dict {target_key} ============== case E AFTER", "data[key]: ", data[key], "\n\n")
                                 continue
 
                             elif isinstance(data[key][0][shared_keys_items], list) and isinstance(
@@ -1067,3 +1067,41 @@ def ncit2mondo(path):
     with gzip.open(path, 'r') as fin:
         data = json.loads(fin.read().decode('utf-8'))
         return data
+
+
+def get_component(key, value=None, component_type=None):
+    if component_type == 'string':
+        value = {"valueString": value}
+    elif component_type == 'int':
+        value = {"valueInteger": value}
+    elif component_type == 'float':
+        value = {"valueQuantity": {"value": value}}
+    elif component_type == 'bool':
+        value = {"valueBoolean": value}
+    else:
+        pass
+
+    component = {
+        "code": {
+            "coding": [
+                {
+                    "system": "https://cadsr.cancer.gov/sample_laboratory_observation",
+                    "code": key,
+                    "display": key
+                }
+            ],
+            "text": key
+        }
+    }
+    if value:
+        component.update(value)
+
+    return component
+
+def fhir_ndjson(entity, out_path):
+    if isinstance(entity, list):
+        with open(out_path, 'w', encoding='utf8') as file:
+            file.write('\n'.join(map(lambda e: json.dumps(e, ensure_ascii=False), entity)))
+    else:
+        with open(out_path, 'w', encoding='utf8') as file:
+            file.write(json.dumps(entity, ensure_ascii=False))

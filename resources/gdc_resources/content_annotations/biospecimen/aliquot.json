@@ -1,0 +1,80 @@
+[
+    {
+        "value": "cfDNA",
+        "loincid": "100029-8",
+        "sctid": "",
+        "obo": "NCIT_C177304"
+    },
+    {
+        "value": "DNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C198567"
+    },
+    {
+        "value": "EBV Immortalized Normal",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C163993"
+    },
+        {
+        "value": "FFPE DNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C156435"
+    },
+    {
+        "value": "FFPE RNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C156436"
+    },
+    {
+        "value": "GenomePlex (Rubicon) Amplified DNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C198569"
+    },
+    {
+        "value": "m6A Enriched RNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C188352"
+    },
+    {
+        "value": "Nuclei RNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C174108"
+    },
+    {
+        "value": "Repli-G (Qiagen) DNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": ""
+    },
+        {
+        "value": "Repli-G Pooled (Qiagen) DNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C156437"
+    },
+    {
+        "value": "Repli-G X (Qiagen) DNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C156439"
+    },
+    {
+        "value": "RNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C198568"
+    },
+    {
+        "value": "Total RNA",
+        "loincid": "",
+        "sctid": "",
+        "obo": "NCIT_C163995"
+    }
+]

@@ -1,0 +1,37 @@
+{
+  "resourceType": "Observation",
+  "id": "observation-sequencing-parameters",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "81247-9",
+        "display": "Master HL7 genetic variant reporting panel"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/"
+  },
+  "specimen": {
+    "reference": "Specimen/example"
+  },
+  "focus": [{
+    "reference": "ImagingStudy/"
+  }],
+  "effectiveDateTime": "2024-06-03T08:00:00+00:00",
+  "valueString": "Sequencing parameters",
+  "component": []
+}

@@ -12,32 +12,32 @@ A complete and unfiltered query of both `case` and `file` endpoints will contain
 Below is an example of the data-schema conversion and generation flow for a single GDC study:
 
 1. User input to fhirizer client: 
-   - ./projects/TCGA-STUDY/cases.ndjson
-   - ./projects/TCGA-STUDY/files.ndjson
+   - ./projects/GDC/TCGA-STUDY/cases.ndjson
+   - ./projects/GDC/TCGA-STUDY/files.ndjson
 2. Convertion of projects' study data.
    - Case
     ``` 
-   fhirizer convert --name case --in_path ./projects/<my-study>/cases.ndjson --out_path ./projects/<my-study>/cases_key.ndjson 
+   fhirizer convert --name case --in_path ./projects/GDC/<my-study>/cases.ndjson --out_path ./projects/<my-study>/cases_key.ndjson 
    ```
    - File
     ``` 
-   fhirizer convert --name file --in_path ./projects/<my-study>/files.ndjson --out_path ./projects/<my-study>/files_key.ndjson 
+   fhirizer convert --name file --in_path ./projects/GDC/<my-study>/files.ndjson --out_path ./projects/<my-study>/files_key.ndjson 
    ```
    
 3. Generation of FHIR ndjson output stored in META folders.
    - Case
     ``` 
-     fhirizer generate --name case --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/cases_key.ndjson
+     fhirizer generate --name case --out_dir ./projects/GDC/<my-project>/META --entity_path ./projects/<my-project>/cases_key.ndjson
    ```
    - File
     ``` 
-     fhirizer generate --name file --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/files_key.ndjson
+     fhirizer generate --name file --out_dir ./projects/GDC/<my-project>/META --entity_path ./projects/<my-project>/files_key.ndjson
    ```
 4. Validate output:
     
     To validate the output data generated via fhirizer, you can run the following command provided by [g3t_etl](https://github.com/ACED-IDP/g3t_etl) in your study's directory:
     ```
-    g3t utilities meta validate > out.txt
+    g3t meta validate <path_to_META_folder>
     ```
     This command will validate the output data in META folder and redirect the validation results to the out.txt file for further inspection. 
 
@@ -57,5 +57,14 @@ Below is an example of the data-schema conversion and generation flow for a sing
     ```
 3. Validate output:
    ```
-    g3t utilities meta validate > out.txt
-    ```
+    g3t meta validate <path_to_META_folder>
+    g3t --debug meta dataframe --data_type Observation
+   ```
+   
+##### - ICGC
+
+   - NOTE: ICGC is currently updating data and clinical data dictionaries of their resource from [DCC](https://dcc.icgc.org/) to [ARGO](https://platform.icgc-argo.org/). 
+      ```
+      fhirizer generate --name icgc --icgc <ICGC_project_name> --has_files
+      ```
+

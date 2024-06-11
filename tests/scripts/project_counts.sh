@@ -1,7 +1,7 @@
 #!/bin/bash
 # chmod to make executable chmod +x tcga_project_counts.sh
 # Example run:
-# ./tests/scripts/project_counts.sh ../META/ResearchStudy.ndjson
+# ./tests/scripts/project_counts.sh ../META/ResearchSubject.ndjson
 
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <file_pathname>"
@@ -10,11 +10,11 @@ fi
 
 file_pathname="$1"
 
-
 patterns=("TCGA-BRCA" "TCGA-ACC" "TCGA-KIRP" "TCGA-KIRC" "TCGA-KICH" "TCGA-HNSC" "TCGA-GBM" "TCGA-ESCA" "TCGA-DLBC" "TCGA-COAD" "TCGA-CHOL" "TCGA-CESC" "TCGA-BLCA" "TCGA-UVM" "TCGA-UCS" "TCGA-UCEC" "TCGA-THYM" "TCGA-THCA" "TCGA-TGCT" "TCGA-STAD" "TCGA-SKCM" "TCGA-SARC" "TCGA-READ" "TCGA-PRAD" "TCGA-PCPG" "TCGA-PAAD" "TCGA-OV" "TCGA-MESO" "TCGA-LUSC" "TCGA-LUAD" "TCGA-LIHC" "TCGA-LGG" "TCGA-LAML")
 # patterns=("OHSU-CNL" "APOLLO-LUAD" "BEATAML1.0-COHORT" "BEATAML1.0-CRENOLANIB" "CGCI-BLGSP" "CGCI-HTMCP-CC" "CGCI-HTMCP-DLBCL" "CGCI-HTMCP-LC" "CMI-ASC"  "CMI-MBC" "CMI-MPC" "CPTAC-2" "CPTAC-3" "FM-AD" "HCMI-CMDC" "MATCH-B"  "MATCH-H" "MATCH-I" "MATCH-Q" "MATCH-U" "MATCH-N" "MATCH-W" "MATCH-Y" "MATCH-Z1A" "MATCH-Z1D" "MMRF-COMMPASS" "MP2PRT-ALL" "CTSP-DLBCL1" "TARGET-RT" "TARGET-WT" "WCDT-MCRPC" "MP2PRT-WT" "ORGANOID-PANCREATIC" "REBC-THYR" "TARGET-ALL-P1" "TARGET-ALL-P2"  "TARGET-ALL-P3" "TARGET-AML" "TARGET-CCSK" "TARGET-NBL" "TARGET-OS" "TARGET-RT" "TARGET-WT" "TRIO-CRU" "VAREPOP-APOLLO" "NCICCR-DLBCL" "TCGA-BRCA" "TCGA-ACC" "TCGA-KIRP" "TCGA-KIRC" "TCGA-KICH" "TCGA-HNSC" "TCGA-GBM" "TCGA-ESCA" "TCGA-DLBC" "TCGA-COAD" "TCGA-CHOL" "TCGA-CESC" "TCGA-BLCA" "TCGA-UVM" "TCGA-UCS" "TCGA-UCEC" "TCGA-THYM" "TCGA-THCA" "TCGA-TGCT" "TCGA-STAD" "TCGA-SKCM" "TCGA-SARC" "TCGA-READ" "TCGA-PRAD" "TCGA-PCPG" "TCGA-PAAD" "TCGA-OV" "TCGA-MESO" "TCGA-LUSC" "TCGA-LUAD" "TCGA-LIHC" "TCGA-LGG" "TCGA-LAML")
 
 for pattern in "${patterns[@]}"; do
-    count=$(grep -c "\"id\": \"$pattern\"" "$file_pathname")
+    count=$(grep -c "\"study\": {\"reference\": \"ResearchStudy/$pattern\"" "$file_pathname")
     echo "$pattern: $count"
 done
+
