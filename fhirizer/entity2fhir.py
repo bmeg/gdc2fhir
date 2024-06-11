@@ -1364,17 +1364,11 @@ def assign_fhir_for_file(file):
     if category:
         document.category = category
 
-    if 'DocumentReference.type' in file.keys() and file['DocumentReference.type']:
-        cc_type = CodeableConcept.construct()
-        system = "".join(["https://gdc.cancer.gov/", "data_type"])
-        cc_type.coding = [{'system': system,
-                           'display': file['DocumentReference.type'],
-                           'code': file['DocumentReference.type']}]
-
-        # document.type = cc_type
-
     if 'DocumentReference.version' in file.keys() and file['DocumentReference.version']:
         document.version = file['DocumentReference.version']
+
+    if 'DocumentReference.date' in file.keys() and file['DocumentReference.date']:
+        document.date = file['DocumentReference.date']
 
     patients = []
     sample_ref = []
@@ -1405,6 +1399,17 @@ def assign_fhir_for_file(file):
     if 'Attachment.size' in file.keys() and file['Attachment.size']:
         attachment.size = file['Attachment.size']
 
+    if 'DocumentReference.type' in file.keys() and file['DocumentReference.type']:
+        """
+        cc_type = CodeableConcept.construct()
+        system = "".join(["https://gdc.cancer.gov/", "data_type"])
+        cc_type.coding = [{'system': system,
+                           'display': file['DocumentReference.type'],
+                           'code': file['DocumentReference.type']}]
+
+        document.type = cc_type
+        """
+        attachment.contentType = file['DocumentReference.type']
 
     profile = None
     if 'DocumentReference.content.profile' in file.keys() and file['DocumentReference.content.profile']:

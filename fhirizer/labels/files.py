@@ -143,7 +143,26 @@ file_maps = [
         destination=Destination(
             name='Attachment.size',
         )
+    ),
+
+    Map(
+        source=Source(
+            name='',
+        ),
+        destination=Destination(
+            name='Attachment.size',
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='created_datetime',
+        ),
+        destination=Destination(
+            name='DocumentReference.date',
+        )
     )
+
 ]
 
 # out_path = os.path.join(package_dir, 'mapping', 'case.json')
