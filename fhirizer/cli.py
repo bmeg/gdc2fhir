@@ -1,5 +1,32 @@
 from fhirizer import utils, mapping, entity2fhir
+from fhirizer import icgc2fhir
 import click
+
+
+class NotRequiredIf(click.Option):
+    def __init__(self, *args, **kwargs):
+        self.not_required_if = kwargs.pop('not_required_if')
+        assert self.not_required_if, "'not_required_if' parameter required"
+        kwargs['help'] = (kwargs.get('help', '') +
+                          ' NOTE: This argument is mutually exclusive with %s' %
+                          self.not_required_if
+                          ).strip()
+        super(NotRequiredIf, self).__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        we_are_present = self.name in opts
+        other_present = self.not_required_if in opts
+
+        if other_present:
+            if we_are_present:
+                raise click.UsageError(
+                    "Illegal usage: `%s` is mutually exclusive with `%s`" % (
+                        self.name, self.not_required_if))
+            else:
+                self.prompt = None
+
+        return super(NotRequiredIf, self).handle_parse_result(
+            ctx, opts, args)
 
 
 @click.group()
@@ -85,7 +112,7 @@ def resource(name, path, out_dir):
 @click.option('--out_path', required=False,
               show_default=True,
               help='Path to save mapped result')
-@click.option('--verbose', required=False,
+@click.option('--verbose', is_flag=True, required=False,
               default=False,
               show_default=True)
 def convert(name, in_path, out_path, verbose):
@@ -97,12 +124,17 @@ def convert(name, in_path, out_path, verbose):
               default='project',
               show_default=True,
               help='entity name to map - project, case, file of GDC or cellosaurus')
-@click.option('--out_dir', required=True,
+@click.option('--out_dir', cls=NotRequiredIf,
+              not_required_if='icgc',
               help='Directory path to save mapped FHIR ndjson files.')
-@click.option('--entity_path', required=True,
+@click.option('--entity_path', cls=NotRequiredIf,
+              not_required_if='icgc',
               help='Path to GDC entity with mapped FHIR like keys (converted file via convert). '
                    'or Cellosaurus ndjson file of human cell-lines of interest')
-def generate(name, out_dir, entity_path):
+@click.option('--icgc', help='Name of the ICGC project to FHIRize.')
+@click.option('--has_files', is_flag=True, help='Boolean indicating file metatda via new argo site is available @ '
+                                                'ICGC/{project}/data directory to FHIRize.')
+def generate(name, out_dir, entity_path, icgc, has_files):
     if name in 'project':
         entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path)
     if name in 'case':
@@ -111,6 +143,8 @@ def generate(name, out_dir, entity_path):
         entity2fhir.file_gdc_to_fhir_ndjson(out_dir=out_dir, files_path=entity_path)
     if name in 'cellosaurus':
         entity2fhir.cellosaurus2fhir(out_dir=out_dir, path=entity_path)
+    if name in 'icgc' and icgc:
+        icgc2fhir.icgc2fhir(project_name=icgc, has_files=has_files)
 
 
 if __name__ == '__main__':

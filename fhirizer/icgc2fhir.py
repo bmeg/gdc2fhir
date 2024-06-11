@@ -13,7 +13,6 @@ from fhir.resources.identifier import Identifier
 from fhir.resources.researchstudy import ResearchStudy
 from fhir.resources.codeableconcept import CodeableConcept
 from fhir.resources.encounter import Encounter
-from fhir.resources.extension import Extension
 from fhir.resources.reference import Reference
 from fhir.resources.condition import Condition, ConditionStage
 from fhir.resources.observation import Observation
@@ -22,40 +21,19 @@ from fhir.resources.patient import Patient
 from fhir.resources.researchsubject import ResearchSubject
 from fhir.resources.duration import Duration
 from fhir.resources.procedure import Procedure
-from fhir.resources.medicationadministration import MedicationAdministration
 from fhir.resources.bodystructure import BodyStructure, BodyStructureIncludedStructure
-from fhir.resources.medication import Medication
-from fhir.resources.codeablereference import CodeableReference
-from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent, \
-    DocumentReferenceContentProfile
+from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent
 from fhir.resources.attachment import Attachment
-from fhir.resources.age import Age
 from fhirizer import utils
-from datetime import datetime
 import importlib.resources
 from pathlib import Path
 
-# smoking_obs = utils._read_json(str(Path(importlib.resources.files(
-#    'fhirizer').parent / 'resources' / 'icgc' / 'observations' / 'smoking.json')))
-# alcohol_obs = utils._read_json(str(Path(importlib.resources.files(
-#    'fhirizer').parent / 'resources' / 'icgc' / 'observations' / 'alcohol.json')))
-biospecimen_observation = utils._read_json(str(Path(importlib.resources.files(
-    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_observation.json')))
+smoking_obs = utils._read_json(str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'icgc' / 'observations' / 'smoking.json')))
+alcohol_obs = utils._read_json(str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'icgc' / 'observations' / 'alcohol.json')))
+biospecimen_observation = utils._read_json(str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'biospecimen' / 'biospecimen_observation.json')))
 
-smoking_obs = utils._read_json("resources/icgc/observations/smoking.json")
-alcohol_obs = utils._read_json("resources/icgc/observations/alcohol.json")
-
-project_name = "LUSC-KR"
-has_files = True
-file_name = "score-manifest.tsv"
-file_table_name = "file-table.tsv"
-
-this_project_path = "../ICGC/"
-map_path = f"./projects/ICGC/{project_name}/data/*.xlsx"
-dat_path = f"./projects/ICGC/{project_name}/data/*.csv"
-file_path = f"./projects/ICGC/{project_name}/data/{file_name}"
-file_table_path = f"./projects/ICGC/{project_name}/data/{file_table_name}"
-out_path = f"./projects/ICGC/{project_name}"
+# smoking_obs = utils._read_json("resources/icgc/observations/smoking.json")
+# alcohol_obs = utils._read_json("resources/icgc/observations/alcohol.json")
 
 conditionoccurredFollowing = {
     "extension": [
@@ -244,7 +222,7 @@ def reform(df, out_path, project_name=None, df_type=None, file_name="data-dictio
     df.to_csv(pathlib.Path(out_path) / f"{file_name}.csv", index=False)
 
 
-def init_mappings(paths, out_path):
+def init_mappings(project_name, paths, out_path):
     # caution this re-writes mappings
     for path in paths:
         if "donor_therapy" in path:
@@ -310,39 +288,7 @@ def fetch_data(file_paths, project_name):
     return df_dict
 
 
-paths = project_files(path=this_project_path, project=project_name)
-# init_mappings(paths, out_path)
-
-mp = fetch_paths(map_path)
-mp_dict = fetch_mappings(mp)
-
-dat_paths = fetch_paths(dat_path)
-dat_paths = [path for path in dat_paths if
-             "simple_somatic_mutation" not in path and "copy_number_somatic_mutation" not in path]
-
-dat_dict = fetch_data(dat_paths, project_name=project_name)
-
-# combine sample and specimen relations
-df_specimen = pd.merge(dat_dict['specimen'], dat_dict['sample'], on='icgc_specimen_id', how='left',
-                       suffixes=('_specimen', '_sample'))
-
-# combine patient and exposure observations
-# https://loinc.org/LG41856-2
-if 'donor_exposure' in dat_dict.keys():
-    df_patient = pd.merge(dat_dict['donor'], dat_dict['donor_exposure'], on='icgc_donor_id', how='left',
-                          suffixes=('', '_donor_exposure'))
-    df_patient.fillna('')
-else:
-    df_patient = dat_dict['donor']
-
-
-# TODO: family cancer history observation link confirmation
-# df_patient_exposure_family = pd.merge(dat_dict['donor'], dat_dict['donor_family'], on='icgc_donor_id', how='left',
-#                        suffixes=('', '_donor_family'))
-# df_patient_exposure_family = df_patient_exposure_family.fillna('')
-
-
-def fhir_research_study(df=dat_dict['donor']):
+def fhir_research_study(df):
     name = df["project_code"].unique()[0]
 
     rs_name = "icgc_project"
@@ -381,9 +327,6 @@ def fhir_research_study(df=dat_dict['donor']):
                     Reference(**{"reference": "/".join(["ResearchStudy", icgc_project.id])})]})
             research_study_list.append(icgc_study)
     return research_study_list
-
-
-# row = dat_dict['donor'].iloc[0]
 
 def exposure_observation(obs, row, snomed, smoking):
     patient_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_donor_id'], row['project_code']])))
@@ -776,85 +719,132 @@ def sample_id(row):
     return str(uuid.uuid3(uuid.NAMESPACE_DNS, "".join([row['icgc_sample_id'], row['project_code_sample'], row['icgc_donor_id_sample']])))
 
 
-patients = [orjson.loads(p.json()) for p in list(df_patient.apply(fhir_patient, axis=1)) if p]
-obs_smoking = [os for os in list(df_patient.apply(fhir_smoking_exposure_observations, axis=1)) if os]
-obs_alc = [ol for ol in list(df_patient.apply(fhir_alcohol_exposure_observations, axis=1)) if ol]
+def icgc2fhir(project_name, has_files):
+    # project_name = "LUSC-KR"
+    # has_files = True
+    file_name = "score-manifest.tsv"
+    file_table_name = "file-table.tsv"
 
-rsub = [orjson.loads(rs.json()) for rs in list(df_patient.apply(fhir_research_subject, axis=1)) if rs]
-rs = [orjson.loads(r.json()) for r in fhir_research_study(df=dat_dict['donor'])]
+    this_project_path = "../ICGC/"
+    map_path = f"./projects/ICGC/{project_name}/data/*.xlsx"
+    dat_path = f"./projects/ICGC/{project_name}/data/*.csv"
+    file_path = f"./projects/ICGC/{project_name}/data/{file_name}"
+    file_table_path = f"./projects/ICGC/{project_name}/data/{file_table_name}"
+    out_path = f"./projects/ICGC/{project_name}"
 
-cond_obs_encont = df_patient.apply(fhir_condition, axis=1)
-conditions = [orjson.loads(c['condition'].json()) for c in cond_obs_encont if c['condition']]
-encounters = [orjson.loads(c['encounter'].json()) for c in cond_obs_encont if c['encounter']]
-obs_exam = [c['observation'] for c in cond_obs_encont if c['observation']]
+    # -------------------------------------------------------------------
+    paths = project_files(path=this_project_path, project=project_name)
+    # init_mappings(project_name, paths, out_path)
 
-body_structures = [orjson.loads(b.json()) for b in list(df_patient.apply(fhir_body_structure, axis=1)) if b]
+    mp = fetch_paths(map_path)
+    mp_dict = fetch_mappings(mp)
 
-sample_observations_nested_list = [s["observations"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if
-                                   s["observations"]]
-sample_observations_list = list(itertools.chain.from_iterable(sample_observations_nested_list))
-sample_observations = list({v['id']: v for v in sample_observations_list}.values())
+    dat_paths = fetch_paths(dat_path)
+    dat_paths = [path for path in dat_paths if
+                 "simple_somatic_mutation" not in path and "copy_number_somatic_mutation" not in path]
 
-samples_nested_list = [s["samples"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if s["samples"]]
-samples_list = list(itertools.chain.from_iterable(samples_nested_list))
-samples_list_json = [orjson.loads(s.json()) for s in samples_list]
-samples = list({v['id']: v for v in samples_list_json}.values())
+    dat_dict = fetch_data(dat_paths, project_name=project_name)
 
-observations = obs_alc + obs_smoking + obs_exam + sample_observations
-observations = list({v['id']: v for v in observations}.values())
+    # combine sample and specimen relations
+    df_specimen = pd.merge(dat_dict['specimen'], dat_dict['sample'], on='icgc_specimen_id', how='left',
+                           suffixes=('_specimen', '_sample'))
 
-# url https://platform.icgc-argo.org/file/FL37616
-document_references = None
-if has_files:
-    file_metadata = pd.read_csv(file_path, sep="\t")
-    file_metadata = file_metadata.fillna('')
-    file_metadata.rename(
-        columns={"donor_id": "icgc_donor_id", "program_id": "project_code", "sample_id(s)": "icgc_sample_id"},
-        inplace=True)
+    # combine patient and exposure observations
+    # https://loinc.org/LG41856-2
+    if 'donor_exposure' in dat_dict.keys():
+        df_patient = pd.merge(dat_dict['donor'], dat_dict['donor_exposure'], on='icgc_donor_id', how='left',
+                              suffixes=('', '_donor_exposure'))
+        df_patient.fillna('')
+    else:
+        df_patient = dat_dict['donor']
 
-    file_table = pd.read_csv(file_table_path, sep="\t")
-    file_table = file_table.fillna('')
-    file_table.rename(columns={"Object ID": "object_id"}, inplace=True)
-    file_metadata = file_metadata.merge(file_table, on='object_id', how="left")
-    file_metadata = file_metadata.fillna('')
 
-    df_patient["patient_uuid"] = df_patient.apply(patient_id, axis=1)
-    file_metadata_patient_info = file_metadata.merge(df_patient, on="icgc_donor_id", how="left", suffixes=["", "_p"])
+    # TODO: family cancer history observation link confirmation
+    # df_patient_exposure_family = pd.merge(dat_dict['donor'], dat_dict['donor_family'], on='icgc_donor_id', how='left',
+    #                        suffixes=('', '_donor_family'))
+    # df_patient_exposure_family = df_patient_exposure_family.fillna('')
+    # -------------------------------------------------------------------
+    # row = dat_dict['donor'].iloc[0]
 
-    df_specimen["sample_uuid"] = df_specimen.apply(sample_id, axis=1)
-    file_metadata_patient_specimen_info = file_metadata_patient_info.merge(df_specimen, on='icgc_sample_id', how="left")
+    patients = [orjson.loads(p.json()) for p in list(df_patient.apply(fhir_patient, axis=1)) if p]
+    obs_smoking = [os for os in list(df_patient.apply(fhir_smoking_exposure_observations, axis=1)) if os]
+    obs_alc = [ol for ol in list(df_patient.apply(fhir_alcohol_exposure_observations, axis=1)) if ol]
 
-    document_references = [orjson.loads(f.json()) for f in list(file_metadata_patient_specimen_info.apply(fhir_document_reference, axis=1)) if
-                           f]
+    rsub = [orjson.loads(rs.json()) for rs in list(df_patient.apply(fhir_research_subject, axis=1)) if rs]
+    rs = [orjson.loads(r.json()) for r in fhir_research_study(df=dat_dict['donor'])]
 
-out_dir = os.path.join(out_path, "META")
-if not os.path.exists(out_dir):
-    os.makedirs(out_dir)
+    cond_obs_encont = df_patient.apply(fhir_condition, axis=1)
+    conditions = [orjson.loads(c['condition'].json()) for c in cond_obs_encont if c['condition']]
+    encounters = [orjson.loads(c['encounter'].json()) for c in cond_obs_encont if c['encounter']]
+    obs_exam = [c['observation'] for c in cond_obs_encont if c['observation']]
 
-if patients:
-    utils.fhir_ndjson(patients, "/".join([out_dir, "Patient.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's Patient ndjson file!")
-if rs:
-    utils.fhir_ndjson(rs, "/".join([out_dir, "ResearchStudy.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's ResearchStudy ndjson file!")
-if rsub:
-    utils.fhir_ndjson(rsub, "/".join([out_dir, "ResearchSubject.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson file!")
-if observations:
-    utils.fhir_ndjson(observations, "/".join([out_dir, "Observation.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's Observation ndjson file!")
-if conditions:
-    utils.fhir_ndjson(conditions, "/".join([out_dir, "Condition.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's Condition ndjson file!")
-if body_structures:
-    utils.fhir_ndjson(body_structures, "/".join([out_dir, "BodyStructure.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's body_structures ndjson file!")
-if encounters:
-    utils.fhir_ndjson(encounters, "/".join([out_dir, "Encounter.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
-if samples:
-    utils.fhir_ndjson(samples, "/".join([out_dir, "Specimen.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's Specimen ndjson file!")
-if document_references:
-    utils.fhir_ndjson(document_references, "/".join([out_dir, "DocumentReference.ndjson"]))
-    print("Successfully converted GDC case info to FHIR's DocumentReference ndjson file!")
+    body_structures = [orjson.loads(b.json()) for b in list(df_patient.apply(fhir_body_structure, axis=1)) if b]
+
+    sample_observations_nested_list = [s["observations"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if
+                                       s["observations"]]
+    sample_observations_list = list(itertools.chain.from_iterable(sample_observations_nested_list))
+    sample_observations = list({v['id']: v for v in sample_observations_list}.values())
+
+    samples_nested_list = [s["samples"] for s in list(df_specimen.apply(fhir_specimen, axis=1)) if s["samples"]]
+    samples_list = list(itertools.chain.from_iterable(samples_nested_list))
+    samples_list_json = [orjson.loads(s.json()) for s in samples_list]
+    samples = list({v['id']: v for v in samples_list_json}.values())
+
+    observations = obs_alc + obs_smoking + obs_exam + sample_observations
+    observations = list({v['id']: v for v in observations}.values())
+
+    # url https://platform.icgc-argo.org/file/FL37616
+    document_references = None
+    if has_files:
+        file_metadata = pd.read_csv(file_path, sep="\t")
+        file_metadata = file_metadata.fillna('')
+        file_metadata.rename(
+            columns={"donor_id": "icgc_donor_id", "program_id": "project_code", "sample_id(s)": "icgc_sample_id"},
+            inplace=True)
+
+        file_table = pd.read_csv(file_table_path, sep="\t")
+        file_table = file_table.fillna('')
+        file_table.rename(columns={"Object ID": "object_id"}, inplace=True)
+        file_metadata = file_metadata.merge(file_table, on='object_id', how="left")
+        file_metadata = file_metadata.fillna('')
+
+        df_patient["patient_uuid"] = df_patient.apply(patient_id, axis=1)
+        file_metadata_patient_info = file_metadata.merge(df_patient, on="icgc_donor_id", how="left", suffixes=["", "_p"])
+
+        df_specimen["sample_uuid"] = df_specimen.apply(sample_id, axis=1)
+        file_metadata_patient_specimen_info = file_metadata_patient_info.merge(df_specimen, on='icgc_sample_id', how="left")
+
+        document_references = [orjson.loads(f.json()) for f in list(file_metadata_patient_specimen_info.apply(fhir_document_reference, axis=1)) if
+                               f]
+    import os
+    out_dir = os.path.join(out_path, "META")
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if patients:
+        utils.fhir_ndjson(patients, "/".join([out_dir, "Patient.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Patient ndjson file!")
+    if rs:
+        utils.fhir_ndjson(rs, "/".join([out_dir, "ResearchStudy.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's ResearchStudy ndjson file!")
+    if rsub:
+        utils.fhir_ndjson(rsub, "/".join([out_dir, "ResearchSubject.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson file!")
+    if observations:
+        utils.fhir_ndjson(observations, "/".join([out_dir, "Observation.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Observation ndjson file!")
+    if conditions:
+        utils.fhir_ndjson(conditions, "/".join([out_dir, "Condition.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Condition ndjson file!")
+    if body_structures:
+        utils.fhir_ndjson(body_structures, "/".join([out_dir, "BodyStructure.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's body_structures ndjson file!")
+    if encounters:
+        utils.fhir_ndjson(encounters, "/".join([out_dir, "Encounter.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
+    if samples:
+        utils.fhir_ndjson(samples, "/".join([out_dir, "Specimen.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's Specimen ndjson file!")
+    if document_references:
+        utils.fhir_ndjson(document_references, "/".join([out_dir, "DocumentReference.ndjson"]))
+        print("Successfully converted GDC case info to FHIR's DocumentReference ndjson file!")

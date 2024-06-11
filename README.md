@@ -70,6 +70,13 @@ Detailed step-by-step guide on FHIRizing data for a project's study can be found
    fhirizer generate --name cellosaurus --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/<cellosaurus-celllines-ndjson>
   ```
 
+- ICGC
+
+  - NOTE: Active site and data dictionary updates from [ICGC DCC](https://dcc.icgc.org/) to [ICGC ARGO](https://platform.icgc-argo.org/) is in progress.
+  
+  ```
+   fhirizer generate --name icgc --icgc <ICGC_project_name> --has_files
+  ```
 ### Constructing GDC maps cli cmds 
 
 initialize initial structure of project, case, or file to add Maps
