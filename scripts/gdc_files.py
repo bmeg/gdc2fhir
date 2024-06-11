@@ -11,7 +11,7 @@ from tqdm import tqdm
 URL_BASE = "https://api.gdc.cancer.gov/"
 TOKEN = None
 client = requests
-study = "TCGA-LUAD"
+study = "TCGA-ACC"
 
 
 def query_gdc(endpoint, params):
