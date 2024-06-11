@@ -2561,29 +2561,6 @@
         },
         {
             "source": {
-                "name": "",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Attachment.size",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
                 "name": "created_datetime",
                 "description": null,
                 "description_url": null,

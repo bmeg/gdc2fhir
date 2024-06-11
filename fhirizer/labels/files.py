@@ -147,15 +147,6 @@ file_maps = [
 
     Map(
         source=Source(
-            name='',
-        ),
-        destination=Destination(
-            name='Attachment.size',
-        )
-    ),
-
-    Map(
-        source=Source(
             name='created_datetime',
         ),
         destination=Destination(
