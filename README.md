@@ -143,11 +143,15 @@ fhirizer/
 |   └── fixtures/
 | 
 |-- projects/
-|   └──  TCGA-STUDY
-|       |-- cases.ndjson
-|       |-- filess.ndjson
-|       └── META/
-|   
+|   └── GDC/ 
+|   |     └── TCGA-STUDY/
+|   |           |-- cases.ndjson
+|   |           |-- filess.ndjson
+|   |           └── META/
+|   └── ICGC/
+|         └── ICGC-STUDY/ 
+|                |-- data/
+|                └── META/
 |--README.md
 └── setup.py
 ```

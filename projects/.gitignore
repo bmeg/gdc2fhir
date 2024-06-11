@@ -1,4 +1,5 @@
 *
 !.gitignore
-!TCGA-STUDY
+!GDC
+!ICGC
 !README.md
