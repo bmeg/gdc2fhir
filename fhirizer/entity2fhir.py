@@ -567,6 +567,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     with open('output.log', 'a') as f:
                         f.write(log_output_diag)
 
+            if "Observation.code.nci_tumor_grade" in case["diagnoses"].keys() and case["diagnoses"]["Observation.code.nci_tumor_grade"]:
+                # temp fix for demo
+                grade = ConditionStage(**{"type": CodeableConcept(**{"coding": [{"code": "2785839", "system": "https://cadsr.cancer.gov", "display": "neoplasm_histologic_grade"}]}),
+                                  "summary": CodeableConcept(**{"coding": [{"code": "2785839", "system": "https://cadsr.cancer.gov", "display": case["diagnoses"]["Observation.code.nci_tumor_grade"]}]}),
+                                   "assessment": [observation_ref]})
+                staging_list.append(grade)
+
             condition.stage = staging_list
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])}), subject_ref]
 

@@ -1067,6 +1067,15 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='diagnoses.tumor_grade'
+        ),
+        destination=Destination(
+            name='Observation.code.nci_tumor_grade'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='diagnoses.treatments.treatment_id'
         ),
         destination=Destination(
