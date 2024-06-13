@@ -660,10 +660,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             sm_obs = copy.deepcopy(social_histody_smoking_observation)
             # if 'valueQuantity' in sm_obs.keys():
             #    sm_obs.pop('valueQuantity', None)
-            sm_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id,
-                                   orjson.loads(study_ref.json())['reference'],
-                                   'Observation.patient.pack_years_smoked'])
-            sm_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_obs_code))
+
+            sm_ob_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "exposures.pack_years_smoked"]),
+                                                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
+            sm_obs['id'] = utils.mint_id(identifier=sm_ob_identifier, resource_type="Observation",
+                                           project_id=project_id,
+                                           namespace=NAMESPACE_GDC)
+
+
             sm_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             sm_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
             sm_obs['valueQuantity']['value'] = int(case['exposures'][0]['Observation.patient.pack_years_smoked'])
@@ -677,6 +681,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             sm_pd_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id,
                                       orjson.loads(study_ref.json())['reference'],
                                       'Observation.patient.cigarettes_per_day'])
+
+
             sm_pd_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_pd_obs_code))
             sm_pd_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             sm_pd_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
@@ -700,9 +706,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if 'Observation.patient.alcohol_history' in case['exposures'][0] and case['exposures'][0][
             'Observation.patient.alcohol_history']:
             al_obs = copy.deepcopy(social_histody_alcohol_observation)
-            al_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id,
-                                   orjson.loads(study_ref.json())['reference'], 'Observation.patient.alcohol_history'])
-            al_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, al_obs_code))
+            al_ob_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "exposures.alcohol_history"]),
+                                                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
+            al_obs['id'] = utils.mint_id(identifier=al_ob_identifier, resource_type="Observation",
+                                           project_id=project_id,
+                                           namespace=NAMESPACE_GDC)
+
             al_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             al_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
             al_obs['valueString'] = case['exposures'][0]['Observation.patient.alcohol_history']
