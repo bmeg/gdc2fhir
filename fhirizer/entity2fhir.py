@@ -318,13 +318,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         # "url": "http://hl7.org/fhir/us/icsr-ae-reporting/StructureDefinition/icsr-ext-ageattimeofonset"
         if case['demographic']['Patient.extension.age']:
             age_at_index = case['demographic']['Patient.extension.age']
-        else:
-            age_at_index = 0 # edge case where age at index is not documented 
-
-        age = {"url": "http://hl7.org/fhir/SearchParameter/patient-extensions-Patient-age",
-               'valueQuantity': {"value": age_at_index}}
-
-        race_ethnicity_sex.append(age)
+            age = {"url": "http://hl7.org/fhir/SearchParameter/patient-extensions-Patient-age",
+                   'valueQuantity': {"value": age_at_index}}
+            race_ethnicity_sex.append(age)
 
     if race_ethnicity_sex:
         patient.extension = race_ethnicity_sex
