@@ -864,6 +864,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                             component_type='bool')
                     sample_observation_components.append(c)
 
+                if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
+                    c = utils.get_component('sample_type',
+                                            value=sample["Specimen.type.sample"],
+                                            component_type='string')
+                    sample_observation_components.append(c)
+
                 sample_observation = None
                 if sample_observation_components:
                     sample_observation = copy.deepcopy(biospecimen_observation)
@@ -946,6 +952,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                     portion["Observation.portions.is_ffpe"], bool):
                                 c = utils.get_component('is_ffpe', value=portion["Observation.portions.is_ffpe"],
                                                         component_type='bool')
+                                portions_observation_components.append(c)
+
+                            if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
+                                c = utils.get_component('sample_type',
+                                                        value=sample["Specimen.type.sample"],
+                                                        component_type='string')
                                 portions_observation_components.append(c)
 
                             portions_observation = None
@@ -1115,6 +1127,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                     component_type='string')
                                             analyte_observation_components.append(c)
 
+                                        if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
+                                            c = utils.get_component('sample_type',
+                                                                    value=sample["Specimen.type.sample"],
+                                                                    component_type='string')
+                                            analyte_observation_components.append(c)
+
                                         analyte_observation = None
                                         if analyte_observation_components:
                                             analyte_observation = copy.deepcopy(biospecimen_observation)
@@ -1273,6 +1291,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                             component_type='bool')
                                                     aliquot_observation_components.append(c)
 
+                                                if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
+                                                    c = utils.get_component('sample_type',
+                                                                            value=sample["Specimen.type.sample"],
+                                                                            component_type='string')
+                                                    aliquot_observation_components.append(c)
+
                                                 if "Observation.aliquot.selected_normal_wxs" in aliquot.keys() and isinstance(
                                                         aliquot[
                                                             "Observation.aliquot.selected_normal_wxs"], bool):
@@ -1301,9 +1325,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         "reference": "/".join(["Specimen", aliquot_specimen.id])}
                                                     aliquot_observation['focus'][0] = {
                                                         "reference": "/".join(["Specimen", aliquot_specimen.id])}
-                                                    # print(len(observations))
-                                                    # aliquot_observations.append(aliquot_observation)
-                                                    # print(len(observations))
+
+
 
                                                     if aliquot_observation not in aliquot_observations:
                                                         aliquot_observations.append(copy.deepcopy(aliquot_observation))
