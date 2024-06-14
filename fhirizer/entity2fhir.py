@@ -461,9 +461,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             # https://build.fhir.org/valueset-age-units.html
             condition.onsetAge = {
                 "value": case['diagnoses']['Condition.onsetAge'],
-                "unit": "years",
+                "unit": "days",
                 "system": "http://unitsofmeasure.org",
-                "code": "a"
+                "code": "d"
             }
 
         # condition.bodySite <-- primary_site snomed
