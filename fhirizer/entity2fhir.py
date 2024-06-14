@@ -456,8 +456,15 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         condition.subject = subject_ref
         condition.encounter = encounter_ref
 
-        if 'diagnoses' in case.keys() and 'Condition.onsetAge' in case['diagnoses'].keys():
-            condition.onsetString = str(case['diagnoses']['Condition.onsetAge'])
+        if 'diagnoses' in case.keys() and 'Condition.onsetAge' in case['diagnoses'].keys() and case['diagnoses'][
+            'Condition.onsetAge']:
+            # https://build.fhir.org/valueset-age-units.html
+            condition.onsetAge = {
+                "value": case['diagnoses']['Condition.onsetAge'],
+                "unit": "years",
+                "system": "http://unitsofmeasure.org",
+                "code": "a"
+            }
 
         # condition.bodySite <-- primary_site snomed
         l_body_site = []
@@ -569,11 +576,16 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     with open('output.log', 'a') as f:
                         f.write(log_output_diag)
 
-            if "Observation.code.nci_tumor_grade" in case["diagnoses"].keys() and case["diagnoses"]["Observation.code.nci_tumor_grade"]:
+            if "Observation.code.nci_tumor_grade" in case["diagnoses"].keys() and case["diagnoses"][
+                "Observation.code.nci_tumor_grade"]:
                 # temp fix for demo
-                grade = ConditionStage(**{"type": CodeableConcept(**{"coding": [{"code": "2785839", "system": "https://cadsr.cancer.gov", "display": "neoplasm_histologic_grade"}]}),
-                                  "summary": CodeableConcept(**{"coding": [{"code": "2785839", "system": "https://cadsr.cancer.gov", "display": case["diagnoses"]["Observation.code.nci_tumor_grade"]}]}),
-                                   "assessment": [observation_ref]})
+                grade = ConditionStage(**{"type": CodeableConcept(**{"coding": [
+                    {"code": "2785839", "system": "https://cadsr.cancer.gov",
+                     "display": "neoplasm_histologic_grade"}]}),
+                                          "summary": CodeableConcept(**{"coding": [
+                                              {"code": "2785839", "system": "https://cadsr.cancer.gov",
+                                               "display": case["diagnoses"]["Observation.code.nci_tumor_grade"]}]}),
+                                          "assessment": [observation_ref]})
                 staging_list.append(grade)
 
             condition.stage = staging_list
@@ -670,12 +682,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             # if 'valueQuantity' in sm_obs.keys():
             #    sm_obs.pop('valueQuantity', None)
 
-            sm_ob_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "exposures.pack_years_smoked"]),
-                                                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
+            sm_ob_identifier = Identifier(
+                **{"system": "".join(["https://gdc.cancer.gov/", "exposures.pack_years_smoked"]),
+                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
             sm_obs['id'] = utils.mint_id(identifier=sm_ob_identifier, resource_type="Observation",
-                                           project_id=project_id,
-                                           namespace=NAMESPACE_GDC)
-
+                                         project_id=project_id,
+                                         namespace=NAMESPACE_GDC)
 
             sm_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             sm_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
@@ -690,7 +702,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             sm_pd_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id,
                                       orjson.loads(study_ref.json())['reference'],
                                       'Observation.patient.cigarettes_per_day'])
-
 
             sm_pd_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_pd_obs_code))
             sm_pd_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
@@ -715,11 +726,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if 'Observation.patient.alcohol_history' in case['exposures'][0] and case['exposures'][0][
             'Observation.patient.alcohol_history']:
             al_obs = copy.deepcopy(social_histody_alcohol_observation)
-            al_ob_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "exposures.alcohol_history"]),
-                                                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
+            al_ob_identifier = Identifier(
+                **{"system": "".join(["https://gdc.cancer.gov/", "exposures.alcohol_history"]),
+                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
             al_obs['id'] = utils.mint_id(identifier=al_ob_identifier, resource_type="Observation",
-                                           project_id=project_id,
-                                           namespace=NAMESPACE_GDC)
+                                         project_id=project_id,
+                                         namespace=NAMESPACE_GDC)
 
             al_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             al_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
@@ -961,7 +973,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                             if "slides" in portion.keys():
                                 for slide in portion["slides"]:
-                                    portion_img_study = create_imaging_study(slide=slide, patient=patient, sample=portion_specimen)
+                                    portion_img_study = create_imaging_study(slide=slide, patient=patient,
+                                                                             sample=portion_specimen)
                                     slide_list.append(portion_img_study)
 
                                     slides_observation_components = []
@@ -1037,7 +1050,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         if "slides" in analyte.keys():
                                             for slide in analyte["slides"]:
                                                 analyte_img_study = create_imaging_study(slide=slide, patient=patient,
-                                                                      sample=analyte_specimen)
+                                                                                         sample=analyte_specimen)
                                                 slide_list.append(analyte_img_study)
 
                                         # if analyte_specimen not in all_analytes:
@@ -1450,7 +1463,8 @@ def assign_fhir_for_file(file):
     document = DocumentReference.construct()
     document.status = "current"
 
-    ident = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "file_id"]), "value": file['DocumentReference.id']})
+    ident = Identifier(
+        **{"system": "".join(["https://gdc.cancer.gov/", "file_id"]), "value": file['DocumentReference.id']})
 
     document.id = utils.mint_id(
         identifier=ident,
@@ -1524,7 +1538,6 @@ def assign_fhir_for_file(file):
                 for sample in case['samples']:
                     if 'Specimen.id' in sample['portions'][0]['analytes'][0]['aliquots'][0].keys() and \
                             sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']:
-
                         specimen_identifier = Identifier(
                             **{"system": "".join(["https://gdc.cancer.gov/", "aliquot_id"]),
                                "value": sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']})
