@@ -550,8 +550,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         condition.id = utils.mint_id(identifier=condition_identifier, resource_type="Condition", project_id=project_id,
                                      namespace=NAMESPACE_GDC)
 
-        if 'Condition.identifier' in case['diagnoses'].keys() and case['diagnoses']['Condition.identifier']:
-            condition.identifier = Identifier(**{"value": case['diagnoses']['Condition.identifier'][0], "system": "".join(["https://gdc.cancer.gov/", "submitter_diagnosis_ids"])})
+        if 'Condition.identifier' in case.keys() and case['Condition.identifier']:
+            condition.identifier = [Identifier(**{"value": case['Condition.identifier'][0], "system": "".join(["https://gdc.cancer.gov/", "submitter_diagnosis_ids"])})]
 
         if gdc_condition_annotation:
             cc = CodeableConcept.construct()
