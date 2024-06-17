@@ -1072,7 +1072,7 @@ def ncit2mondo(path):
         return data
 
 
-def get_component(key, value=None, component_type=None):
+def get_component(key, value=None, component_type=None, system="https://cadsr.cancer.gov/sample_laboratory_observation"):
     if component_type == 'string':
         value = {"valueString": value}
     elif component_type == 'int':
@@ -1081,6 +1081,8 @@ def get_component(key, value=None, component_type=None):
         value = {"valueQuantity": {"value": value}}
     elif component_type == 'bool':
         value = {"valueBoolean": value}
+    elif component_type == 'dateTime':
+        value = {"valueDateTime": value}
     else:
         pass
 
@@ -1088,7 +1090,7 @@ def get_component(key, value=None, component_type=None):
         "code": {
             "coding": [
                 {
-                    "system": "https://cadsr.cancer.gov/sample_laboratory_observation",
+                    "system": system,
                     "code": key,
                     "display": key
                 }

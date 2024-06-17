@@ -1191,6 +1191,24 @@ case_maps = [Map(
         )
     ),
 
+    Map(
+        source=Source(
+            name='diagnoses.updated_datetime'
+        ),
+        destination=Destination(
+            name='Observation.survey.updated_datetime'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='submitter_diagnosis_ids'
+        ),
+        destination=Destination(
+            name='Condition.identifier'
+        )
+    ),
+
     # project Maps -----------------------------------------------------
     Map(
         source=Source(

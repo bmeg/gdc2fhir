@@ -430,6 +430,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation_code.coding = condition_codes_list
         observation.code = observation_code
         observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
+
+    survey_updated_datetime_component = None
+    if 'diagnoses' in case.keys() and "Observation.survey.updated_datetime" in case['diagnoses'].keys() and case['diagnoses'][
+        "Observation.survey.updated_datetime"]:
+        survey_updated_datetime_component = utils.get_component('updated_datetime', value=case['diagnoses']["Observation.survey.updated_datetime"],
+                            component_type='dateTime', system="https://gdc.cancer.gov/demographic")
+
     obs_survey = []
     if 'diagnoses' in case.keys() and 'Observation.survey.days_to_death' in case['diagnoses'].keys() and \
             case['diagnoses'][
@@ -479,6 +486,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 "code": "d"
             }
         }
+        if survey_updated_datetime_component:
+            days_to_death['component'] = [survey_updated_datetime_component]
         obs_survey.append(days_to_death)
 
     if 'diagnoses' in case.keys() and 'Observation.survey.days_to_last_follow_up' in case['diagnoses'].keys() and \
@@ -490,7 +499,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation_days_to_last_follow_up_id = utils.mint_id(identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier], resource_type="Observation",
                                        project_id=project_id,
                                        namespace=NAMESPACE_GDC)
-
         days_to_last_follow_up = {
             "resourceType": "Observation",
             "id": observation_days_to_last_follow_up_id,
@@ -528,18 +536,22 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 "code": "d"
             }
         }
+        if survey_updated_datetime_component:
+            days_to_last_follow_up['component'] = [survey_updated_datetime_component]
         obs_survey.append(days_to_last_follow_up)
 
     condition = None  # normal tissue don't/shouldn't  have diagnoses or condition
     body_structure = None
     if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
-
         # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
         condition = Condition.construct()
         condition_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
                                              "value": case['diagnoses']['Condition.id']})
         condition.id = utils.mint_id(identifier=condition_identifier, resource_type="Condition", project_id=project_id,
                                      namespace=NAMESPACE_GDC)
+
+        if 'Condition.identifier' in case['diagnoses'].keys() and case['diagnoses']['Condition.identifier']:
+            condition.identifier = Identifier(**{"value": case['diagnoses']['Condition.identifier'][0], "system": "".join(["https://gdc.cancer.gov/", "submitter_diagnosis_ids"])})
 
         if gdc_condition_annotation:
             cc = CodeableConcept.construct()
