@@ -371,7 +371,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         observation_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
                                                "value": case['diagnoses']['Condition.id']})
-        observation.id = utils.mint_id(identifier=observation_identifier, resource_type="Condition",
+        observation.id = utils.mint_id(identifier=[observation_identifier, patient_id_identifier], resource_type="Observation",
                                        project_id=project_id,
                                        namespace=NAMESPACE_GDC)
 
@@ -430,6 +430,105 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation_code.coding = condition_codes_list
         observation.code = observation_code
         observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
+    obs_survey = []
+    if 'diagnoses' in case.keys() and 'Observation.survey.days_to_death' in case['diagnoses'].keys() and \
+            case['diagnoses'][
+                'Observation.survey.days_to_death']:
+
+        observation_days_to_death_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
+                                               "value":  case['diagnoses']['Observation.survey.days_to_death']})
+        observation_days_to_death_id = utils.mint_id(identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
+                                       project_id=project_id,
+                                       namespace=NAMESPACE_GDC)
+
+        days_to_death = {
+            "resourceType": "Observation",
+            "id": observation_days_to_death_id,
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "survey",
+                            "display": "survey"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "https://ontobee.org/",
+                        "code": "NCIT_C156419",
+                        "display": "Days between Diagnosis and Death"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "/".join(["Patient", patient.id])
+            },
+            "focus": [{
+                "reference": "/".join(["Patient", patient.id])
+            }],
+            "valueQuantity": {
+                "value": int(case['diagnoses'][
+                                   'Observation.survey.days_to_death']),
+                "unit": "days",
+                "system": "http://unitsofmeasure.org",
+                "code": "d"
+            }
+        }
+        obs_survey.append(days_to_death)
+
+    if 'diagnoses' in case.keys() and 'Observation.survey.days_to_last_follow_up' in case['diagnoses'].keys() and \
+            case['diagnoses'][
+                'Observation.survey.days_to_last_follow_up']:
+
+        observation_days_to_last_follow_up_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_follow_up"]),
+                                               "value": case['diagnoses']['Observation.survey.days_to_last_follow_up']})
+        observation_days_to_last_follow_up_id = utils.mint_id(identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier], resource_type="Observation",
+                                       project_id=project_id,
+                                       namespace=NAMESPACE_GDC)
+
+        days_to_last_follow_up = {
+            "resourceType": "Observation",
+            "id": observation_days_to_last_follow_up_id,
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "survey",
+                            "display": "survey"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "https://ontobee.org/",
+                        "code": "NCIT_C181065",
+                        "display": "Number of Days Between Index Date and Last Follow Up"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "/".join(["Patient", patient.id])
+            },
+            "focus": [{
+                "reference": "/".join(["Patient", patient.id])
+            }],
+            "valueQuantity": {
+                "value": int(case['diagnoses']['Observation.survey.days_to_last_follow_up']),
+                "unit": "days",
+                "system": "http://unitsofmeasure.org",
+                "code": "d"
+            }
+        }
+        obs_survey.append(days_to_last_follow_up)
 
     condition = None  # normal tissue don't/shouldn't  have diagnoses or condition
     body_structure = None
@@ -1291,7 +1390,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                             component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
+                                                if "Specimen.type.sample" in sample.keys() and sample[
+                                                    "Specimen.type.sample"]:
                                                     c = utils.get_component('sample_type',
                                                                             value=sample["Specimen.type.sample"],
                                                                             component_type='string')
@@ -1326,15 +1426,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     aliquot_observation['focus'][0] = {
                                                         "reference": "/".join(["Specimen", aliquot_specimen.id])}
 
-
-
                                                     if aliquot_observation not in aliquot_observations:
                                                         aliquot_observations.append(copy.deepcopy(aliquot_observation))
                                                         # print("ADDED ALIQUOT OBSERVATION: \n", json.dumps(aliquot_observation, indent=2))
 
         # all_aliquots = remove_duplicates(all_aliquots)
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
-        all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations + smoking_observation + alcohol_observation
+        all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations + smoking_observation + alcohol_observation + obs_survey
 
         unique_observations_set = set()
         for obs in all_observations:

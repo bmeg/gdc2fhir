@@ -1173,6 +1173,24 @@ case_maps = [Map(
         )
     ),
 
+    Map(
+        source=Source(
+            name='diagnoses.days_to_death'
+        ),
+        destination=Destination(
+            name='Observation.survey.days_to_death'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.days_to_last_follow_up'
+        ),
+        destination=Destination(
+            name='Observation.survey.days_to_last_follow_up'
+        )
+    ),
+
     # project Maps -----------------------------------------------------
     Map(
         source=Source(
