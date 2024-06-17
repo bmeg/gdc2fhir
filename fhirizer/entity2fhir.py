@@ -334,7 +334,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     research_subject.status = "active"
     research_subject.study = study_ref
     research_subject.subject = subject_ref
-    research_subject.id = case['Patient.id']
+    research_subject.id = utils.mint_id(
+            identifier= patient_id_identifier,
+            resource_type="ResearchSubject",
+            project_id=project_id,
+            namespace=NAMESPACE_GDC)
 
     # create Encounter **
     encounter = None
@@ -460,6 +464,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         # condition.bodySite <-- primary_site snomed
         l_body_site = []
         bd_coding = []
+        body_struct = None
         for body_site in case['ResearchStudy']['Condition.bodySite']:
             # print("body_site", body_site)
             for p in primary_sites:
@@ -473,10 +478,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     if code == "0000":
                         print(f"Condition body-site code for {body_site} for patient-id: {patient.id} not found.")
                     l_body_site.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
-                    bd_coding.append({'system': "http://snomed.info/sct", 'display': p['value'], 'code': code})
+                    body_struct = {'system': "http://snomed.info/sct", 'display': p['value'], 'code': code}
+                    bd_coding.append(body_struct)
 
+        body_struct_ident = None
+        if body_struct['display']:
+            body_struct_ident = Identifier(**{"value":body_struct['display'], "system": "".join(["https://gdc.cancer.gov/", "primary_site"])})
         body_structure = BodyStructure(
-            **{"id": utils.mint_id(identifier=patient_id_identifier, resource_type="BodyStructure",
+            **{"id": utils.mint_id(identifier=[patient_id_identifier, body_struct_ident], resource_type="BodyStructure",
                                    project_id=project_id,
                                    namespace=NAMESPACE_GDC),
                "includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": bd_coding}})],
