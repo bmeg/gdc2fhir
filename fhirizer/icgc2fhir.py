@@ -530,7 +530,7 @@ def fhir_body_structure(row):
                                          "value": body_site["display"]})
 
     body_structure_id = utils.mint_id(
-        identifier=body_structure_ident,
+        identifier=[patient_ident, body_structure_ident],
         resource_type="BodyStructure",
         project_id=project_id,
         namespace=NAMESPACE_GDC)
