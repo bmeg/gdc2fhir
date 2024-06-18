@@ -1067,6 +1067,15 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='diagnoses.tumor_grade'
+        ),
+        destination=Destination(
+            name='Observation.code.nci_tumor_grade'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='diagnoses.treatments.treatment_id'
         ),
         destination=Destination(
@@ -1161,6 +1170,42 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Condition.display'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.days_to_death'
+        ),
+        destination=Destination(
+            name='Observation.survey.days_to_death'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.days_to_last_follow_up'
+        ),
+        destination=Destination(
+            name='Observation.survey.days_to_last_follow_up'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.updated_datetime'
+        ),
+        destination=Destination(
+            name='Observation.survey.updated_datetime'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='submitter_diagnosis_ids'
+        ),
+        destination=Destination(
+            name='Condition.identifier'
         )
     ),
 

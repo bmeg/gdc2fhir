@@ -316,9 +316,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     if 'demographic' in case.keys() and 'Patient.extension.age' in case['demographic'].keys():
         # alternative way(s) of defining age vs birthDate in patient field
         # "url": "http://hl7.org/fhir/us/icsr-ae-reporting/StructureDefinition/icsr-ext-ageattimeofonset"
-        age = {"url": "http://hl7.org/fhir/SearchParameter/patient-extensions-Patient-age",
-               'valueQuantity': {"value": case['demographic']['Patient.extension.age']}}
-        race_ethnicity_sex.append(age)
+        if case['demographic']['Patient.extension.age']:
+            age_at_index = case['demographic']['Patient.extension.age']
+            age = {"url": "http://hl7.org/fhir/SearchParameter/patient-extensions-Patient-age",
+                   'valueQuantity': {"value": age_at_index}}
+            race_ethnicity_sex.append(age)
 
     if race_ethnicity_sex:
         patient.extension = race_ethnicity_sex
@@ -373,7 +375,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         observation_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
                                                "value": case['diagnoses']['Condition.id']})
-        observation.id = utils.mint_id(identifier=observation_identifier, resource_type="Condition",
+        observation.id = utils.mint_id(identifier=[observation_identifier, patient_id_identifier], resource_type="Observation",
                                        project_id=project_id,
                                        namespace=NAMESPACE_GDC)
 
@@ -433,16 +435,127 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation.code = observation_code
         observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
 
+    survey_updated_datetime_component = None
+    if 'diagnoses' in case.keys() and "Observation.survey.updated_datetime" in case['diagnoses'].keys() and case['diagnoses'][
+        "Observation.survey.updated_datetime"]:
+        survey_updated_datetime_component = utils.get_component('updated_datetime', value=case['diagnoses']["Observation.survey.updated_datetime"],
+                            component_type='dateTime', system="https://gdc.cancer.gov/demographic")
+
+    obs_survey = []
+    if 'diagnoses' in case.keys() and 'Observation.survey.days_to_death' in case['diagnoses'].keys() and \
+            case['diagnoses'][
+                'Observation.survey.days_to_death']:
+
+        observation_days_to_death_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
+                                               "value":  case['diagnoses']['Observation.survey.days_to_death']})
+        observation_days_to_death_id = utils.mint_id(identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
+                                       project_id=project_id,
+                                       namespace=NAMESPACE_GDC)
+
+        days_to_death = {
+            "resourceType": "Observation",
+            "id": observation_days_to_death_id,
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "survey",
+                            "display": "survey"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "https://ontobee.org/",
+                        "code": "NCIT_C156419",
+                        "display": "Days between Diagnosis and Death"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "/".join(["Patient", patient.id])
+            },
+            "focus": [{
+                "reference": "/".join(["Patient", patient.id])
+            }],
+            "valueQuantity": {
+                "value": int(case['diagnoses'][
+                                   'Observation.survey.days_to_death']),
+                "unit": "days",
+                "system": "http://unitsofmeasure.org",
+                "code": "d"
+            }
+        }
+        if survey_updated_datetime_component:
+            days_to_death['component'] = [survey_updated_datetime_component]
+        obs_survey.append(days_to_death)
+
+    if 'diagnoses' in case.keys() and 'Observation.survey.days_to_last_follow_up' in case['diagnoses'].keys() and \
+            case['diagnoses'][
+                'Observation.survey.days_to_last_follow_up']:
+
+        observation_days_to_last_follow_up_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_follow_up"]),
+                                               "value": case['diagnoses']['Observation.survey.days_to_last_follow_up']})
+        observation_days_to_last_follow_up_id = utils.mint_id(identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier], resource_type="Observation",
+                                       project_id=project_id,
+                                       namespace=NAMESPACE_GDC)
+        days_to_last_follow_up = {
+            "resourceType": "Observation",
+            "id": observation_days_to_last_follow_up_id,
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "survey",
+                            "display": "survey"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "https://ontobee.org/",
+                        "code": "NCIT_C181065",
+                        "display": "Number of Days Between Index Date and Last Follow Up"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "/".join(["Patient", patient.id])
+            },
+            "focus": [{
+                "reference": "/".join(["Patient", patient.id])
+            }],
+            "valueQuantity": {
+                "value": int(case['diagnoses']['Observation.survey.days_to_last_follow_up']),
+                "unit": "days",
+                "system": "http://unitsofmeasure.org",
+                "code": "d"
+            }
+        }
+        if survey_updated_datetime_component:
+            days_to_last_follow_up['component'] = [survey_updated_datetime_component]
+        obs_survey.append(days_to_last_follow_up)
+
     condition = None  # normal tissue don't/shouldn't  have diagnoses or condition
     body_structure = None
     if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
-
         # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
         condition = Condition.construct()
         condition_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
                                              "value": case['diagnoses']['Condition.id']})
         condition.id = utils.mint_id(identifier=condition_identifier, resource_type="Condition", project_id=project_id,
                                      namespace=NAMESPACE_GDC)
+
+        if 'Condition.identifier' in case.keys() and case['Condition.identifier']:
+            condition.identifier = [Identifier(**{"value": case['Condition.identifier'][0], "system": "".join(["https://gdc.cancer.gov/", "submitter_diagnosis_ids"])})]
 
         if gdc_condition_annotation:
             cc = CodeableConcept.construct()
@@ -458,8 +571,15 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         condition.subject = subject_ref
         condition.encounter = encounter_ref
 
-        if 'diagnoses' in case.keys() and 'Condition.onsetAge' in case['diagnoses'].keys():
-            condition.onsetString = str(case['diagnoses']['Condition.onsetAge'])
+        if 'diagnoses' in case.keys() and 'Condition.onsetAge' in case['diagnoses'].keys() and case['diagnoses'][
+            'Condition.onsetAge']:
+            # https://build.fhir.org/valueset-age-units.html
+            condition.onsetAge = {
+                "value": case['diagnoses']['Condition.onsetAge'],
+                "unit": "days",
+                "system": "http://unitsofmeasure.org",
+                "code": "d"
+            }
 
         # condition.bodySite <-- primary_site snomed
         l_body_site = []
@@ -576,6 +696,18 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     with open('output.log', 'a') as f:
                         f.write(log_output_diag)
 
+            if "Observation.code.nci_tumor_grade" in case["diagnoses"].keys() and case["diagnoses"][
+                "Observation.code.nci_tumor_grade"]:
+                # temp fix for demo
+                grade = ConditionStage(**{"type": CodeableConcept(**{"coding": [
+                    {"code": "2785839", "system": "https://cadsr.cancer.gov",
+                     "display": "neoplasm_histologic_grade"}]}),
+                                          "summary": CodeableConcept(**{"coding": [
+                                              {"code": "2785839", "system": "https://cadsr.cancer.gov",
+                                               "display": case["diagnoses"]["Observation.code.nci_tumor_grade"]}]}),
+                                          "assessment": [observation_ref]})
+                staging_list.append(grade)
+
             condition.stage = staging_list
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])}), subject_ref]
 
@@ -670,12 +802,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             # if 'valueQuantity' in sm_obs.keys():
             #    sm_obs.pop('valueQuantity', None)
 
-            sm_ob_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "exposures.pack_years_smoked"]),
-                                                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
+            sm_ob_identifier = Identifier(
+                **{"system": "".join(["https://gdc.cancer.gov/", "exposures.pack_years_smoked"]),
+                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
             sm_obs['id'] = utils.mint_id(identifier=sm_ob_identifier, resource_type="Observation",
-                                           project_id=project_id,
-                                           namespace=NAMESPACE_GDC)
-
+                                         project_id=project_id,
+                                         namespace=NAMESPACE_GDC)
 
             sm_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             sm_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
@@ -690,7 +822,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             sm_pd_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id,
                                       orjson.loads(study_ref.json())['reference'],
                                       'Observation.patient.cigarettes_per_day'])
-
 
             sm_pd_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_pd_obs_code))
             sm_pd_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
@@ -715,11 +846,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if 'Observation.patient.alcohol_history' in case['exposures'][0] and case['exposures'][0][
             'Observation.patient.alcohol_history']:
             al_obs = copy.deepcopy(social_histody_alcohol_observation)
-            al_ob_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "exposures.alcohol_history"]),
-                                                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
+            al_ob_identifier = Identifier(
+                **{"system": "".join(["https://gdc.cancer.gov/", "exposures.alcohol_history"]),
+                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
             al_obs['id'] = utils.mint_id(identifier=al_ob_identifier, resource_type="Observation",
-                                           project_id=project_id,
-                                           namespace=NAMESPACE_GDC)
+                                         project_id=project_id,
+                                         namespace=NAMESPACE_GDC)
 
             al_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             al_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
@@ -852,6 +984,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                             component_type='bool')
                     sample_observation_components.append(c)
 
+                if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
+                    c = utils.get_component('sample_type',
+                                            value=sample["Specimen.type.sample"],
+                                            component_type='string')
+                    sample_observation_components.append(c)
+
                 sample_observation = None
                 if sample_observation_components:
                     sample_observation = copy.deepcopy(biospecimen_observation)
@@ -936,6 +1074,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         component_type='bool')
                                 portions_observation_components.append(c)
 
+                            if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
+                                c = utils.get_component('sample_type',
+                                                        value=sample["Specimen.type.sample"],
+                                                        component_type='string')
+                                portions_observation_components.append(c)
+
                             portions_observation = None
                             if portions_observation_components:
                                 portions_observation = copy.deepcopy(biospecimen_observation)
@@ -961,7 +1105,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                             if "slides" in portion.keys():
                                 for slide in portion["slides"]:
-                                    portion_img_study = create_imaging_study(slide=slide, patient=patient, sample=portion_specimen)
+                                    portion_img_study = create_imaging_study(slide=slide, patient=patient,
+                                                                             sample=portion_specimen)
                                     slide_list.append(portion_img_study)
 
                                     slides_observation_components = []
@@ -1037,7 +1182,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         if "slides" in analyte.keys():
                                             for slide in analyte["slides"]:
                                                 analyte_img_study = create_imaging_study(slide=slide, patient=patient,
-                                                                      sample=analyte_specimen)
+                                                                                         sample=analyte_specimen)
                                                 slide_list.append(analyte_img_study)
 
                                         # if analyte_specimen not in all_analytes:
@@ -1099,6 +1244,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                             c = utils.get_component('spectrophotometer_method',
                                                                     value=analyte[
                                                                         "Observation.analyte.spectrophotometer_method"],
+                                                                    component_type='string')
+                                            analyte_observation_components.append(c)
+
+                                        if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
+                                            c = utils.get_component('sample_type',
+                                                                    value=sample["Specimen.type.sample"],
                                                                     component_type='string')
                                             analyte_observation_components.append(c)
 
@@ -1260,6 +1411,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                             component_type='bool')
                                                     aliquot_observation_components.append(c)
 
+                                                if "Specimen.type.sample" in sample.keys() and sample[
+                                                    "Specimen.type.sample"]:
+                                                    c = utils.get_component('sample_type',
+                                                                            value=sample["Specimen.type.sample"],
+                                                                            component_type='string')
+                                                    aliquot_observation_components.append(c)
+
                                                 if "Observation.aliquot.selected_normal_wxs" in aliquot.keys() and isinstance(
                                                         aliquot[
                                                             "Observation.aliquot.selected_normal_wxs"], bool):
@@ -1288,9 +1446,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         "reference": "/".join(["Specimen", aliquot_specimen.id])}
                                                     aliquot_observation['focus'][0] = {
                                                         "reference": "/".join(["Specimen", aliquot_specimen.id])}
-                                                    # print(len(observations))
-                                                    # aliquot_observations.append(aliquot_observation)
-                                                    # print(len(observations))
 
                                                     if aliquot_observation not in aliquot_observations:
                                                         aliquot_observations.append(copy.deepcopy(aliquot_observation))
@@ -1298,7 +1453,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         # all_aliquots = remove_duplicates(all_aliquots)
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
-        all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations + smoking_observation + alcohol_observation
+        all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations + smoking_observation + alcohol_observation + obs_survey
 
         unique_observations_set = set()
         for obs in all_observations:
@@ -1450,7 +1605,8 @@ def assign_fhir_for_file(file):
     document = DocumentReference.construct()
     document.status = "current"
 
-    ident = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "file_id"]), "value": file['DocumentReference.id']})
+    ident = Identifier(
+        **{"system": "".join(["https://gdc.cancer.gov/", "file_id"]), "value": file['DocumentReference.id']})
 
     document.id = utils.mint_id(
         identifier=ident,
@@ -1524,7 +1680,6 @@ def assign_fhir_for_file(file):
                 for sample in case['samples']:
                     if 'Specimen.id' in sample['portions'][0]['analytes'][0]['aliquots'][0].keys() and \
                             sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']:
-
                         specimen_identifier = Identifier(
                             **{"system": "".join(["https://gdc.cancer.gov/", "aliquot_id"]),
                                "value": sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']})
