@@ -614,6 +614,17 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         condition.id = utils.mint_id(identifier=condition_identifier, resource_type="Condition", project_id=project_id,
                                      namespace=NAMESPACE_GDC)
 
+        condition.category = [CodeableConcept(**{"coding": [{
+            "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+            "code": "encounter-diagnosis",
+            "display": "Encounter Diagnosis"
+            },
+            {
+                "system": "http://snomed.info/sct",
+                "code": "439401001",
+                "display": "Diagnosis"
+            }]})]
+
         if 'Condition.identifier' in case.keys() and case['Condition.identifier']:
             condition.identifier = [Identifier(**{"value": case['Condition.identifier'][0], "system": "".join(
                 ["https://gdc.cancer.gov/", "submitter_diagnosis_ids"])})]
