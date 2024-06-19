@@ -161,6 +161,56 @@ def assign_fhir_for_project(project, disease_types=disease_types):
 
 # projects_path="./tests/fixtures/project/project_key.ndjson"
 
+
+def create_imaging_study(slide, patient, sample):
+    project_id = "GDC"
+    NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'gdc.cancer.gov')
+
+    img = ImagingStudy.construct()
+    img.status = "available"
+
+    img_identifier = Identifier(
+        **{"system": "".join(["https://gdc.cancer.gov/", "slide_id"]),
+           "value": slide["ImagingStudy.id"]})
+    img.id = utils.mint_id(identifier=img_identifier, resource_type="ImagingStudy",
+                           project_id=project_id,
+                           namespace=NAMESPACE_GDC)
+
+    img.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+
+    img_series = ImagingStudySeries.construct()
+    img_series.uid = sample.id
+
+    # https://hl7.org/fhir/R4/codesystem-dicom-dcim.html#dicom-dcim-SM
+    # https://dicom.nema.org/medical/dicom/current/output/chtml/part16/chapter_D.html
+    modality = CodeableConcept.construct()
+    modality.coding = [
+        {"system": " http://dicom.nema.org/resources/ontology/DCM", "display": "Slide Microscopy", "code": "SM"}]
+    img_series.modality = modality
+
+    img_series.specimen = [Reference(**{"reference": "/".join(["Specimen", sample.id])})]
+    img.series = [img_series]
+
+    return img
+
+
+def specimen_exists(specimen_id, specimen_list):
+    return any(specimen.id == specimen_id for specimen in specimen_list)
+
+
+def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specimens):
+    if name in dat.keys():
+        for sample in dat[name]:
+            if id_key in sample.keys():
+                fhir_specimen = Specimen.construct()
+                fhir_specimen.id = sample[id_key]
+                fhir_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+                if has_parent:
+                    fhir_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", parent.id])})]
+                if fhir_specimen not in all_fhir_specimens:
+                    all_fhir_specimens.append(fhir_specimen)
+
+
 def project_gdc_to_fhir_ndjson(out_dir, projects_path):
     projects = utils.load_ndjson(projects_path)
     all_rs = [assign_fhir_for_project(project=p, disease_types=disease_types) for p in projects]
@@ -337,10 +387,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     research_subject.study = study_ref
     research_subject.subject = subject_ref
     research_subject.id = utils.mint_id(
-            identifier= patient_id_identifier,
-            resource_type="ResearchSubject",
-            project_id=project_id,
-            namespace=NAMESPACE_GDC)
+        identifier=patient_id_identifier,
+        resource_type="ResearchSubject",
+        project_id=project_id,
+        namespace=NAMESPACE_GDC)
 
     # create Encounter **
     encounter = None
@@ -375,7 +425,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         observation_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
                                                "value": case['diagnoses']['Condition.id']})
-        observation.id = utils.mint_id(identifier=[observation_identifier, patient_id_identifier], resource_type="Observation",
+        observation.id = utils.mint_id(identifier=[observation_identifier, patient_id_identifier],
+                                       resource_type="Observation",
                                        project_id=project_id,
                                        namespace=NAMESPACE_GDC)
 
@@ -428,29 +479,35 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     condition_codes_list.append(mondo_coding)
 
         # required placeholder
-        loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
-        condition_codes_list.append(loinc_annotation)
+        if not condition_codes_list:
+            loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
+            condition_codes_list.append(loinc_annotation)
 
         observation_code.coding = condition_codes_list
         observation.code = observation_code
         observation_ref = Reference(**{"reference": "/".join(["Observation", observation.id])})
 
     survey_updated_datetime_component = None
-    if 'diagnoses' in case.keys() and "Observation.survey.updated_datetime" in case['diagnoses'].keys() and case['diagnoses'][
-        "Observation.survey.updated_datetime"]:
-        survey_updated_datetime_component = utils.get_component('updated_datetime', value=case['diagnoses']["Observation.survey.updated_datetime"],
-                            component_type='dateTime', system="https://gdc.cancer.gov/demographic")
+    if 'diagnoses' in case.keys() and "Observation.survey.updated_datetime" in case['diagnoses'].keys() and \
+            case['diagnoses'][
+                "Observation.survey.updated_datetime"]:
+        survey_updated_datetime_component = utils.get_component('updated_datetime', value=case['diagnoses'][
+            "Observation.survey.updated_datetime"],
+                                                                component_type='dateTime',
+                                                                system="https://gdc.cancer.gov/demographic")
 
     obs_survey = []
     if 'diagnoses' in case.keys() and 'Observation.survey.days_to_death' in case['diagnoses'].keys() and \
             case['diagnoses'][
                 'Observation.survey.days_to_death']:
 
-        observation_days_to_death_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
-                                               "value":  case['diagnoses']['Observation.survey.days_to_death']})
-        observation_days_to_death_id = utils.mint_id(identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
-                                       project_id=project_id,
-                                       namespace=NAMESPACE_GDC)
+        observation_days_to_death_identifier = Identifier(
+            **{"system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
+               "value": case['diagnoses']['Observation.survey.days_to_death']})
+        observation_days_to_death_id = utils.mint_id(
+            identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
+            project_id=project_id,
+            namespace=NAMESPACE_GDC)
 
         days_to_death = {
             "resourceType": "Observation",
@@ -484,7 +541,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             }],
             "valueQuantity": {
                 "value": int(case['diagnoses'][
-                                   'Observation.survey.days_to_death']),
+                                 'Observation.survey.days_to_death']),
                 "unit": "days",
                 "system": "http://unitsofmeasure.org",
                 "code": "d"
@@ -498,11 +555,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             case['diagnoses'][
                 'Observation.survey.days_to_last_follow_up']:
 
-        observation_days_to_last_follow_up_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_follow_up"]),
-                                               "value": case['diagnoses']['Observation.survey.days_to_last_follow_up']})
-        observation_days_to_last_follow_up_id = utils.mint_id(identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier], resource_type="Observation",
-                                       project_id=project_id,
-                                       namespace=NAMESPACE_GDC)
+        observation_days_to_last_follow_up_identifier = Identifier(
+            **{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_follow_up"]),
+               "value": case['diagnoses']['Observation.survey.days_to_last_follow_up']})
+        observation_days_to_last_follow_up_id = utils.mint_id(
+            identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier],
+            resource_type="Observation",
+            project_id=project_id,
+            namespace=NAMESPACE_GDC)
         days_to_last_follow_up = {
             "resourceType": "Observation",
             "id": observation_days_to_last_follow_up_id,
@@ -555,7 +615,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                      namespace=NAMESPACE_GDC)
 
         if 'Condition.identifier' in case.keys() and case['Condition.identifier']:
-            condition.identifier = [Identifier(**{"value": case['Condition.identifier'][0], "system": "".join(["https://gdc.cancer.gov/", "submitter_diagnosis_ids"])})]
+            condition.identifier = [Identifier(**{"value": case['Condition.identifier'][0], "system": "".join(
+                ["https://gdc.cancer.gov/", "submitter_diagnosis_ids"])})]
 
         if gdc_condition_annotation:
             cc = CodeableConcept.construct()
@@ -603,7 +664,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         body_struct_ident = None
         if body_struct['display']:
-            body_struct_ident = Identifier(**{"value":body_struct['display'], "system": "".join(["https://gdc.cancer.gov/", "primary_site"])})
+            body_struct_ident = Identifier(
+                **{"value": body_struct['display'], "system": "".join(["https://gdc.cancer.gov/", "primary_site"])})
         body_structure = BodyStructure(
             **{"id": utils.mint_id(identifier=[patient_id_identifier, body_struct_ident], resource_type="BodyStructure",
                                    project_id=project_id,
@@ -710,6 +772,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
             condition.stage = staging_list
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])}), subject_ref]
+            condition_observations.append(orjson.loads(observation.json()))
 
             # create medication administration and medication
             treatment_content_bool = False
@@ -790,8 +853,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     med_admin = MedicationAdministration(**data)
                     treatments_medadmin.append(med_admin)
 
-    if observation:
-        condition_observations.append(orjson.loads(observation.json()))
+    # if observation:
+    #     condition_observations.append(orjson.loads(observation.json()))
 
     # exposures
     smoking_observation = []
@@ -859,49 +922,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             alcohol_observation.append(al_obs)
 
     # create specimen
-    def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specimens):
-        if name in dat.keys():
-            for sample in dat[name]:
-                if id_key in sample.keys():
-                    fhir_specimen = Specimen.construct()
-                    fhir_specimen.id = sample[id_key]
-                    fhir_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
-                    if has_parent:
-                        fhir_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", parent.id])})]
-                    if fhir_specimen not in all_fhir_specimens:
-                        all_fhir_specimens.append(fhir_specimen)
-
-    def create_imaging_study(slide, patient, sample):
-        img = ImagingStudy.construct()
-        img.status = "available"
-
-        img_identifier = Identifier(
-            **{"system": "".join(["https://gdc.cancer.gov/", "slide_id"]),
-               "value": slide["ImagingStudy.id"]})
-        img.id = utils.mint_id(identifier=img_identifier, resource_type="ImagingStudy",
-                               project_id=project_id,
-                               namespace=NAMESPACE_GDC)
-
-        img.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
-
-        img_series = ImagingStudySeries.construct()
-        img_series.uid = sample.id
-
-        # https://hl7.org/fhir/R4/codesystem-dicom-dcim.html#dicom-dcim-SM
-        # https://dicom.nema.org/medical/dicom/current/output/chtml/part16/chapter_D.html
-        modality = CodeableConcept.construct()
-        modality.coding = [
-            {"system": " http://dicom.nema.org/resources/ontology/DCM", "display": "Slide Microscopy", "code": "SM"}]
-        img_series.modality = modality
-
-        img_series.specimen = [Reference(**{"reference": "/".join(["Specimen", sample.id])})]
-        img.series = [img_series]
-
-        return img
-
-    def specimen_exists(specimen_id, specimen_list):
-        return any(specimen.id == specimen_id for specimen in specimen_list)
-
+    specimen_observations = []
     sample_list = None
     slide_list = []
     procedures = []
@@ -931,10 +952,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                 specimen.identifier = [specimen_identifier]
 
-                # if specimen_exists(specimen.id, all_samples):
-                #    print("Sample exists", specimen.id)
-
-                # print("SAMPLE: ", specimen.id)
                 # add sample procedure
                 procedure = Procedure.construct()
                 procedure.status = "completed"
@@ -1004,15 +1021,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     sample_observation['specimen'] = {"reference": "/".join(["Specimen", specimen.id])}
                     sample_observation['focus'][0] = {"reference": "/".join(["Specimen", specimen.id])}
 
-                    # sample_observations.append(sample_observation)
-                    # print("ADDED SAMPLE OBSERVATION: \n", sample_observation)
                     if sample_observation not in sample_observations:
                         sample_observations.append(copy.deepcopy(sample_observation))
-                        # print("ADDED SAMPLE OBSERVATION: \n", json.dumps(sample_observation, indent=2))
 
                 specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
-                # if specimen not in all_samples:
-                #    all_samples.append(specimen)
 
                 if not specimen_exists(specimen.id, all_samples):
                     all_samples.append(specimen)
@@ -1044,9 +1056,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                 namespace=NAMESPACE_GDC)
                             portion_specimen.identifier = [portion_specimen_identifier]
 
-                            # if specimen_exists(portion_specimen.id, all_portions):
-                            #    print("Portion exists", portion_specimen.id)
-
                             portion_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
                             portion_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", specimen.id])})]
 
@@ -1055,9 +1064,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                    "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
 
                             portion_specimen.processing = [sp]
-
-                            # if portion_specimen not in all_portions:
-                            #    all_portions.append(portion_specimen)
 
                             if not specimen_exists(portion_specimen.id, all_portions):
                                 all_portions.append(portion_specimen)
@@ -1097,11 +1103,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 portions_observation['focus'][0] = {
                                     "reference": "/".join(["Specimen", portion_specimen.id])}
 
-                                # portion_observations.append(portions_observation)
-
                                 if portions_observation not in portion_observations:
                                     portion_observations.append(copy.deepcopy(portions_observation))
-                                    # print("ADDED PORTIONS OBSERVATION: \n", json.dumps(portions_observation, indent=2))
 
                             if "slides" in portion.keys():
                                 for slide in portion["slides"]:
@@ -1137,9 +1140,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         if slides_observation not in slides_observations:
                                             slides_observations.append(copy.deepcopy(slides_observation))
-                                            # print("ADDED SLIDES OBSERVATION: \n", json.dumps(slides_observation, indent=2))
-
-                                        # observations.append(slides_observation)
 
                             if "analytes" in portion.keys():
                                 for analyte in portion["analytes"]:
@@ -1155,9 +1155,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                             namespace=NAMESPACE_GDC)
 
                                         analyte_specimen.identifier = [analyte_specimen_identifier]
-
-                                        # if specimen_exists(analyte_specimen.id, all_analytes):
-                                        #    print("Analyte exists", analyte_specimen.id)
 
                                         analyte_specimen.subject = Reference(
                                             **{"reference": "/".join(["Patient", patient.id])})
@@ -1184,9 +1181,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                 analyte_img_study = create_imaging_study(slide=slide, patient=patient,
                                                                                          sample=analyte_specimen)
                                                 slide_list.append(analyte_img_study)
-
-                                        # if analyte_specimen not in all_analytes:
-                                        #    all_analytes.append(analyte_specimen)
 
                                         if not specimen_exists(analyte_specimen.id, all_analytes):
                                             all_analytes.append(analyte_specimen)
@@ -1271,11 +1265,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                             analyte_observation['focus'][0] = {
                                                 "reference": "/".join(["Specimen", analyte_specimen.id])}
 
-                                            # print("ANALYTE:", analyte_observation)
-                                            # analyte_observations.append(analyte_observation)
                                             if analyte_observation not in analyte_observations:
                                                 analyte_observations.append(copy.deepcopy(analyte_observation))
-                                                # print("ADDED ANALYTES OBSERVATION: \n", json.dumps(analyte_observation, indent=2))
 
                                         if "aliquots" in analyte.keys():
                                             for aliquot in analyte["aliquots"]:
@@ -1306,9 +1297,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         **{"reference": "/".join(["Patient", patient.id])})
                                                     aliquot_specimen.parent = [Reference(
                                                         **{"reference": "/".join(["Specimen", analyte_specimen.id])})]
-
-                                                    # if specimen_exists(aliquot_specimen.id, all_aliquots):
-                                                    #    print("Aliquot exists", aliquot_specimen.id)
 
                                                     if not specimen_exists(aliquot_specimen.id, all_aliquots):
                                                         all_aliquots.append(aliquot_specimen)
@@ -1427,7 +1415,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                             component_type='bool')
                                                     aliquot_observation_components.append(c)
 
-                                                # print("ALL", aliquot_observation_components)
                                                 aliquot_observation = None
                                                 if aliquot_observation_components:
                                                     aliquot_observation = copy.deepcopy(biospecimen_observation)
@@ -1437,7 +1424,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                         project_id=project_id,
                                                         namespace=NAMESPACE_GDC)
 
-                                                    # print(aliquot_observation['id'])
                                                     aliquot_observation['component'] = aliquot_observation_components
 
                                                     aliquot_observation['subject'] = {
@@ -1449,20 +1435,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                                     if aliquot_observation not in aliquot_observations:
                                                         aliquot_observations.append(copy.deepcopy(aliquot_observation))
-                                                        # print("ADDED ALIQUOT OBSERVATION: \n", json.dumps(aliquot_observation, indent=2))
 
-        # all_aliquots = remove_duplicates(all_aliquots)
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
-        all_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations + condition_observations + smoking_observation + alcohol_observation + obs_survey
+        specimen_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations
 
-        unique_observations_set = set()
-        for obs in all_observations:
-            obs_json = json.dumps(obs, sort_keys=True)
-            if obs_json not in unique_observations_set:
-                unique_observations_set.add(obs_json)
-                observations.append(obs)
+    all_observations = condition_observations + smoking_observation + alcohol_observation + obs_survey + specimen_observations
 
-    return {'patient': patient, 'encounter': encounter, 'observations': observations, 'condition': condition,
+    return {'patient': patient, 'encounter': encounter, 'observations': all_observations, 'condition': condition,
             'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
             'imaging_study': slide_list, "procedures": procedures, "med_admin": treatments_medadmin,
             "med": treatments_med, "body_structure": body_structure}
@@ -1800,9 +1779,12 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
             ident_list = []
             for accession in cl["accession-list"]:
                 if accession["type"] == "primary":
-                    patient_identifier = Identifier(**{"system": "https://www.cellosaurus.org/cell-line-primary-accession", "value": accession["value"]})
-                    patient_id = utils.mint_id(identifier=patient_identifier, resource_type="Patient", project_id=project_id,
-                                  namespace=NAMESPACE_CELLOSAURUS)
+                    patient_identifier = Identifier(
+                        **{"system": "https://www.cellosaurus.org/cell-line-primary-accession",
+                           "value": accession["value"]})
+                    patient_id = utils.mint_id(identifier=patient_identifier, resource_type="Patient",
+                                               project_id=project_id,
+                                               namespace=NAMESPACE_CELLOSAURUS)
 
                     ident_list.append(patient_identifier)
             if patient_id:
@@ -1846,7 +1828,8 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                                          project_id=project_id,
                                                          namespace=NAMESPACE_CELLOSAURUS)
 
-                            if "terminology" in disease_annotation.keys() and disease_annotation["terminology"] == "NCIt":
+                            if "terminology" in disease_annotation.keys() and disease_annotation[
+                                "terminology"] == "NCIt":
                                 condition_clinicalstatus_code = CodeableConcept.construct()
                                 condition_clinicalstatus_code.coding = [
                                     {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
@@ -1896,11 +1879,13 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                                 if onset_age:
                                     conditions.append(Condition(
-                                        **{"id": condition_id, "identifier": [condition_identifier] ,"code": cc, "subject": patient_ref,
+                                        **{"id": condition_id, "identifier": [condition_identifier], "code": cc,
+                                           "subject": patient_ref,
                                            "clinicalStatus": condition_clinicalstatus_code, "onsetAge": onset_age}))
                                 else:
                                     conditions.append(Condition(
-                                        **{"id": condition_id, "identifier": [condition_identifier], "code": cc, "subject": patient_ref,
+                                        **{"id": condition_id, "identifier": [condition_identifier], "code": cc,
+                                           "subject": patient_ref,
                                            "clinicalStatus": condition_clinicalstatus_code}))
 
                     sample_parents_ref = []
@@ -1913,8 +1898,8 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                     **{"system": "https://www.cellosaurus.org/cell-line-primary-accession",
                                        "value": parent_cell["accession"]})
                                 parent_id = utils.mint_id(identifier=parent_identifier, resource_type="Specimen",
-                                                           project_id=project_id,
-                                                           namespace=NAMESPACE_CELLOSAURUS)
+                                                          project_id=project_id,
+                                                          namespace=NAMESPACE_CELLOSAURUS)
 
                                 parent_id_identifier = Identifier.construct()
                                 parent_id_identifier.value = parent_cell["accession"]
