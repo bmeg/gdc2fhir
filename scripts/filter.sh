@@ -2,9 +2,8 @@
 
 input_file=$1
 output_file=$2
-pattern="TCGA-RCA"
+pattern=$3
 
-# pattern="TCGA"
 # grep --invert-match "$pattern" "$input_file" > "$output_file"
 
 grep "$pattern" "$input_file" > "$output_file"

@@ -1018,6 +1018,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                             component_type='string')
                     sample_observation_components.append(c)
 
+                if "Observation.sample.updated_datetime" in sample.keys() and sample["Observation.sample.updated_datetime"]:
+                    c = utils.get_component('updated_datetime',
+                                            value=sample["Observation.sample.updated_datetime"],
+                                            component_type='dateTime')
+                    sample_observation_components.append(c)
+
                 sample_observation = None
                 if sample_observation_components:
                     sample_observation = copy.deepcopy(biospecimen_observation)
@@ -1095,6 +1101,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 c = utils.get_component('sample_type',
                                                         value=sample["Specimen.type.sample"],
                                                         component_type='string')
+                                portions_observation_components.append(c)
+
+                            if "Observation.portion.updated_datetime" in portion.keys() and portion[
+                                "Observation.portion.updated_datetime"]:
+                                c = utils.get_component('updated_datetime',
+                                                        value=portion["Observation.portion.updated_datetime"],
+                                                        component_type='dateTime')
                                 portions_observation_components.append(c)
 
                             portions_observation = None
@@ -1250,6 +1263,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                     value=analyte[
                                                                         "Observation.analyte.spectrophotometer_method"],
                                                                     component_type='string')
+                                            analyte_observation_components.append(c)
+
+                                        if "Observation.analyte.updated_datetime" in analyte.keys() and analyte[
+                                            "Observation.analyte.updated_datetime"]:
+                                            c = utils.get_component('updated_datetime',
+                                                                    value=analyte["Observation.analyte.updated_datetime"],
+                                                                    component_type='dateTime')
                                             analyte_observation_components.append(c)
 
                                         if "Specimen.type.sample" in sample.keys() and sample["Specimen.type.sample"]:
@@ -1415,6 +1435,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                     c = utils.get_component('sample_type',
                                                                             value=sample["Specimen.type.sample"],
                                                                             component_type='string')
+                                                    aliquot_observation_components.append(c)
+
+                                                if "Observation.aliquot.updated_datetime" in aliquot.keys() and aliquot[
+                                                    "Observation.aliquot.updated_datetime"]:
+                                                    c = utils.get_component('updated_datetime',
+                                                                            value=aliquot[
+                                                                                "Observation.aliquot.updated_datetime"],
+                                                                            component_type='dateTime')
                                                     aliquot_observation_components.append(c)
 
                                                 if "Observation.aliquot.selected_normal_wxs" in aliquot.keys() and isinstance(

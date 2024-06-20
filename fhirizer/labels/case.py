@@ -635,6 +635,15 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='samples.updated_datetime'
+        ),
+        destination=Destination(
+            name='Observation.sample.updated_datetime'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='samples.is_ffpe'
         ),
         destination=Destination(
@@ -675,6 +684,15 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Observation.portions.weight'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.updated_datetime'
+        ),
+        destination=Destination(
+            name='Observation.portion.updated_datetime'
         )
     ),
 
@@ -729,6 +747,15 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Observation.analyte.experimental_protocol_type'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.updated_datetime'
+        ),
+        destination=Destination(
+            name='Observation.analyte.updated_datetime'
         )
     ),
 
@@ -954,6 +981,15 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Observation.aliquot.no_matched_normal_wxs'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='samples.portions.analytes.aliquots.updated_datetime'
+        ),
+        destination=Destination(
+            name='Observation.aliquot.updated_datetime'
         )
     ),
 
