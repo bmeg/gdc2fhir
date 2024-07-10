@@ -7,8 +7,8 @@
 ![mapping](./imgs/fhir_flame.png)
 
 
-### Project overview: 
-Mapping GDC (Genomic Data Commons) schema or Cellosaurus cell-lines to FHIR (Fast Healthcare Interoperability Resources).
+### Project overview:
+Transforms and harmonizes data from Genomic Data Commons (GDC), Cellosaurus cell-lines, and International Cancer Genome Consortium (ICGC) repositories into 🔥 FHIR (Fast Healthcare Interoperability Resources) format.
 
 - #### GDC study simplified FHIR graph 
 ![mapping](./imgs/gdc_tcga_study_example_fhir_graph.png)
