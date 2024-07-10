@@ -40,8 +40,11 @@ biospecimen_observation = utils._read_json(str(Path(importlib.resources.files(
 # alcohol_obs = utils._read_json("resources/icgc/observations/alcohol.json")
 # NOTE: all url's are based on current site that will be-updated https://platform.icgc-argo.org/
 
-project_id = "ICGC"
-NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'icgc-argo.org')
+# project_id = "ICGC"
+# NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'icgc-argo.org')
+
+project_id = "cbds"
+NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'evotypes_labkey_demo')
 
 conditionoccurredFollowing = {
     "extension": [
@@ -913,8 +916,8 @@ def sample_id(row):
 
 
 def icgc2fhir(project_name, has_files):
-    project_name = "LUSC-KR"
-    has_files = True
+    # project_name = "ESCA-UK"
+    # has_files = True
     file_name = "score-manifest.tsv"
     file_table_name = "file-table.tsv"
 
