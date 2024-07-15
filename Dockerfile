@@ -7,3 +7,4 @@ WORKDIR /app
 RUN pip install .
 
 ENV PYTHONPATH="$PYTHONPATH:/app"
+ENTRYPOINT ["/bin/bash"]
