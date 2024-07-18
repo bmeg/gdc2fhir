@@ -7,6 +7,7 @@ setup(
     version=__version__,
     description="Mapping GDC's and Cellosaurus schema to FHIR schema.",
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     url='https://github.com/bmeg/fhirizer',
     author='https://ellrottlab.org/',
     packages=find_packages(),
