@@ -1625,6 +1625,7 @@ def case_gdc_to_fhir_ndjson(out_dir, cases_path):
 def assign_fhir_for_file(file):
     project_id = "GDC"
     NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'gdc.cancer.gov')
+    group = None
 
     document = DocumentReference.construct()
     document.status = "current"
@@ -2094,17 +2095,26 @@ def assign_fhir_for_file(file):
 
             docref_observations.append(docref_observation)
 
-    return {'files': document, 'observations': docref_observations}
+    return {'files': document, 'observations': docref_observations, 'group': group}
 
 
 def file_gdc_to_fhir_ndjson(out_dir, files_path):
     files = utils.load_ndjson(files_path)
-    all_fhir_file_obj = []
-    [all_fhir_file_obj.append(assign_fhir_for_file(f)['files']) for f in files]
-    doc_refs = [orjson.loads(fhir_file.json()) for fhir_file in all_fhir_file_obj]
 
     all_fhir_file_obs_obj = []
-    [all_fhir_file_obs_obj.append(assign_fhir_for_file(o)['observations']) for o in files if o]
+    all_fhir_file_obj = []
+    all_groups = []
+    for file in files:
+        obj = assign_fhir_for_file(file)
+        if obj['files']:
+            all_fhir_file_obj.append(obj['files'])
+        if obj['observations']:
+            all_fhir_file_obs_obj.append(obj['observations'])
+        if obj['group']:
+            all_groups.append(obj['group'])
+
+    doc_refs = [orjson.loads(fhir_file.json()) for fhir_file in all_fhir_file_obj]
+    groups = [orjson.loads(group.json()) for group in all_groups]
 
     observations_list = []
     for observations in all_fhir_file_obs_obj:
@@ -2122,6 +2132,10 @@ def file_gdc_to_fhir_ndjson(out_dir, files_path):
     if doc_refs:
         utils.fhir_ndjson(doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
         print("Successfully converted GDC file info to FHIR's DocumentReference ndjson file!")
+
+    if groups:
+        utils.fhir_ndjson(groups, "".join([out_dir, "Group.ndjson"]))
+        print("Successfully converted GDC file's patients info to FHIR's Group ndjson file!")
 
 
 # Cellosaurus ---------------------------------------------------------------
