@@ -50,17 +50,13 @@ Detailed step-by-step guide on FHIRizing data for a project's study can be found
 
     Example run for patient - replace path's to ndjson files or directories. 
  
-  ```
-  fhirizer convert --name case --in_path ./projects/<my-project>/cases.ndjson --out_path ./projects/<my-project>/cases_key.ndjson --verbose True
-  
+  ``` 
   fhirizer generate --name case --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/cases_key.ndjson
   ``` 
 
   - to generate document reference for the patients
   
-  ```
-  fhirizer convert --name file --in_path ./projects/<my-project>/files.ndjson --out_path ./projects/<my-project>/files_key.ndjson --verbose True
-  
+  ``` 
   fhirizer generate --name file --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/files_key.ndjson
   ``` 
 

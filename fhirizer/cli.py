@@ -150,18 +150,20 @@ def convert(name, in_path, out_path, verbose):
 @click.option('--icgc', help='Name of the ICGC project to FHIRize.')
 @click.option('--has_files', is_flag=True, help='Boolean indicating file metatda via new argo site is available @ '
                                                 'ICGC/{project}/data directory to FHIRize.')
-def generate(name, out_dir, entity_path, icgc, has_files):
+@click.option('--convert', is_flag=True, help='Boolean indicating to write converted keys to directory')
+@click.option('--verbose', is_flag=True)
+def generate(name, out_dir, entity_path, icgc, has_files, convert, verbose):
     name_list = ['project', 'case', 'file', 'cellosaurus', 'icgc']
     assert name in ['project', 'case', 'file', 'cellosaurus', 'icgc'], f'--name is not in {name_list}.'
     assert Path(out_dir).is_dir(), f"Path {out_dir} is not a valid directory path."
     assert Path(entity_path).is_file(), f"Path {entity_path} is not a valid file path."
 
     if name in 'project':
-        entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path)
+        entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path, convert=convert, verbose=verbose)
     if name in 'case':
-        entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, cases_path=entity_path)
+        entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, name=name, cases_path=entity_path, convert=convert, verbose=verbose)
     if name in 'file':
-        entity2fhir.file_gdc_to_fhir_ndjson(out_dir=out_dir, files_path=entity_path)
+        entity2fhir.file_gdc_to_fhir_ndjson(out_dir=out_dir, name=name, files_path=entity_path, convert=convert, verbose=verbose)
     if name in 'cellosaurus':
         entity2fhir.cellosaurus2fhir(out_dir=out_dir, path=entity_path)
     if name in 'icgc' and icgc:

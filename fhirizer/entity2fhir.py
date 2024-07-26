@@ -28,7 +28,7 @@ from fhir.resources.documentreference import DocumentReference, DocumentReferenc
     DocumentReferenceContentProfile
 from fhir.resources.attachment import Attachment
 from fhir.resources.age import Age
-from fhirizer import utils
+from fhirizer import utils, mapping
 from datetime import datetime
 import icd10
 import importlib.resources
@@ -215,8 +215,11 @@ def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specim
                     all_fhir_specimens.append(fhir_specimen)
 
 
-def project_gdc_to_fhir_ndjson(out_dir, projects_path):
-    projects = utils.load_ndjson(projects_path)
+def project_gdc_to_fhir_ndjson(out_dir, name, projects_path, convert, verbose):
+    # projects = utils.load_ndjson(projects_path)
+    out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
+    projects = mapping.convert_maps(in_path=projects_path, out_path=out_path, name=name, verbose=verbose)
+
     all_rs = [assign_fhir_for_project(project=p, disease_types=disease_types) for p in projects]
     research_study = [orjson.loads(rs['ResearchStudy_obj'].json()) for rs in all_rs]
     research_study_parent = [orjson.loads(rs['ResearchStudy.partOf_obj'].json()) for rs in all_rs]
@@ -1507,8 +1510,11 @@ def remove_duplicates(entities):
     return unique_entities
 
 
-def case_gdc_to_fhir_ndjson(out_dir, cases_path):
-    cases = utils.load_ndjson(cases_path)
+def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
+    # cases = utils.load_ndjson(cases_path)
+    out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
+    cases = mapping.convert_maps(in_path=cases_path, out_path=out_path, name=name, verbose=verbose)
+
     all_fhir_case_obj = []
     [all_fhir_case_obj.append(assign_fhir_for_case(c)) for c in cases]
 
@@ -2098,8 +2104,10 @@ def assign_fhir_for_file(file):
     return {'files': document, 'observations': docref_observations, 'group': group}
 
 
-def file_gdc_to_fhir_ndjson(out_dir, files_path):
-    files = utils.load_ndjson(files_path)
+def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose):
+    #  files = utils.load_ndjson(files_path)
+    out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
+    files = mapping.convert_maps(in_path=files_path, out_path=out_path, name=name, verbose=verbose)
 
     all_fhir_file_obs_obj = []
     all_fhir_file_obj = []
