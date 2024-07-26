@@ -1119,9 +1119,9 @@ def mint_id(identifier, resource_type, project_id, namespace) -> str:
     """Create a UUID from an identifier. - mint id via Walsh's convention
     https://github.com/ACED-IDP/g3t_etl/blob/d095895b0cf594c2fd32b400e6f7b4f9384853e2/g3t_etl/__init__.py#L61"""
 
-    if isinstance(identifier, tuple):  # Check if identifier is a tuple
+    if isinstance(identifier, Identifier): 
         assert resource_type, "resource_type is required for Identifier"
-        identifier = f"{resource_type}/{identifier[0]}|{identifier[1]}"
+        identifier = f"{resource_type}/{identifier.system}|{identifier.value}"
     return _mint_id(identifier, project_id, namespace)
 
 
