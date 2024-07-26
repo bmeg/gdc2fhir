@@ -1,6 +1,7 @@
 from fhirizer import utils, mapping, entity2fhir
 from fhirizer import icgc2fhir
 import click
+from pathlib import Path
 
 
 class NotRequiredIf(click.Option):
@@ -31,7 +32,7 @@ class NotRequiredIf(click.Option):
 
 @click.group()
 def cli():
-    """GDC or Cellosaurus to FHIR Key and Content Mapping"""
+    """GDC, Cellosaurus, ICGC to FHIR schema Key and Content Mapping"""
     pass
 
 
@@ -41,6 +42,8 @@ def cli():
               show_default=True,
               help='Path to available GDC field json files in this repo')
 def field_keys(input_path):
+    assert Path(input_path).is_file(), f"Path {input_path} is not a valid file path."
+
     case_fields = utils._read_json(input_path)
     print("reading from input_path: ", input_path)
     print("case fields: ", case_fields)
@@ -56,6 +59,8 @@ def field_keys(input_path):
               show_default=True,
               help='Path to GDC project json schema')
 def project_init(field_path, out_path):
+    assert Path(field_path).is_file(), f"Path {field_path} is not a valid file path."
+
     mapping.initialize_project(field_path, out_path)
 
 
@@ -69,6 +74,8 @@ def project_init(field_path, out_path):
               show_default=True,
               help='Path to GDC case json schema')
 def case_init(field_path, out_path):
+    assert Path(field_path).is_file(), f"Path {field_path} is not a valid file path."
+
     mapping.initialize_case(field_path, out_path)
 
 
@@ -82,6 +89,8 @@ def case_init(field_path, out_path):
               show_default=True,
               help='Path to GDC file json schema')
 def file_init(field_path, out_path):
+    assert Path(field_path).is_file(), f"Path {field_path} is not a valid file path."
+
     mapping.initialize_file(field_path, out_path)
 
 
@@ -97,6 +106,9 @@ def file_init(field_path, out_path):
               show_default=True,
               help='Directory path to save generated resources')
 def resource(name, path, out_dir):
+    assert Path(path).is_file(), f"Path {path} is not a valid file path."
+    assert Path(out_dir).is_dir(), f"Path {out_dir} is not a valid directory path."
+
     if name in 'cellosaurus':
         entity2fhir.cellosaurus_resource(path=path, out_dir=out_dir)
 
@@ -116,6 +128,10 @@ def resource(name, path, out_dir):
               default=False,
               show_default=True)
 def convert(name, in_path, out_path, verbose):
+    name_list = ['project', 'case', 'file', 'cellosaurus', 'icgc']
+    assert name in ['project', 'case', 'file', 'cellosaurus', 'icgc'], f'--name is not in {name_list}.'
+    assert Path(in_path).is_file(), f"Path {in_path} is not a valid file path."
+
     mapping.convert_maps(name=name, in_path=in_path, out_path=out_path, verbose=verbose)
 
 
@@ -135,6 +151,11 @@ def convert(name, in_path, out_path, verbose):
 @click.option('--has_files', is_flag=True, help='Boolean indicating file metatda via new argo site is available @ '
                                                 'ICGC/{project}/data directory to FHIRize.')
 def generate(name, out_dir, entity_path, icgc, has_files):
+    name_list = ['project', 'case', 'file', 'cellosaurus', 'icgc']
+    assert name in ['project', 'case', 'file', 'cellosaurus', 'icgc'], f'--name is not in {name_list}.'
+    assert Path(out_dir).is_dir(), f"Path {out_dir} is not a valid directory path."
+    assert Path(entity_path).is_file(), f"Path {entity_path} is not a valid file path."
+
     if name in 'project':
         entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path)
     if name in 'case':
