@@ -217,8 +217,9 @@ def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specim
 
 def project_gdc_to_fhir_ndjson(out_dir, name, projects_path, convert, verbose):
     # projects = utils.load_ndjson(projects_path)
-    out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
-    projects = mapping.convert_maps(in_path=projects_path, out_path=out_path, name=name, convert=convert ,verbose=verbose)
+    out_path = os.path.join(out_dir, os.pardir,"".join([name, "_keys.ndjson"])) if convert else None
+    projects = mapping.convert_maps(in_path=projects_path, out_path=out_path, name=name, convert=convert,
+                                    verbose=verbose)
 
     all_rs = [assign_fhir_for_project(project=p, disease_types=disease_types) for p in projects]
     research_study = [orjson.loads(rs['ResearchStudy_obj'].json()) for rs in all_rs]
@@ -1512,7 +1513,7 @@ def remove_duplicates(entities):
 
 def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
     # cases = utils.load_ndjson(cases_path)
-    out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
+    out_path = os.path.join(out_dir, os.pardir, "".join([name, "_keys.ndjson"])) if convert else None
     cases = mapping.convert_maps(in_path=cases_path, out_path=out_path, name=name, convert=convert, verbose=verbose)
 
     all_fhir_case_obj = []
@@ -1726,11 +1727,11 @@ def assign_fhir_for_file(file):
     else:
         members = [GroupMember(**{'entity': p}) for p in patients]
         group_id = utils.mint_id(identifier=document.identifier, resource_type="Group",
-                                                    project_id=project_id,
-                                                    namespace=NAMESPACE_GDC)
+                                 project_id=project_id,
+                                 namespace=NAMESPACE_GDC)
 
         group = Group(**{'id': group_id, "membership": 'definitional',
-                 'member': members, "type": "person"})
+                         'member': members, "type": "person"})
 
         document.subject = Reference(**{"reference": "/".join(["Group", group.id])})
 
@@ -1799,7 +1800,7 @@ def assign_fhir_for_file(file):
                 read_groups_submitter_id = Identifier(
                     **{"system": "".join(
                         ["https://gdc.cancer.gov/", "files.analysis.metadata.read_groups.submitter_id"]),
-                       "value": observation['Observation.DocumentReference.submitter_id']})
+                        "value": observation['Observation.DocumentReference.submitter_id']})
                 identifiers.append(orjson.loads(read_groups_submitter_id.json()))
 
             identifiers.append(orjson.loads(observation_identifier.json()))
@@ -2106,8 +2107,8 @@ def assign_fhir_for_file(file):
 
 def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose):
     #  files = utils.load_ndjson(files_path)
-    out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
-    files = mapping.convert_maps(in_path=files_path, out_path=out_path, name=name, convert=convert ,verbose=verbose)
+    out_path = os.path.join(out_dir, os.pardir,"".join([name, "_keys.ndjson"])) if convert else None
+    files = mapping.convert_maps(in_path=files_path, out_path=out_path, name=name, convert=convert, verbose=verbose)
 
     all_fhir_file_obs_obj = []
     all_fhir_file_obj = []
