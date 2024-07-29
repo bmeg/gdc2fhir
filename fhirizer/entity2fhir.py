@@ -218,7 +218,7 @@ def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specim
 def project_gdc_to_fhir_ndjson(out_dir, name, projects_path, convert, verbose):
     # projects = utils.load_ndjson(projects_path)
     out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
-    projects = mapping.convert_maps(in_path=projects_path, out_path=out_path, name=name, verbose=verbose)
+    projects = mapping.convert_maps(in_path=projects_path, out_path=out_path, name=name, convert=convert ,verbose=verbose)
 
     all_rs = [assign_fhir_for_project(project=p, disease_types=disease_types) for p in projects]
     research_study = [orjson.loads(rs['ResearchStudy_obj'].json()) for rs in all_rs]
@@ -1513,7 +1513,7 @@ def remove_duplicates(entities):
 def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
     # cases = utils.load_ndjson(cases_path)
     out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
-    cases = mapping.convert_maps(in_path=cases_path, out_path=out_path, name=name, verbose=verbose)
+    cases = mapping.convert_maps(in_path=cases_path, out_path=out_path, name=name, convert=convert, verbose=verbose)
 
     all_fhir_case_obj = []
     [all_fhir_case_obj.append(assign_fhir_for_case(c)) for c in cases]
@@ -2107,7 +2107,7 @@ def assign_fhir_for_file(file):
 def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose):
     #  files = utils.load_ndjson(files_path)
     out_path = os.path.join(out_dir, "".join([name, "_keys.ndjson"])) if convert else None
-    files = mapping.convert_maps(in_path=files_path, out_path=out_path, name=name, verbose=verbose)
+    files = mapping.convert_maps(in_path=files_path, out_path=out_path, name=name, convert=convert ,verbose=verbose)
 
     all_fhir_file_obs_obj = []
     all_fhir_file_obj = []
