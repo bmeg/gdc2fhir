@@ -1,1 +1,1 @@
-{"resourceType": "BodyStructure", "id": "20ea2fdd-6565-5ff6-8ee0-df7e86d67ba4", "includedStructure": [{"structure": {"coding": [{"system": "http://snomed.info/sct", "code": "76752008", "display": "Breast"}]}}], "patient": {"reference": "Patient/13c9dd8a-7ba8-5753-9fac-6a29ecd2ff42"}}
+{"resourceType": "BodyStructure", "id": "20ea2fdd-6565-5ff6-8ee0-df7e86d67ba4", "includedStructure": [{"structure": {"coding": [{"system": "http://snomed.info/sct", "code": "76752008", "display": "Breast"}]}}], "patient": {"reference": "Patient/ab22f607-1fbd-5468-b032-3a15175fc71a"}}

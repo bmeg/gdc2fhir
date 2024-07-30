@@ -1,12 +1,13 @@
 from setuptools import setup, find_packages
 
-__version__ = '2.0.0'
+__version__ = '2.0.1'
 
 setup(
     name='fhirizer',
     version=__version__,
     description="Mapping GDC's and Cellosaurus schema to FHIR schema.",
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     url='https://github.com/bmeg/fhirizer',
     author='https://ellrottlab.org/',
     packages=find_packages(),
