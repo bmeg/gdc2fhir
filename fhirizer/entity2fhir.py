@@ -2024,7 +2024,7 @@ def assign_fhir_for_file(file):
             if 'Observation.DocumentReference.to_trim_adapter_sequence' in observation.keys() and observation[
                 'Observation.DocumentReference.to_trim_adapter_sequence']:
                 obs_components.append(utils.get_component(key='to_trim_adapter_sequence', value=observation[
-                    'Observation.DocumentReference.to_trim_adapter_sequence'], component_type='string',
+                    'Observation.DocumentReference.to_trim_adapter_sequence'], component_type='bool',
                                                           system="https://cadsr.cancer.gov/files.analysis.metadata.read_groups"))
 
             if 'Observation.DocumentReference.updated_datetime' in observation.keys() and observation[
