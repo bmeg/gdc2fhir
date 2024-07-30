@@ -1637,6 +1637,7 @@ def assign_fhir_for_file(file):
     document = DocumentReference.construct()
     document.status = "current"
 
+    assert file['DocumentReference.id'], f"file['DocumentReference.id'] doesn't exist in object:  {file}"
     ident = Identifier(
         **{"system": "".join(["https://gdc.cancer.gov/", "file_id"]), "value": file['DocumentReference.id']})
 
