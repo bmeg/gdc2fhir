@@ -292,7 +292,7 @@ def add_some_maps(out_path=str(Path(importlib.resources.files('fhirizer').parent
     utils.validate_and_write(project_schema, out_path=out_path, update=True, generate=False)
 
 
-def convert_maps(in_path, out_path, name, verbose):
+def convert_maps(in_path, out_path, name, convert, verbose):
     """
     - load updated schema
     - load GDC bmeg script json file
@@ -335,7 +335,7 @@ def convert_maps(in_path, out_path, name, verbose):
 
         mapped_entity_list = [utils.map_data(e, available_maps, verbose=verbose)['mapped_data'] for e in entities]
 
-        if out_path:
+        if out_path and convert:
             with open(out_path, 'w') as file:
                 file.write('\n'.join(map(json.dumps, mapped_entity_list)))
                 print(f"Successfully created mappings and saved to {out_path}")

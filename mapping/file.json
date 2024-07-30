@@ -721,1616 +721,6 @@
         },
         {
             "source": {
-                "name": "version",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.version",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier.file_name",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "submitter_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.case_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Patient.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_category",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.data_category",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "platform",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.platform",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_type",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.type",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "version",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.version",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier.file_name",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "submitter_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.case_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Patient.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_category",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.data_category",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "platform",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.platform",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_type",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.type",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "version",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.version",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier.file_name",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "submitter_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.case_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Patient.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.samples.portions.analytes.aliquots.aliquot_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Specimen.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_format",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.content.profile",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_category",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.data_category",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "platform",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.platform",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_type",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.type",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "wgs_coverage",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.wgs_coverage",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "version",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.version",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier.file_name",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "submitter_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.case_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Patient.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.samples.portions.analytes.aliquots.aliquot_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Specimen.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_format",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.content.profile",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_category",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.data_category",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "platform",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.platform",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_type",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.type",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "wgs_coverage",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.wgs_coverage",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "version",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.version",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier.file_name",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "submitter_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.case_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Patient.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.samples.portions.analytes.aliquots.aliquot_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Specimen.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_format",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.content.profile",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Attachment.title",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "md5sum",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Attachment.hash",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_category",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.data_category",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "platform",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.platform",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_type",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.type",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "wgs_coverage",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.wgs_coverage",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "version",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.version",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier.file_name",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "submitter_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.Identifier",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.case_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Patient.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "cases.samples.portions.analytes.aliquots.aliquot_id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Specimen.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_format",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.content.profile",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_name",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Attachment.title",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "md5sum",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Attachment.hash",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "file_size",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "Attachment.size",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "id",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.id",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_category",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.data_category",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "platform",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.platform",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "data_type",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.type",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
-                "name": "experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "category": null,
-                "type": null,
-                "format": null,
-                "enums": null,
-                "content_annotation": null,
-                "reference": null
-            },
-            "destination": {
-                "name": "DocumentReference.category.experimental_strategy",
-                "description": null,
-                "description_url": null,
-                "module": null,
-                "title": null,
-                "type": null,
-                "format": null,
-                "reference": null
-            }
-        },
-        {
-            "source": {
                 "name": "wgs_coverage",
                 "description": null,
                 "description_url": null,
@@ -2573,6 +963,1087 @@
             },
             "destination": {
                 "name": "DocumentReference.date",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.adapter_name",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.adapter_name",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.adapter_sequence",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.adapter_sequence",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.base_caller_name",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.base_caller_name",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.base_caller_version",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.base_caller_version",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.created_datetime",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.created_datetime",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.experiment_name",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.experiment_name",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.flow_cell_barcode",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.flow_cell_barcode",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.includes_spike_ins",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.includes_spike_ins",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.instrument_model",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.instrument_model",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.is_paired_end",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.is_paired_end",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.library_name",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.library_name",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.library_preparation_kit_catalog_number",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.library_preparation_kit_catalog_number",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.library_preparation_kit_name",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.library_preparation_kit_name",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.library_preparation_kit_vendor",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.library_preparation_kit_vendor",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.library_preparation_kit_version",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.library_preparation_kit_version",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.library_selection",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.library_selection",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.library_strand",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.library_strand",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.library_strategy",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.library_strategy",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.platform",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.platform",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.read_group_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.read_group_id",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.read_group_name",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.read_group_name",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.read_length",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.read_length",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.RIN",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.RIN",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.sequencing_center",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.sequencing_center",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.sequencing_date",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.sequencing_date",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.size_selection_range",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.size_selection_range",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.spike_ins_concentration",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.spike_ins_concentration",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.spike_ins_fasta",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.spike_ins_fasta",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.state",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.state",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.submitter_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.submitter_id",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.target_capture_kit_catalog_number",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.target_capture_kit_catalog_number",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.target_capture_kit_name",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.target_capture_kit_name",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.target_capture_kit_target_region",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.target_capture_kit_target_region",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.target_capture_kit_vendor",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.target_capture_kit_vendor",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.target_capture_kit_version",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.target_capture_kit_version",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.to_trim_adapter_sequence",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.to_trim_adapter_sequence",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.updated_datetime",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.updated_datetime",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.days_to_sequencing",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.days_to_sequencing",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.single_cell_library",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.single_cell_library",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.multiplex_barcode",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.multiplex_barcode",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.target_capture_kit",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.target_capture_kit",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.lane_number",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.lane_number",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.fragment_standard_deviation_length",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.fragment_standard_deviation_length",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.fragment_minimum_length",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.fragment_minimum_length",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.number_expect_cells",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.number_expect_cells",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.fragment_mean_length",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.fragment_mean_length",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "analysis.metadata.read_groups.fragment_maximum_length",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.DocumentReference.fragment_maximum_length",
                 "description": null,
                 "description_url": null,
                 "module": null,

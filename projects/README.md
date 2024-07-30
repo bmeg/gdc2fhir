@@ -9,31 +9,22 @@ Valid data input consists of ndjson files fetched via [GDC API query](https://do
 an example script can be found here: https://github.com/bmeg/bmeg-etl/blob/develop/transform/gdc/gdc-scan.py 
 
 A complete and unfiltered query of both `case` and `file` endpoints will contain the minimum viable information necessary for a comprehensive downstream analysis, including relational associations to `project` and `program` for each patient. Therefore, converting these two entities in separate steps will enable users to parse GDC data into FHIR semantic format effectively.
-Below is an example of the data-schema conversion and generation flow for a single GDC study:
+Below is an example of the data-schema transformation and validation work-flow for a single GDC study:
 
 1. User input to fhirizer client: 
    - ./projects/GDC/TCGA-STUDY/cases.ndjson
    - ./projects/GDC/TCGA-STUDY/files.ndjson
-2. Convertion of projects' study data.
-   - Case
-    ``` 
-   fhirizer convert --name case --in_path ./projects/GDC/<my-study>/cases.ndjson --out_path ./projects/<my-study>/cases_key.ndjson 
-   ```
-   - File
-    ``` 
-   fhirizer convert --name file --in_path ./projects/GDC/<my-study>/files.ndjson --out_path ./projects/<my-study>/files_key.ndjson 
-   ```
    
-3. Generation of FHIR ndjson output stored in META folders.
+2. Generation of FHIR ndjson output stored in META folders.
    - Case
     ``` 
-     fhirizer generate --name case --out_dir ./projects/GDC/<my-project>/META --entity_path ./projects/<my-project>/cases_key.ndjson
+     fhirizer generate --name case --out_dir ./projects/GDC/<my-project>/META --entity_path ./projects/<my-project>/cases.ndjson
    ```
    - File
     ``` 
-     fhirizer generate --name file --out_dir ./projects/GDC/<my-project>/META --entity_path ./projects/<my-project>/files_key.ndjson
+     fhirizer generate --name file --out_dir ./projects/GDC/<my-project>/META --entity_path ./projects/<my-project>/files.ndjson
    ```
-4. Validate output:
+3. Validate output:
     
     To validate the output data generated via fhirizer, you can run the following command provided by [g3t_etl](https://github.com/ACED-IDP/g3t_etl) in your study's directory:
     ```
