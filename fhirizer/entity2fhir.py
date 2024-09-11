@@ -179,7 +179,7 @@ def create_imaging_study(slide, patient, sample):
     img.id = utils.mint_id(identifier=img_identifier, resource_type="ImagingStudy",
                            project_id=project_id,
                            namespace=NAMESPACE_GDC)
-
+    img.identifier = [img_identifier]
     img.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
 
     img_series = ImagingStudySeries.construct()
@@ -217,7 +217,7 @@ def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specim
 
 def project_gdc_to_fhir_ndjson(out_dir, name, projects_path, convert, verbose):
     # projects = utils.load_ndjson(projects_path)
-    out_path = os.path.join(out_dir, os.pardir,"".join([name, "_keys.ndjson"])) if convert else None
+    out_path = os.path.join(out_dir, os.pardir, "".join([name, "_keys.ndjson"])) if convert else None
     projects = mapping.convert_maps(in_path=projects_path, out_path=out_path, name=name, convert=convert,
                                     verbose=verbose)
 
@@ -408,6 +408,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         encounter = Encounter.construct()
         encounter.status = 'completed'
+        encounter_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "tissue_source_site"]),
+                                             "value": case['tissue_source_site']['Encounter.id']})
 
         encounter.id = utils.mint_id(
             identifier=Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "tissue_source_site"]),
@@ -415,7 +417,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             resource_type="Encounter",
             project_id=project_id,
             namespace=NAMESPACE_GDC)
-
+        encounter.identifier = [encounter_identifier]
         encounter.subject = subject_ref
         encounter_ref = Reference(**{"reference": "/".join(["Encounter", encounter.id])})
 
@@ -635,7 +637,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         if 'Condition.identifier' in case.keys() and case['Condition.identifier']:
             condition.identifier = [Identifier(**{"value": case['Condition.identifier'][0], "system": "".join(
-                ["https://gdc.cancer.gov/", "submitter_diagnosis_ids"])})]
+                ["https://gdc.cancer.gov/", "submitter_diagnosis_id"])})]
 
         if gdc_condition_annotation:
             cc = CodeableConcept.construct()
@@ -689,6 +691,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             **{"id": utils.mint_id(identifier=[patient_id_identifier, body_struct_ident], resource_type="BodyStructure",
                                    project_id=project_id,
                                    namespace=NAMESPACE_GDC),
+               "identifier": [patient_id_identifier, body_struct_ident],
                "includedStructure": [BodyStructureIncludedStructure(**{"structure": {"coding": bd_coding}})],
                "patient": subject_ref
                })
@@ -803,6 +806,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     med_identifier = Identifier(
                         **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
                            "value": treatment['MedicationAdministration.id']})
+                    med.identifier = [med_identifier]
                     med.id = utils.mint_id(identifier=med_identifier, resource_type="Medication",
                                            project_id=project_id,
                                            namespace=NAMESPACE_GDC)
@@ -841,6 +845,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             status = "unknown"
 
                     medadmin_category_code = None
+                    med_admin_identifier = Identifier(
+                        **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
+                           "value": treatment['MedicationAdministration.id']})
                     if 'MedicationAdministration.treatment_type' in treatment.keys() and treatment[
                         'MedicationAdministration.treatment_type']:
                         medadmin_category_code = CodeableConcept.construct()
@@ -855,19 +862,19 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 # placeholder - required fhir field is not required in GDC
                                 "medication": med_cr,
                                 "subject": Reference(**{"reference": "/".join(["Patient", patient.id])}),
-                                "id": treatment['MedicationAdministration.id']}
+                                "id": treatment['MedicationAdministration.id'],
+                                "identifier": [med_admin_identifier]}
                     else:
                         data = {"status": status,
                                 "occurenceDateTime": "2019-07-31T21:32:54.724446-05:00",
                                 # placeholder - required fhir field is not required in GDC
                                 "medication": med_cr,
                                 "subject": Reference(**{"reference": "/".join(["Patient", patient.id])}),
-                                "id": utils.mint_id(identifier=Identifier(
-                                    **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
-                                       "value": treatment['MedicationAdministration.id']}),
+                                "id": utils.mint_id(identifier=med_admin_identifier,
                                     resource_type="MedicationAdministration",
                                     project_id=project_id,
-                                    namespace=NAMESPACE_GDC)}
+                                    namespace=NAMESPACE_GDC),
+                                "identifier": [med_admin_identifier]}
 
                     med_admin = MedicationAdministration(**data)
                     treatments_medadmin.append(med_admin)
@@ -978,7 +985,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 procedure.id = utils.mint_id(identifier=specimen_identifier, resource_type="Procedure",
                                              project_id=project_id,
                                              namespace=NAMESPACE_GDC)
-
+                procedure.identifier = [specimen_identifier]
                 procedure.status = "completed"
                 procedure.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
                 if encounter:
@@ -1731,7 +1738,7 @@ def assign_fhir_for_file(file):
                                  project_id=project_id,
                                  namespace=NAMESPACE_GDC)
 
-        group = Group(**{'id': group_id, "membership": 'definitional',
+        group = Group(**{'id': group_id, "identifier": document.identifier, "membership": 'definitional',
                          'member': members, "type": "person"})
 
         document.subject = Reference(**{"reference": "/".join(["Group", group.id])})
@@ -2108,7 +2115,7 @@ def assign_fhir_for_file(file):
 
 def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose):
     #  files = utils.load_ndjson(files_path)
-    out_path = os.path.join(out_dir, os.pardir,"".join([name, "_keys.ndjson"])) if convert else None
+    out_path = os.path.join(out_dir, os.pardir, "".join([name, "_keys.ndjson"])) if convert else None
     files = mapping.convert_maps(in_path=files_path, out_path=out_path, name=name, convert=convert, verbose=verbose)
 
     all_fhir_file_obs_obj = []
