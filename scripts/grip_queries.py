@@ -67,3 +67,6 @@ primary_diagnosis_df = pd.DataFrame(primary_diagnosis)
 # Patient primary site
 primary_site = G.query().V().hasLabel("Patient").as_("patient").out("body_structure").unwind("$.includedStructure").unwind("$.includedStructure.structure.coding").pivot("$patient._gid", "$.includedStructure.structure.coding.system", "$.includedStructure.structure.coding.display").execute()
 primary_site_df = pd.DataFrame(primary_site)
+
+# Patient cancer stage TODO: seperate each type
+stage = G.query().V().hasLabel("Patient").as_("patient").out("condition").unwind("$.stage").unwind("$.stage.summary.coding").pivot("$patient._gid", "$.stage.summary.coding.system", "$.stage.summary.coding.display").execute()
