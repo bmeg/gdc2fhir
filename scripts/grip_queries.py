@@ -96,7 +96,7 @@ file_out_edges = edge_set(graph=G.query().V().hasLabel("DocumentReference"), dir
 file_in_edges = edge_set(graph=G.query().V().hasLabel("DocumentReference"), direction="in")
 
 # seperate value[x] boolean, string, integer, quantity, dateTime file observation components
-# in this case the df complement each-other. overlap will fill columns that are missing all cells if value[x] exists 
+# in this case the df complement each-other. overlap will fill columns that are missing all cells if value[x] exists
 file_component_valuestring = G.query().V().hasLabel("DocumentReference").as_("document").in_("focus_DocumentReference").unwind("$.component").unwind("$.component.code.coding").pivot("$document._gid", "$.component.code.coding.code", "$.component.valueString").execute()
 file_component_valuequantity = G.query().V().hasLabel("DocumentReference").as_("document").in_("focus_DocumentReference").unwind("$.component").unwind("$.component.code.coding").pivot("$document._gid", "$.component.code.coding.code", "$.component.valueQuantity").execute()
 # file_component_valueinteger = G.query().V().hasLabel("DocumentReference").as_("document").in_("focus_DocumentReference").unwind("$.component").unwind("$.component.code.coding").pivot("$document._gid", "$.component.code.coding.code", "$.component.valueInteger").execute()
