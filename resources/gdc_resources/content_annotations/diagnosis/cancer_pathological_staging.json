@@ -7,8 +7,9 @@
         "annotation_url": "",
         "cde_id": "",
         "sctid": "1222605001",
-        "stage_type_display": "",
-        "stage_type_cde_id": "",
+        "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -20,7 +21,8 @@
         "cde_id": "C27964",
         "sctid": "1222721004",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -32,7 +34,8 @@
         "cde_id": "C27965",
         "sctid": "1222722006",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -44,7 +47,8 @@
         "cde_id": "C27966",
         "sctid": "1222723001",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -56,7 +60,8 @@
         "cde_id": "C96245",
         "sctid": "1222724007",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -68,7 +73,8 @@
         "cde_id": "C27983",
         "sctid": "1222725008",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -80,7 +86,8 @@
         "cde_id": "C27984",
         "sctid": "1222726009",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -91,8 +98,9 @@
         "annotation_url": "",
         "cde_id": "",
         "sctid": "1222727000",
-        "stage_type_display": "",
-        "stage_type_cde_id": "",
+        "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -104,7 +112,8 @@
         "cde_id": "C27976",
         "sctid": "1222728005",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -116,7 +125,8 @@
         "cde_id": "C28052",
         "sctid": "1222729002",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -128,7 +138,8 @@
         "cde_id": "C28053",
         "sctid": "1222730007",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -140,7 +151,8 @@
         "cde_id": "C27981",
         "sctid": "1222731006",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -152,7 +164,8 @@
         "cde_id": "C28054",
         "sctid": "1222765007",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -176,7 +189,8 @@
         "cde_id": "C95177",
         "sctid": "1222767004",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -188,7 +202,8 @@
         "cde_id": "C95178",
         "sctid": "1222768009",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -200,7 +215,8 @@
         "cde_id": "C27968",
         "sctid": "1222769001",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -212,7 +228,8 @@
         "cde_id": "C27969",
         "sctid": "1222770000",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -224,7 +241,8 @@
         "cde_id": "C27970",
         "sctid": "1222801008",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -236,7 +254,8 @@
         "cde_id": "C27977",
         "sctid": "1222802001",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -247,8 +266,9 @@
         "annotation_url": "",
         "cde_id": "",
         "sctid": "1222803006",
-        "stage_type_display": "",
-        "stage_type_cde_id": "",
+        "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -259,8 +279,9 @@
         "annotation_url": "",
         "cde_id": "",
         "sctid": "1222804000",
-        "stage_type_display": "",
-        "stage_type_cde_id": "",
+        "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -272,7 +293,8 @@
         "cde_id": "C27978",
         "sctid": "1222805004",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -284,7 +306,8 @@
         "cde_id": "C27982",
         "sctid": "1222806003",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -296,7 +319,8 @@
         "cde_id": "C95179",
         "sctid": "1222807007",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -308,7 +332,8 @@
         "cde_id": "C95180",
         "sctid": "1222809005",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -320,7 +345,8 @@
         "cde_id": "C137676",
         "sctid": "1222811001",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -332,7 +358,8 @@
         "cde_id": "C28285",
         "sctid": "1222733009",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -344,7 +371,8 @@
         "cde_id": "C27971",
         "sctid": "1222837003",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -356,7 +384,8 @@
         "cde_id": "C27979",
         "sctid": "1222838008",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -368,7 +397,8 @@
         "cde_id": "C27980",
         "sctid": "1222841004",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -380,19 +410,8 @@
         "cde_id": "C28055",
         "sctid": "1222842006",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
-        "stage_type_sctid": "1222593009"
-    },
-    {
-        "value": "Stage Tis",
-        "description": "A term that refers to a TNM finding of a primary tumor microscopically defined as carcinoma in situ.",
-        "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C48738",
-        "annotation_type": "NCIt",
-        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C48738",
-        "cde_id": "C48738",
-        "sctid": "1228953005",
-        "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -404,7 +423,8 @@
         "cde_id": "C95957",
         "sctid": "1228950008",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -416,7 +436,8 @@
         "cde_id": "C17998",
         "sctid": "261665006",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
     },
     {
@@ -426,10 +447,24 @@
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234",
         "cde_id": "C43234",
-        "sctid": "277206009",
+        "sctid": "261665006",
         "stage_type_display": "Neoplasm Disease Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203222,
+        "stage_type_cde_id": "3203222",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological stage group allowable value",
         "stage_type_sctid": "1222593009"
+    },
+    {
+        "value": "Stage Tis",
+        "description": "A term that refers to a TNM finding of a primary tumor microscopically defined as carcinoma in situ.",
+        "description_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C48738",
+        "annotation_type": "NCIt",
+        "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C48738",
+        "cde_id": "C48738",
+        "sctid": "1228953005",
+        "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T0",
@@ -440,7 +475,8 @@
         "cde_id": "C48719",
         "sctid": "1228951007",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
         "stage_type_sctid": "1222589003"
     },
     {
@@ -452,8 +488,9 @@
         "cde_id": "C48720",
         "sctid": "1228957006",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1a",
@@ -464,8 +501,9 @@
         "cde_id": "C48721",
         "sctid": "1228959009",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1a1",
@@ -476,8 +514,9 @@
         "cde_id": "C139711",
         "sctid": "1228960004",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1a2",
@@ -488,8 +527,9 @@
         "cde_id": "C139712",
         "sctid": "1228961000",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1b",
@@ -500,8 +540,9 @@
         "cde_id": "C48722",
         "sctid": "1228962007",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1b1",
@@ -512,8 +553,9 @@
         "cde_id": "C139714",
         "sctid": "1229844006",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1b2",
@@ -524,8 +566,9 @@
         "cde_id": "C139715",
         "sctid": "1229845007",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1c",
@@ -536,8 +579,9 @@
         "cde_id": "C48723",
         "sctid": "1229846008",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1c2",
@@ -547,9 +591,10 @@
         "annotation_url": "",
         "cde_id": "",
         "sctid": "1229849001",
-        "stage_type_display": "",
-        "stage_type_cde_id": "",
-        "stage_type_sctid": "1222593009"
+        "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T1mi",
@@ -560,8 +605,9 @@
         "cde_id": "C95805",
         "sctid": "1228958001",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T2",
@@ -572,8 +618,9 @@
         "cde_id": "C48724",
         "sctid": "1229852009",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T2a",
@@ -584,8 +631,9 @@
         "cde_id": "C48725",
         "sctid": "1229853004",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T2a1",
@@ -596,8 +644,9 @@
         "cde_id": "C139718",
         "sctid": "1229854005",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T2a2",
@@ -608,8 +657,9 @@
         "cde_id": "C139719",
         "sctid": "1229855006",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T2b",
@@ -620,8 +670,9 @@
         "cde_id": "C48726",
         "sctid": "1229856007",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T2c",
@@ -632,8 +683,9 @@
         "cde_id": "C48727",
         "sctid": "1229857003",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T2d",
@@ -644,8 +696,9 @@
         "cde_id": "C148411",
         "sctid": "78873005",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T3",
@@ -656,8 +709,9 @@
         "cde_id": "C48728",
         "sctid": "1229859000",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T3a",
@@ -668,8 +722,9 @@
         "cde_id": "C48729",
         "sctid": "1229860005",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T3b",
@@ -680,8 +735,9 @@
         "cde_id": "C48730",
         "sctid": "1229861009",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T3c",
@@ -692,8 +748,9 @@
         "cde_id": "C48731",
         "sctid": "1229862002",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T3d",
@@ -704,8 +761,9 @@
         "cde_id": "C148412",
         "sctid": "1229863007",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T4",
@@ -716,8 +774,9 @@
         "cde_id": "C48732",
         "sctid": "1229864001",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T4a",
@@ -728,8 +787,9 @@
         "cde_id": "C48733",
         "sctid": "1229865000",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T4b",
@@ -740,8 +800,9 @@
         "cde_id": "C48734",
         "sctid": "1229866004",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T4c",
@@ -752,8 +813,9 @@
         "cde_id": "C48735",
         "sctid": "1229867008",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T4d",
@@ -764,8 +826,9 @@
         "cde_id": "C48736",
         "sctid": "1229868003",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "T4e",
@@ -776,8 +839,9 @@
         "cde_id": "C140651",
         "sctid": "1229869006",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "Ta",
@@ -788,8 +852,9 @@
         "cde_id": "C96025",
         "sctid": "1228952000",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "Tis",
@@ -800,8 +865,9 @@
         "cde_id": "C48738",
         "sctid": "1228953005",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "Tis (DCIS)",
@@ -812,8 +878,9 @@
         "cde_id": "C139414",
         "sctid": "1228954004",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "Tis (LCIS)",
@@ -824,8 +891,9 @@
         "cde_id": "C48976",
         "sctid": "1228955003",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "Tis (Paget's)",
@@ -836,8 +904,9 @@
         "cde_id": "C47858",
         "sctid": "1228956002",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "TX",
@@ -848,8 +917,9 @@
         "cde_id": "C48737",
         "sctid": "1228950008",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "Unknown",
@@ -860,8 +930,9 @@
         "cde_id": "C17998",
         "sctid": "261665006",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "Not Reported",
@@ -870,10 +941,11 @@
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234",
         "cde_id": "C43234",
-        "sctid": "277206009",
+        "sctid": "261665006",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "Not Allowed To Collect",
@@ -882,10 +954,11 @@
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C141478",
         "cde_id": "C141478",
-        "sctid": "78873005",
+        "sctid": "261665006",
         "stage_type_display": "American Joint Committee on Cancer Tumor Stage Code",
-        "stage_type_cde_id": 3045435,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045435",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological T category allowable value",
+        "stage_type_sctid": "1222589003"
     },
     {
         "value": "N0",
@@ -896,8 +969,9 @@
         "cde_id": "C48705",
         "sctid": "1229947003",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N0 (i+)",
@@ -908,8 +982,9 @@
         "cde_id": "C95922",
         "sctid": "1229949000",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N0 (i-)",
@@ -918,10 +993,11 @@
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C95922",
         "cde_id": "C95922",
-        "sctid": "277206009",
+        "sctid": "1229947003",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N0 (mol+)",
@@ -932,8 +1008,9 @@
         "cde_id": "C95925",
         "sctid": "1229950000",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N0 (mol-)",
@@ -942,10 +1019,11 @@
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C95925",
         "cde_id": "C95925",
-        "sctid": "277206009",
+        "sctid": "1229947003",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1",
@@ -956,8 +1034,9 @@
         "cde_id": "C48706",
         "sctid": "1229951001",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1a",
@@ -968,8 +1047,9 @@
         "cde_id": "C48707",
         "sctid": "1229954009",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1b",
@@ -980,8 +1060,9 @@
         "cde_id": "C48708",
         "sctid": "1229955005",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1bI",
@@ -992,8 +1073,9 @@
         "cde_id": "C95929",
         "sctid": "1229955005",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1bII",
@@ -1004,8 +1086,9 @@
         "cde_id": "C95935",
         "sctid": "1229955005",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1bIII",
@@ -1016,8 +1099,9 @@
         "cde_id": "C95936",
         "sctid": "1229955005",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1bIV",
@@ -1028,8 +1112,9 @@
         "cde_id": "C95937",
         "sctid": "1229955005",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1c",
@@ -1040,8 +1125,9 @@
         "cde_id": "C48709",
         "sctid": "1229956006",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N1mi",
@@ -1052,8 +1138,9 @@
         "cde_id": "C95955",
         "sctid": "1229952008",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N2",
@@ -1064,8 +1151,9 @@
         "cde_id": "C48786",
         "sctid": "1229957002",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N2a",
@@ -1076,8 +1164,9 @@
         "cde_id": "C48711",
         "sctid": "1229959004",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N2b",
@@ -1088,8 +1177,9 @@
         "cde_id": "C48712",
         "sctid": "1229960009",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N2c",
@@ -1100,8 +1190,9 @@
         "cde_id": "C48713",
         "sctid": "1229961008",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N2mi",
@@ -1111,9 +1202,10 @@
         "annotation_url": "",
         "cde_id": "",
         "sctid": "1229958007",
-        "stage_type_display": "",
-        "stage_type_cde_id": "",
-        "stage_type_sctid": "1222593009"
+        "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N3",
@@ -1124,8 +1216,9 @@
         "cde_id": "C48714",
         "sctid": "1229962001",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N3a",
@@ -1136,8 +1229,9 @@
         "cde_id": "C48715",
         "sctid": "1229963006",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N3b",
@@ -1148,8 +1242,9 @@
         "cde_id": "C48716",
         "sctid": "1229964000",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N3c",
@@ -1160,8 +1255,9 @@
         "cde_id": "C48717",
         "sctid": "1229965004",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "N4",
@@ -1172,8 +1268,9 @@
         "cde_id": "C96026",
         "sctid": "277206009",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "NX",
@@ -1184,8 +1281,9 @@
         "cde_id": "C48718",
         "sctid": "1229945006",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "Unknown",
@@ -1196,8 +1294,9 @@
         "cde_id": "C17998",
         "sctid": "261665006",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "Not Reported",
@@ -1206,10 +1305,11 @@
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C43234",
         "cde_id": "C43234",
-        "sctid": "277206009",
+        "sctid": "261665006",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "Not Allowed To Collect",
@@ -1218,10 +1318,11 @@
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C141478",
         "cde_id": "C141478",
-        "sctid": "78873005",
+        "sctid": "261665006",
         "stage_type_display": "Neoplasm Disease Lymph Node Stage American Joint Committee on Cancer Code",
-        "stage_type_cde_id": 3203106,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3203106",
+        "stage_type_sctid_display": "American Joint Committee on Cancer pathological N category allowable value",
+        "stage_type_sctid": "1222590007"
     },
     {
         "value": "cM0 (i+)",
@@ -1232,8 +1333,9 @@
         "cde_id": "C95956",
         "sctid": "1222591006",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "M0",
@@ -1244,8 +1346,9 @@
         "cde_id": "C48699",
         "sctid": "1222591006",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "M1",
@@ -1256,8 +1359,9 @@
         "cde_id": "C48700",
         "sctid": "1229916009",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "M1a",
@@ -1268,8 +1372,9 @@
         "cde_id": "C48701",
         "sctid": "1229917000",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "M1b",
@@ -1280,8 +1385,9 @@
         "cde_id": "C48702",
         "sctid": "1229920008",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "M1c",
@@ -1292,8 +1398,9 @@
         "cde_id": "C48703",
         "sctid": "1229923005",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "M1d",
@@ -1303,9 +1410,10 @@
         "annotation_url": "",
         "cde_id": "",
         "sctid": "1229926002",
-        "stage_type_display": "",
-        "stage_type_cde_id": "",
-        "stage_type_sctid": "1222593009"
+        "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "M2",
@@ -1315,9 +1423,10 @@
         "annotation_url": "",
         "cde_id": "",
         "sctid": "1222591006",
-        "stage_type_display": "",
-        "stage_type_cde_id": "",
-        "stage_type_sctid": "1222593009"
+        "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "MX",
@@ -1328,8 +1437,9 @@
         "cde_id": "C48704",
         "sctid": "1222591006",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "Unknown",
@@ -1340,8 +1450,9 @@
         "cde_id": "C17998",
         "sctid": "261665006",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "Not Reported",
@@ -1352,8 +1463,9 @@
         "cde_id": "C43234",
         "sctid": "261665006",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     },
     {
         "value": "Not Allowed To Collect",
@@ -1362,9 +1474,10 @@
         "annotation_type": "NCIt",
         "annotation_url": "https://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&ns=ncit&code=C141478",
         "cde_id": "C141478",
-        "sctid": "78873005",
+        "sctid": "261665006",
         "stage_type_display": "American Joint Committee on Cancer Metastasis Stage Code",
-        "stage_type_cde_id": 3045439,
-        "stage_type_sctid": "1222593009"
+        "stage_type_cde_id": "3045439",
+        "stage_type_sctid_display": "American Joint Committee on Cancer clinical M category allowable value",
+        "stage_type_sctid": "1222587001"
     }
 ]
