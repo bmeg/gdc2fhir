@@ -718,6 +718,53 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             sctid_code = dict_item['sctid']
                             stage_type_sctid_code = dict_item['stage_type_sctid']
 
+                            stage_obs = Observation(**{
+                                "id": "1234",
+                                "identifier": [Identifier(**{"system": "https://cadsr.cancer.gov/", "value": "1234"})],
+                                "status": "final",
+                                "category": [
+                                    {
+                                        "coding": [
+                                            {
+                                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                                "code": "laboratory",
+                                                "display": "Laboratory"
+                                            }
+                                        ],
+                                        "text": "Laboratory"
+                                    }
+                                ],
+                                "code": {
+                                    "coding": [
+                                        {
+                                            "system": "http://snomed.info/sct",
+                                            "code": dict_item['stage_type_sctid'],
+                                            "display": dict_item['stage_type_display']
+                                        }
+                                    ]
+                                },
+                                "subject": {
+                                    "reference": f"Patient/{patient.id}"
+                                },
+                                "focus": [
+                                    {
+                                        "reference": f"Condition/{condition.id}"
+                                    }
+                                ],
+                                "valueCodeableConcept": {
+                                    "coding": [
+                                        {
+                                            "system": "http://snomed.info/sct",
+                                            "code": dict_item['sctid'],
+                                            "display": dict_item['sctid_display']
+                                        }
+                                    ],
+                                    "text": dict_item['value']
+                                }
+                            })
+
+                            # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
+
                     cc_stage_type = CodeableConcept.construct()
                     cc_stage_type.coding = [{'system': "https://cadsr.cancer.gov/",
                                              'display': case['diagnoses'][key],
@@ -738,7 +785,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         with open('output.log', 'a') as f:
                             f.write(log_output_diag)
 
-                    # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
                     if case_stage_display and case_stage_display in \
                             data_dict['clinical']['diagnosis']['properties'][staging_name]['enumDef'].keys():
                         code = \
