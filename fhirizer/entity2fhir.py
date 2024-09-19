@@ -425,6 +425,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     observation_ref = None
     gdc_condition_annotation = None
     condition_codes_list = []
+    staging_observations = []
     if 'diagnoses' in case.keys() and isinstance(case['diagnoses'], list):
         case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
 
@@ -701,14 +702,47 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         condition.bodySite = [cc_body_site]
         diagnosis_content_bool = False
         if 'diagnoses' in case.keys():
-            # condition staging
-            # staging grouping for observation.code https://build.fhir.org/ig/HL7/fhir-mCODE-ig/ValueSet-mcode-tnm-stage-group-staging-type-vs.html
+            # condition and observation staging
+            #  grouping for observation.code https://build.fhir.org/ig/HL7/fhir-mCODE-ig/ValueSet-mcode-tnm-stage-group-staging-type-vs.html
+            # https://build.fhir.org/ig/hl7-eu/pcsp/StructureDefinition-mcode-cancer-stage-group.html
             staging_list = []
+            parent_stage_observation = Observation(**{
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "laboratory",
+                                "display": "Laboratory"
+                            }
+                        ],
+                        "text": "Laboratory"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "1222593009",
+                            "display": "American Joint Committee on Cancer pathological stage group allowable value"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": f"Patient/{patient.id}"
+                },
+                "focus": [
+                    {
+                        "reference": f"Condition/{condition.id}"
+                    }
+                ]
+            })
+
             # print("case['diagnoses']", case['diagnoses'])
             for key, value in case['diagnoses'].items():
                 if 'Condition.stage_' in key and value:
                     case_stage_display = value
-                    # print("case_stage_display", case_stage_display)
                     staging_name = key.replace('Condition.stage_', '')
 
                     sctid_code = "0000"
@@ -718,40 +752,18 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             sctid_code = dict_item['sctid']
                             stage_type_sctid_code = dict_item['stage_type_sctid']
 
-                            stage_obs = Observation(**{
-                                "id": "1234",
-                                "identifier": [Identifier(**{"system": "https://cadsr.cancer.gov/", "value": "1234"})],
-                                "status": "final",
-                                "category": [
-                                    {
-                                        "coding": [
-                                            {
-                                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                                "code": "laboratory",
-                                                "display": "Laboratory"
-                                            }
-                                        ],
-                                        "text": "Laboratory"
-                                    }
-                                ],
-                                "code": {
-                                    "coding": [
-                                        {
-                                            "system": "http://snomed.info/sct",
-                                            "code": dict_item['stage_type_sctid'],
-                                            "display": dict_item['stage_type_display']
-                                        }
-                                    ]
-                                },
-                                "subject": {
-                                    "reference": f"Patient/{patient.id}"
-                                },
-                                "focus": [
-                                    {
-                                        "reference": f"Condition/{condition.id}"
-                                    }
-                                ],
-                                "valueCodeableConcept": {
+                            if staging_name in "ajcc_pathologic_stage":
+
+                                stage_parent_obs_identifier = Identifier(
+                                    **{"system": "".join(["https://gdc.cancer.gov/", "ajcc_pathologic_stage"]),
+                                       "value": f"{patient.identifier[0]}-{condition.identifier[0]}-{dict_item['value']}"})
+                                parent_stage_observation.identifier = [stage_parent_obs_identifier]
+                                parent_stage_observation.id = utils.mint_id(identifier=stage_parent_obs_identifier,
+                                                                            resource_type="Observation",
+                                                                            project_id=project_id,
+                                                                            namespace=NAMESPACE_GDC)
+
+                                parent_stage_observation.valueCodeableConcept = {
                                     "coding": [
                                         {
                                             "system": "http://snomed.info/sct",
@@ -761,9 +773,64 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                     ],
                                     "text": dict_item['value']
                                 }
-                            })
+                            else:
+                                stage_obs = Observation(**{
+                                    "status": "final",
+                                    "category": [
+                                        {
+                                            "coding": [
+                                                {
+                                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                                    "code": "laboratory",
+                                                    "display": "Laboratory"
+                                                }
+                                            ],
+                                            "text": "Laboratory"
+                                        }
+                                    ],
+                                    "code": {
+                                        "coding": [
+                                            {
+                                                "system": "http://snomed.info/sct",
+                                                "code": dict_item['stage_type_sctid'],
+                                                "display": dict_item['stage_type_display']
+                                            }
+                                        ]
+                                    },
+                                    "subject": {
+                                        "reference": f"Patient/{patient.id}"
+                                    },
+                                    "focus": [
+                                        {
+                                            "reference": f"Condition/{condition.id}"
+                                        }
+                                    ],
+                                    "valueCodeableConcept": {
+                                        "coding": [
+                                            {
+                                                "system": "http://snomed.info/sct",
+                                                "code": dict_item['sctid'],
+                                                "display": dict_item['sctid_display']
+                                            }
+                                        ],
+                                        "text": dict_item['value']
+                                    }
+                                })
+                                stage_obs_identifier = Identifier(
+                                    **{"system": "".join(["https://gdc.cancer.gov/", "ajcc_pathologic_stage"]),
+                                       "value": f"{patient.identifier[0]}-{condition.identifier[0]}-{dict_item['value']}"})
+                                stage_obs.identifier = [stage_obs_identifier]
+                                stage_obs.id = utils.mint_id(identifier=stage_obs_identifier,
+                                                             resource_type="Observation", project_id=project_id,
+                                                             namespace=NAMESPACE_GDC)
+                                staging_observations.append(stage_obs)
 
-                            # print("staging_name:", staging_name, "case_stage_display: ", case_stage_display)
+                    if parent_stage_observation.valueCodeableConcept:
+                        stage_obs_references = [{"reference": f"Observation/{s.id}"} for s in staging_observations]
+                        parent_stage_observation.hasMember = stage_obs_references
+                        staging_observations.append(parent_stage_observation)
+                    elif parent_stage_observation.valueCodeableConcept and not staging_observations:
+                        staging_observations.append(parent_stage_observation)
 
                     cc_stage_type = CodeableConcept.construct()
                     cc_stage_type.coding = [{'system': "https://cadsr.cancer.gov/",
@@ -817,6 +884,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     condition_stage = ConditionStage.construct()
                     condition_stage.summary = cc_stage
                     condition_stage.type = cc_stage_type
+
                     if observation_ref:
                         condition_stage.assessment = [observation_ref]
                     staging_list.append(condition_stage)
@@ -837,6 +905,59 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                "display": case["diagnoses"]["Observation.code.nci_tumor_grade"]}]}),
                                           "assessment": [observation_ref]})
                 staging_list.append(grade)
+
+                grade_observation = Observation(**{"status": "final",
+                                                   "category": [
+                                                       {
+                                                           "coding": [
+                                                               {
+                                                                   "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                                                   "code": "laboratory",
+                                                                   "display": "Laboratory"
+                                                               }
+                                                           ],
+                                                           "text": "Laboratory"
+                                                       }
+                                                   ],
+                                                   "code": {
+                                                       "coding": [
+                                                           {
+                                                               "system": "https://cadsr.cancer.gov",
+                                                               "code": "2785839",
+                                                               "display": "neoplasm_histologic_grade"
+                                                           }
+                                                       ]
+                                                   },
+                                                   "subject": {
+                                                       "reference": f"Patient/{patient.id}"
+                                                   },
+                                                   "focus": [
+                                                       {
+                                                           "reference": f"Condition/{condition.id}"
+                                                       }
+                                                   ],
+                                                   "valueCodeableConcept": {
+                                                       "coding": [
+                                                           {
+                                                               "system": "http://snomed.info/sct",
+                                                               "code": "2785839",
+                                                               "display": case["diagnoses"][
+                                                                   "Observation.code.nci_tumor_grade"]
+                                                           }
+                                                       ],
+                                                       "text": case["diagnoses"]["Observation.code.nci_tumor_grade"]
+                                                   }
+                                                   })
+                grade_obs_identifier = Identifier(
+                    **{"system": "".join(["https://gdc.cancer.gov/", "ajcc_pathologic_stage"]),
+                       "value": f"{patient.identifier[0]}-{condition.identifier[0]}-{case["diagnoses"]["Observation.code.nci_tumor_grade"]}"})
+                grade_observation.identifier = [grade_obs_identifier]
+                grade_observation.id = utils.mint_id(identifier=grade_obs_identifier,
+                                                     resource_type="Observation", project_id=project_id,
+                                                     namespace=NAMESPACE_GDC)
+                staging_observations.append(grade_observation)
+                if parent_stage_observation.valueCodeableConcept:
+                    parent_stage_observation.hasMember.append({"reference": f"Observation/{grade_observation.id}"})
 
             condition.stage = staging_list
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])}), subject_ref]
@@ -917,9 +1038,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 "medication": med_cr,
                                 "subject": Reference(**{"reference": "/".join(["Patient", patient.id])}),
                                 "id": utils.mint_id(identifier=med_admin_identifier,
-                                    resource_type="MedicationAdministration",
-                                    project_id=project_id,
-                                    namespace=NAMESPACE_GDC),
+                                                    resource_type="MedicationAdministration",
+                                                    project_id=project_id,
+                                                    namespace=NAMESPACE_GDC),
                                 "identifier": [med_admin_identifier]}
 
                     med_admin = MedicationAdministration(**data)
@@ -1541,7 +1662,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
         specimen_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations
 
-    all_observations = condition_observations + smoking_observation + alcohol_observation + obs_survey + specimen_observations
+    all_observations = condition_observations + smoking_observation + alcohol_observation + obs_survey + specimen_observations + staging_observations
 
     return {'patient': patient, 'encounter': encounter, 'observations': all_observations, 'condition': condition,
             'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
