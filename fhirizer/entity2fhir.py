@@ -747,13 +747,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                     sctid_code = "0000"
                     stage_type_sctid_code = "0000"
+                    assessment_reference = None
                     for dict_item in cancer_pathological_staging:
                         if case['diagnoses'][key] == dict_item['value']:
                             sctid_code = dict_item['sctid']
                             stage_type_sctid_code = dict_item['stage_type_sctid']
 
                             if staging_name in "ajcc_pathologic_stage":
-
                                 stage_parent_obs_identifier = Identifier(
                                     **{"system": "".join(["https://gdc.cancer.gov/", "ajcc_pathologic_stage"]),
                                        "value": f"{patient.identifier[0]}-{condition.identifier[0]}-{dict_item['value']}"})
@@ -763,6 +763,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                             project_id=project_id,
                                                                             namespace=NAMESPACE_GDC)
 
+                                assessment_reference = {"reference": f"Observation/{parent_stage_observation.id}"}
                                 parent_stage_observation.valueCodeableConcept = {
                                     "coding": [
                                         {
@@ -823,14 +824,22 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 stage_obs.id = utils.mint_id(identifier=stage_obs_identifier,
                                                              resource_type="Observation", project_id=project_id,
                                                              namespace=NAMESPACE_GDC)
+                                assessment_reference = {"reference": f"Observation/{stage_obs.id}"}
                                 staging_observations.append(stage_obs)
 
-                    if parent_stage_observation.valueCodeableConcept:
-                        stage_obs_references = [{"reference": f"Observation/{s.id}"} for s in staging_observations]
-                        parent_stage_observation.hasMember = stage_obs_references
-                        staging_observations.append(parent_stage_observation)
-                    elif parent_stage_observation.valueCodeableConcept and not staging_observations:
-                        staging_observations.append(parent_stage_observation)
+                    if not parent_stage_observation.id:
+                        stage_parent_obs_identifier = Identifier(
+                            **{"system": "".join(["https://gdc.cancer.gov/", "ajcc_pathologic_stage"]),
+                               "value": f"{patient.identifier[0]}-{condition.identifier[0]}-Not Available"})
+                        parent_stage_observation.identifier = [stage_parent_obs_identifier]
+                        parent_stage_observation.id = utils.mint_id(identifier=stage_parent_obs_identifier,
+                                                                    resource_type="Observation",
+                                                                    project_id=project_id,
+                                                                    namespace=NAMESPACE_GDC)
+                    # assign as parent even if main stage was not defined
+                    stage_obs_references = [{"reference": f"Observation/{s.id}"} for s in staging_observations]
+                    parent_stage_observation.hasMember = stage_obs_references
+                    staging_observations.append(parent_stage_observation)
 
                     cc_stage_type = CodeableConcept.construct()
                     cc_stage_type.coding = [{'system': "https://cadsr.cancer.gov/",
@@ -884,9 +893,14 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     condition_stage = ConditionStage.construct()
                     condition_stage.summary = cc_stage
                     condition_stage.type = cc_stage_type
+                    condition_stage.assessment = [assessment_reference]
 
                     if observation_ref:
-                        condition_stage.assessment = [observation_ref]
+                        if condition_stage.assessment:
+                            condition_stage.assessment.append(observation_ref)
+                        else:
+                            condition_stage.assessment = [observation_ref]
+
                     staging_list.append(condition_stage)
 
                 if diagnosis_content_bool:
