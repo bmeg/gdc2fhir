@@ -49,9 +49,6 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: Developers',
@@ -60,6 +57,6 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics'
     ],
     platforms=['any'],
-    python_requires='>=3.9, <4.0',
+    python_requires='>=3.12, <4.0',
 )
 
