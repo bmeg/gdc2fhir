@@ -154,15 +154,15 @@ fhirizer/
 |   |            |-- data/
 |   |            └── META/
 |   └── HTAN/ 
-|   |     └── OHSU/
-|   |           └── Breast_NOS/
-|   |                 |-- raw/ 
-|   |                 |    |--  files/
-|   |                 |    |--  biospecimens/
-|   |                 |    └──  cases/
-|   |                 └── META/
-|   |           
-|   |           
+|         └── OHSU/
+|               └── Breast_NOS/
+|                     |-- raw/ 
+|                     |    |--  files/
+|                     |    |--  biospecimens/
+|                     |    └──  cases/
+|                     └── META/
+|              
+|              
 |--README.md
 └── setup.py
 ```
