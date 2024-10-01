@@ -8,7 +8,7 @@
 
 
 ### Project overview:
-Transforms and harmonizes data from Genomic Data Commons (GDC), Cellosaurus cell-lines, and International Cancer Genome Consortium (ICGC) repositories into 🔥 FHIR (Fast Healthcare Interoperability Resources) format.
+Transforms and harmonizes data from Genomic Data Commons (GDC), Cellosaurus cell-lines, International Cancer Genome Consortium (ICGC), and Human Tumor Atlas Network (HTAN) repositories into 🔥 FHIR (Fast Healthcare Interoperability Resources) format.
 
 - #### GDC study simplified FHIR graph 
 ![mapping](./imgs/gdc_tcga_study_example_fhir_graph.png)
@@ -74,6 +74,11 @@ Detailed step-by-step guide on FHIRizing data for a project's study can be found
   
   ```
    fhirizer generate --name icgc --icgc <ICGC_project_name> --has_files
+  ```
+- HTAN
+  
+  ```
+   fhirizer generate --name htan --out_dir ./projects/<my-project>/META --entity_path ./projects/<my-project>/
   ```
 ### Constructing GDC maps cli cmds 
 
@@ -145,9 +150,19 @@ fhirizer/
 |   |           |-- filess.ndjson
 |   |           └── META/
 |   └── ICGC/
-|         └── ICGC-STUDY/ 
-|                |-- data/
-|                └── META/
+|   |     └── ICGC-STUDY/ 
+|   |            |-- data/
+|   |            └── META/
+|   └── HTAN/ 
+|   |     └── OHSU/
+|   |           └── Breast_NOS/
+|   |                 |-- raw/ 
+|   |                 |    |--  files/
+|   |                 |    |--  biospecimens/
+|   |                 |    └──  cases/
+|   |                 └── META/
+|   |           
+|   |           
 |--README.md
 └── setup.py
 ```
