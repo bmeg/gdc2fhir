@@ -190,6 +190,9 @@ class PatientTransformer(HTANTransformer):
         super().__init__(**kwargs)
         self.cases_mapping = self.cases_mappings
         self.NAMESPACE_HTAN = self.NAMESPACE_HTAN
+        self.get_data_types = utils.get_data_types
+        self.get_component = self.get_component
+        self.get_fields_by_fhir_map = self.get_fields_by_fhir_map
 
     def create_patient(self, _row: pd.Series) -> Patient:
         """Transform HTAN case demographics to FHIR Patient"""
@@ -228,14 +231,68 @@ class PatientTransformer(HTANTransformer):
                                         ],
                           "address": [address]})
 
+    def patient_observation(self, patient: Patient, _row: pd.Series) -> Observation:
+        patient_observation_fields = []
+        for field, fhir_map, use, focus in self.get_fields_by_fhir_map(transformer.cases_mappings(), "Observation.component"):
+            if focus == "Patient":
+                patient_observation_fields.append(field)
+
+        if patient_observation_fields:
+            _obervation_row = _row[patient_observation_fields]
+
+        components = []
+        for key, value in _obervation_row.to_dict().items():
+            if key != 'HTAN Participant ID':
+                if isinstance(value, float) and not pd.isna(value) and ("Year" in key or "Day" in key or "year" in key or "day" in key):
+                    value = int(value)
+                    _component = self.get_component(key=key, value=value, component_type=self.get_data_types(type(value).__name__), system=self.SYSTEM_HTAN)
+                    components.append(_component)
+
+        observation_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": patient.id})
+        observation_id = self.mint_id(identifier=observation_identifier, resource_type="Observation",
+                                      project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
+
+        return Observation(**{"id": observation_id,
+                              "identifier": [observation_identifier],
+                              "status": "final",
+                              "category": [
+                                  {
+                                      "coding": [
+                                          {
+                                              "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                              "code": "exam",
+                                              "display": "exam"
+                                          }
+                                      ],
+                                      "text": "Exam"
+                                  }
+                              ],
+                              "code": {
+                                  "coding": [
+                                      {
+                                          "system": "http://loinc.org",
+                                          "code": "52460-3", # TODO: may need to change to be more specific
+                                          "display": "patient information"
+                                      }
+                                  ],
+                                  "text": "Patient Information"
+                              },
+                              "focus": [Reference(**{"reference": f"Patient/{patient.id}"})],
+                              "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
+                              "component": components})
+
 
 transformer = HTANTransformer(subprogram_name="OHSU", project_id="Breast_NOS", verbose=False)
 patient_transformer = PatientTransformer(subprogram_name="OHSU", project_id="Breast_NOS", verbose=False)
 patient_demographics_df = transformer.patient_demographics
+cases = transformer.cases
 
 patients = []
-for index, row in patient_demographics_df.iterrows():
-    patient = patient_transformer.create_patient(_row=row)
+for index, row in cases.iterrows():
+    patient_row = cases.iloc[index][patient_demographics_df.columns]
+    patient = patient_transformer.create_patient(_row=patient_row)
+    patient_obs = patient_transformer.patient_observation(patient=patient, _row=row)
     if patient:
         patients.append(orjson.loads(patient.json()))
         print(f"HTAN FHIR Patient: {patient.json()}")
+        print(f"HTAN FHIR Patient Observation: {patient_obs.json()}")
