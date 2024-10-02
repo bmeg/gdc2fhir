@@ -1075,15 +1075,15 @@ def ncit2mondo(path):
 
 
 def get_data_types(data_type):
-    if data_type in ['int64', 'int32', 'int16']:
+    if data_type in ['int64', 'int32', 'int16', 'int']:
         return 'int'
-    elif data_type in ['float64', 'float32', 'float16']:
+    elif data_type in ['float64', 'float32', 'float16', 'float']:
         return 'float'
-    elif data_type in ['string']:
+    elif data_type in ['str', 'string']:
         return 'string'
     elif data_type == 'bool':
         return 'bool'
-    elif data_type in ['datetime64[ns]', 'timedelta64[ns]', 'period']:
+    elif data_type in ['datetime64[ns]', 'timedelta64[ns]', 'period', 'datetime', 'date']:
         return 'dateTime'
     else:
         print(f"New or Null Data type: {data_type}.")
