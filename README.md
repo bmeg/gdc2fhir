@@ -155,12 +155,13 @@ fhirizer/
 |   |            └── META/
 |   └── HTAN/ 
 |         └── OHSU/
-|               └── Breast_NOS/
-|                     |-- raw/ 
-|                     |    |--  files/
-|                     |    |--  biospecimens/
-|                     |    └──  cases/
-|                     └── META/
+|               |-- raw/ 
+|               |    |--  files/
+|               |    |      |-- table_data.tsv
+|               |    |      └── cds_manifest.csv
+|               |    |--  biospecimens/table_data.tsv
+|               |    └──  cases/table_data.tsv
+|               └── META/
 |              
 |              
 |--README.md

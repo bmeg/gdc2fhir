@@ -34,22 +34,24 @@ from fhir.resources.medication import Medication
 
 
 class HTANTransformer:
-    def __init__(self, subprogram_name: str, project_id: str, verbose: bool):
+    def __init__(self, subprogram_name: str, out_dir: str, verbose: bool):
         self.mint_id = utils.mint_id
         self._mint_id = utils._mint_id
         self.get_data_type = utils.get_data_types
         self.get_component = utils.get_component
         self.fhir_ndjson = utils.fhir_ndjson
         self.subprogram_name = subprogram_name
-        self.project_id = project_id
+        self.project_id = subprogram_name # incase there will be more granular project/program relations
+        assert Path(out_dir).is_dir(), f"Path to out_dir {out_dir} is not a directory."
+        self.out_dir = out_dir
         self.verbose = verbose
         self.SYSTEM_HTAN = 'https://data.humantumoratlas.org'
         self.NAMESPACE_HTAN = uuid3(NAMESPACE_DNS, self.SYSTEM_HTAN)
-        self.project_id = project_id
         self.read_json = utils._read_json
+        self.fhir_ndjson = utils.fhir_ndjson
 
         self.project_path = str(
-            Path(importlib.resources.files('fhirizer').parent / 'projects' / 'HTAN' / subprogram_name / project_id))
+            Path(importlib.resources.files('fhirizer').parent / 'projects' / 'HTAN' / subprogram_name))
         assert Path(self.project_path).is_dir(), f"Path {self.project_path} is not a valid directory path."
 
         self.cases_path = str(
@@ -71,7 +73,7 @@ class HTANTransformer:
         # cases to Patient / ResearchSubject / ResearchStudy / Observation -> Condition / Medication / MedicationAdministration / Procedure / Encounter
         # 'HTAN Participant ID':  #NOTE:  HTAN ID associated with a patient based on HTAN ID SOP
         # 'Therapeutic Agents':  #NOTE: Some have multiple comma-separated Medication.ingredient
-        self.cases_table_data_path = Path(Path(self.project_path).parent / self.project_id).joinpath("./raw/cases/table_data.tsv")
+        self.cases_table_data_path = Path(Path(self.project_path).parent / subprogram_name).joinpath("./raw/cases/table_data.tsv")
         assert self.cases_table_data_path.is_file(), f"Path {self.cases_table_data_path} is not a valid file path."
         self.cases = self.get_dataframe(self.cases_table_data_path, sep="\t")
         self.patient_identifier_field = "HTAN Participant ID" # identifiers of the cases matrix/df
@@ -82,7 +84,7 @@ class HTANTransformer:
         # biospecimens to Specimen / Observation -> Specimen
         # 'HTAN Parent ID': #NOTE: Parent could be another biospecimen or a research participant. # check for participant id for type of reference
         # 'Biospecimen Type': #NOTE: Doesn't seem informative
-        self.biospecimens_table_data_path = Path(Path(self.project_path).parent / self.project_id).joinpath(
+        self.biospecimens_table_data_path = Path(Path(self.project_path).parent / subprogram_name).joinpath(
             "./raw/biospecimens/table_data.tsv")
         assert self.biospecimens_table_data_path.is_file(), f"Path {self.biospecimens_table_data_path} is not a valid file path."
         self.biospecimens = self.get_dataframe(self.biospecimens_table_data_path, sep="\t")
@@ -93,8 +95,8 @@ class HTANTransformer:
         # files_mapping
         # files to DocumentReference / Attachment / Observation -> DocumentReference
 
-        self.files_table_data_path = Path(Path(self.project_path).parent / self.project_id).joinpath("./raw/files/table_data.tsv")
-        self.files_drs_uri_path = Path(Path(self.project_path).parent / self.project_id).joinpath("./raw/files/cds_manifest.csv")
+        self.files_table_data_path = Path(Path(self.project_path).parent / subprogram_name).joinpath("./raw/files/table_data.tsv")
+        self.files_drs_uri_path = Path(Path(self.project_path).parent / subprogram_name).joinpath("./raw/files/cds_manifest.csv")
         assert self.files_table_data_path.is_file(), f"Path {self.files_table_data_path} is not a valid file path."
         assert self.files_drs_uri_path.is_file(), f"Path {self.files_drs_uri_path} is not a valid file path."
 
@@ -183,6 +185,29 @@ class HTANTransformer:
                     _focus = mapping.get("focus", None)
                     _use = mapping.get("use", None)
                     yield _field, _fhir_map, _use, _focus
+    @staticmethod
+    def decipher_htan_id(_id) -> dict:
+        """
+        <participant_id> ::= <htan_center_id>_integer
+        <derivative_entity_id>	::= <participant_id>_integer
+        wild-card string ex. '0000' is used for the same file derived from multiple participants
+        substring 'EXT' is used for external participants
+        """
+        deciphered_id = {}
+        _id_substrings = _id.split("_")
+        participant_id = "_".join([_id_substrings[0],_id_substrings[1]])
+        if 'EXT' not in _id_substrings[1] or '0000' not in _id_substrings[1]:
+            deciphered_id = {"participant_id": participant_id, "subsets": _id_substrings}
+        else:
+            participant_id = "_".join([_id_substrings[0], _id_substrings[1], _id_substrings[2]])
+            deciphered_id = {"participant_id": participant_id, "subsets": _id_substrings}
+        return deciphered_id
+
+    def write_ndjson(self, entities):
+        resource_type = entities[0].resource_type
+        entities = [orjson.loads(entity.json()) for entity in entities]
+        entities = list({v['id']: v for v in entities}.values())
+        utils.fhir_ndjson(entities, "".join([self.out_dir, "/", resource_type, ".ndjson"]))
 
 
 class PatientTransformer(HTANTransformer):
@@ -219,7 +244,7 @@ class PatientTransformer(HTANTransformer):
         race = _row.get("Race")
 
         address_country = _row.get("Country of Residence")
-        address = Address(**{"country": address_country})
+        address = [Address(**{"country": address_country})] if not pd.isna(address_country) else []
 
         return Patient(**{"id": patient_id,
                           "identifier": [patient_identifier],
@@ -229,7 +254,7 @@ class PatientTransformer(HTANTransformer):
                                         {"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race",
                                          "valueString": race}
                                         ],
-                          "address": [address]})
+                          "address": address})
 
     def patient_observation(self, patient: Patient, _row: pd.Series) -> Observation:
         patient_observation_fields = []
@@ -281,18 +306,65 @@ class PatientTransformer(HTANTransformer):
                               "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
                               "component": components})
 
+    def create_researchstudy(self, _row: pd.Series) -> ResearchStudy:
+        study_field = None
+        for field, fhir_map, use, focus in self.get_fields_by_fhir_map(self.cases_mappings(), "ResearchStudy.name"):
+            study_field = field
+        study_name = _row.get(study_field)
+        researchstudy_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": study_name})
+        researchstudy_id = self.mint_id(identifier=researchstudy_identifier, resource_type="ResearchStudy",
+                                        project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
+        return ResearchStudy(**{"id": researchstudy_id,
+                                "identifier": [researchstudy_identifier],
+                                "name": study_name,
+                                "status": "open"}) # TODO: add "condition" snomed id
 
-transformer = HTANTransformer(subprogram_name="OHSU", project_id="Breast_NOS", verbose=False)
-patient_transformer = PatientTransformer(subprogram_name="OHSU", project_id="Breast_NOS", verbose=False)
-patient_demographics_df = transformer.patient_demographics
-cases = transformer.cases
+    def create_researchsubject(self, patient: Patient, study: ResearchStudy) -> ResearchSubject:
+        researchsubject_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": patient.identifier[0].value})
+        researchsubject_id = self.mint_id(identifier=researchsubject_identifier, resource_type="ResearchSubject",
+                                          project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
+        return ResearchSubject(**{"id": researchsubject_id,
+                                  "identifier": [researchsubject_identifier],
+                                  "status": "active",
+                                  "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
+                                  "study": Reference(**{"reference": f"ResearchStudy/{study.id}"})})
 
-patients = []
-for index, row in cases.iterrows():
-    patient_row = cases.iloc[index][patient_demographics_df.columns]
-    patient = patient_transformer.create_patient(_row=patient_row)
-    patient_obs = patient_transformer.patient_observation(patient=patient, _row=row)
-    if patient:
-        patients.append(orjson.loads(patient.json()))
-        print(f"HTAN FHIR Patient: {patient.json()}")
-        print(f"HTAN FHIR Patient Observation: {patient_obs.json()}")
+
+atlas_name = ["OHSU", "DFCI", "WUSTL"]
+for name in atlas_name:
+
+    transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=False)
+    patient_transformer = PatientTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=False)
+
+    patient_demographics_df = transformer.patient_demographics
+    cases = transformer.cases
+
+    patients = []
+    research_studies = []
+    research_subjects = []
+    for index, row in cases.iterrows():
+
+        research_study = patient_transformer.create_researchstudy(_row=row)
+
+        if research_study:
+            research_studies.append(research_study)
+
+            patient_row = cases.iloc[index][patient_demographics_df.columns]
+            patient = patient_transformer.create_patient(_row=patient_row)
+            patient_obs = patient_transformer.patient_observation(patient=patient, _row=row)
+            if patient:
+                patients.append(patient)
+                print(f"HTAN FHIR Patient: {patient.json()}")
+                print(f"HTAN FHIR Patient Observation: {patient_obs.json()}")
+
+                research_subject = patient_transformer.create_researchsubject(patient, research_study)
+                if research_subject:
+                    research_subjects.append(research_subject)
+
+    transformer.write_ndjson(research_subjects)
+    transformer.write_ndjson(research_studies)
+    transformer.write_ndjson(patients)
+
+    # participant ids from specimen identifiers
+    # transformer.decipher_htan_id(transformer.biospecimens["HTAN Biospecimen ID"][0])
+    # transformer.decipher_htan_id(transformer.cases["HTAN Participant ID"][0])
