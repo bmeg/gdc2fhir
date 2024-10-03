@@ -329,8 +329,9 @@ class PatientTransformer(HTANTransformer):
                                   "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
                                   "study": Reference(**{"reference": f"ResearchStudy/{study.id}"})})
 
-
-atlas_name = ["OHSU", "DFCI", "WUSTL"]
+# 2 Projects that don't have files download or cds manifest SRRS and TNP_TMA (Oct/2024)
+# 12/14 total Atlas
+atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford", "TNP_SARDANA", "Vanderbilt"]
 for name in atlas_name:
 
     transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=False)
