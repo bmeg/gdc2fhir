@@ -60,6 +60,18 @@ class HTANTransformer:
         self.NAMESPACE_HTAN = uuid3(NAMESPACE_DNS, self.SYSTEM_HTAN)
         self.read_json = utils._read_json
         self.fhir_ndjson = utils.fhir_ndjson
+        self.lab_category = [
+            {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                        "code": "laboratory",
+                        "display": "laboratory"
+                    }
+                ],
+                "text": "Laboratory"
+            }
+        ]
 
         parent_researchstudy_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": "HTAN"})
         parent_researchstudy_id = self.mint_id(identifier=parent_researchstudy_identifier,
@@ -130,7 +142,8 @@ class HTANTransformer:
 
         # combine and create standard fhir files metadata
         # print(self.files["Filename"].str.split('/')[1])
-        self.files = self.files[self.files["Filename"].str.contains('.')] # NOTE: HTAPP contains file names ex. HTA1_982_7629309080080, that do not have any metadata
+        self.files = self.files[self.files["Filename"].str.contains(
+            '.')]  # NOTE: HTAPP contains file names ex. HTA1_982_7629309080080, that do not have any metadata
         self.files = self.files[self.files["Filename"].str.contains('/')]
 
         self.files['mime_type'] = self.files["Filename"].apply(lambda x: mimetypes.guess_type(x)[0])
@@ -254,10 +267,10 @@ class HTANTransformer:
             deciphered_id = {"participant_id": participant_id, "subsets": _id_substrings}
         return deciphered_id
 
-    def create_observation(self, _row: pd.Series, patient: Optional[Patient], patient_id: str,
+    def create_observation(self, _row: pd.Series, patient: Optional[Patient], patient_id: Optional[str],
                            specimen: Optional[Specimen], official_focus: str,
-                           focus: List[Reference], components: Optional[List], category: Optional[list]) -> Observation:
-        assert patient_id, f"Observation is missing patient id: {patient_id}."
+                           focus: List[Reference], components: Optional[List], category: Optional[list], relax : bool) -> Observation:
+        # assert patient_id, f"Observation is missing patient id: {patient_id}." # HTAN files doesn't always point to patient
         assert focus, f"Observation for patient {patient_id} is missing focus."
 
         if not category:
@@ -276,20 +289,8 @@ class HTANTransformer:
 
         observation_fields = []
 
-        if official_focus not in ["Specimen"]:
+        if official_focus in ["Patient", "Condition"]:
             mappings = transformer.cases_mappings()
-            code = {
-                "coding": [
-                    {
-                        "system": self.SYSTEM_LOINC,
-                        "code": "68992-7",
-                        "display": "Specimen-related information panel"
-                    }
-                ],
-                "text": "Specimen-related information panel"
-            }
-        else:
-            mappings = transformer.biospecimen_mappings()
             code = {
                 "coding": [
                     {
@@ -300,13 +301,40 @@ class HTANTransformer:
                 ],
                 "text": "Condition"
             }
+        elif official_focus in ["DocumentReference"]:
+            mappings = transformer.files_mappings()
+            code = {
+                "coding": [
+                    {
+                        "system": self.SYSTEM_LOINC,
+                        "code": "68992-7",
+                        "display": "Specimen-related information panel" #TODO: find general code
+                    }
+                ],
+                "text": "Specimen-related information panel"
+            }
+        elif official_focus in ["Specimen"]:
+            mappings = transformer.biospecimen_mappings()
+            code = {
+                "coding": [
+                    {
+                        "system": self.SYSTEM_LOINC,
+                        "code": "68992-7",
+                        "display": "Specimen-related information panel"
+                    }
+                ],
+                "text": "Specimen-related information panel"
+            }
 
         for _field, _fhir_map, _use, _focus in self.get_fields_by_fhir_map(mappings,
                                                                            "Observation.component"):
             if _focus == official_focus:
                 observation_fields.append(_field)
 
-        _obervation_row = _row[observation_fields] if observation_fields else None
+        if not relax:
+            _obervation_row = _row[observation_fields] if observation_fields else None
+        else:
+            _obervation_row = _row # user-specific columns in files - add all to component
 
         if _obervation_row is not None:
             components = []
@@ -339,6 +367,10 @@ class HTANTransformer:
         specimen_ref = None
         if specimen:
             specimen_ref = Reference(**{"reference": f"Specimen/{specimen.id}"})
+
+        subject = None
+        if patient_id:
+            subject = Reference(**{"reference": f"Patient/{patient_id}"})
         # add valueCodeableConcept as needed after creation
         return Observation(**{"id": observation_id,
                               "identifier": [observation_identifier],
@@ -346,7 +378,7 @@ class HTANTransformer:
                               "category": category,
                               "code": code,
                               "focus": focus,
-                              "subject": Reference(**{"reference": f"Patient/{patient_id}"}),
+                              "subject": subject,
                               "component": components,
                               "specimen": specimen_ref})
 
@@ -694,9 +726,11 @@ class DocumentReferenceTransformer(HTANTransformer):
 
         category = []
         if not pd.isnull(_row['Assay']):
-            category.append(CodeableConcept(**{"coding": [{"code": _row['Assay'], "display": _row['Assay'], "system": "/".join([self.SYSTEM_HTAN, "Assay"])}]}))
+            category.append(CodeableConcept(**{"coding": [
+                {"code": _row['Assay'], "display": _row['Assay'], "system": "/".join([self.SYSTEM_HTAN, "Assay"])}]}))
         if not pd.isnull(_row['Level']):
-            category.append(CodeableConcept(**{"coding": [{"code": _row['Level'], "display": _row['Level'], "system": "/".join([self.SYSTEM_HTAN, "Level"])}]}))
+            category.append(CodeableConcept(**{"coding": [
+                {"code": _row['Level'], "display": _row['Level'], "system": "/".join([self.SYSTEM_HTAN, "Level"])}]}))
 
         subject = None
         if patient_id:
@@ -714,7 +748,9 @@ class DocumentReferenceTransformer(HTANTransformer):
 
         security_label = []
         if not pd.isnull(_row['Data Access']):
-            security_label.append(CodeableConcept(**{"coding": [{"code":_row['Data Access'], "display": _row['Data Access'], "system": "/".join([self.SYSTEM_HTAN, "Data_Access"])}]}))
+            security_label.append(CodeableConcept(**{"coding": [
+                {"code": _row['Data Access'], "display": _row['Data Access'],
+                 "system": "/".join([self.SYSTEM_HTAN, "Data_Access"])}]}))
 
         parent_data_file = []
         if not pd.isnull(_row["Parent Data File ID"]):
@@ -722,8 +758,8 @@ class DocumentReferenceTransformer(HTANTransformer):
                 **{"system": self.SYSTEM_HTAN, "value": _row["Parent Data File ID"], "use": "official"})
 
             parent_document_reference_id = self.mint_id(identifier=parent_document_reference_identifier,
-                                                 resource_type="DocumentReference", project_id=self.project_id,
-                                                 namespace=self.NAMESPACE_HTAN)
+                                                        resource_type="DocumentReference", project_id=self.project_id,
+                                                        namespace=self.NAMESPACE_HTAN)
 
             parent_data_file.append(DocumentReferenceRelatesTo(**{
                 "code": CodeableConcept(**{"coding": [{"code": "parent_data_file",
@@ -732,7 +768,8 @@ class DocumentReferenceTransformer(HTANTransformer):
                 "target": Reference(**{"reference": f"Documentreference/{parent_document_reference_id}"})}))
 
         return DocumentReference(**{"id": document_reference_id,
-                                    "identifier": [document_reference_identifier, document_reference_synapse_identifier],
+                                    "identifier": [document_reference_identifier,
+                                                   document_reference_synapse_identifier],
                                     "status": "current",
                                     "docStatus": "final",
                                     "basedOn": based_on,
@@ -741,7 +778,8 @@ class DocumentReferenceTransformer(HTANTransformer):
                                     "category": category,
                                     "securityLabel": security_label,
                                     "content": [DocumentReferenceContent(
-                                        **{"attachment": Attachment(**{"title": name, "contentType": _row["mime_type"]}),
+                                        **{"attachment": Attachment(
+                                            **{"title": name, "contentType": _row["mime_type"]}),
                                            "profile": profiles
                                            })]
                                     })
@@ -749,11 +787,12 @@ class DocumentReferenceTransformer(HTANTransformer):
 
 # 2 Projects that don't have files download or cds manifest SRRS and TNP_TMA (Oct/2024)
 # 12/14 total Atlas
-atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford", "TNP_SARDANA", "Vanderbilt"]
+atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford", "TNP_SARDANA",
+              "Vanderbilt"]
 # atlas_name = ["OHSU"]
 for name in atlas_name:
-    print(f"Processing HTAN atlas {name}")
-    
+    print(f"Transforming {name}")
+
     transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=False)
     patient_transformer = PatientTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
                                              verbose=False)
@@ -812,7 +851,8 @@ for name in atlas_name:
                                                                                        focus=[Reference(**{
                                                                                            "reference": f"Condition/{condition.id}"})],
                                                                                        specimen=None, components=None,
-                                                                                       category=None)
+                                                                                       category=None,
+                                                                                       relax=False)
                         if condition_observation:
                             observations.append(condition_observation)
 
@@ -822,19 +862,6 @@ for name in atlas_name:
         specimen = specimen_transformer.create_specimen(_row=specimen_row)
         if specimen:
             specimens.append(specimen)
-
-            specimen_observation_category = [
-                {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                            "code": "laboratory",
-                            "display": "laboratory"
-                        }
-                    ],
-                    "text": "Laboratory"
-                }
-            ]
 
             participant_id = specimen_transformer.decipher_htan_id(specimen_row["HTAN Biospecimen ID"])[
                 "participant_id"]
@@ -847,16 +874,40 @@ for name in atlas_name:
                                                                                "reference": f"Specimen/{specimen.id}"})],
                                                                            patient_id=specimen_participant_id,
                                                                            specimen=specimen, components=None,
-                                                                           category=specimen_observation_category)
+                                                                           category=transformer.lab_category,
+                                                                           relax=False)
             if specimen_observation:
                 observations.append(specimen_observation)
 
     specimen_ids = [s.id for s in specimens]
+    patient_ids = [p.id for p in patients]
     document_references = []
     for document_reference_index, document_reference_row in files_drs_meta.iterrows():
-        docref = documentreference_transformer.create_document_reference(_row=document_reference_row, specimen_ids=specimen_ids)
+        docref = documentreference_transformer.create_document_reference(_row=document_reference_row,
+                                                                         specimen_ids=specimen_ids)
         if docref:
             document_references.append(docref)
+
+            docref_patient_id = None
+            if 'HTAN Participant ID' in document_reference_row.keys() and pd.isnull(document_reference_row['HTAN Participant ID']):
+                docref_patient = documentreference_transformer.get_patient_id(participant_id=document_reference_row['HTAN Participant ID'])
+                if docref_patient in patient_ids:
+                    docref_patient_id = docref_patient
+            # else:
+            #    print(f"HTAN {name} is missing patient reference in files")
+
+            document_reference_observation = documentreference_transformer.create_observation(
+                _row=document_reference_row, patient=None,
+                official_focus="DocumentReference",
+                focus=[Reference(**{
+                    "reference": f"DocumentReference/{docref.id}"})],
+                patient_id=docref_patient_id,
+                specimen=None, components=None,
+                category=transformer.lab_category,
+                relax=True)
+
+            if document_reference_observation:
+                observations.append(document_reference_observation)
 
     transformer.write_ndjson(research_subjects)
     transformer.write_ndjson(research_studies)
