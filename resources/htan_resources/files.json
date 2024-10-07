@@ -29,8 +29,8 @@
     ],
     "Level": [
         {
-            "fhir_map": "Observation.component",
-            "focus": "DocumentReference"
+            "fhir_map": "DocumentReference.category",
+            "focus": null
         }
     ],
     "Organ": [
@@ -72,7 +72,7 @@
     ],
     "HTAN Parent Biospecimen ID": [
         {
-            "fhir_map": "Specimen.parent",
+            "fhir_map": "Specimen.identifier",
             "focus": null
         }
     ],
@@ -352,7 +352,7 @@
     ],
     "Parent Biospecimen ID": [
         {
-            "fhir_map": "Specimen.parent",
+            "fhir_map": "Specimen.identifier",
             "focus": null
         }
     ],
