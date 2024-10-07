@@ -61,8 +61,9 @@ class HTANTransformer:
         self.fhir_ndjson = utils.fhir_ndjson
 
         parent_researchstudy_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": "HTAN"})
-        parent_researchstudy_id = self.mint_id(identifier=parent_researchstudy_identifier, resource_type="ResearchStudy",
-                                        project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
+        parent_researchstudy_id = self.mint_id(identifier=parent_researchstudy_identifier,
+                                               resource_type="ResearchStudy",
+                                               project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
         self.program_research_study = ResearchStudy(**{"id": parent_researchstudy_id,
                                                        "identifier": [parent_researchstudy_identifier],
                                                        "name": "HTAN",
@@ -125,7 +126,6 @@ class HTANTransformer:
         self.files_drs_uri = pd.read_csv(self.files_drs_uri_path, sep=",")
 
         self.patient_demographics = self.get_patient_demographics()
-
 
     def get_cases_mappings(self) -> dict:
         """HTAN cases FHIR mapping"""
@@ -367,7 +367,8 @@ class PatientTransformer(HTANTransformer):
                                 "identifier": [researchstudy_identifier],
                                 "name": study_name,
                                 "status": "open",
-                                "partOf": [Reference(**{"reference": f"ResearchStudy/{self.program_research_study.id}"})]})
+                                "partOf": [
+                                    Reference(**{"reference": f"ResearchStudy/{self.program_research_study.id}"})]})
 
     def create_researchsubject(self, patient: Patient, study: ResearchStudy) -> ResearchSubject:
         researchsubject_identifier = Identifier(
@@ -453,10 +454,12 @@ class PatientTransformer(HTANTransformer):
             recorded_date = datetime(int(recorded_date_field_value["htan_field_value"]), 1, 1)
 
         body_structure = self.create_body_structure(_row, patient)
-        patient_body_structure_ref = Reference(**{"reference": f"BodyStructure/{body_structure.id}"}) if body_structure.includedStructure else None
+        patient_body_structure_ref = Reference(
+            **{"reference": f"BodyStructure/{body_structure.id}"}) if body_structure.includedStructure else None
 
         patient_body_site_cc = []
-        patient_body_site = self.get_field_value(_row=_row, mapping_type="case", fhir_field="Condition.bodySite")["htan_field_value"]
+        patient_body_site = self.get_field_value(_row=_row, mapping_type="case", fhir_field="Condition.bodySite")[
+            "htan_field_value"]
 
         if patient_body_site:
             patient_body_site_cc = [CodeableConcept(**{"coding": [{"code": patient_body_site,
@@ -470,7 +473,7 @@ class PatientTransformer(HTANTransformer):
                                                                    "display": primary_diagnosis}]}),
                             "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
                             "clinicalStatus": CodeableConcept(**{"coding": [{"code": "active",
-                                                                             "system": "http://terminology.hl7.org/CodeSystem/condition-clinical" ,
+                                                                             "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
                                                                              "display": "Active"}]}),
                             "onsetAge": onset_age,
                             "recordedDate": recorded_date,
@@ -497,11 +500,11 @@ class PatientTransformer(HTANTransformer):
                     ],
                     "text": "Exam"
                 }
-        ]
+            ]
 
         observation_fields = []
         for _field, _fhir_map, _use, _focus in self.get_fields_by_fhir_map(transformer.cases_mappings(),
-                                                                       "Observation.component"):
+                                                                           "Observation.component"):
             if _focus == official_focus:
                 observation_fields.append(_field)
 
@@ -516,8 +519,8 @@ class PatientTransformer(HTANTransformer):
                             if not isinstance(value, str) and value.is_integer():
                                 value = int(value)
                             _component = self.get_component(key=key, value=value,
-                                                                component_type=self.get_data_types(type(value).__name__),
-                                                                system=self.SYSTEM_HTAN)
+                                                            component_type=self.get_data_types(type(value).__name__),
+                                                            system=self.SYSTEM_HTAN)
                             components.append(_component)
                     except (ValueError, TypeError):
                         if self.verbose:
@@ -541,7 +544,7 @@ class PatientTransformer(HTANTransformer):
                                   "coding": [
                                       {
                                           "system": self.SYSTEM_LOINC,
-                                          "code": "75323-6", # TODO: place-holder
+                                          "code": "75323-6",  # TODO: place-holder
                                           "display": "Condition"
                                       }
                                   ],
@@ -552,18 +555,76 @@ class PatientTransformer(HTANTransformer):
                               "component": components,
                               "specimen": specimen_ref})
 
+    def create_medication_administration(self) -> MedicationAdministration:
+        return MedicationAdministration(**{})
+
+
+class SpecimenTransformer(HTANTransformer):
+    def __init__(self, *args: Any, **kwargs: Any):
+        super().__init__(**kwargs)
+        self.cases_mapping = self.cases_mappings
+        self.NAMESPACE_HTAN = self.NAMESPACE_HTAN
+        self.get_data_types = utils.get_data_types
+        self.get_component = self.get_component
+        self.get_fields_by_fhir_map = self.get_fields_by_fhir_map
+
+    def create_specimen(self, _row: pd.Series) -> Specimen:
+        """Transform HTAN biospecimen to FHIR Specimen"""
+
+        specimen_identifier = Identifier(
+            **{"system": self.SYSTEM_HTAN, "value": _row['HTAN Biospecimen ID'], "use": "official"})
+        specimen_id = self.mint_id(identifier=specimen_identifier, resource_type="Specimen", project_id=self.project_id,
+                                   namespace=self.NAMESPACE_HTAN)
+
+        # participant id from specimen identifier
+        participant_id = self.decipher_htan_id(_row["HTAN Biospecimen ID"])["participant_id"]
+        assert participant_id, f"Specimen {_row["HTAN Biospecimen ID"]} does not have a patient participant associated with it."
+
+        patient_identifier = Identifier(
+            **{"system": self.SYSTEM_HTAN, "value": participant_id, "use": "official"})
+        patient_id = self.mint_id(identifier=patient_identifier, resource_type="Patient", project_id=self.project_id,
+                                  namespace=self.NAMESPACE_HTAN)
+        subject = Reference(**{"reference": f"Patient/{patient_id}"}) # Check if Group exists
+
+        parent_specimen_reference = []
+        if not pd.isnull(_row["HTAN Parent ID"]):
+            parent_specimen_identifier = Identifier(
+                **{"system": self.SYSTEM_HTAN, "value": _row['HTAN Biospecimen ID'], "use": "official"})
+            parent_specimen_id = self.mint_id(identifier=parent_specimen_identifier, resource_type="Specimen", project_id=self.project_id,
+                                       namespace=self.NAMESPACE_HTAN)
+            parent_specimen_reference.append(Reference(**{"reference": f"Specimen/{parent_specimen_id}"}))
+
+        specimen_fields = []
+        for _field, _fhir_map, _use, _focus in self.get_fields_by_fhir_map(self.cases_mapping(),
+                                                                           "Specimen"):
+            specimen_fields.append(_field)
+
+        return Specimen(**{"id": specimen_id,
+                           "identifier": [specimen_identifier],
+                           "type": CodeableConcept(**{"coding": [
+                               {"code": _row["Biospecimen Type"], "system": self.SYSTEM_HTAN,
+                                "display": _row["Biospecimen Type"]}]}),
+                           "processing": [SpecimenProcessing(**{"method": CodeableConcept(**{"coding": [
+                               {"code": _row["Preservation Method"], "system": self.SYSTEM_HTAN,
+                                "display": _row["Preservation Method"]}]})})],
+                           "parent": parent_specimen_reference,
+                           "subject": subject})
+
 
 # 2 Projects that don't have files download or cds manifest SRRS and TNP_TMA (Oct/2024)
 # 12/14 total Atlas
-atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford", "TNP_SARDANA", "Vanderbilt"]
+# atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford", "TNP_SARDANA", "Vanderbilt"]
+atlas_name = ["OHSU"]
 for name in atlas_name:
 
     transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=False)
     patient_transformer = PatientTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
                                              verbose=False)
+    specimen_transformer = SpecimenTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=False)
 
     patient_demographics_df = transformer.patient_demographics
     cases = transformer.cases
+    htan_biospecimens = transformer.biospecimens
 
     patients = []
     research_studies = []
@@ -603,9 +664,21 @@ for name in atlas_name:
                     if condition:
                         conditions.append(condition)
 
-                        condition_observation = patient_transformer.create_observation(_row=row, patient=patient, official_focus="Condition", focus=[Reference(**{"reference": f"Condition/{condition.id}"})], specimen=None, components=None, category=None)
+                        condition_observation = patient_transformer.create_observation(_row=row, patient=patient,
+                                                                                       official_focus="Condition",
+                                                                                       focus=[Reference(**{
+                                                                                           "reference": f"Condition/{condition.id}"})],
+                                                                                       specimen=None, components=None,
+                                                                                       category=None)
                         if condition_observation:
                             observations.append(condition_observation)
+
+    specimens = []
+    for index, row in htan_biospecimens.iterrows():
+        specimen_row = htan_biospecimens.iloc[index]
+        specimen = specimen_transformer.create_specimen(_row=specimen_row)
+        if specimen:
+            specimens.append(specimen)
 
     transformer.write_ndjson(research_subjects)
     transformer.write_ndjson(research_studies)
@@ -613,8 +686,8 @@ for name in atlas_name:
     transformer.write_ndjson(encounters)
     transformer.write_ndjson(conditions)
     transformer.write_ndjson(observations)
+    transformer.write_ndjson(specimens)
 
     # participant ids from specimen identifiers
-    # transformer.decipher_htan_id(transformer.biospecimens["HTAN Biospecimen ID"][0])
-    # transformer.decipher_htan_id(transformer.cases["HTAN Participant ID"][0])
-
+    # print(transformer.decipher_htan_id(htan_biospecimens["HTAN Biospecimen ID"][0]))
+    # print(transformer.decipher_htan_id(cases["HTAN Participant ID"][0]))
