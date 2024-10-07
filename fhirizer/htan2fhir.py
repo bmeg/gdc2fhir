@@ -663,7 +663,7 @@ class DocumentReferenceTransformer(HTANTransformer):
         self.create_observation = self.create_observation
         self.get_patient_id = self.get_patient_id
 
-    def create_document_reference(self, _row: pd.Series) -> DocumentReference:
+    def create_document_reference(self, _row: pd.Series, specimen_ids: list) -> DocumentReference:
         """Transform HTAN files to FHIR DocumentReference"""
 
         document_reference_identifier = Identifier(
@@ -709,7 +709,8 @@ class DocumentReferenceTransformer(HTANTransformer):
             specimen_id = self.mint_id(identifier=specimen_identifier, resource_type="Specimen",
                                        project_id=self.project_id,
                                        namespace=self.NAMESPACE_HTAN)
-            based_on.append(Reference(**{"reference": f"Specimen/{specimen_id}"}))
+            if specimen_id in specimen_ids:
+                based_on.append(Reference(**{"reference": f"Specimen/{specimen_id}"}))
 
         security_label = []
         if not pd.isnull(_row['Data Access']):
@@ -734,7 +735,7 @@ class DocumentReferenceTransformer(HTANTransformer):
                                     "identifier": [document_reference_identifier, document_reference_synapse_identifier],
                                     "status": "current",
                                     "docStatus": "final",
-                                    # "basedOn": based_on, # TODO: requires check for specimen - missing data
+                                    "basedOn": based_on,
                                     "subject": subject,
                                     # "relatesTo": parent_data_file,  # TODO: requires check for file - missing data
                                     "category": category,
@@ -749,9 +750,10 @@ class DocumentReferenceTransformer(HTANTransformer):
 # 2 Projects that don't have files download or cds manifest SRRS and TNP_TMA (Oct/2024)
 # 12/14 total Atlas
 atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford", "TNP_SARDANA", "Vanderbilt"]
-
+# atlas_name = ["OHSU"]
 for name in atlas_name:
-    # print(name)
+    print(f"Processing HTAN atlas {name}")
+    
     transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=False)
     patient_transformer = PatientTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
                                              verbose=False)
@@ -849,9 +851,10 @@ for name in atlas_name:
             if specimen_observation:
                 observations.append(specimen_observation)
 
+    specimen_ids = [s.id for s in specimens]
     document_references = []
     for document_reference_index, document_reference_row in files_drs_meta.iterrows():
-        docref = documentreference_transformer.create_document_reference(_row=document_reference_row)
+        docref = documentreference_transformer.create_document_reference(_row=document_reference_row, specimen_ids=specimen_ids)
         if docref:
             document_references.append(docref)
 
