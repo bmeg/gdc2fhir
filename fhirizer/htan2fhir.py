@@ -26,6 +26,7 @@ from fhir.resources.researchsubject import ResearchSubject
 from fhir.resources.observation import Observation
 from fhir.resources.encounter import Encounter
 from fhir.resources.codeableconcept import CodeableConcept
+from fhir.resources.codeablereference import CodeableReference
 from fhir.resources.age import Age
 from fhir.resources.procedure import Procedure
 from fhir.resources.bodystructure import BodyStructure, BodyStructureIncludedStructure
@@ -34,8 +35,11 @@ from fhir.resources.condition import Condition, ConditionStage
 from fhir.resources.documentreference import DocumentReference, DocumentReferenceContent, \
     DocumentReferenceContentProfile, DocumentReferenceRelatesTo
 from fhir.resources.attachment import Attachment
+from fhir.resources.timing import Timing
 from fhir.resources.medicationadministration import MedicationAdministration
-from fhir.resources.medication import Medication
+from fhir.resources.medication import Medication, MedicationIngredient
+from fhir.resources.substance import Substance, SubstanceIngredient
+from fhir.resources.substancedefinition import SubstanceDefinition, SubstanceDefinitionStructure
 
 
 # File data on synapse after authentication
@@ -49,6 +53,7 @@ class HTANTransformer:
         self.get_data_type = utils.get_data_types
         self.get_component = utils.get_component
         self.fhir_ndjson = utils.fhir_ndjson
+        self.get_chembl_compound_info = utils.get_chembl_compound_info
         self.subprogram_name = subprogram_name
         self.project_id = subprogram_name  # incase there will be more granular project/program relations
         assert Path(out_dir).is_dir(), f"Path to out_dir {out_dir} is not a directory."
@@ -72,7 +77,16 @@ class HTANTransformer:
                 "text": "Laboratory"
             }
         ]
-
+        self.med_admin_code = {
+                "coding": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "80565-5",
+                    "display": "Medication administration record"
+                  }
+                ],
+                "text": "Medication administration record"
+        }
         parent_researchstudy_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": "HTAN"})
         parent_researchstudy_id = self.mint_id(identifier=parent_researchstudy_identifier,
                                                resource_type="ResearchStudy",
@@ -269,7 +283,8 @@ class HTANTransformer:
 
     def create_observation(self, _row: pd.Series, patient: Optional[Patient], patient_id: Optional[str],
                            specimen: Optional[Specimen], official_focus: str,
-                           focus: List[Reference], components: Optional[List], category: Optional[list], relax : bool) -> Observation:
+                           focus: List[Reference], components: Optional[List], category: Optional[list],
+                           relax: bool) -> Observation:
         # assert patient_id, f"Observation is missing patient id: {patient_id}." # HTAN files doesn't always point to patient
         assert focus, f"Observation for patient {patient_id} is missing focus."
 
@@ -301,6 +316,11 @@ class HTANTransformer:
                 ],
                 "text": "Condition"
             }
+
+        elif official_focus in ["MedicationAdministration"]:
+            mappings = transformer.cases_mappings()
+            code = self.med_admin_code
+
         elif official_focus in ["DocumentReference"]:
             mappings = transformer.files_mappings()
             code = {
@@ -308,11 +328,12 @@ class HTANTransformer:
                     {
                         "system": self.SYSTEM_LOINC,
                         "code": "68992-7",
-                        "display": "Specimen-related information panel" #TODO: find general code
+                        "display": "Specimen-related information panel"  # TODO: find general code
                     }
                 ],
                 "text": "Specimen-related information panel"
             }
+
         elif official_focus in ["Specimen"]:
             mappings = transformer.biospecimen_mappings()
             code = {
@@ -334,7 +355,7 @@ class HTANTransformer:
         if not relax:
             _obervation_row = _row[observation_fields] if observation_fields else None
         else:
-            _obervation_row = _row # user-specific columns in files - add all to component
+            _obervation_row = _row  # user-specific columns in files - add all to component
 
         if _obervation_row is not None:
             components = []
@@ -628,8 +649,73 @@ class PatientTransformer(HTANTransformer):
                             "stage": [],
                             })
 
-    def create_medication_administration(self) -> MedicationAdministration:
-        return MedicationAdministration(**{})
+    def create_medication_administration(self, _row: pd.Series, patient_id: str) -> dict:
+        # if Treatment Type exists - make MedicationAdministration
+        # if Days to Treatment End, then status -> completed, else status unknown
+        # if Therapeutic Agents is null, then Medication.code -> snomed_code: Unknown 261665006
+        # Medication.ingredient.item -> Substance.code -> SubstanceDefination
+
+        status = None
+        substance_definition = None
+        substance = None
+        medication = None
+        medication_code = None
+
+        if not pd.isnull(_row["Days to Treatment End"]):
+            status = "completed"
+        else:
+            status = "unknown"
+
+        if pd.isnull(_row["Therapeutic Agents"]):
+            medication_code = CodeableConcept(**{"coding": [{
+                "code": "261665006",
+                "system": self.SYSTEM_SNOME,
+                "display": "Unknown"
+            }]})
+        else:
+            # drug_info_df = pd.DataFrame(self.get_chembl_compound_info(db_file_path="./reources/chemble/chembl_34.db", drug_names=list(_row["Theraputic Agent"])))
+            medication_code = CodeableConcept(**{"coding": [{"code": _row["Therapeutic Agents"],
+                                                             "system": self.SYSTEM_HTAN,
+                                                             "display": _row["Therapeutic Agents"]}]})
+
+        timing = 0
+        if not pd.isnull(_row["Days to Treatment End"]) and not pd.isnull(_row["Days to Treatment Start"]):
+            timing = int(_row["Days to Treatment End"]) - int(_row["Days to Treatment Start"])
+
+        # TODO: replace with chembl
+        # substance_definition = SubstanceDefinition(**{})
+        # substance = Substance(**{})
+
+        medication_identifier = Identifier(
+            **{"system": self.SYSTEM_HTAN, "use": "official",
+               "value": medication_code.coding[0].display})
+        medication_id = self.mint_id(identifier=medication_identifier,
+                                     resource_type="Medication",
+                                     project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
+
+        medication = Medication(**{"id": medication_id, "identifier": [medication_identifier], "code": medication_code})
+
+        medication_admin_identifier = Identifier(
+            **{"system": self.SYSTEM_HTAN, "use": "official",
+               "value": "-".join([_row["Atlas Name"], _row["HTAN Participant ID"], _row["Treatment Type"]])})
+        medication_admin_id = self.mint_id(identifier=medication_admin_identifier,
+                                           resource_type="MedicationAdministration",
+                                           project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
+        data = {"id": medication_admin_id,
+                "identifier": [medication_admin_identifier],
+                "status": status,
+                "occurenceDateTime": "2024-10-8T10:30:00.724446-05:00",
+                "category": [CodeableConcept(**{"coding": [{"code": _row["Treatment Type"],
+                                                            "system": "/".join([self.SYSTEM_HTAN,"Treatment_Type"]) ,
+                                                            "display": _row["Treatment Type"]}]})],
+                "medication": CodeableReference(**{"concept": medication_code, "reference": Reference(
+                    **{"reference": f"Medication/{medication.id}"})}),
+                "subject": Reference(**{"reference": f"Patient/{patient_id}"})}
+        medication_admin = MedicationAdministration(**data)
+
+        return {"medication_admin": medication_admin,
+                "medication": medication, "substance": substance,
+                "substance_definition": substance_definition}
 
 
 class SpecimenTransformer(HTANTransformer):
@@ -780,15 +866,15 @@ class DocumentReferenceTransformer(HTANTransformer):
                                     "content": [DocumentReferenceContent(
                                         **{"attachment": Attachment(
                                             **{"title": name, "contentType": _row["mime_type"]}),
-                                           "profile": profiles
-                                           })]
+                                            "profile": profiles
+                                        })]
                                     })
 
 
 # 2 Projects that don't have files download or cds manifest SRRS and TNP_TMA (Oct/2024)
 # 12/14 total Atlas
 atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford", "TNP_SARDANA",
-              "Vanderbilt"]
+               "Vanderbilt"]
 # atlas_name = ["OHSU"]
 for name in atlas_name:
     print(f"Transforming {name}")
@@ -814,6 +900,8 @@ for name in atlas_name:
     conditions = []
     encounters = []
     observations = []
+    med_admins = []
+    med = []
     for index, row in cases.iterrows():
         research_study = patient_transformer.create_researchstudy(_row=row)
 
@@ -856,6 +944,24 @@ for name in atlas_name:
                         if condition_observation:
                             observations.append(condition_observation)
 
+                if not pd.isnull(row["Treatment Type"]):
+                    med_admin_dict = patient_transformer.create_medication_administration(_row=row,
+                                                                                          patient_id=patient.id)
+                    if med_admin_dict["medication_admin"]:
+                        med_admins.append(med_admin_dict["medication_admin"])
+                        med_admin_observation = patient_transformer.create_observation(_row=row, patient=None,
+                                                                                       official_focus="MedicationAdministration",
+                                                                                       focus=[Reference(**{
+                                                                                           "reference": f"MedicationAdministration/{med_admin_dict["medication_admin"].id}"})],
+                                                                                       patient_id=patient.id,
+                                                                                       specimen=None, components=None,
+                                                                                       category=None,
+                                                                                       relax=False)
+                        if med_admin_observation:
+                            observations.append(med_admin_observation)
+                    if med_admin_dict["medication"]:
+                        med.append(med_admin_dict["medication"])
+
     specimens = []
     for specimen_index, specimen_row in htan_biospecimens.iterrows():
         # specimen_row = htan_biospecimens.iloc[specimen_index]
@@ -889,8 +995,10 @@ for name in atlas_name:
             document_references.append(docref)
 
             docref_patient_id = None
-            if 'HTAN Participant ID' in document_reference_row.keys() and pd.isnull(document_reference_row['HTAN Participant ID']):
-                docref_patient = documentreference_transformer.get_patient_id(participant_id=document_reference_row['HTAN Participant ID'])
+            if 'HTAN Participant ID' in document_reference_row.keys() and pd.isnull(
+                    document_reference_row['HTAN Participant ID']):
+                docref_patient = documentreference_transformer.get_patient_id(
+                    participant_id=document_reference_row['HTAN Participant ID'])
                 if docref_patient in patient_ids:
                     docref_patient_id = docref_patient
             # else:
@@ -909,14 +1017,26 @@ for name in atlas_name:
             if document_reference_observation:
                 observations.append(document_reference_observation)
 
-    transformer.write_ndjson(research_subjects)
-    transformer.write_ndjson(research_studies)
-    transformer.write_ndjson(patients)
-    transformer.write_ndjson(encounters)
-    transformer.write_ndjson(conditions)
-    transformer.write_ndjson(observations)
-    transformer.write_ndjson(specimens)
-    transformer.write_ndjson(document_references)
+    if research_subjects:
+        transformer.write_ndjson(research_subjects)
+    if research_studies:
+        transformer.write_ndjson(research_studies)
+    if patients:
+        transformer.write_ndjson(patients)
+    if encounters:
+        transformer.write_ndjson(encounters)
+    if conditions:
+        transformer.write_ndjson(conditions)
+    if observations:
+        transformer.write_ndjson(observations)
+    if specimens:
+        transformer.write_ndjson(specimens)
+    if document_references:
+        transformer.write_ndjson(document_references)
+    if med_admins:
+        transformer.write_ndjson(med_admins)
+    if med:
+        transformer.write_ndjson(med)
 
     # participant ids from specimen identifiers
     # print(transformer.decipher_htan_id(htan_biospecimens["HTAN Biospecimen ID"][0]))
