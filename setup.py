@@ -31,7 +31,6 @@ setup(
         'inflection',
         'iteration_utilities',
         'icd10-cm',
-        'sqlite3',
         'beautifulsoup4',
         'gen3-tracker>=0.0.4rc36',
         'fhir.resources>=7.1.0'  # FHIR® (Release R5, version 5.0.0)
