@@ -39,7 +39,7 @@ from fhir.resources.timing import Timing
 from fhir.resources.medicationadministration import MedicationAdministration
 from fhir.resources.medication import Medication, MedicationIngredient
 from fhir.resources.substance import Substance, SubstanceIngredient
-from fhir.resources.substancedefinition import SubstanceDefinition, SubstanceDefinitionStructure
+from fhir.resources.substancedefinition import SubstanceDefinition,SubstanceDefinitionStructure,  SubstanceDefinitionStructureRepresentation, SubstanceDefinitionName
 
 
 # File data on synapse after authentication
@@ -62,6 +62,7 @@ class HTANTransformer:
         self.SYSTEM_HTAN = 'https://data.humantumoratlas.org'
         self.SYSTEM_SNOME = 'http://snomed.info/sct'
         self.SYSTEM_LOINC = 'http://loinc.org'
+        self.SYSTEM_chEMBL = 'https://www.ebi.ac.uk/chembl'
         self.NAMESPACE_HTAN = uuid3(NAMESPACE_DNS, self.SYSTEM_HTAN)
         self.read_json = utils._read_json
         self.fhir_ndjson = utils.fhir_ndjson
@@ -408,12 +409,155 @@ class HTANTransformer:
         patient_id = self.mint_id(identifier=patient_identifier, resource_type="Patient", project_id=self.project_id,
                                   namespace=self.NAMESPACE_HTAN)
         return patient_id
+    @staticmethod
+    def create_substance_definition_representations(df: pd.DataFrame) -> list:
+        representations = []
+        for index, _row in df.iterrows():
+            if pd.notna(_row['STANDARD_INCHI']):
+                representations.append(SubstanceDefinitionStructureRepresentation(
+                    **{"representation": _row['STANDARD_INCHI'],
+                       "format": CodeableConcept(**{"coding": [{"code": "InChI",
+                                                                "system": 'http://hl7.org/fhir/substance-representation-format',
+                                                                "display": "InChI"}]})}))
+
+            if pd.notna(_row['CANONICAL_SMILES']):
+                representations.append(SubstanceDefinitionStructureRepresentation(
+                    **{"representation": _row['CANONICAL_SMILES'],
+                       "format": CodeableConcept(**{"coding": [{"code": "SMILES",
+                                                                "system": 'http://hl7.org/fhir/substance-representation-format',
+                                                                "display": "SMILES"}]})}))
+        return representations
+
+    def create_substance_definition(self, compound_name: str, representations: list) -> SubstanceDefinition:
+        sub_def_identifier = Identifier(**{"system": self.SYSTEM_chEMBL, "value": compound_name, "use": "official"})
+        sub_def_id = self.mint_id(identifier=sub_def_identifier, resource_type="SubstanceDefinition", project_id=self.project_id,
+                                  namespace=self.NAMESPACE_HTAN)
+
+        return SubstanceDefinition(**{"id": sub_def_id,
+                                      "identifier": [sub_def_identifier],
+                                      "structure": SubstanceDefinitionStructure(**{"representation": representations}),
+                                      "name": [SubstanceDefinitionName(**{"name": compound_name})]
+                                      })
+
+    def create_substance(self, compound_name:str, substance_definition: SubstanceDefinition) -> Substance:
+        code = None
+        if substance_definition:
+            code = CodeableReference(
+                **{"concept": CodeableConcept(**{"coding": [{"code": compound_name, "system": "/".join([self.SYSTEM_chEMBL, "compound_name"]), "display": compound_name}]}),
+                   "reference": Reference(**{"reference": f"SubstanceDefinition/{substance_definition.id}"})})
+
+        sub_identifier = Identifier(
+            **{"system": self.SYSTEM_chEMBL, "value": compound_name, "use": "official"})
+        sub_id = self.mint_id(identifier=sub_identifier, resource_type="Substance",
+                                  project_id=self.project_id,
+                                  namespace=self.NAMESPACE_HTAN)
+
+        return Substance(**{"id": sub_id,
+                            "identifier": [sub_identifier],
+                            "instance": True,  # place-holder
+                            "category": [CodeableConcept(**{"coding": [{"code": "drug",
+                                                                        "system": "http://terminology.hl7.org/CodeSystem/substance-category",
+                                                                        "display": "Drug or Medicament"}]})],
+                            "code": code})
+
+    def create_medication(self, compound_name: Optional[str], treatment_type: Optional[str], _substance: Optional[Substance]) -> Medication:
+        code = None
+        med_identifier = None
+        if compound_name:
+            code = CodeableConcept(**{"coding": [
+                {"code": compound_name, "system": "/".join([self.SYSTEM_chEMBL, "compound_name"]),
+                 "display": compound_name}]})
+
+            med_identifier = Identifier(
+                **{"system": self.SYSTEM_chEMBL, "value": compound_name, "use": "official"})
+        else:
+            code = CodeableConcept(**{"coding": [
+                {"code": treatment_type, "system": "/".join([self.SYSTEM_HTAN, "treatment_type"]),
+                 "display": treatment_type}]})
+
+            med_identifier = Identifier(
+                **{"system": self.SYSTEM_HTAN, "value": treatment_type, "use": "official"})
+
+        med_id = self.mint_id(identifier=med_identifier, resource_type="Medication",
+                                  project_id=self.project_id,
+                                  namespace=self.NAMESPACE_HTAN)
+
+        ingredients = []
+        if _substance:
+            ingredients.append(MedicationIngredient(**{"item": CodeableReference(**{"reference": Reference(**{"reference": f"Substance/{_substance.id}"})})}))
+
+        return Medication(**{"id": med_id,
+                             "identifier": [med_identifier],
+                             "code": code,
+                             "ingredient": ingredients})
 
     def write_ndjson(self, entities):
         resource_type = entities[0].resource_type
         entities = [orjson.loads(entity.json()) for entity in entities]
         entities = list({v['id']: v for v in entities}.values())
         utils.fhir_ndjson(entities, "".join([self.out_dir, "/", resource_type, ".ndjson"]))
+
+    def transform_medication(self, cases: pd.DataFrame, db_file_path: str) -> pd.DataFrame:
+        # create medication placeholder for cases where treatment type is defined ex chemo, but medication is not documented
+        # MedicationAdministration - Medication - Substance - SubstanceDefinition
+        drugname_fhir_ids = {}
+        substance_definitions = []
+        substances = []
+        medications = []
+        if not cases["Therapeutic Agents"].isnull().all():
+            cases["Therapeutic Agents"] = cases["Therapeutic Agents"].str.upper()
+            drug_names = list(cases["Therapeutic Agents"][~cases["Therapeutic Agents"].isna()].unique())
+            # drug_names = [d.upper() for d in drug_names]
+            dat = self.get_chembl_compound_info(db_file_path=db_file_path, drug_names=drug_names, limit=1000)
+            drug_df = pd.DataFrame(dat)
+            drug_df.columns = ["CHEMBL_ID", "STANDARD_INCHI", "CANONICAL_SMILES", "COMPOUND_NAME"]
+
+            for drug in drug_names:
+                drug_info = drug_df[drug_df.COMPOUND_NAME.isin([drug])]
+                drug_info["has_info"] = drug_info[['STANDARD_INCHI', 'CANONICAL_SMILES']].notna().any(axis=1)
+                if drug_info["has_info"].any():
+                    drug_representations = self.create_substance_definition_representations(drug_info)
+                    substance_definition = self.create_substance_definition(compound_name=drug,
+                                                                                   representations=drug_representations)
+
+                    if substance_definition:
+                        substance_definitions.append(substance_definition)
+
+                    substance = self.create_substance(compound_name=drug, substance_definition=substance_definition)
+
+                    if substance:
+                        substances.append(substance)
+                        medication = self.create_medication(compound_name=drug, _substance=substance, treatment_type=None)
+                        if medication:
+                            medications.append(medication)
+                            drugname_fhir_ids.update({drug: medication.id})
+
+                else:
+                    medication = self.create_medication(compound_name=drug, _substance=None, treatment_type=None)
+                    medications.append(medication)
+                    drugname_fhir_ids.update({drug: medication.id})
+
+            if substance_definitions:
+                transformer.write_ndjson(substance_definitions)
+            if substances:
+                transformer.write_ndjson(substances)
+
+            cases['Medication_ID'] = cases['Therapeutic Agents'].map(drugname_fhir_ids, na_action='ignore')
+
+        for index, row in cases.iterrows():
+            if pd.isnull(row["Therapeutic Agents"]) and not pd.isnull(row["Treatment Type"]):
+                medication_agent = self.create_medication(compound_name=None, _substance=None, treatment_type=row["Treatment Type"])
+                if medication_agent:
+                    medications.append(medication_agent)
+                    cases.loc[index, 'Medication_ID'] = medication_agent.id
+
+            if row['Therapeutic Agents'] in drugname_fhir_ids.keys():
+                cases.loc[index, 'Medication_ID'] = drugname_fhir_ids[row['Therapeutic Agents']]
+
+        if medications:
+            transformer.write_ndjson(medications)
+        if 'Medication_ID' in cases.columns:
+            return cases
 
 
 class PatientTransformer(HTANTransformer):
@@ -649,7 +793,7 @@ class PatientTransformer(HTANTransformer):
                             "stage": [],
                             })
 
-    def create_medication_administration(self, _row: pd.Series, patient_id: str) -> dict:
+    def create_medication_administration(self, _row: pd.Series, patient_id: str) -> MedicationAdministration:
         # if Treatment Type exists - make MedicationAdministration
         # if Days to Treatment End, then status -> completed, else status unknown
         # if Therapeutic Agents is null, then Medication.code -> snomed_code: Unknown 261665006
@@ -682,19 +826,6 @@ class PatientTransformer(HTANTransformer):
         if not pd.isnull(_row["Days to Treatment End"]) and not pd.isnull(_row["Days to Treatment Start"]):
             timing = int(_row["Days to Treatment End"]) - int(_row["Days to Treatment Start"])
 
-        # TODO: replace with chembl
-        # substance_definition = SubstanceDefinition(**{})
-        # substance = Substance(**{})
-
-        medication_identifier = Identifier(
-            **{"system": self.SYSTEM_HTAN, "use": "official",
-               "value": medication_code.coding[0].display})
-        medication_id = self.mint_id(identifier=medication_identifier,
-                                     resource_type="Medication",
-                                     project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
-
-        medication = Medication(**{"id": medication_id, "identifier": [medication_identifier], "code": medication_code})
-
         medication_admin_identifier = Identifier(
             **{"system": self.SYSTEM_HTAN, "use": "official",
                "value": "-".join([_row["Atlas Name"], _row["HTAN Participant ID"], _row["Treatment Type"]])})
@@ -706,16 +837,13 @@ class PatientTransformer(HTANTransformer):
                 "status": status,
                 "occurenceDateTime": "2024-10-8T10:30:00.724446-05:00",
                 "category": [CodeableConcept(**{"coding": [{"code": _row["Treatment Type"],
-                                                            "system": "/".join([self.SYSTEM_HTAN,"Treatment_Type"]) ,
+                                                            "system": "/".join([self.SYSTEM_HTAN, "Treatment_Type"]) ,
                                                             "display": _row["Treatment Type"]}]})],
                 "medication": CodeableReference(**{"concept": medication_code, "reference": Reference(
-                    **{"reference": f"Medication/{medication.id}"})}),
+                    **{"reference": f"Medication/{_row['Medication_ID']}"})}),
                 "subject": Reference(**{"reference": f"Patient/{patient_id}"})}
-        medication_admin = MedicationAdministration(**data)
 
-        return {"medication_admin": medication_admin,
-                "medication": medication, "substance": substance,
-                "substance_definition": substance_definition}
+        return MedicationAdministration(**data)
 
 
 class SpecimenTransformer(HTANTransformer):
@@ -873,9 +1001,14 @@ class DocumentReferenceTransformer(HTANTransformer):
 
 # 2 Projects that don't have files download or cds manifest SRRS and TNP_TMA (Oct/2024)
 # 12/14 total Atlas
-atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford", "TNP_SARDANA",
-               "Vanderbilt"]
+# TNP_SARDANA drug name syntax error
+atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford",
+              "Vanderbilt"]
+
 # atlas_name = ["OHSU"]
+db_path = '../../bmeg_backup_0516/bmeg-etl_chembl/source/chembl/chembl_34/chembl_34_sqlite/chembl_34.db'
+
+
 for name in atlas_name:
     print(f"Transforming {name}")
 
@@ -901,7 +1034,10 @@ for name in atlas_name:
     encounters = []
     observations = []
     med_admins = []
-    med = []
+
+    if not cases["Therapeutic Agents"].isnull().all() or not cases["Treatment Type"].isnull().all():
+        cases = transformer.transform_medication(cases, db_file_path=db_path)
+
     for index, row in cases.iterrows():
         research_study = patient_transformer.create_researchstudy(_row=row)
 
@@ -945,22 +1081,20 @@ for name in atlas_name:
                             observations.append(condition_observation)
 
                 if not pd.isnull(row["Treatment Type"]):
-                    med_admin_dict = patient_transformer.create_medication_administration(_row=row,
-                                                                                          patient_id=patient.id)
-                    if med_admin_dict["medication_admin"]:
-                        med_admins.append(med_admin_dict["medication_admin"])
+                    med_admin = patient_transformer.create_medication_administration(_row=row,
+                                                                                     patient_id=patient.id)
+                    if med_admin:
+                        med_admins.append(med_admin)
                         med_admin_observation = patient_transformer.create_observation(_row=row, patient=None,
                                                                                        official_focus="MedicationAdministration",
                                                                                        focus=[Reference(**{
-                                                                                           "reference": f"MedicationAdministration/{med_admin_dict["medication_admin"].id}"})],
+                                                                                           "reference": f"MedicationAdministration/{med_admin.id}"})],
                                                                                        patient_id=patient.id,
                                                                                        specimen=None, components=None,
                                                                                        category=None,
                                                                                        relax=False)
                         if med_admin_observation:
                             observations.append(med_admin_observation)
-                    if med_admin_dict["medication"]:
-                        med.append(med_admin_dict["medication"])
 
     specimens = []
     for specimen_index, specimen_row in htan_biospecimens.iterrows():
@@ -1035,9 +1169,11 @@ for name in atlas_name:
         transformer.write_ndjson(document_references)
     if med_admins:
         transformer.write_ndjson(med_admins)
-    if med:
-        transformer.write_ndjson(med)
+
 
     # participant ids from specimen identifiers
     # print(transformer.decipher_htan_id(htan_biospecimens["HTAN Biospecimen ID"][0]))
     # print(transformer.decipher_htan_id(cases["HTAN Participant ID"][0]))
+
+# make all possible medications in cases
+# point to the medication in MedicationAdministartion - Medication -> Substance -> SubstanceDefination 0...* [representaiton.format representation.string]

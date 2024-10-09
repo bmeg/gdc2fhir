@@ -1208,30 +1208,17 @@ def get_chembl_compound_info(db_file_path: str, drug_names: list, limit: int) ->
     drug_names_tuple = tuple([x.upper() for x in drug_names])
 
     query = f"""
-    SELECT 
-        a.MOLREGNO,
-        a.PREF_NAME,
+    SELECT DISTINCT 
         a.CHEMBL_ID,
-        a.MAX_PHASE,
-        a.STRUCTURE_TYPE,
         c.STANDARD_INCHI,
-        c.STANDARD_INCHI_KEY,
         c.CANONICAL_SMILES,
-        d.DOC_ID,
-        d.PUBMED_ID,
-        d.DOI,
-        cr.SRC_ID,
-        cr.SRC_COMPOUND_ID, 
-        sr.SRC_SHORT_NAME, 
-        sr.SRC_DESCRIPTION
+        cr.COMPOUND_NAME
     FROM 
         MOLECULE_DICTIONARY as a
     LEFT JOIN 
         COMPOUND_STRUCTURES as c ON a.MOLREGNO = c.MOLREGNO
     LEFT JOIN 
         ACTIVITIES as p ON a.MOLREGNO = p.MOLREGNO
-    LEFT JOIN 
-        DOCS as d ON p.DOC_ID = d.DOC_ID
     LEFT JOIN 
         compound_records as cr ON a.MOLREGNO = cr.MOLREGNO
     LEFT JOIN
