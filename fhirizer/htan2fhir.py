@@ -1,5 +1,6 @@
 import uuid
 import json
+import warnings
 
 import numpy as np
 import orjson
@@ -306,7 +307,7 @@ class HTANTransformer:
         observation_fields = []
 
         if official_focus in ["Patient", "Condition"]:
-            mappings = transformer.cases_mappings()
+            mappings = self.cases_mappings()
             code = {
                 "coding": [
                     {
@@ -319,11 +320,11 @@ class HTANTransformer:
             }
 
         elif official_focus in ["MedicationAdministration"]:
-            mappings = transformer.cases_mappings()
+            mappings = self.cases_mappings()
             code = self.med_admin_code
 
         elif official_focus in ["DocumentReference"]:
-            mappings = transformer.files_mappings()
+            mappings = self.files_mappings()
             code = {
                 "coding": [
                     {
@@ -336,7 +337,7 @@ class HTANTransformer:
             }
 
         elif official_focus in ["Specimen"]:
-            mappings = transformer.biospecimen_mappings()
+            mappings = self.biospecimen_mappings()
             code = {
                 "coding": [
                     {
@@ -538,9 +539,9 @@ class HTANTransformer:
                     drugname_fhir_ids.update({drug: medication.id})
 
             if substance_definitions:
-                transformer.write_ndjson(substance_definitions)
+                self.write_ndjson(substance_definitions)
             if substances:
-                transformer.write_ndjson(substances)
+                self.write_ndjson(substances)
 
             cases['Medication_ID'] = cases['Therapeutic Agents'].map(drugname_fhir_ids, na_action='ignore')
 
@@ -555,7 +556,7 @@ class HTANTransformer:
                 cases.loc[index, 'Medication_ID'] = drugname_fhir_ids[row['Therapeutic Agents']]
 
         if medications:
-            transformer.write_ndjson(medications)
+            self.write_ndjson(medications)
         if 'Medication_ID' in cases.columns:
             return cases
 
@@ -610,7 +611,7 @@ class PatientTransformer(HTANTransformer):
 
     def patient_observation(self, patient: Patient, _row: pd.Series) -> Observation:
         patient_observation_fields = []
-        for field, fhir_map, use, focus in self.get_fields_by_fhir_map(transformer.cases_mappings(),
+        for field, fhir_map, use, focus in self.get_fields_by_fhir_map(self.cases_mappings(),
                                                                        "Observation.component"):
             if focus == "Patient":
                 patient_observation_fields.append(field)
@@ -1001,179 +1002,173 @@ class DocumentReferenceTransformer(HTANTransformer):
 
 # 2 Projects that don't have files download or cds manifest SRRS and TNP_TMA (Oct/2024)
 # 12/14 total Atlas
-# TNP_SARDANA drug name syntax error
-atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford",
-              "Vanderbilt"]
+def htan2fhir(verbose):
+    warnings.filterwarnings('ignore')
+    atlas_name = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford",
+                  "Vanderbilt"]
+    # TNP_SARDANA drug name syntax error
+    db_path = str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'chembl_resources' / 'chembl_34.db'))
 
-# atlas_name = ["OHSU"]
-db_path = '../../bmeg_backup_0516/bmeg-etl_chembl/source/chembl/chembl_34/chembl_34_sqlite/chembl_34.db'
+    for name in atlas_name:
+        if verbose:
+            print(f"Transforming {name}")
 
+        transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=verbose)
+        patient_transformer = PatientTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
+                                                 verbose=verbose)
+        specimen_transformer = SpecimenTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
+                                                   verbose=verbose)
+        documentreference_transformer = DocumentReferenceTransformer(subprogram_name=name,
+                                                                     out_dir=f"./projects/HTAN/{name}/META",
+                                                                     verbose=verbose)
 
-for name in atlas_name:
-    print(f"Transforming {name}")
+        patient_demographics_df = transformer.patient_demographics
+        cases = transformer.cases
+        htan_biospecimens = transformer.biospecimens
+        files = transformer.files
+        files_drs_meta = transformer.files_drs_meta
 
-    transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=False)
-    patient_transformer = PatientTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
-                                             verbose=False)
-    specimen_transformer = SpecimenTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
-                                               verbose=False)
-    documentreference_transformer = DocumentReferenceTransformer(subprogram_name=name,
-                                                                 out_dir=f"./projects/HTAN/{name}/META",
-                                                                 verbose=False)
+        patients = []
+        research_studies = []
+        research_subjects = []
+        conditions = []
+        encounters = []
+        observations = []
+        med_admins = []
 
-    patient_demographics_df = transformer.patient_demographics
-    cases = transformer.cases
-    htan_biospecimens = transformer.biospecimens
-    files = transformer.files
-    files_drs_meta = transformer.files_drs_meta
+        if not cases["Therapeutic Agents"].isnull().all() or not cases["Treatment Type"].isnull().all():
+            cases = transformer.transform_medication(cases, db_file_path=db_path)
 
-    patients = []
-    research_studies = []
-    research_subjects = []
-    conditions = []
-    encounters = []
-    observations = []
-    med_admins = []
+        for index, row in cases.iterrows():
+            research_study = patient_transformer.create_researchstudy(_row=row)
 
-    if not cases["Therapeutic Agents"].isnull().all() or not cases["Treatment Type"].isnull().all():
-        cases = transformer.transform_medication(cases, db_file_path=db_path)
+            if research_study:
+                research_studies.append(transformer.program_research_study)
+                research_studies.append(research_study)
 
-    for index, row in cases.iterrows():
-        research_study = patient_transformer.create_researchstudy(_row=row)
+                patient_row = cases.iloc[index][patient_demographics_df.columns]
+                patient = patient_transformer.create_patient(_row=patient_row)
+                patient_obs = patient_transformer.patient_observation(patient=patient, _row=row)
+                if patient_obs:
+                    observations.append(patient_obs)
+                if patient:
+                    patients.append(patient)
+                    # print(f"HTAN FHIR Patient: {patient.json()}")
+                    # print(f"HTAN FHIR Patient Observation: {patient_obs.json()}")
 
-        if research_study:
-            research_studies.append(transformer.program_research_study)
-            research_studies.append(research_study)
+                    research_subject = patient_transformer.create_researchsubject(patient, research_study)
+                    if research_subject:
+                        research_subjects.append(research_subject)
 
-            patient_row = cases.iloc[index][patient_demographics_df.columns]
-            patient = patient_transformer.create_patient(_row=patient_row)
-            patient_obs = patient_transformer.patient_observation(patient=patient, _row=row)
-            if patient_obs:
-                observations.append(patient_obs)
-            if patient:
-                patients.append(patient)
-                # print(f"HTAN FHIR Patient: {patient.json()}")
-                # print(f"HTAN FHIR Patient Observation: {patient_obs.json()}")
+                    encounter = patient_transformer.create_encounter(_row=row, patient=patient, condition=None,
+                                                                     procedure=None)
+                    if encounter:
+                        encounters.append(encounter)
+                        condition = patient_transformer.create_condition(_row=row, patient=patient, encounter=encounter,
+                                                                         body_structure=None)
 
-                research_subject = patient_transformer.create_researchsubject(patient, research_study)
-                if research_subject:
-                    research_subjects.append(research_subject)
+                        if condition:
+                            conditions.append(condition)
 
-                encounter = patient_transformer.create_encounter(_row=row, patient=patient, condition=None,
-                                                                 procedure=None)
-                if encounter:
-                    encounters.append(encounter)
-                    condition = patient_transformer.create_condition(_row=row, patient=patient, encounter=encounter,
-                                                                     body_structure=None)
+                            condition_observation = patient_transformer.create_observation(_row=row, patient=patient,
+                                                                                           patient_id=patient.id,
+                                                                                           official_focus="Condition",
+                                                                                           focus=[Reference(**{
+                                                                                               "reference": f"Condition/{condition.id}"})],
+                                                                                           specimen=None, components=None,
+                                                                                           category=None,
+                                                                                           relax=False)
+                            if condition_observation:
+                                observations.append(condition_observation)
 
-                    if condition:
-                        conditions.append(condition)
+                    if not pd.isnull(row["Treatment Type"]):
+                        med_admin = patient_transformer.create_medication_administration(_row=row,
+                                                                                         patient_id=patient.id)
+                        if med_admin:
+                            med_admins.append(med_admin)
+                            med_admin_observation = patient_transformer.create_observation(_row=row, patient=None,
+                                                                                           official_focus="MedicationAdministration",
+                                                                                           focus=[Reference(**{
+                                                                                               "reference": f"MedicationAdministration/{med_admin.id}"})],
+                                                                                           patient_id=patient.id,
+                                                                                           specimen=None, components=None,
+                                                                                           category=None,
+                                                                                           relax=False)
+                            if med_admin_observation:
+                                observations.append(med_admin_observation)
 
-                        condition_observation = patient_transformer.create_observation(_row=row, patient=patient,
-                                                                                       patient_id=patient.id,
-                                                                                       official_focus="Condition",
-                                                                                       focus=[Reference(**{
-                                                                                           "reference": f"Condition/{condition.id}"})],
-                                                                                       specimen=None, components=None,
-                                                                                       category=None,
-                                                                                       relax=False)
-                        if condition_observation:
-                            observations.append(condition_observation)
+        specimens = []
+        for specimen_index, specimen_row in htan_biospecimens.iterrows():
+            # specimen_row = htan_biospecimens.iloc[specimen_index]
+            specimen = specimen_transformer.create_specimen(_row=specimen_row)
+            if specimen:
+                specimens.append(specimen)
 
-                if not pd.isnull(row["Treatment Type"]):
-                    med_admin = patient_transformer.create_medication_administration(_row=row,
-                                                                                     patient_id=patient.id)
-                    if med_admin:
-                        med_admins.append(med_admin)
-                        med_admin_observation = patient_transformer.create_observation(_row=row, patient=None,
-                                                                                       official_focus="MedicationAdministration",
-                                                                                       focus=[Reference(**{
-                                                                                           "reference": f"MedicationAdministration/{med_admin.id}"})],
-                                                                                       patient_id=patient.id,
-                                                                                       specimen=None, components=None,
-                                                                                       category=None,
-                                                                                       relax=False)
-                        if med_admin_observation:
-                            observations.append(med_admin_observation)
+                participant_id = specimen_transformer.decipher_htan_id(specimen_row["HTAN Biospecimen ID"])[
+                    "participant_id"]
+                assert participant_id, f"Specimen {specimen_row["HTAN Biospecimen ID"]} does not have a patient participant associated with it."
 
-    specimens = []
-    for specimen_index, specimen_row in htan_biospecimens.iterrows():
-        # specimen_row = htan_biospecimens.iloc[specimen_index]
-        specimen = specimen_transformer.create_specimen(_row=specimen_row)
-        if specimen:
-            specimens.append(specimen)
+                specimen_participant_id = specimen_transformer.get_patient_id(participant_id=participant_id)
+                specimen_observation = specimen_transformer.create_observation(_row=specimen_row, patient=None,
+                                                                               official_focus="Specimen",
+                                                                               focus=[Reference(**{
+                                                                                   "reference": f"Specimen/{specimen.id}"})],
+                                                                               patient_id=specimen_participant_id,
+                                                                               specimen=specimen, components=None,
+                                                                               category=transformer.lab_category,
+                                                                               relax=False)
+                if specimen_observation:
+                    observations.append(specimen_observation)
 
-            participant_id = specimen_transformer.decipher_htan_id(specimen_row["HTAN Biospecimen ID"])[
-                "participant_id"]
-            assert participant_id, f"Specimen {specimen_row["HTAN Biospecimen ID"]} does not have a patient participant associated with it."
+        specimen_ids = [s.id for s in specimens]
+        patient_ids = [p.id for p in patients]
+        document_references = []
+        for document_reference_index, document_reference_row in files_drs_meta.iterrows():
+            docref = documentreference_transformer.create_document_reference(_row=document_reference_row,
+                                                                             specimen_ids=specimen_ids)
+            if docref:
+                document_references.append(docref)
 
-            specimen_participant_id = specimen_transformer.get_patient_id(participant_id=participant_id)
-            specimen_observation = specimen_transformer.create_observation(_row=specimen_row, patient=None,
-                                                                           official_focus="Specimen",
-                                                                           focus=[Reference(**{
-                                                                               "reference": f"Specimen/{specimen.id}"})],
-                                                                           patient_id=specimen_participant_id,
-                                                                           specimen=specimen, components=None,
-                                                                           category=transformer.lab_category,
-                                                                           relax=False)
-            if specimen_observation:
-                observations.append(specimen_observation)
+                docref_patient_id = None
+                if 'HTAN Participant ID' in document_reference_row.keys() and pd.isnull(
+                        document_reference_row['HTAN Participant ID']):
+                    docref_patient = documentreference_transformer.get_patient_id(
+                        participant_id=document_reference_row['HTAN Participant ID'])
+                    if docref_patient in patient_ids:
+                        docref_patient_id = docref_patient
+                # else:
+                #    print(f"HTAN {name} is missing patient reference in files")
 
-    specimen_ids = [s.id for s in specimens]
-    patient_ids = [p.id for p in patients]
-    document_references = []
-    for document_reference_index, document_reference_row in files_drs_meta.iterrows():
-        docref = documentreference_transformer.create_document_reference(_row=document_reference_row,
-                                                                         specimen_ids=specimen_ids)
-        if docref:
-            document_references.append(docref)
+                document_reference_observation = documentreference_transformer.create_observation(
+                    _row=document_reference_row, patient=None,
+                    official_focus="DocumentReference",
+                    focus=[Reference(**{
+                        "reference": f"DocumentReference/{docref.id}"})],
+                    patient_id=docref_patient_id,
+                    specimen=None, components=None,
+                    category=transformer.lab_category,
+                    relax=True)
 
-            docref_patient_id = None
-            if 'HTAN Participant ID' in document_reference_row.keys() and pd.isnull(
-                    document_reference_row['HTAN Participant ID']):
-                docref_patient = documentreference_transformer.get_patient_id(
-                    participant_id=document_reference_row['HTAN Participant ID'])
-                if docref_patient in patient_ids:
-                    docref_patient_id = docref_patient
-            # else:
-            #    print(f"HTAN {name} is missing patient reference in files")
+                if document_reference_observation:
+                    observations.append(document_reference_observation)
 
-            document_reference_observation = documentreference_transformer.create_observation(
-                _row=document_reference_row, patient=None,
-                official_focus="DocumentReference",
-                focus=[Reference(**{
-                    "reference": f"DocumentReference/{docref.id}"})],
-                patient_id=docref_patient_id,
-                specimen=None, components=None,
-                category=transformer.lab_category,
-                relax=True)
+        if research_subjects:
+            transformer.write_ndjson(research_subjects)
+        if research_studies:
+            transformer.write_ndjson(research_studies)
+        if patients:
+            transformer.write_ndjson(patients)
+        if encounters:
+            transformer.write_ndjson(encounters)
+        if conditions:
+            transformer.write_ndjson(conditions)
+        if observations:
+            transformer.write_ndjson(observations)
+        if specimens:
+            transformer.write_ndjson(specimens)
+        if document_references:
+            transformer.write_ndjson(document_references)
+        if med_admins:
+            transformer.write_ndjson(med_admins)
 
-            if document_reference_observation:
-                observations.append(document_reference_observation)
-
-    if research_subjects:
-        transformer.write_ndjson(research_subjects)
-    if research_studies:
-        transformer.write_ndjson(research_studies)
-    if patients:
-        transformer.write_ndjson(patients)
-    if encounters:
-        transformer.write_ndjson(encounters)
-    if conditions:
-        transformer.write_ndjson(conditions)
-    if observations:
-        transformer.write_ndjson(observations)
-    if specimens:
-        transformer.write_ndjson(specimens)
-    if document_references:
-        transformer.write_ndjson(document_references)
-    if med_admins:
-        transformer.write_ndjson(med_admins)
-
-
-    # participant ids from specimen identifiers
-    # print(transformer.decipher_htan_id(htan_biospecimens["HTAN Biospecimen ID"][0]))
-    # print(transformer.decipher_htan_id(cases["HTAN Participant ID"][0]))
-
-# make all possible medications in cases
-# point to the medication in MedicationAdministartion - Medication -> Substance -> SubstanceDefination 0...* [representaiton.format representation.string]
+# for i in $(ls projects/HTAN); do g3t meta validate projects/HTAN/$i/META; done

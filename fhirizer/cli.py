@@ -1,5 +1,4 @@
-from fhirizer import utils, mapping, entity2fhir
-from fhirizer import icgc2fhir
+from fhirizer import utils, mapping, entity2fhir, icgc2fhir, htan2fhir
 import click
 from pathlib import Path
 
@@ -141,10 +140,10 @@ def convert(name, in_path, out_path, verbose):
               show_default=True,
               help='entity name to map - project, case, file of GDC or cellosaurus')
 @click.option('--out_dir', cls=NotRequiredIf,
-              not_required_if='icgc',
+              not_required_if='htan',
               help='Directory path to save mapped FHIR ndjson files.')
 @click.option('--entity_path', cls=NotRequiredIf,
-              not_required_if='icgc',
+              not_required_if='htan',
               help='Path to GDC entity with mapped FHIR like keys (converted file via convert). '
                    'or Cellosaurus ndjson file of human cell-lines of interest')
 @click.option('--icgc', help='Name of the ICGC project to FHIRize.')
@@ -153,10 +152,13 @@ def convert(name, in_path, out_path, verbose):
 @click.option('--convert', is_flag=True, help='Boolean indicating to write converted keys to directory')
 @click.option('--verbose', is_flag=True)
 def generate(name, out_dir, entity_path, icgc, has_files, convert, verbose):
-    name_list = ['project', 'case', 'file', 'cellosaurus', 'icgc']
-    assert name in ['project', 'case', 'file', 'cellosaurus', 'icgc'], f'--name is not in {name_list}.'
-    assert Path(out_dir).is_dir(), f"Path {out_dir} is not a valid directory path."
-    assert Path(entity_path).is_file(), f"Path {entity_path} is not a valid file path."
+    name_list = ['project', 'case', 'file', 'cellosaurus', 'icgc', 'htan']
+    assert name in name_list, f'--name is not in {name_list}.'
+    if name != 'htan':
+        assert Path(out_dir).is_dir(), f"Path {out_dir} is not a valid directory path."
+        assert Path(entity_path).is_file(), f"Path {entity_path} is not a valid file path."
+    else:
+        assert Path("./projects/HTAN").is_dir()
 
     if name in 'project':
         entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path, convert=convert, verbose=verbose)
@@ -168,6 +170,8 @@ def generate(name, out_dir, entity_path, icgc, has_files, convert, verbose):
         entity2fhir.cellosaurus2fhir(out_dir=out_dir, path=entity_path)
     if name in 'icgc' and icgc:
         icgc2fhir.icgc2fhir(project_name=icgc, has_files=has_files)
+    if name in 'htan':
+        htan2fhir.htan2fhir(verbose=verbose)
 
 
 if __name__ == '__main__':
