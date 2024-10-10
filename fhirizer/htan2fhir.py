@@ -470,7 +470,10 @@ class HTANTransformer:
                           _substance: Optional[Substance]) -> Medication:
         code = None
         med_identifier = None
+
         if compound_name:
+            if ":" in compound_name:
+                compound_name.replace(":", "_")
             code = CodeableConcept(**{"coding": [
                 {"code": compound_name, "system": "/".join([self.SYSTEM_chEMBL, "compound_name"]),
                  "display": compound_name}]})
@@ -478,6 +481,9 @@ class HTANTransformer:
             med_identifier = Identifier(
                 **{"system": self.SYSTEM_chEMBL, "value": compound_name, "use": "official"})
         else:
+            if ":" in treatment_type:
+                treatment_type.replace(":", "_")
+
             code = CodeableConcept(**{"coding": [
                 {"code": treatment_type, "system": "/".join([self.SYSTEM_HTAN, "treatment_type"]),
                  "display": treatment_type}]})
@@ -516,6 +522,11 @@ class HTANTransformer:
             cases["Therapeutic Agents"] = cases["Therapeutic Agents"].str.upper()
             drug_names = list(cases["Therapeutic Agents"][~cases["Therapeutic Agents"].isna()].unique())
             # drug_names = [d.upper() for d in drug_names]
+
+            for drug_name in drug_names:
+                if ":" in drug_name:
+                    drug_name.replace(":", "_")
+
             dat = self.get_chembl_compound_info(db_file_path=db_file_path, drug_names=drug_names, limit=1000)
             drug_df = pd.DataFrame(dat)
             drug_df.columns = ["CHEMBL_ID", "STANDARD_INCHI", "CANONICAL_SMILES", "COMPOUND_NAME"]
@@ -740,10 +751,10 @@ class PatientTransformer(HTANTransformer):
                })
 
     def create_condition(self, _row: pd.Series, patient: Patient, encounter: Encounter,
-                         body_structure: Optional[BodyStructure], stage_observation: Optional[Observation]) -> Optional[Condition]:
+                         body_structure: Optional[BodyStructure], stage_observation: Optional[Observation]) -> dict:
         primary_diagnosis = _row.get("Primary Diagnosis")
         if pd.isnull(primary_diagnosis):
-            return None
+            return {}
 
         # identifier string = project / patient / primary diagnosis
         condition_identifier = Identifier(**{"system": self.SYSTEM_HTAN,
@@ -785,12 +796,8 @@ class PatientTransformer(HTANTransformer):
             patient_body_site_cc = [CodeableConcept(**{"coding": [{"code": patient_body_site,
                                                                    "system": self.SYSTEM_HTAN,
                                                                    "display": patient_body_site}]})]
-        condition_stage = []
-        stages = self.create_stage(_row=_row, stage_observation=None)
-        if stages:
-            condition_stage = stages
 
-        return Condition(**{"id": condition_id,
+        condition = Condition(**{"id": condition_id,
                             "identifier": [condition_identifier],
                             "code": CodeableConcept(**{"coding": [{"code": primary_diagnosis,
                                                                    "system": self.SYSTEM_HTAN,
@@ -803,9 +810,19 @@ class PatientTransformer(HTANTransformer):
                             "recordedDate": recorded_date,
                             "bodySite": patient_body_site_cc,
                             # "bodyStructure": patient_body_structure_ref,
-                            "encounter": Reference(**{"reference": f"Encounter/{encounter.id}"}),
-                            "stage": condition_stage,
+                            "encounter": Reference(**{"reference": f"Encounter/{encounter.id}"})
                             })
+
+        stage_observations_dict = self.create_stage_observation(_row=_row, condition=condition, patient=patient)
+
+        condition_stage = []
+        stages = self.create_stage(_row=_row, stage_observations_dict=stage_observations_dict)
+        if stages:
+            condition_stage = stages
+
+        condition.stage = condition_stage
+
+        return {"condition": condition, "stage_observations_dict": stage_observations_dict}
 
     def create_medication_administration(self, _row: pd.Series, patient_id: str) -> MedicationAdministration:
         # if Treatment Type exists - make MedicationAdministration
@@ -859,11 +876,8 @@ class PatientTransformer(HTANTransformer):
 
         return MedicationAdministration(**data)
 
-    def create_stage(self, _row: pd.Series, stage_observation: Optional[Observation]) -> list:
-
+    def create_stage(self, _row: pd.Series, stage_observations_dict: dict) -> list:
         assessment = []
-        if stage_observation:
-            assessment.append(Reference(**{"reference": f"Observation/{stage_observation.id}"}))
 
         # find fields w Condition.stage.summary mappings
         cancer_pathological_staging = utils._read_json(str(Path(importlib.resources.files(
@@ -873,6 +887,7 @@ class PatientTransformer(HTANTransformer):
         for field, fhir_map, use, focus in self.get_fields_by_fhir_map(self.cases_mappings(),
                                                                        "Condition.stage.summary"):
             if "Tumor Grade" in field or "AJCC Pathologic" in field:
+                # TODO: check for 8th/other edition
                 stage_fields.append(field)
 
         if stage_fields:
@@ -880,6 +895,10 @@ class PatientTransformer(HTANTransformer):
 
         stages = []
         for stage_field in stage_fields:
+            stage_name = "_".join(stage_field.lower().split(" "))
+            stage_observation = stage_observations_dict.get(stage_name)
+            if stage_observation:
+                assessment = [Reference(**{"reference": f"Observation/{stage_observation.id}"})]
             if not pd.isnull(_row[stage_field]):
 
                 types = []
@@ -891,7 +910,8 @@ class PatientTransformer(HTANTransformer):
                                        "display": stage_info["stage_type_sctid_display"]}
 
                         summary_htan_system = {"code": _row[stage_field],
-                                               "system": "/".join([self.SYSTEM_HTAN, "_".join(stage_field.lower().split(" "))]),
+                                               "system": "/".join(
+                                                   [self.SYSTEM_HTAN, "_".join(stage_field.lower().split(" "))]),
                                                "display": _row[stage_field]}
 
                         summary_snomed_system = {"code": stage_info["sctid"],
@@ -903,7 +923,7 @@ class PatientTransformer(HTANTransformer):
                         summaries.append(summary_snomed_system)
                 if not types:
                     types.append({"code": "_".join(stage_field.lower().split(" ")),
-                                  "system": "/".join([self.SYSTEM_HTAN,  "_".join(stage_field.lower().split(" "))]),
+                                  "system": "/".join([self.SYSTEM_HTAN, "_".join(stage_field.lower().split(" "))]),
                                   "display": "_".join(stage_field.lower().split(" "))})
 
                     summaries.append({"code": _row[stage_field],
@@ -918,6 +938,116 @@ class PatientTransformer(HTANTransformer):
                     stages.append(condition_stage)
 
         return stages
+
+    def create_stage_observation(self, _row: pd.Series, condition: Condition, patient: Patient) -> dict:
+        observation_dict = {}
+
+        # find fields w Condition.stage.summary mappings
+        cancer_pathological_staging = utils._read_json(str(Path(importlib.resources.files(
+            'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'diagnosis' / 'cancer_pathological_staging.json')))
+
+        ajcc_pathologic_stage_fields = []
+        grade_stage_fields = []
+        for field, fhir_map, use, focus in self.get_fields_by_fhir_map(self.cases_mappings(),
+                                                                       "Condition.stage.summary"):
+            if "AJCC Pathologic" in field:
+                # TODO: check for 8th/other edition
+                ajcc_pathologic_stage_fields.append(field)
+            elif "Tumor Grade" in field:
+                grade_stage_fields.append(field)
+
+        _ajcc_pathologic_stage = None
+        if pd.notna(ajcc_pathologic_stage_fields).all():
+            _ajcc_pathologic_stage = _row[ajcc_pathologic_stage_fields]
+
+        member = []
+        if pd.notna(ajcc_pathologic_stage_fields).all():
+            # print(_ajcc_pathologic_stage, type(_ajcc_pathologic_stage))
+            for col_name, value in _ajcc_pathologic_stage.items():
+                # "these are children stages and are members"
+                if value and col_name != "AJCC Pathologic Stage":
+                    stage = "_".join(col_name.lower().split(" "))
+                    identifier_value = "-".join([patient.identifier[0].value, condition.id, stage])
+                    observation_identifier = Identifier(**{"system": self.SYSTEM_HTAN,
+                                                           "use": "official",
+                                                           "value": identifier_value})
+                    observation_id = self.mint_id(identifier=observation_identifier, resource_type="Observation",
+                                                  project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
+
+                    code = None
+                    value_code = None
+                    for stage_info in cancer_pathological_staging:
+                        if value == stage_info["value"]:
+                            code = CodeableConcept(**{"coding": [{"code": stage_info["stage_type_sctid"],
+                                                                  "system": self.SYSTEM_SNOME,
+                                                                  "display": stage_info["stage_type_sctid_display"]}]})
+
+                            value_code = CodeableConcept(**{"coding": [{"code": stage_info["sctid"],
+                                                                        "system": self.SYSTEM_SNOME,
+                                                                        "display": stage_info["sctid_display"]}]})
+                    if not code:
+                        code = CodeableConcept(**{"coding": [{"code": stage,
+                                                              "system": "/".join([self.SYSTEM_HTAN, stage]),
+                                                              "display": stage}]})
+
+                        value_code = CodeableConcept(**{"coding": [{"code": value,
+                                                                    "system": "/".join(
+                                                                        [self.SYSTEM_HTAN, stage]),
+                                                                    "display": value}]})
+
+                    _stage_observation = Observation(**{"id": observation_id,
+                                                        "identifier": [observation_identifier],
+                                                        "status": "final",
+                                                        "code": code,
+                                                        "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
+                                                        "focus": [
+                                                            Reference(**{"reference": f"Condition/{condition.id}"})],
+                                                        "valueCodeableConcept": value_code})
+                    observation_dict.update({stage: _stage_observation})
+                    member.append(Reference(**{"reference": f"Observation/{_stage_observation.id}"}))
+            # print(member)
+
+            if not pd.isnull(_row["AJCC Pathologic Stage"]):
+                stage = "_".join("AJCC Pathologic Stage".lower().split(" "))
+                identifier_value = "-".join([patient.identifier[0].value, condition.id, stage])
+                observation_identifier = Identifier(**{"system": self.SYSTEM_HTAN,
+                                                       "use": "official",
+                                                       "value": identifier_value})
+                observation_id = self.mint_id(identifier=observation_identifier, resource_type="Observation",
+                                              project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
+
+                code = None
+                value_code = None
+                for stage_info in cancer_pathological_staging:
+                    if _row["AJCC Pathologic Stage"] == stage_info["value"]:
+                        code = CodeableConcept(**{"coding": [{"code": stage_info["stage_type_sctid"],
+                                                              "system": self.SYSTEM_SNOME,
+                                                              "display": stage_info["stage_type_sctid_display"]}]})
+
+                        value_code = CodeableConcept(**{"coding": [{"code": stage_info["sctid"],
+                                                                    "system": self.SYSTEM_SNOME,
+                                                                    "display": stage_info["sctid_display"]}]})
+                if not code:
+                    code = CodeableConcept(**{"coding": [{"code": stage,
+                                                          "system": "/".join([self.SYSTEM_HTAN, stage]),
+                                                          "display": stage}]})
+
+                    value_code = CodeableConcept(**{"coding": [{"code": _row["AJCC Pathologic Stage"],
+                                                                "system": "/".join(
+                                                                    [self.SYSTEM_HTAN, stage]),
+                                                                "display": _row["AJCC Pathologic Stage"]}]})
+
+                _stage_observation = Observation(**{"id": observation_id,
+                                                    "identifier": [observation_identifier],
+                                                    "status": "final",
+                                                    "code": code,
+                                                    "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
+                                                    "focus": [Reference(**{"reference": f"Condition/{condition.id}"})],
+                                                    "valueCodeableConcept": value_code,
+                                                    "hasMember": member})
+                observation_dict.update({stage: _stage_observation})
+
+        return observation_dict
 
 
 class SpecimenTransformer(HTANTransformer):
@@ -1143,17 +1273,22 @@ def htan2fhir(verbose, entity_atlas_name):
                                                                      procedure=None)
                     if encounter:
                         encounters.append(encounter)
-                        condition = patient_transformer.create_condition(_row=row, patient=patient, encounter=encounter,
+                        condition_dict = patient_transformer.create_condition(_row=row, patient=patient, encounter=encounter,
                                                                          body_structure=None, stage_observation=None)
 
-                        if condition:
-                            conditions.append(condition)
+                        if condition_dict and condition_dict["condition"]:
+                            conditions.append(condition_dict["condition"])
+
+                            if condition_dict["stage_observations_dict"]:
+                                for key, obs_item in condition_dict["stage_observations_dict"].items():
+                                    if obs_item:
+                                        observations.append(obs_item)
 
                             condition_observation = patient_transformer.create_observation(_row=row, patient=patient,
                                                                                            patient_id=patient.id,
                                                                                            official_focus="Condition",
                                                                                            focus=[Reference(**{
-                                                                                               "reference": f"Condition/{condition.id}"})],
+                                                                                               "reference": f"Condition/{condition_dict["condition"].id}"})],
                                                                                            specimen=None,
                                                                                            components=None,
                                                                                            category=None,

@@ -105,6 +105,12 @@ Example run:
   ```
    fhirizer generate --name htan 
   ```
+
+G3T validate FHIRized ndjson files: 
+```commandline
+for i in $(ls projects/HTAN); do echo $i && g3t meta validate projects/HTAN/$i/META; done
+```
+
 ### Constructing GDC maps cli cmds 
 
 initialize initial structure of project, case, or file to add Maps
