@@ -1008,6 +1008,7 @@ def htan2fhir(verbose):
                   "Vanderbilt"]
     # TNP_SARDANA drug name syntax error
     db_path = str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'chembl_resources' / 'chembl_34.db'))
+    assert Path(importlib.resources.files('fhirizer').parent / 'resources' / 'chembl_resources' / 'chembl_34.db').is_file(), f"chEMBL db file chembl_34.db does not exist."
 
     for name in atlas_name:
         if verbose:

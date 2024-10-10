@@ -7,26 +7,29 @@ class NotRequiredIf(click.Option):
     def __init__(self, *args, **kwargs):
         self.not_required_if = kwargs.pop('not_required_if')
         assert self.not_required_if, "'not_required_if' parameter required"
+        if isinstance(self.not_required_if, str):
+            self.not_required_if = [self.not_required_if]
         kwargs['help'] = (kwargs.get('help', '') +
                           ' NOTE: This argument is mutually exclusive with %s' %
-                          self.not_required_if
+                          ', '.join(self.not_required_if)
                           ).strip()
         super(NotRequiredIf, self).__init__(*args, **kwargs)
 
     def handle_parse_result(self, ctx, opts, args):
         we_are_present = self.name in opts
-        other_present = self.not_required_if in opts
+        others_present = [opt for opt in self.not_required_if if opt in opts]
 
-        if other_present:
+        if others_present:
             if we_are_present:
                 raise click.UsageError(
                     "Illegal usage: `%s` is mutually exclusive with `%s`" % (
-                        self.name, self.not_required_if))
+                        self.name, ', '.join(others_present)))
             else:
                 self.prompt = None
 
         return super(NotRequiredIf, self).handle_parse_result(
             ctx, opts, args)
+
 
 
 @click.group()
@@ -140,12 +143,12 @@ def convert(name, in_path, out_path, verbose):
               show_default=True,
               help='entity name to map - project, case, file of GDC or cellosaurus')
 @click.option('--out_dir', cls=NotRequiredIf,
-              not_required_if='htan',
+              not_required_if=['htan', 'icgc'],
               help='Directory path to save mapped FHIR ndjson files.')
 @click.option('--entity_path', cls=NotRequiredIf,
-              not_required_if='htan',
-              help='Path to GDC entity with mapped FHIR like keys (converted file via convert). '
-                   'or Cellosaurus ndjson file of human cell-lines of interest')
+              not_required_if=['htan', 'icgc'],
+              help='Path to GDC entity with mapped FHIR like keys (converted file via convert) or Cellosaurus ndjson '
+                   'file of human cell-lines of interest.')
 @click.option('--icgc', help='Name of the ICGC project to FHIRize.')
 @click.option('--has_files', is_flag=True, help='Boolean indicating file metatda via new argo site is available @ '
                                                 'ICGC/{project}/data directory to FHIRize.')
