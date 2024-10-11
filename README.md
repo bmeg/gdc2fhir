@@ -8,7 +8,7 @@
 
 
 ### Project overview:
-Transforms and harmonizes data from Genomic Data Commons (GDC), Cellosaurus cell-lines, and International Cancer Genome Consortium (ICGC) repositories into 🔥 FHIR (Fast Healthcare Interoperability Resources) format.
+Transforms and harmonizes data from Genomic Data Commons (GDC), Cellosaurus cell-lines, International Cancer Genome Consortium (ICGC), and Human Tumor Atlas Network (HTAN) repositories into 🔥 FHIR (Fast Healthcare Interoperability Resources) format.
 
 - #### GDC study simplified FHIR graph 
 ![mapping](./imgs/gdc_tcga_study_example_fhir_graph.png)
@@ -75,6 +75,47 @@ Detailed step-by-step guide on FHIRizing data for a project's study can be found
   ```
    fhirizer generate --name icgc --icgc <ICGC_project_name> --has_files
   ```
+- HTAN
+  
+FHIRizing HTAN depends on the: 
+1. Folder hierarchy with naming conventions as below and existance of raw data pulled from HTAN
+```
+fhirizer/
+|-- projects/
+|   └── HTAN/ 
+|         └── OHSU/
+|               |-- raw/ 
+|               |    |--  files/
+|               |    |      |-- table_data.tsv
+|               |    |      └── cds_manifest.csv
+|               |    |--  biospecimens/table_data.tsv
+|               |    └──  cases/table_data.tsv
+|               └── META/
+```
+2. existance of chembl DB file
+```
+fhirizer/
+|-- resources/
+      └── chembl_resources/chembl_34.db
+
+```
+
+Example run: 
+
+for all available atlases under ./projects/HTAN/<Atlas name>
+  ```
+   fhirizer generate --name htan 
+  ```
+or for one or more: 
+```commandline
+fhirizer generate --name htan --atlas "OHSU,DFCI,WUSTL,BU,CHOP"
+```
+
+G3T validate FHIRized ndjson files: 
+```commandline
+for i in $(ls projects/HTAN); do echo $i && g3t meta validate projects/HTAN/$i/META; done
+```
+
 ### Constructing GDC maps cli cmds 
 
 initialize initial structure of project, case, or file to add Maps
@@ -145,9 +186,20 @@ fhirizer/
 |   |           |-- filess.ndjson
 |   |           └── META/
 |   └── ICGC/
-|         └── ICGC-STUDY/ 
-|                |-- data/
-|                └── META/
+|   |     └── ICGC-STUDY/ 
+|   |            |-- data/
+|   |            └── META/
+|   └── HTAN/ 
+|         └── OHSU/
+|               |-- raw/ 
+|               |    |--  files/
+|               |    |      |-- table_data.tsv
+|               |    |      └── cds_manifest.csv
+|               |    |--  biospecimens/table_data.tsv
+|               |    └──  cases/table_data.tsv
+|               └── META/
+|              
+|              
 |--README.md
 └── setup.py
 ```
