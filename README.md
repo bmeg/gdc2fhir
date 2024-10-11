@@ -102,9 +102,14 @@ fhirizer/
 
 Example run: 
 
+for all available atlases under ./projects/HTAN/<Atlas name>
   ```
    fhirizer generate --name htan 
   ```
+or for one or more: 
+```commandline
+fhirizer generate --name htan --atlas "OHSU,DFCI,WUSTL,BU,CHOP"
+```
 
 G3T validate FHIRized ndjson files: 
 ```commandline

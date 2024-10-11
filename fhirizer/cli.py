@@ -149,12 +149,16 @@ def convert(name, in_path, out_path, verbose):
               not_required_if=['htan', 'icgc'],
               help='Path to GDC entity with mapped FHIR like keys (converted file via convert) or Cellosaurus ndjson '
                    'file of human cell-lines of interest.')
+@click.option('--atlas', required=False,
+              default=['OHSU'],
+              show_default=True,
+              help='List of atlas project(s) name to FHIRize. ex. ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford"]')
 @click.option('--icgc', help='Name of the ICGC project to FHIRize.')
 @click.option('--has_files', is_flag=True, help='Boolean indicating file metatda via new argo site is available @ '
                                                 'ICGC/{project}/data directory to FHIRize.')
 @click.option('--convert', is_flag=True, help='Boolean indicating to write converted keys to directory')
 @click.option('--verbose', is_flag=True)
-def generate(name, out_dir, entity_path, icgc, has_files, convert, verbose):
+def generate(name, out_dir, entity_path, icgc, has_files, atlas, convert, verbose):
     name_list = ['project', 'case', 'file', 'cellosaurus', 'icgc', 'htan']
     assert name in name_list, f'--name is not in {name_list}.'
     if name != 'htan':
@@ -174,7 +178,14 @@ def generate(name, out_dir, entity_path, icgc, has_files, convert, verbose):
     if name in 'icgc' and icgc:
         icgc2fhir.icgc2fhir(project_name=icgc, has_files=has_files)
     if name in 'htan':
-        htan2fhir.htan2fhir(verbose=verbose)
+        if isinstance(atlas, str):
+            if "," in atlas:
+                atlas = atlas.split(",")
+                atlas = [a.strip() for a in atlas]
+            else:
+                atlas = [atlas]
+
+        htan2fhir.htan2fhir(entity_atlas_name=atlas, verbose=verbose)
 
 
 if __name__ == '__main__':
