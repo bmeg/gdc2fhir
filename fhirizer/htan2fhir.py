@@ -42,6 +42,9 @@ from fhir.resources.medication import Medication, MedicationIngredient
 from fhir.resources.substance import Substance, SubstanceIngredient
 from fhir.resources.substancedefinition import SubstanceDefinition, SubstanceDefinitionStructure, \
     SubstanceDefinitionStructureRepresentation, SubstanceDefinitionName
+from fhir.resources.timing import Timing, TimingRepeat
+from fhir.resources.range import Range
+from fhir.resources.quantity import Quantity
 
 
 # File data on synapse after authentication
@@ -853,9 +856,9 @@ class PatientTransformer(HTANTransformer):
                                                              "system": self.SYSTEM_HTAN,
                                                              "display": _row["Therapeutic Agents"]}]})
 
-        timing = 0
+        timing = Timing(**{"repeat": TimingRepeat(**{"boundsRange": Range(**{"low": Quantity(**{"value": 0, "high": Quantity(**{"value": 1})})})}) })# place holder - required by FHIR
         if not pd.isnull(_row["Days to Treatment End"]) and not pd.isnull(_row["Days to Treatment Start"]):
-            timing = int(_row["Days to Treatment End"]) - int(_row["Days to Treatment Start"])
+            timing = Timing(**{"repeat": TimingRepeat(**{"boundsRange": Range(**{"low": Quantity(**{"value": int(_row["Days to Treatment Start"])}), "high": Quantity(**{"value": int(_row["Days to Treatment End"])})})})})
 
         medication_admin_identifier = Identifier(
             **{"system": self.SYSTEM_HTAN, "use": "official",
@@ -866,7 +869,7 @@ class PatientTransformer(HTANTransformer):
         data = {"id": medication_admin_id,
                 "identifier": [medication_admin_identifier],
                 "status": status,
-                "occurenceDateTime": "2024-10-8T10:30:00.724446-05:00",
+                "occurenceTiming": timing,
                 "category": [CodeableConcept(**{"coding": [{"code": _row["Treatment Type"],
                                                             "system": "/".join([self.SYSTEM_HTAN, "Treatment_Type"]),
                                                             "display": _row["Treatment Type"]}]})],
