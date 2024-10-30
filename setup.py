@@ -32,7 +32,7 @@ setup(
         'iteration_utilities',
         'icd10-cm',
         'beautifulsoup4',
-        'gen3-tracker>=0.0.4rc36',
+        'gen3-tracker>=0.0.7rc1',
         'fhir.resources>=7.1.0'  # FHIR® (Release R5, version 5.0.0)
     ],
     package_data={
