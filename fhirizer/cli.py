@@ -1,6 +1,10 @@
+import sys
+import os
+from gen3_tracker.common import ERROR_COLOR, INFO_COLOR
 from fhirizer import utils, mapping, entity2fhir, icgc2fhir, htan2fhir
 import click
 from pathlib import Path
+import importlib.resources
 
 
 class NotRequiredIf(click.Option):
@@ -186,6 +190,28 @@ def generate(name, out_dir, entity_path, icgc, has_files, atlas, convert, verbos
                 atlas = [atlas]
 
         htan2fhir.htan2fhir(entity_atlas_name=atlas, verbose=verbose)
+
+
+@cli.command('validate')
+@click.option("-d", "--debug", is_flag=True, default=False, required=False,
+              help="Run in debug mode.")
+@click.option("-p", "--path", default=None, required=True,
+              help="Path to read the FHIR NDJSON files.")
+def validate(debug: bool, path):
+    """Validate the output FHIR ndjson files."""
+    from gen3_tracker.git import run_command
+    assert Path(path).is_dir(), f"META folder path {path} is not a valid directory."
+
+    try:
+        from gen3_tracker.meta.validator import validate as validate_dir
+        from halo import Halo
+        with Halo(text='Validating', spinner='line', placement='right', color='white'):
+            result = validate_dir(path)
+        click.secho(result.resources, fg=INFO_COLOR, file=sys.stderr)
+    except Exception as e:
+        click.secho(str(e), fg=ERROR_COLOR, file=sys.stderr)
+        if debug:
+            raise
 
 
 if __name__ == '__main__':
