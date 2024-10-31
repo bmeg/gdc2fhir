@@ -1211,7 +1211,7 @@ case_maps = [Map(
 
     Map(
         source=Source(
-            name='diagnoses.days_to_death'
+            name='demographic.days_to_death'
         ),
         destination=Destination(
             name='Observation.survey.days_to_death'

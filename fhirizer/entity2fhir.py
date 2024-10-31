@@ -374,6 +374,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             race_ethnicity_sex.append(ethnicity_ext)
 
     if 'demographic' in case.keys() and 'Patient.extension.age' in case['demographic'].keys():
+
         # alternative way(s) of defining age vs birthDate in patient field
         # "url": "http://hl7.org/fhir/us/icsr-ae-reporting/StructureDefinition/icsr-ext-ageattimeofonset"
         if case['demographic']['Patient.extension.age']:
@@ -429,6 +430,60 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     gdc_condition_annotation = None
     condition_codes_list = []
     staging_observations = []
+
+    obs_survey = []
+
+    if 'demographic' in case.keys() and 'Observation.survey.days_to_death' in case['demographic'].keys() and \
+            case['demographic'][
+                'Observation.survey.days_to_death']:
+        observation_days_to_death_identifier = Identifier(
+            **{"system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
+               "value": case['demographic']['Observation.survey.days_to_death']})
+        observation_days_to_death_id = utils.mint_id(
+            identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
+            project_id=project_id,
+            namespace=NAMESPACE_GDC)
+
+        days_to_death = {
+            "resourceType": "Observation",
+            "id": observation_days_to_death_id,
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "survey",
+                            "display": "survey"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "https://ontobee.org/",
+                        "code": "NCIT_C156419",
+                        "display": "Days between Diagnosis and Death"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "/".join(["Patient", patient.id])
+            },
+            "focus": [{
+                "reference": "/".join(["Patient", patient.id])
+            }],
+            "valueQuantity": {
+                "value": int(case['demographic'][
+                                 'Observation.survey.days_to_death']),
+                "unit": "days",
+                "system": "http://unitsofmeasure.org",
+                "code": "d"
+            }
+        }
+        obs_survey.append(days_to_death)
+
     if 'diagnoses' in case.keys() and isinstance(case['diagnoses'], list):
         case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
 
@@ -509,61 +564,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             "Observation.survey.updated_datetime"],
                                                                 component_type='dateTime',
                                                                 system="https://gdc.cancer.gov/demographic")
-
-    obs_survey = []
-    if 'diagnoses' in case.keys() and 'Observation.survey.days_to_death' in case['diagnoses'].keys() and \
-            case['diagnoses'][
-                'Observation.survey.days_to_death']:
-
-        observation_days_to_death_identifier = Identifier(
-            **{"system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
-               "value": case['diagnoses']['Observation.survey.days_to_death']})
-        observation_days_to_death_id = utils.mint_id(
-            identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
-            project_id=project_id,
-            namespace=NAMESPACE_GDC)
-
-        days_to_death = {
-            "resourceType": "Observation",
-            "id": observation_days_to_death_id,
-            "status": "final",
-            "category": [
-                {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                            "code": "survey",
-                            "display": "survey"
-                        }
-                    ]
-                }
-            ],
-            "code": {
-                "coding": [
-                    {
-                        "system": "https://ontobee.org/",
-                        "code": "NCIT_C156419",
-                        "display": "Days between Diagnosis and Death"
-                    }
-                ]
-            },
-            "subject": {
-                "reference": "/".join(["Patient", patient.id])
-            },
-            "focus": [{
-                "reference": "/".join(["Patient", patient.id])
-            }],
-            "valueQuantity": {
-                "value": int(case['diagnoses'][
-                                 'Observation.survey.days_to_death']),
-                "unit": "days",
-                "system": "http://unitsofmeasure.org",
-                "code": "d"
-            }
-        }
-        if survey_updated_datetime_component:
-            days_to_death['component'] = [survey_updated_datetime_component]
-        obs_survey.append(days_to_death)
 
     if 'diagnoses' in case.keys() and 'Observation.survey.days_to_last_follow_up' in case['diagnoses'].keys() and \
             case['diagnoses'][
