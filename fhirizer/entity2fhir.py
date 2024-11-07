@@ -82,7 +82,8 @@ def assign_fhir_for_project(project, disease_types=disease_types):
     if 'ResearchStudy.id' in project.keys() and project['ResearchStudy.id'] in ["EXCEPTIONAL_RESPONDERS-ER",
                                                                                 "CDDP_EAGLE-1"]:
         pr_ident = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "program_id"]),
-                                 "value": project['ResearchStudy']['ResearchStudy.id']})
+                                 "value": project['ResearchStudy']['ResearchStudy.id'],
+                                 "use": "official"})
         pl.append(pr_ident)
         rs.identifier = [pr_ident]
         rs.id = utils.mint_id(
@@ -93,7 +94,8 @@ def assign_fhir_for_project(project, disease_types=disease_types):
 
     else:
         p_ident = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "project_id"]),
-                                "value": project['ResearchStudy.id']})
+                                "value": project['ResearchStudy.id'],
+                                "use": "official"})
         rs.identifier = [p_ident]
         rs.id = utils.mint_id(
             identifier=p_ident,
@@ -103,11 +105,13 @@ def assign_fhir_for_project(project, disease_types=disease_types):
         pl.append(p_ident)
 
     rs.name = project['ResearchStudy.name']
+    rs.title = project['ResearchStudy.name']
 
     if 'ResearchStudy.identifier' in project.keys() and project['ResearchStudy.identifier']:
         ident = Identifier.construct()
         ident.value = project['ResearchStudy.identifier']
         ident.system = "".join(["https://gdc.cancer.gov/", "project"])
+        ident.use = "official"
         pl.append(ident)
         rs.identifier = pl
 
@@ -132,18 +136,21 @@ def assign_fhir_for_project(project, disease_types=disease_types):
     rs_parent.status = project['ResearchStudy.status']  # child's status?
     rs_parent.id = utils.mint_id(
         identifier=Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "program_id"]),
-                                 "value": project['ResearchStudy']['ResearchStudy.id']}),
+                                 "value": project['ResearchStudy']['ResearchStudy.id'],
+                                 "use": "official"}),
         resource_type="ResearchStudy",
         project_id=project_id,
         namespace=NAMESPACE_GDC)
 
     rs_parent.name = project['ResearchStudy']['ResearchStudy.name']
+    rs_parent.title = project['ResearchStudy']['ResearchStudy.name']
 
     if 'ResearchStudy.identifier' in project['ResearchStudy'].keys() and project['ResearchStudy'][
         'ResearchStudy.identifier']:
         ident_parent = Identifier.construct()
         ident_parent.value = project['ResearchStudy']['ResearchStudy.identifier']
         ident_parent.system = "".join(["https://gdc.cancer.gov/", "project"])
+        ident_parent.use = "official"
         rs_parent.identifier = [ident_parent]
 
     if 'summary' in project.keys():
@@ -177,7 +184,8 @@ def create_imaging_study(slide, patient, sample):
 
     img_identifier = Identifier(
         **{"system": "".join(["https://gdc.cancer.gov/", "slide_id"]),
-           "value": slide["ImagingStudy.id"]})
+           "value": slide["ImagingStudy.id"],
+           "use": "official"})
     img.id = utils.mint_id(identifier=img_identifier, resource_type="ImagingStudy",
                            project_id=project_id,
                            namespace=NAMESPACE_GDC)
@@ -250,6 +258,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     patient_id_identifier = Identifier.construct()
     patient_id_identifier.value = case['Patient.id']
     patient_id_identifier.system = "".join(["https://gdc.cancer.gov/", "case_id"])
+    patient_id_identifier.use = "official"
 
     patient.id = utils.mint_id(identifier=patient_id_identifier, resource_type="Patient", project_id=project_id,
                                namespace=NAMESPACE_GDC)
@@ -265,6 +274,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         patient_submitter_id_identifier = Identifier.construct()
         patient_submitter_id_identifier.value = case['Patient.identifier']
         patient_submitter_id_identifier.system = "".join(["https://gdc.cancer.gov/", "case_submitter_id"])
+        patient_submitter_id_identifier.use = "secondary"
 
         patient.identifier = [patient_submitter_id_identifier, patient_id_identifier]
     else:
@@ -413,11 +423,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         encounter = Encounter.construct()
         encounter.status = 'completed'
         encounter_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "tissue_source_site"]),
-                                             "value": case['tissue_source_site']['Encounter.id']})
+                                             "value": case['tissue_source_site']['Encounter.id'],
+                                             "use": "official"})
 
         encounter.id = utils.mint_id(
-            identifier=Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "tissue_source_site"]),
-                                     "value": case['tissue_source_site']['Encounter.id']}),
+            identifier=encounter_identifier,
             resource_type="Encounter",
             project_id=project_id,
             namespace=NAMESPACE_GDC)
@@ -438,7 +448,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 'Observation.survey.days_to_death']:
         observation_days_to_death_identifier = Identifier(
             **{"system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
-               "value": case['demographic']['Observation.survey.days_to_death']})
+               "value": case['demographic']['Observation.survey.days_to_death'],
+               "use": "official"})
         observation_days_to_death_id = utils.mint_id(
             identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
             project_id=project_id,
@@ -493,7 +504,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         observation.status = 'final'
 
         observation_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
-                                               "value": case['diagnoses']['Condition.id']})
+                                               "value": case['diagnoses']['Condition.id'],
+                                               "use": "official"})
         observation.id = utils.mint_id(identifier=[observation_identifier, patient_id_identifier],
                                        resource_type="Observation",
                                        project_id=project_id,
@@ -571,7 +583,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         observation_days_to_last_follow_up_identifier = Identifier(
             **{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_follow_up"]),
-               "value": case['diagnoses']['Observation.survey.days_to_last_follow_up']})
+               "value": case['diagnoses']['Observation.survey.days_to_last_follow_up'],
+               "use": "official"})
         observation_days_to_last_follow_up_id = utils.mint_id(
             identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier],
             resource_type="Observation",
@@ -624,7 +637,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
         condition = Condition.construct()
         condition_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
-                                             "value": case['diagnoses']['Condition.id']})
+                                             "value": case['diagnoses']['Condition.id'],
+                                             "use": "official"})
         condition.id = utils.mint_id(identifier=condition_identifier, resource_type="Condition", project_id=project_id,
                                      namespace=NAMESPACE_GDC)
 
@@ -641,7 +655,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         if 'Condition.identifier' in case.keys() and case['Condition.identifier']:
             condition.identifier = [Identifier(**{"value": case['Condition.identifier'][0], "system": "".join(
-                ["https://gdc.cancer.gov/", "submitter_diagnosis_id"])})]
+                ["https://gdc.cancer.gov/", "submitter_diagnosis_id"]), "use": "official"})]
 
         if gdc_condition_annotation:
             cc = CodeableConcept.construct()
@@ -822,7 +836,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 })
                                 stage_obs_identifier = Identifier(
                                     **{"system": "".join(["https://gdc.cancer.gov/", "ajcc_pathologic_stage"]),
-                                       "value": f"{patient.identifier[0]}-{condition.identifier[0]}-{dict_item['value']}"})
+                                       "value": f"{patient.identifier[0]}-{condition.identifier[0]}-{dict_item['value']}",
+                                       "use": "official"})
                                 stage_obs.identifier = [stage_obs_identifier]
                                 stage_obs.id = utils.mint_id(identifier=stage_obs_identifier,
                                                              resource_type="Observation", project_id=project_id,
@@ -833,7 +848,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     if not parent_stage_observation.id:
                         stage_parent_obs_identifier = Identifier(
                             **{"system": "".join(["https://gdc.cancer.gov/", "ajcc_pathologic_stage"]),
-                               "value": f"{patient.identifier[0]}-{condition.identifier[0]}-Not Available"})
+                               "value": f"{patient.identifier[0]}-{condition.identifier[0]}-Not Available",
+                               "use": "official"})
                         parent_stage_observation.identifier = [stage_parent_obs_identifier]
                         parent_stage_observation.id = utils.mint_id(identifier=stage_parent_obs_identifier,
                                                                     resource_type="Observation",
@@ -967,7 +983,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                    })
                 grade_obs_identifier = Identifier(
                     **{"system": "".join(["https://gdc.cancer.gov/", "ajcc_pathologic_stage"]),
-                       "value": f"{patient.identifier[0]}-{condition.identifier[0]}-{case["diagnoses"]["Observation.code.nci_tumor_grade"]}"})
+                       "value": f"{patient.identifier[0]}-{condition.identifier[0]}-{case["diagnoses"]["Observation.code.nci_tumor_grade"]}",
+                       "use": "official"})
                 grade_observation.identifier = [grade_obs_identifier]
                 grade_observation.id = utils.mint_id(identifier=grade_obs_identifier,
                                                      resource_type="Observation", project_id=project_id,
@@ -989,7 +1006,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     med = Medication.construct()
                     med_identifier = Identifier(
                         **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
-                           "value": treatment['MedicationAdministration.id']})
+                           "value": treatment['MedicationAdministration.id'],
+                           "use": "official"})
                     med.identifier = [med_identifier]
                     med.id = utils.mint_id(identifier=med_identifier, resource_type="Medication",
                                            project_id=project_id,
@@ -1031,7 +1049,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     medadmin_category_code = None
                     med_admin_identifier = Identifier(
                         **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
-                           "value": treatment['MedicationAdministration.id']})
+                           "value": treatment['MedicationAdministration.id'],
+                           "use": "official"})
                     if 'MedicationAdministration.treatment_type' in treatment.keys() and treatment[
                         'MedicationAdministration.treatment_type']:
                         medadmin_category_code = CodeableConcept.construct()
@@ -1077,7 +1096,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
             sm_ob_identifier = Identifier(
                 **{"system": "".join(["https://gdc.cancer.gov/", "exposures.pack_years_smoked"]),
-                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
+                   "value": case['exposures'][0]['Observation.patient.exposure_id'],
+                   "use": "official"})
             sm_obs['id'] = utils.mint_id(identifier=sm_ob_identifier, resource_type="Observation",
                                          project_id=project_id,
                                          namespace=NAMESPACE_GDC)
@@ -1121,7 +1141,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             al_obs = copy.deepcopy(social_histody_alcohol_observation)
             al_ob_identifier = Identifier(
                 **{"system": "".join(["https://gdc.cancer.gov/", "exposures.alcohol_history"]),
-                   "value": case['exposures'][0]['Observation.patient.exposure_id']})
+                   "value": case['exposures'][0]['Observation.patient.exposure_id'],
+                   "use": "official"})
             al_obs['id'] = utils.mint_id(identifier=al_ob_identifier, resource_type="Observation",
                                          project_id=project_id,
                                          namespace=NAMESPACE_GDC)
@@ -1155,7 +1176,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                 specimen_identifier = Identifier(
                     **{"system": "".join(["https://gdc.cancer.gov/", "sample_id"]),
-                       "value": sample["Specimen.id.sample"]})
+                       "value": sample["Specimen.id.sample"],
+                       "use": "official"})
                 specimen.id = utils.mint_id(identifier=specimen_identifier, resource_type="Specimen",
                                             project_id=project_id,
                                             namespace=NAMESPACE_GDC)
@@ -1266,7 +1288,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                             portion_specimen_identifier = Identifier(
                                 **{"system": "".join(["https://gdc.cancer.gov/", "portion_id"]),
-                                   "value": portion["Specimen.id.portion"]})
+                                   "value": portion["Specimen.id.portion"],
+                                   "use": "official"})
                             portion_specimen.id = utils.mint_id(identifier=portion_specimen_identifier,
                                                                 resource_type="Specimen",
                                                                 project_id=project_id,
@@ -1349,7 +1372,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         slides_observation['id'] = utils.mint_id(identifier=Identifier(
                                             **{"system": "".join(["https://gdc.cancer.gov/", "slide_id"]),
-                                               "value": slide["ImagingStudy.id"]}), resource_type="Observation",
+                                               "value": slide["ImagingStudy.id"],
+                                               "use": "official"}), resource_type="Observation",
                                             project_id=project_id,
                                             namespace=NAMESPACE_GDC)
 
@@ -1372,7 +1396,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                         analyte_specimen_identifier = Identifier(
                                             **{"system": "".join(["https://gdc.cancer.gov/", "analyte_id"]),
-                                               "value": analyte["Specimen.id.analyte"]})
+                                               "value": analyte["Specimen.id.analyte"],
+                                               "use": "official"})
                                         analyte_specimen.id = utils.mint_id(identifier=analyte_specimen_identifier,
                                                                             resource_type="Specimen",
                                                                             project_id=project_id,
@@ -1507,7 +1532,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                                                     aliquot_specimen_identifier = Identifier(
                                                         **{"system": "".join(["https://gdc.cancer.gov/", "aliquot_id"]),
-                                                           "value": aliquot["Specimen.id.aliquot"]})
+                                                           "value": aliquot["Specimen.id.aliquot"],
+                                                           "use": "official"})
                                                     aliquot_specimen.id = utils.mint_id(
                                                         identifier=aliquot_specimen_identifier,
                                                         resource_type="Specimen",
@@ -1993,7 +2019,8 @@ def assign_fhir_for_file(file):
                 read_groups_submitter_id = Identifier(
                     **{"system": "".join(
                         ["https://gdc.cancer.gov/", "files.analysis.metadata.read_groups.submitter_id"]),
-                        "value": observation['Observation.DocumentReference.submitter_id']})
+                        "value": observation['Observation.DocumentReference.submitter_id'],
+                    "use": "official"})
                 identifiers.append(orjson.loads(read_groups_submitter_id.json()))
 
             identifiers.append(orjson.loads(observation_identifier.json()))
@@ -2384,7 +2411,8 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                 if accession["type"] == "primary":
                     patient_identifier = Identifier(
                         **{"system": "https://www.cellosaurus.org/cell-line-primary-accession",
-                           "value": accession["value"]})
+                           "value": accession["value"],
+                           "use": "official"})
                     patient_id = utils.mint_id(identifier=patient_identifier, resource_type="Patient",
                                                project_id=project_id,
                                                namespace=NAMESPACE_CELLOSAURUS)
@@ -2397,6 +2425,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                         ident_identifier = Identifier.construct()
                         ident_identifier.value = patient_identifer
                         ident_identifier.system = "https://www.cellosaurus.org/name-list"
+                        ident_identifier.use = "official"
                         ident_list.append(ident_identifier)
 
                 for xref in cl["xref-list"]:
@@ -2405,12 +2434,14 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                         depmap_identifier.value = xref["accession"]
                         # dep_map_url = xref["url"] # ex. https://depmap.org/portal/cell_line/ACH-000035"
                         depmap_identifier.system = "https://depmap.org/cell_line"
+                        depmap_identifier.use = "secondary"
                         ident_list.append(depmap_identifier)
 
                     if xref["database"] == "Cosmic":
                         cosmic_identifier = Identifier.construct()
                         cosmic_identifier.value = xref["accession"]
                         cosmic_identifier.system = "https://cancer.sanger.ac.uk/cosmic/cell_line"
+                        cosmic_identifier.use = "secondary"
                         ident_list.append(cosmic_identifier)
 
                 if "sex" in cl.keys() and cl["sex"]:
@@ -2426,7 +2457,8 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                         for disease_annotation in cl["disease-list"]:
                             condition_identifier = Identifier(
                                 **{"system": "https://www.cellosaurus.org/disease",
-                                   "value": disease_annotation["accession"]})
+                                   "value": disease_annotation["accession"],
+                                   "use": "official"})
                             condition_id = utils.mint_id(identifier=condition_identifier, resource_type="Condition",
                                                          project_id=project_id,
                                                          namespace=NAMESPACE_CELLOSAURUS)
@@ -2499,7 +2531,8 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                                 parent_identifier = Identifier(
                                     **{"system": "https://www.cellosaurus.org/cell-line-primary-accession",
-                                       "value": parent_cell["accession"]})
+                                       "value": parent_cell["accession"],
+                                       "use": "official"})
                                 parent_id = utils.mint_id(identifier=parent_identifier, resource_type="Specimen",
                                                           project_id=project_id,
                                                           namespace=NAMESPACE_CELLOSAURUS)
@@ -2511,6 +2544,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                 parent_identifier = Identifier.construct()
                                 parent_identifier.value = parent_cell["value"]
                                 parent_identifier.system = "https://www.cellosaurus.org/"
+                                parent_identifier.use = "official"
 
                                 parent_sample = Specimen(
                                     **{"id": parent_id, "identifier": [parent_id_identifier, parent_identifier]})
