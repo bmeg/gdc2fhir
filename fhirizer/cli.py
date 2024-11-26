@@ -6,6 +6,9 @@ from fhirizer import utils, mapping, entity2fhir, icgc2fhir, htan2fhir
 import click
 from pathlib import Path
 import importlib.resources
+import warnings
+
+warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 
 class NotRequiredIf(click.Option):

@@ -1187,13 +1187,17 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 # add sample procedure
                 procedure = Procedure.construct()
                 procedure.status = "completed"
+                procedure.identifier = [Identifier(
+                    **{"system": "".join(["https://gdc.cancer.gov/", "sample_id/patient_id"]),
+                       "value": "/".join([sample["Specimen.id.sample"], patient.id]),
+                       "use": "official"})]
 
-                procedure.id = utils.mint_id(identifier=specimen_identifier, resource_type="Procedure",
+                procedure.id = utils.mint_id(identifier=procedure.identifier, resource_type="Procedure",
                                              project_id=project_id,
                                              namespace=NAMESPACE_GDC)
-                procedure.identifier = [specimen_identifier]
-                procedure.status = "completed"
+
                 procedure.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
+
                 if encounter:
                     procedure.encounter = Reference(**{"reference": "/".join(["Encounter", encounter.id])})
                 procedures.append(procedure)
@@ -1904,6 +1908,15 @@ def assign_fhir_for_file(file):
 
         category.append(cc_es)
 
+    if 'DocumentReference.category.data_type' in file.keys() and file['DocumentReference.category.data_type']:
+        cc_es = CodeableConcept.construct()
+        system = "".join(["https://gdc.cancer.gov/", "data_type"])
+        cc_es.coding = [{'system': system,
+                         'display': file['DocumentReference.category.data_type'],
+                         'code': file['DocumentReference.category.data_type']}]
+
+        category.append(cc_es)
+
     if category:
         document.category = category
 
@@ -1967,18 +1980,6 @@ def assign_fhir_for_file(file):
     if 'Attachment.size' in file.keys() and file['Attachment.size']:
         attachment.size = file['Attachment.size']
 
-    if 'DocumentReference.type' in file.keys() and file['DocumentReference.type']:
-        """
-        cc_type = CodeableConcept.construct()
-        system = "".join(["https://gdc.cancer.gov/", "data_type"])
-        cc_type.coding = [{'system': system,
-                           'display': file['DocumentReference.type'],
-                           'code': file['DocumentReference.type']}]
-
-        document.type = cc_type
-        """
-        attachment.contentType = file['DocumentReference.type']
-
     profile = None
     if 'DocumentReference.content.profile' in file.keys() and file['DocumentReference.content.profile']:
         profile = DocumentReferenceContentProfile.construct()
@@ -1987,13 +1988,16 @@ def assign_fhir_for_file(file):
                                "display": file['DocumentReference.content.profile'],
                                "system": system}
 
+
         cc_type = CodeableConcept.construct()
-        system = "".join(["https://gdc.cancer.gov/", "data_type"])
+        system = "".join(["https://gdc.cancer.gov/", "data_format"])
         cc_type.coding = [{'system': system,
                            'display': file['DocumentReference.content.profile'],
                            'code': file['DocumentReference.content.profile']}]
 
         document.type = cc_type
+
+        attachment.contentType = file['DocumentReference.content.profile']
 
     if profile:
         data = {'attachment': attachment, "profile": [profile]}
