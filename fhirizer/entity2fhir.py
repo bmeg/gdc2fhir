@@ -1954,21 +1954,44 @@ def assign_fhir_for_file(file):
 
                         sample_ref.append(Reference(**{"reference": "/".join(["Specimen", specimen_id])}))
 
+    # keeping code incase - patient comes back on DocumentReference
+    doc_subject_reference = []
     if patients and len(patients) == 1:
-        document.subject = patients[0]
+        doc_subject_reference.append(patients[0])
     else:
-        members = [GroupMember(**{'entity': p}) for p in patients]
-        group_id = utils.mint_id(identifier=document.identifier, resource_type="Group",
+        patient_members = [GroupMember(**{'entity': p}) for p in patients]
+        patient_reference_ids = [p.reference for p in patients]
+        patient_group_identifier = Identifier(
+            **{"system": "".join(["https://gdc.cancer.gov/", "patient_group"]),
+               "value": "/".join(patient_reference_ids + [document.identifier[0].value]),
+               "use": "official"})
+
+        patient_group_id = utils.mint_id(identifier=patient_group_identifier, resource_type="Group",
                                  project_id=project_id,
                                  namespace=NAMESPACE_GDC)
 
-        group = Group(**{'id': group_id, "identifier": document.identifier, "membership": 'definitional',
-                         'member': members, "type": "person"})
+        patient_group = Group(**{'id': patient_group_id, "identifier": [patient_group_identifier], "membership": 'definitional',
+                         'member': patient_members, "type": "person"})
+        doc_subject_reference.append(Reference(**{"reference": "/".join(["Group", patient_group.id])}))
+        # document.subject = Reference(**{"reference": "/".join(["Group", patient_group.id])})
+
+    if sample_ref and len(sample_ref) == 1:
+        document.subject = sample_ref[0]
+    else:
+        specimen_members = [GroupMember(**{'entity': s}) for s in sample_ref]
+        reference_ids = [s.reference for s in sample_ref]
+        group_identifier = Identifier(
+            **{"system": "".join(["https://gdc.cancer.gov/", "sample_group"]),
+               "value": "/".join(reference_ids + ["Documentreference/" + document.identifier[0].value]),
+               "use": "official"})
+
+        group_id = utils.mint_id(identifier=group_identifier, resource_type="Group",
+                                 project_id=project_id,
+                                 namespace=NAMESPACE_GDC)
+        group = Group(**{'id': group_id, "identifier": [group_identifier], "membership": 'definitional',
+                         'member': specimen_members, "type": "specimen"})
 
         document.subject = Reference(**{"reference": "/".join(["Group", group.id])})
-
-    if sample_ref:
-        document.basedOn = sample_ref
 
     attachment = Attachment.construct()
     attachment.url = "https://api.gdc.cancer.gov/data/{}".format(file['DocumentReference.id'])
@@ -2031,7 +2054,7 @@ def assign_fhir_for_file(file):
             docref_observation['identifier'] = identifiers
             docref_observation['focus'] = [
                 orjson.loads(Reference(**{"reference": "/".join(["DocumentReference", document.id])}).json())]
-            docref_observation['subject'] = orjson.loads(document.subject.json())
+            docref_observation['subject'] = orjson.loads(doc_subject_reference[0].json())
 
             obs_components = []
             if 'Observation.DocumentReference.adapter_name' in observation.keys() and observation[
