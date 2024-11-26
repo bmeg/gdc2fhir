@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 from gen3_tracker.common import ERROR_COLOR, INFO_COLOR
 from fhirizer import utils, mapping, entity2fhir, icgc2fhir, htan2fhir
 import click
@@ -193,14 +194,18 @@ def generate(name, out_dir, entity_path, icgc, has_files, atlas, convert, verbos
 
 
 @cli.command('validate')
-@click.option("-d", "--debug", is_flag=True, default=False, required=False,
+@click.option("-d", "--debug", is_flag=True, default=False,
               help="Run in debug mode.")
-@click.option("-p", "--path", default=None, required=True,
+@click.option("-p", "--path", default=None,
               help="Path to read the FHIR NDJSON files.")
 def validate(debug: bool, path):
     """Validate the output FHIR ndjson files."""
     from gen3_tracker.git import run_command
-    assert Path(path).is_dir(), f"META folder path {path} is not a valid directory."
+
+    if not path:
+        path = str(Path(importlib.resources.files('cda2fhir').parent / 'data' / 'META'))
+    if not os.path.isdir(path):
+        raise ValueError(f"Path: '{path}' is not a valid directory.")
 
     try:
         from gen3_tracker.meta.validator import validate as validate_dir
@@ -208,6 +213,11 @@ def validate(debug: bool, path):
         with Halo(text='Validating', spinner='line', placement='right', color='white'):
             result = validate_dir(path)
         click.secho(result.resources, fg=INFO_COLOR, file=sys.stderr)
+        # print exceptions, set exit code to 1 if there are any
+        for _ in result.exceptions:
+            click.secho(f"{_.path}:{_.offset} {_.exception} {json.dumps(_.json_obj, separators=(',', ':'))}", fg=ERROR_COLOR, file=sys.stderr)
+        if result.exceptions:
+            sys.exit(1)
     except Exception as e:
         click.secho(str(e), fg=ERROR_COLOR, file=sys.stderr)
         if debug:
