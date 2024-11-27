@@ -1278,7 +1278,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             if "Observation.portions.weight" in portion.keys() and portion[
                                 "Observation.portions.weight"]:
                                 c = utils.get_component('weight', value=portion["Observation.portions.weight"],
-                                                        component_type='int')
+                                                        component_type='float')
                                 portions_observation_components.append(c)
                             if "Observation.portions.is_ffpe" in portion.keys() and isinstance(
                                     portion["Observation.portions.is_ffpe"], bool):
