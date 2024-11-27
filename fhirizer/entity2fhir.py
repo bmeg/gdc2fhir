@@ -319,35 +319,17 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         race_ext = Extension.construct()
         race_ext.url = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+        race_ext.valueString = case['demographic']['Extension.extension:USCoreRaceExtension']
 
         race_code = ""
         race_display = ""
         race_system = ""
         for r in race:
-            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension'] and re.match(
-                    r"[ \r\n\t\S]+", r['ombCategory-code']):
-                race_code = r['ombCategory-code']
-                race_system = r['ombCategory-system']
-                race_display = r['ombCategory-display']
-                gdc_race_code = r['term_id']
-                gdc_race_system = r['description_url']
-                gdc_race_display = r['value']
-                race_ext.valueString = r['ombCategory-display']
+            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension'] and re.match(r"[ \r\n\t\S]+", r['ombCategory-code']):
+                race_ext.valueString =  r['value']
 
-        if race_code:
-            race_ext.extension = [{"url": "ombCategory",
-                                   "valueCoding": {
-                                       "system": race_system,
-                                       "code": race_code,
-                                       "display": race_display
-                                   }},
-                                  {"url": "https://ncit.nci.nih.gov",
-                                   "valueCoding": {
-                                       "system": gdc_race_system,
-                                       "code": gdc_race_code,
-                                       "display": gdc_race_display
-                                   }}]
-        race_ethnicity_sex.append(race_ext)
+        if race_ext not in race_ethnicity_sex:
+            race_ethnicity_sex.append(race_ext)
 
     if 'demographic' in case.keys() and 'Extension:extension.USCoreEthnicity' in case['demographic'].keys():
         ethnicity_ext = Extension.construct()
@@ -358,43 +340,23 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         ethnicity_system = ""
         for e in ethnicity:
             if e['value'] in case['demographic']['Extension:extension.USCoreEthnicity']:
-                ethnicity_code = e['ombCategory-code']
-                ethnicity_system = e['ombCategory-system']
-                ethnicity_display = e['ombCategory-display']
-                gdc_ethnicity_code = e['term_id']
-                gdc_ethnicity_system = e['description_url']
-                gdc_ethnicity_display = e['value']
-                ethnicity_ext.valueString = e['ombCategory-display']
                 ethnicity_ext.valueString = e['value']
 
-        if ethnicity_code:
-            ethnicity_ext.extension = [{"url": "ombCategory",
-                                        "valueCoding": {
-                                            "system": ethnicity_system,
-                                            "code": ethnicity_code,
-                                            "display": ethnicity_display
-                                        }},
-                                       {"url": "https://ncit.nci.nih.gov",
-                                        "valueCoding": {
-                                            "system": gdc_ethnicity_system,
-                                            "code": gdc_ethnicity_code,
-                                            "display": gdc_ethnicity_display
-                                        }}]
-
+        if ethnicity_ext not in race_ethnicity_sex:
             race_ethnicity_sex.append(ethnicity_ext)
 
     if 'demographic' in case.keys() and 'Patient.extension.age' in case['demographic'].keys():
-
         # alternative way(s) of defining age vs birthDate in patient field
         # "url": "http://hl7.org/fhir/us/icsr-ae-reporting/StructureDefinition/icsr-ext-ageattimeofonset"
         if case['demographic']['Patient.extension.age']:
             age_at_index = case['demographic']['Patient.extension.age']
             age = {"url": "http://hl7.org/fhir/SearchParameter/patient-extensions-Patient-age",
                    'valueQuantity': {"value": age_at_index}}
-            race_ethnicity_sex.append(age)
+            if age not in race_ethnicity_sex:
+                race_ethnicity_sex.append(age)
 
     if race_ethnicity_sex:
-        patient.extension = race_ethnicity_sex
+         patient.extension = race_ethnicity_sex
 
     # gdc project for patient
     project_relations = assign_fhir_for_project(project=case['ResearchStudy'], disease_types=disease_types)
