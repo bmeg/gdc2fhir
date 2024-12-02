@@ -325,8 +325,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         race_display = ""
         race_system = ""
         for r in race:
-            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension'] and re.match(r"[ \r\n\t\S]+", r['ombCategory-code']):
-                race_ext.valueString =  r['value']
+            if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension'] and re.match(
+                    r"[ \r\n\t\S]+", r['ombCategory-code']):
+                race_ext.valueString = r['value']
 
         if race_ext not in race_ethnicity_sex:
             race_ethnicity_sex.append(race_ext)
@@ -356,7 +357,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 race_ethnicity_sex.append(age)
 
     if race_ethnicity_sex:
-         patient.extension = race_ethnicity_sex
+        patient.extension = race_ethnicity_sex
 
     # gdc project for patient
     project_relations = assign_fhir_for_project(project=case['ResearchStudy'], disease_types=disease_types)
@@ -1929,11 +1930,12 @@ def assign_fhir_for_file(file):
                "use": "official"})
 
         patient_group_id = utils.mint_id(identifier=patient_group_identifier, resource_type="Group",
-                                 project_id=project_id,
-                                 namespace=NAMESPACE_GDC)
+                                         project_id=project_id,
+                                         namespace=NAMESPACE_GDC)
 
-        patient_group = Group(**{'id': patient_group_id, "identifier": [patient_group_identifier], "membership": 'definitional',
-                         'member': patient_members, "type": "person"})
+        patient_group = Group(
+            **{'id': patient_group_id, "identifier": [patient_group_identifier], "membership": 'definitional',
+               'member': patient_members, "type": "person"})
         doc_subject_reference.append(Reference(**{"reference": "/".join(["Group", patient_group.id])}))
         # document.subject = Reference(**{"reference": "/".join(["Group", patient_group.id])})
 
@@ -1973,7 +1975,6 @@ def assign_fhir_for_file(file):
                                "display": file['DocumentReference.content.profile'],
                                "system": system}
 
-
         cc_type = CodeableConcept.construct()
         system = "".join(["https://gdc.cancer.gov/", "data_format"])
         cc_type.coding = [{'system': system,
@@ -2009,7 +2010,7 @@ def assign_fhir_for_file(file):
                     **{"system": "".join(
                         ["https://gdc.cancer.gov/", "files.analysis.metadata.read_groups.submitter_id"]),
                         "value": observation['Observation.DocumentReference.submitter_id'],
-                    "use": "official"})
+                        "use": "official"})
                 identifiers.append(orjson.loads(read_groups_submitter_id.json()))
 
             identifiers.append(orjson.loads(observation_identifier.json()))
@@ -2391,6 +2392,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
     patients = []
     conditions = []
     samples = []
+
     for cell_line in cell_lines:
         for cl in cell_line["Cellosaurus"]["cell-line-list"]:
             patient = None
@@ -2414,7 +2416,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                         ident_identifier = Identifier.construct()
                         ident_identifier.value = patient_identifer
                         ident_identifier.system = "https://www.cellosaurus.org/name-list"
-                        ident_identifier.use = "official"
+                        ident_identifier.use = "secondary"
                         ident_list.append(ident_identifier)
 
                 for xref in cl["xref-list"]:
@@ -2496,7 +2498,16 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                             age = age.split("-")[0]
                                         if age.startswith(">"):
                                             age = age.replace(">", "")
-                                        onset_age = Age(**{"value": age})
+
+                                        # onset_age = Age(**{"value": age})
+
+                                        patient.extension = [{
+                                            "url": "http://hl7.org/fhir/SearchParameter/patient-extensions-Patient-age",
+                                            "valueQuantity": {
+                                                "value":  age
+                                            }
+                                        }]
+
                                     else:
                                         if verbose:
                                             print("Age syntax doesn't match: ", cl["age"])
@@ -2520,18 +2531,18 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                                 parent_identifier = Identifier(
                                     **{"system": "https://www.cellosaurus.org/cell-line-primary-accession",
-                                       "value": parent_cell["accession"],
+                                       "value": "/".join(["Specimen", parent_cell["accession"]]),
                                        "use": "official"})
                                 parent_id = utils.mint_id(identifier=parent_identifier, resource_type="Specimen",
                                                           project_id=project_id,
                                                           namespace=NAMESPACE_CELLOSAURUS)
 
                                 parent_id_identifier = Identifier.construct()
-                                parent_id_identifier.value = parent_cell["accession"]
+                                parent_id_identifier.value = "/".join(["Specimen", parent_cell["accession"]])
                                 parent_id_identifier.system = "https://www.cellosaurus.org/"
 
                                 parent_identifier = Identifier.construct()
-                                parent_identifier.value = parent_cell["value"]
+                                parent_identifier.value = "/".join(["Specimen",parent_cell["value"]])
                                 parent_identifier.system = "https://www.cellosaurus.org/"
                                 parent_identifier.use = "official"
 
@@ -2541,17 +2552,21 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                     samples.append(parent_sample)
                                 sample_parents_ref.append(Reference(**{"reference": "/".join(["Specimen", parent_id])}))
 
-                    specimen_id = utils.mint_id(identifier=patient_identifier, resource_type="Specimen",
+                    specimen_identifier = Identifier(
+                        **{"system": "https://www.cellosaurus.org/cell-line-primary-accession",
+                           "value": "/".join(["Specimen", patient_identifier.value]),
+                           "use": "official"})
+                    specimen_id = utils.mint_id(identifier=specimen_identifier, resource_type="Specimen",
                                                 project_id=project_id,
                                                 namespace=NAMESPACE_CELLOSAURUS)
 
                     if sample_parents_ref:
                         samples.append(Specimen(
-                            **{"id": specimen_id, "subject": patient_ref, "identifier": ident_list,
+                            **{"id": specimen_id, "subject": patient_ref, "identifier": [specimen_identifier],
                                "parent": sample_parents_ref}))
                     else:
                         samples.append(Specimen(
-                            **{"id": specimen_id, "subject": patient_ref, "identifier": ident_list}))
+                            **{"id": specimen_id, "subject": patient_ref, "identifier": [specimen_identifier]}))
 
     return {"patients": patients, "conditions": conditions, "samples": samples}
 
