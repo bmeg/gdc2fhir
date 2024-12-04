@@ -856,7 +856,16 @@ class PatientTransformer(HTANTransformer):
                                                              "system": self.SYSTEM_HTAN,
                                                              "display": _row["Therapeutic Agents"]}]})
 
-        timing = Timing(**{"repeat": TimingRepeat(**{"boundsRange": Range(**{"low": Quantity(**{"value": 0, "high": Quantity(**{"value": 1})})})}) })# place holder - required by FHIR
+        # place holder - required by FHIR
+        timing = Timing(**{
+            "repeat": TimingRepeat(**{
+                "boundsRange": Range(**{
+                    "low": Quantity(**{"value": 0}),
+                    "high": Quantity(**{"value": 1})
+                })
+            })
+        })
+
         if not pd.isnull(_row["Days to Treatment End"]) and not pd.isnull(_row["Days to Treatment Start"]):
             timing = Timing(**{"repeat": TimingRepeat(**{"boundsRange": Range(**{"low": Quantity(**{"value": int(_row["Days to Treatment Start"])}), "high": Quantity(**{"value": int(_row["Days to Treatment End"])})})})})
 
@@ -1118,7 +1127,7 @@ class DocumentReferenceTransformer(HTANTransformer):
 
     def create_document_reference(self, _row: pd.Series, specimen_ids: list) -> DocumentReference:
         """Transform HTAN files to FHIR DocumentReference"""
-
+        # print(f"Specimen List length: {len(specimen_ids)} List: {specimen_ids}")
         document_reference_identifier = Identifier(
             **{"system": self.SYSTEM_HTAN, "value": _row['HTAN Data File ID'], "use": "official"})
 
