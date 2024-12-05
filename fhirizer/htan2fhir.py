@@ -510,7 +510,7 @@ class HTANTransformer:
 
     def write_ndjson(self, entities):
         resource_type = entities[0].resource_type
-        entities = [orjson.loads(entity.json()) for entity in entities]
+        entities = [orjson.loads(entity.model_dump_json()) for entity in entities]
         entities = list({v['id']: v for v in entities}.values())
         utils.fhir_ndjson(entities, "".join([self.out_dir, "/", resource_type, ".ndjson"]))
 
@@ -1274,7 +1274,7 @@ def htan2fhir(verbose, entity_atlas_name):
                     observations.append(patient_obs)
                 if patient:
                     patients.append(patient)
-                    # print(f"HTAN FHIR Patient: {patient.json()}")
+                    # print(f"HTAN FHIR Patient: {patient.model_dump_json()}")
                     # print(f"HTAN FHIR Patient Observation: {patient_obs.json()}")
 
                     research_subject = patient_transformer.create_researchsubject(patient, research_study)

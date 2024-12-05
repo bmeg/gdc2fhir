@@ -4,7 +4,7 @@ import uuid
 import json
 import copy
 import orjson
-from iteration_utilities import unique_everseen
+from iteration_utilities import unique_everseen # unresolved in pycharm - ok in pip freeze and ipython import
 from fhir.resources.identifier import Identifier
 from fhir.resources.researchstudy import ResearchStudy
 from fhir.resources.codeableconcept import CodeableConcept
@@ -70,7 +70,7 @@ def assign_fhir_for_project(project, disease_types=disease_types):
     NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'gdc.cancer.gov')
 
     # create ResearchStudy
-    rs = ResearchStudy.construct()
+    rs = ResearchStudy.model_construct()
     """
     if 'ResearchStudyProgressStatus.actual' in project.keys() and project['ResearchStudyProgressStatus.actual']:
         rs.status = "-".join([project['ResearchStudy.status'], "released"])
@@ -108,7 +108,7 @@ def assign_fhir_for_project(project, disease_types=disease_types):
     rs.title = project['ResearchStudy.name']
 
     if 'ResearchStudy.identifier' in project.keys() and project['ResearchStudy.identifier']:
-        ident = Identifier.construct()
+        ident = Identifier.model_construct()
         ident.value = project['ResearchStudy.identifier']
         ident.system = "".join(["https://gdc.cancer.gov/", "project"])
         ident.use = "official"
@@ -123,14 +123,14 @@ def assign_fhir_for_project(project, disease_types=disease_types):
                     l.append({'system': "http://snomed.info/sct", 'display': d['value'], 'code': d['sctid']})
 
     if l:
-        cc = CodeableConcept.construct()
+        cc = CodeableConcept.model_construct()
         # syntax
         # cc.coding = [{'system': "http://snomed.info/sct", 'code': "115219005", 'display': "Acinar Cell Neoplasms"}]
         cc.coding = l
         rs.condition = [cc]
 
     # create ResearchStudy -- partOf --> ResearchStudy
-    rs_parent = ResearchStudy.construct()
+    rs_parent = ResearchStudy.model_construct()
 
     # assign required fields first
     rs_parent.status = project['ResearchStudy.status']  # child's status?
@@ -147,18 +147,18 @@ def assign_fhir_for_project(project, disease_types=disease_types):
 
     if 'ResearchStudy.identifier' in project['ResearchStudy'].keys() and project['ResearchStudy'][
         'ResearchStudy.identifier']:
-        ident_parent = Identifier.construct()
+        ident_parent = Identifier.model_construct()
         ident_parent.value = project['ResearchStudy']['ResearchStudy.identifier']
         ident_parent.system = "".join(["https://gdc.cancer.gov/", "project"])
         ident_parent.use = "official"
         rs_parent.identifier = [ident_parent]
 
     if 'summary' in project.keys():
-        rsr = ResearchStudyRecruitment.construct()
+        rsr = ResearchStudyRecruitment.model_construct()
         rsr.actualNumber = project['summary']['ResearchStudyRecruitment.actualNumber']
         rs.recruitment = rsr
 
-        e = Extension.construct()
+        e = Extension.model_construct()
         e.valueUnsignedInt = project['summary'][
             'Extension.valueUnsignedInt']  # total documentReference Count - better association?
         rs.extension = [e]
@@ -168,7 +168,7 @@ def assign_fhir_for_project(project, disease_types=disease_types):
 
     #  condition -- subject --> patient <--subject-- researchsubject -- study --> researchstudy -- partOf --> researchstudy
 
-    return {'ResearchStudy': rs.json(), "ResearchStudy.partOf": rs_parent.json(), 'ResearchStudy_obj': rs,
+    return {'ResearchStudy': rs.model_dump_json(), "ResearchStudy.partOf": rs_parent.model_dump_json(), 'ResearchStudy_obj': rs,
             "ResearchStudy.partOf_obj": rs_parent}
 
 
@@ -179,7 +179,7 @@ def create_imaging_study(slide, patient, sample):
     project_id = "GDC"
     NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'gdc.cancer.gov')
 
-    img = ImagingStudy.construct()
+    img = ImagingStudy.model_construct()
     img.status = "available"
 
     img_identifier = Identifier(
@@ -192,12 +192,12 @@ def create_imaging_study(slide, patient, sample):
     img.identifier = [img_identifier]
     img.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
 
-    img_series = ImagingStudySeries.construct()
+    img_series = ImagingStudySeries.model_construct()
     img_series.uid = sample.id
 
     # https://hl7.org/fhir/R4/codesystem-dicom-dcim.html#dicom-dcim-SM
     # https://dicom.nema.org/medical/dicom/current/output/chtml/part16/chapter_D.html
-    modality = CodeableConcept.construct()
+    modality = CodeableConcept.model_construct()
     modality.coding = [
         {"system": " http://dicom.nema.org/resources/ontology/DCM", "display": "Slide Microscopy", "code": "SM"}]
     img_series.modality = modality
@@ -216,7 +216,7 @@ def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specim
     if name in dat.keys():
         for sample in dat[name]:
             if id_key in sample.keys():
-                fhir_specimen = Specimen.construct()
+                fhir_specimen = Specimen.model_construct()
                 fhir_specimen.id = sample[id_key]
                 fhir_specimen.subject = Reference(**{"reference": "/".join(["Patient", patient.id])})
                 if has_parent:
@@ -232,8 +232,8 @@ def project_gdc_to_fhir_ndjson(out_dir, name, projects_path, convert, verbose):
                                     verbose=verbose)
 
     all_rs = [assign_fhir_for_project(project=p, disease_types=disease_types) for p in projects]
-    research_study = [orjson.loads(rs['ResearchStudy_obj'].json()) for rs in all_rs]
-    research_study_parent = [orjson.loads(rs['ResearchStudy.partOf_obj'].json()) for rs in all_rs]
+    research_study = [orjson.loads(rs['ResearchStudy_obj'].model_dump_json()) for rs in all_rs]
+    research_study_parent = [orjson.loads(rs['ResearchStudy.partOf_obj'].model_dump_json()) for rs in all_rs]
     rs_e2f = research_study + list(
         unique_everseen(research_study_parent))  # ResearchStudy -- *...1  partOf -> ResearchStudy
 
@@ -253,9 +253,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     project_id = "GDC"
     NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'gdc.cancer.gov')
 
-    patient = Patient.construct()
+    patient = Patient.model_construct()
 
-    patient_id_identifier = Identifier.construct()
+    patient_id_identifier = Identifier.model_construct()
     patient_id_identifier.value = case['Patient.id']
     patient_id_identifier.system = "".join(["https://gdc.cancer.gov/", "case_id"])
     patient_id_identifier.use = "official"
@@ -271,7 +271,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$",
                                                                                        case['Patient.identifier']):
-        patient_submitter_id_identifier = Identifier.construct()
+        patient_submitter_id_identifier = Identifier.model_construct()
         patient_submitter_id_identifier.value = case['Patient.identifier']
         patient_submitter_id_identifier.system = "".join(["https://gdc.cancer.gov/", "case_submitter_id"])
         patient_submitter_id_identifier.use = "secondary"
@@ -302,7 +302,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             race_ethnicity_sex.append(female)
         elif patient_gender == 'male':
             race_ethnicity_sex.append(male)
-
+    #TODO: add observation for days_to and years and if any indicate deceased add the boolean status.
     if 'demographic' in case.keys() and 'Patient.deceasedDateTime' in case['demographic']:
         patient.deceasedDateTime = case['demographic']['Patient.deceasedDateTime']
     else:
@@ -317,7 +317,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         # https://build.fhir.org/ig/HL7/US-Core/ValueSet-omb-race-category.html
         # https://build.fhir.org/ig/HL7/US-Core/ValueSet-omb-ethnicity-category.html
 
-        race_ext = Extension.construct()
+        race_ext = Extension.model_construct()
         race_ext.url = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
         race_ext.valueString = case['demographic']['Extension.extension:USCoreRaceExtension']
 
@@ -333,7 +333,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             race_ethnicity_sex.append(race_ext)
 
     if 'demographic' in case.keys() and 'Extension:extension.USCoreEthnicity' in case['demographic'].keys():
-        ethnicity_ext = Extension.construct()
+        ethnicity_ext = Extension.model_construct()
         ethnicity_ext.url = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
 
         ethnicity_code = ""
@@ -365,7 +365,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     subject_ref = Reference(**{"reference": "/".join(["Patient", patient.id])})
 
     # create researchSubject to link Patient --> ResearchStudy
-    research_subject = ResearchSubject.construct()
+    research_subject = ResearchSubject.model_construct()
     # research_subject.status = "".join(['unknown-', case['ResearchSubject.status']])
     research_subject.status = "active"
     research_subject.study = study_ref
@@ -383,7 +383,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     if 'tissue_source_site' in case.keys():
         encounter_tss_id = case['tissue_source_site']['Encounter.id']
 
-        encounter = Encounter.construct()
+        encounter = Encounter.model_construct()
         encounter.status = 'completed'
         encounter_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "tissue_source_site"]),
                                              "value": case['tissue_source_site']['Encounter.id'],
@@ -463,7 +463,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
     if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
         # create Observation **
-        observation = Observation.construct()
+        observation = Observation.model_construct()
         observation.status = 'final'
 
         observation_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
@@ -488,7 +488,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if encounter_ref:
             observation.encounter = encounter_ref
 
-        observation_code = CodeableConcept.construct()
+        observation_code = CodeableConcept.model_construct()
         if 'Condition.coding_icd_10_code' in case['diagnoses']:
             system = "https://terminology.hl7.org/5.1.0/NamingSystem-icd10CM.html"
             code = case['diagnoses']['Condition.coding_icd_10_code']
@@ -516,7 +516,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                 mondo = [d["mondo_id"] for d in ncit2mondo if d["ncit_id"] == ncit_condition_code]
                 if mondo:
-                    mondo_code = mondo[0]
+                    mondo_code = str(mondo[0])
                     mondo_display = ncit_condition_display
                     mondo_coding = {'system': "https://www.ebi.ac.uk/ols4/ontologies/mondo", 'display': mondo_display,
                                     'code': mondo_code}
@@ -546,7 +546,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         observation_days_to_last_follow_up_identifier = Identifier(
             **{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_follow_up"]),
-               "value": case['diagnoses']['Observation.survey.days_to_last_follow_up'],
+               "value": str(case['diagnoses']['Observation.survey.days_to_last_follow_up']),
                "use": "official"})
         observation_days_to_last_follow_up_id = utils.mint_id(
             identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier],
@@ -598,7 +598,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     body_structure = None
     if 'diagnoses' in case.keys() and 'Condition.id' in case['diagnoses'].keys():
         # create Condition - for each diagnosis_id there is. relation: condition -- assessment --> observation
-        condition = Condition.construct()
+        condition = Condition.model_construct()
         condition_identifier = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "diagnosis_id"]),
                                              "value": case['diagnoses']['Condition.id'],
                                              "use": "official"})
@@ -621,11 +621,11 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 ["https://gdc.cancer.gov/", "submitter_diagnosis_id"]), "use": "official"})]
 
         if gdc_condition_annotation:
-            cc = CodeableConcept.construct()
+            cc = CodeableConcept.model_construct()
             cc.coding = [gdc_condition_annotation]
             condition.code = cc
 
-        condition_clinicalstatus_code = CodeableConcept.construct()
+        condition_clinicalstatus_code = CodeableConcept.model_construct()
         condition_clinicalstatus_code.coding = [
             {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "display": "unknown",
              "code": "unknown"}]
@@ -677,7 +677,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                "patient": subject_ref
                })
 
-        cc_body_site = CodeableConcept.construct()
+        cc_body_site = CodeableConcept.model_construct()
         cc_body_site.coding = l_body_site
         condition.bodySite = [cc_body_site]
         diagnosis_content_bool = False
@@ -743,12 +743,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                             project_id=project_id,
                                                                             namespace=NAMESPACE_GDC)
 
-                                assessment_reference = {"reference": f"Observation/{parent_stage_observation.id}"}
+                                assessment_reference = Reference(**{"reference": f"Observation/{parent_stage_observation.id}"})
                                 parent_stage_observation.valueCodeableConcept = {
                                     "coding": [
                                         {
                                             "system": "http://snomed.info/sct",
-                                            "code": dict_item['sctid'],
+                                            "code": str(dict_item['sctid']),
                                             "display": dict_item['sctid_display']
                                         }
                                     ],
@@ -790,7 +790,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         "coding": [
                                             {
                                                 "system": "http://snomed.info/sct",
-                                                "code": dict_item['sctid'],
+                                                "code": str(dict_item['sctid']),
                                                 "display": dict_item['sctid_display']
                                             }
                                         ],
@@ -805,7 +805,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                 stage_obs.id = utils.mint_id(identifier=stage_obs_identifier,
                                                              resource_type="Observation", project_id=project_id,
                                                              namespace=NAMESPACE_GDC)
-                                assessment_reference = {"reference": f"Observation/{stage_obs.id}"}
+                                assessment_reference = Reference(**{"reference": f"Observation/{stage_obs.id}"})
                                 staging_observations.append(stage_obs)
 
                     if not parent_stage_observation.id:
@@ -823,15 +823,15 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     parent_stage_observation.hasMember = stage_obs_references
                     staging_observations.append(parent_stage_observation)
 
-                    cc_stage_type = CodeableConcept.construct()
+                    cc_stage_type = CodeableConcept.model_construct()
                     cc_stage_type.coding = [{'system': "https://cadsr.cancer.gov/",
                                              'display': case['diagnoses'][key],
-                                             'code': data_dict['clinical']['diagnosis']['properties'][staging_name][
+                                             'code': str(data_dict['clinical']['diagnosis']['properties'][staging_name][
                                                  'termDef'][
-                                                 'cde_id']},
+                                                 'cde_id'])},
                                             {'system': "http://snomed.info/sct",
                                              'display': case['diagnoses'][key],
-                                             'code': stage_type_sctid_code}
+                                             'code': str(stage_type_sctid_code)}
                                             ]
                     if sctid_code in "0000":
                         log_output_diag = f"Condition stage - sctid_code codeableConcept code in sctid_code for {case['diagnoses'][key]} not found! {case_stage_display}\n"
@@ -858,21 +858,21 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         display = "replace-me"
                         diagnosis_content_bool = True
 
-                    if not re.match("^[^\s]+(\s[^\s]+)*$", sctid_code):
+                    if not re.match(r"^[^\s]+(\s[^\s]+)*$", sctid_code):
                         sctid_code = "0000"
 
-                    cc_stage = CodeableConcept.construct()
+                    cc_stage = CodeableConcept.model_construct()
                     cc_stage.coding = [{'system': "https://ncit.nci.nih.gov",
                                         'display': display,
-                                        'code': code
+                                        'code': str(code)
                                         }]
 
-                    cc_stage_sctid = CodeableConcept.construct()
+                    cc_stage_sctid = CodeableConcept.model_construct()
                     cc_stage_sctid.coding = [{'system': "http://snomed.info/sct",
                                               'display': display,
-                                              'code': sctid_code}]
+                                              'code': str(sctid_code)}]
 
-                    condition_stage = ConditionStage.construct()
+                    condition_stage = ConditionStage.model_construct()
                     condition_stage.summary = cc_stage
                     condition_stage.type = cc_stage_type
                     condition_stage.assessment = [assessment_reference]
@@ -958,7 +958,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
             condition.stage = staging_list
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])}), subject_ref]
-            condition_observations.append(orjson.loads(observation.json()))
+            condition_observations.append(orjson.loads(observation.model_dump_json()))
 
             # create medication administration and medication
             treatment_content_bool = False
@@ -966,7 +966,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                 for treatment in case['diagnoses']['treatments']:
                     # https://build.fhir.org/ig/HL7/fhir-mCODE-ig/artifacts.html
-                    med = Medication.construct()
+                    med = Medication.model_construct()
                     med_identifier = Identifier(
                         **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
                            "value": treatment['MedicationAdministration.id'],
@@ -984,12 +984,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         display = "replace-me"
                         treatment_content_bool = True
 
-                    med_code = CodeableConcept.construct()
+                    med_code = CodeableConcept.model_construct()
                     med_code.coding = [{'system': "https://cadsr.cancer.gov/onedata/Home.jsp",
                                         'display': display,
                                         'code': '2975232'}]
 
-                    med_cr = CodeableReference.construct()
+                    med_cr = CodeableReference.model_construct()
                     med_cr.reference = Reference(**{"reference": "/".join(["Medication", med.id])})
                     med_cr.concept = med_code
                     med.code = med_code
@@ -1016,7 +1016,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                            "use": "official"})
                     if 'MedicationAdministration.treatment_type' in treatment.keys() and treatment[
                         'MedicationAdministration.treatment_type']:
-                        medadmin_category_code = CodeableConcept.construct()
+                        medadmin_category_code = CodeableConcept.model_construct()
                         medadmin_category_code.coding = [{'system': "https://cadsr.cancer.gov/onedata/Home.jsp",
                                                           'display': treatment[
                                                               'MedicationAdministration.treatment_type'],
@@ -1046,7 +1046,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     treatments_medadmin.append(med_admin)
 
     # if observation:
-    #     condition_observations.append(orjson.loads(observation.json()))
+    #     condition_observations.append(orjson.loads(observation.model_dump_json()))
 
     # exposures
     smoking_observation = []
@@ -1076,7 +1076,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             if 'valueInteger' in sm_pd_obs.keys():
                 sm_pd_obs.pop('valueInteger', None)
             sm_pd_obs_code = "".join([case['exposures'][0]['Observation.patient.exposure_id'], patient.id,
-                                      orjson.loads(study_ref.json())['reference'],
+                                      orjson.loads(study_ref.model_dump_json())['reference'],
                                       'Observation.patient.cigarettes_per_day'])
 
             sm_pd_obs['id'] = str(uuid.uuid3(uuid.NAMESPACE_DNS, sm_pd_obs_code))
@@ -1135,7 +1135,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         for sample in samples:
             if 'Specimen.id.sample' in sample.keys():
-                specimen = Specimen.construct()
+                specimen = Specimen.model_construct()
 
                 specimen_identifier = Identifier(
                     **{"system": "".join(["https://gdc.cancer.gov/", "sample_id"]),
@@ -1148,7 +1148,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                 specimen.identifier = [specimen_identifier]
 
                 # add sample procedure
-                procedure = Procedure.construct()
+                procedure = Procedure.model_construct()
                 procedure.status = "completed"
                 procedure.identifier = [Identifier(
                     **{"system": "".join(["https://gdc.cancer.gov/", "sample_id/patient_id"]),
@@ -1170,7 +1170,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                        "collectedDateTime": "2018-08-23T16:32:20.747393-05:00"})
 
                 if "Specimen.type.sample" in sample.keys():
-                    sample_type = CodeableConcept.construct()
+                    sample_type = CodeableConcept.model_construct()
                     sample_type.coding = [{
                         'system': "https://cadsr.cancer.gov/sample_type",
                         'display': sample["Specimen.type.sample"],
@@ -1179,8 +1179,8 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                 sp = None
                 if "Specimen.processing.method" in sample.keys():
-                    sample_processing = CodeableConcept.construct()
-                    sp = SpecimenProcessing.construct()
+                    sample_processing = CodeableConcept.model_construct()
+                    sp = SpecimenProcessing.model_construct()
                     sample_processing.coding = [{
                         'system': "https://cadsr.cancer.gov/preservation_method",
                         'display': sample["Specimen.processing.method"],
@@ -1251,7 +1251,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     for portion in sample['portions']:
                         if "Specimen.id.portion" in portion.keys():
 
-                            portion_specimen = Specimen.construct()
+                            portion_specimen = Specimen.model_construct()
 
                             portion_specimen_identifier = Identifier(
                                 **{"system": "".join(["https://gdc.cancer.gov/", "portion_id"]),
@@ -1359,7 +1359,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                             if "analytes" in portion.keys():
                                 for analyte in portion["analytes"]:
                                     if "Specimen.id.analyte" in analyte.keys():
-                                        analyte_specimen = Specimen.construct()
+                                        analyte_specimen = Specimen.model_construct()
 
                                         analyte_specimen_identifier = Identifier(
                                             **{"system": "".join(["https://gdc.cancer.gov/", "analyte_id"]),
@@ -1385,7 +1385,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         analyte_specimen.processing = [sp]
 
                                         if "Specimen.type.analyte" in analyte.keys():
-                                            analyte_type = CodeableConcept.construct()
+                                            analyte_type = CodeableConcept.model_construct()
                                             analyte_type.coding = [{
                                                 'system': "https://cadsr.cancer.gov/experimental_protocol_type",
                                                 'display': analyte["Specimen.type.analyte"],
@@ -1495,7 +1495,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         if "aliquots" in analyte.keys():
                                             for aliquot in analyte["aliquots"]:
                                                 if "Specimen.id.aliquot" in aliquot.keys():
-                                                    aliquot_specimen = Specimen.construct()
+                                                    aliquot_specimen = Specimen.model_construct()
 
                                                     aliquot_specimen_identifier = Identifier(
                                                         **{"system": "".join(["https://gdc.cancer.gov/", "aliquot_id"]),
@@ -1688,7 +1688,7 @@ def remove_duplicates(entities):
             print(e)
             fhir_model = e
         else:
-            fhir_model = json.dumps(e.json(), sort_keys=True)
+            fhir_model = json.dumps(e.model_dump_json(), sort_keys=True)
         if fhir_model not in seen:
             seen.add(fhir_model)
             unique_entities.append(e)
@@ -1703,29 +1703,30 @@ def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
     all_fhir_case_obj = []
     [all_fhir_case_obj.append(assign_fhir_for_case(c)) for c in cases]
 
-    patients = [orjson.loads(fhir_case['patient'].json()) for fhir_case in all_fhir_case_obj]
-    encounters = [orjson.loads(fhir_case['encounter'].json()) for fhir_case in all_fhir_case_obj if
+    patients = [orjson.loads(fhir_case['patient'].model_dump_json()) for fhir_case in all_fhir_case_obj]
+    encounters = [orjson.loads(fhir_case['encounter'].model_dump_json()) for fhir_case in all_fhir_case_obj if
                   'encounter' in fhir_case.keys() and fhir_case['encounter']]
     encounters = list({v['id']: v for v in encounters}.values())
-    #   observations = [orjson.loads(fhir_case['observations'].json()) for fhir_case in all_fhir_case_obj if
+    #   observations = [orjson.loads(fhir_case['observations'].model_dump_json()) for fhir_case in all_fhir_case_obj if
     #                    'observations' in fhir_case.keys() and fhir_case['observations']]
-    conditions = [orjson.loads(fhir_case['condition'].json()) for fhir_case in all_fhir_case_obj if
+    conditions = [orjson.loads(fhir_case['condition'].model_dump_json()) for fhir_case in all_fhir_case_obj if
                   'condition' in fhir_case.keys() and fhir_case['condition']]
-    research_subjects = [orjson.loads(fhir_case['research_subject'].json()) for fhir_case in all_fhir_case_obj]
-    projects = [orjson.loads(fhir_case['project_relations']["ResearchStudy_obj"].json()) for fhir_case in
+    research_subjects = [orjson.loads(fhir_case['research_subject'].model_dump_json()) for fhir_case in all_fhir_case_obj]
+    projects = [orjson.loads(fhir_case['project_relations']["ResearchStudy_obj"].model_dump_json()) for fhir_case in
                 all_fhir_case_obj]
+
     programs = list(unique_everseen(
-        [orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].json()) for fhir_case in
+        [orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].model_dump_json()) for fhir_case in
          all_fhir_case_obj]))
 
-    body_structure = [orjson.loads(fhir_case['body_structure'].json()) for fhir_case in all_fhir_case_obj if
+    body_structure = [orjson.loads(fhir_case['body_structure'].model_dump_json()) for fhir_case in all_fhir_case_obj if
                       'body_structure' in fhir_case.keys() and fhir_case['body_structure']]
 
     specimens = []
     for fhir_case in all_fhir_case_obj:
         if fhir_case["specimens"]:
             for specimen in fhir_case["specimens"]:
-                s = orjson.loads(specimen.json())
+                s = orjson.loads(specimen.model_dump_json())
                 # if 'parent' in s.keys():
                 #     s['parent'] = s['parent'][0]
                 specimens.append(s)
@@ -1737,20 +1738,20 @@ def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
                 if isinstance(obs, dict):
                     observations.append(obs)
                 else:
-                    observations.append(orjson.loads(obs.json()))
+                    observations.append(orjson.loads(obs.model_dump_json()))
     observations = list({v['id']: v for v in observations}.values())
 
     procedures = []
     for fhir_case in all_fhir_case_obj:
         if fhir_case["procedures"]:
             for procedure in fhir_case["procedures"]:
-                procedures.append(orjson.loads(procedure.json()))
+                procedures.append(orjson.loads(procedure.model_dump_json()))
 
     imaging_study = []
     for fhir_case in all_fhir_case_obj:
         if fhir_case["imaging_study"]:
             for img in fhir_case["imaging_study"]:
-                imaging_study.append(orjson.loads(img.json()))
+                imaging_study.append(orjson.loads(img.model_dump_json()))
     imaging_study = list({v['id']: v for v in imaging_study}.values())
 
     if "/" not in out_dir[-1]:
@@ -1793,7 +1794,7 @@ def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
     for fhir_case in all_fhir_case_obj:
         if fhir_case["med_admin"]:
             for med_admin in fhir_case["med_admin"]:
-                med_admins.append(orjson.loads(med_admin.json()))
+                med_admins.append(orjson.loads(med_admin.model_dump_json()))
     if med_admins:
         utils.fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
         print("Successfully converted GDC case info to FHIR's MedicationAdministration ndjson file!")
@@ -1802,7 +1803,7 @@ def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
     for fhir_case in all_fhir_case_obj:
         if fhir_case["med"]:
             for med in fhir_case["med"]:
-                meds.append(orjson.loads(med.json()))
+                meds.append(orjson.loads(med.model_dump_json()))
     if meds:
         utils.fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))
         print("Successfully converted GDC case info to FHIR's Medication ndjson file!")
@@ -1818,7 +1819,7 @@ def assign_fhir_for_file(file):
     NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'gdc.cancer.gov')
     group = None
 
-    document = DocumentReference.construct()
+    document = DocumentReference.model_construct()
     document.status = "current"
 
     assert file['DocumentReference.id'], f"file['DocumentReference.id'] doesn't exist in object:  {file}"
@@ -1835,26 +1836,26 @@ def assign_fhir_for_file(file):
 
     category = []
     if 'DocumentReference.category.data_category' in file.keys() and file['DocumentReference.category.data_category']:
-        cc = CodeableConcept.construct()
+        cc = CodeableConcept.model_construct()
         system = "".join(["https://gdc.cancer.gov/", "data_category"])
         cc.coding = [{'system': system,
                       'display': file['DocumentReference.category.data_category'],
-                      'code': file['DocumentReference.category.data_category'], }]
+                      'code': str(file['DocumentReference.category.data_category'])}]
 
         category.append(cc)
 
     if 'DocumentReference.category.platform' in file.keys() and file['DocumentReference.category.platform']:
-        cc_plat = CodeableConcept.construct()
+        cc_plat = CodeableConcept.model_construct()
         system = "".join(["https://gdc.cancer.gov/", "platform"])
         cc_plat.coding = [{'system': system,
                            'display': file['DocumentReference.category.platform'],
-                           'code': file['DocumentReference.category.platform']}]
+                           'code': str(file['DocumentReference.category.platform'])}]
 
         category.append(cc_plat)
 
     if 'DocumentReference.category.experimental_strategy' in file.keys() and file[
         'DocumentReference.category.experimental_strategy']:
-        cc_es = CodeableConcept.construct()
+        cc_es = CodeableConcept.model_construct()
         system = "".join(["https://gdc.cancer.gov/", "experimental_strategy"])
         cc_es.coding = [{'system': system,
                          'display': file['DocumentReference.category.experimental_strategy'],
@@ -1863,7 +1864,7 @@ def assign_fhir_for_file(file):
         category.append(cc_es)
 
     if 'DocumentReference.category.wgs_coverage' in file.keys() and file['DocumentReference.category.wgs_coverage']:
-        cc_es = CodeableConcept.construct()
+        cc_es = CodeableConcept.model_construct()
         system = "".join(["https://gdc.cancer.gov/", "wgs_coverage"])
         cc_es.coding = [{'system': system,
                          'display': file['DocumentReference.category.wgs_coverage'],
@@ -1872,7 +1873,7 @@ def assign_fhir_for_file(file):
         category.append(cc_es)
 
     if 'DocumentReference.category.data_type' in file.keys() and file['DocumentReference.category.data_type']:
-        cc_es = CodeableConcept.construct()
+        cc_es = CodeableConcept.model_construct()
         system = "".join(["https://gdc.cancer.gov/", "data_type"])
         cc_es.coding = [{'system': system,
                          'display': file['DocumentReference.category.data_type'],
@@ -1893,7 +1894,7 @@ def assign_fhir_for_file(file):
     sample_ref = []
     if 'cases' in file.keys() and file['cases']:
         for case in file['cases']:
-            patient_id_identifier = Identifier.construct()
+            patient_id_identifier = Identifier.model_construct()
             patient_id_identifier.value = case['Patient.id']
             patient_id_identifier.use = "official"
             patient_id_identifier.system = "".join(["https://gdc.cancer.gov/", "case_id"])
@@ -1957,7 +1958,7 @@ def assign_fhir_for_file(file):
 
         document.subject = Reference(**{"reference": "/".join(["Group", group.id])})
 
-    attachment = Attachment.construct()
+    attachment = Attachment.model_construct()
     attachment.url = "https://api.gdc.cancer.gov/data/{}".format(file['DocumentReference.id'])
 
     if 'Attachment.title' in file.keys() and file['Attachment.title']:
@@ -1969,13 +1970,13 @@ def assign_fhir_for_file(file):
 
     profile = None
     if 'DocumentReference.content.profile' in file.keys() and file['DocumentReference.content.profile']:
-        profile = DocumentReferenceContentProfile.construct()
+        profile = DocumentReferenceContentProfile.model_construct()
         system = "".join(["https://gdc.cancer.gov/", "data_format"])
         profile.valueCoding = {"code": file['DocumentReference.content.profile'],
                                "display": file['DocumentReference.content.profile'],
                                "system": system}
 
-        cc_type = CodeableConcept.construct()
+        cc_type = CodeableConcept.model_construct()
         system = "".join(["https://gdc.cancer.gov/", "data_format"])
         cc_type.coding = [{'system': system,
                            'display': file['DocumentReference.content.profile'],
@@ -2011,13 +2012,13 @@ def assign_fhir_for_file(file):
                         ["https://gdc.cancer.gov/", "files.analysis.metadata.read_groups.submitter_id"]),
                         "value": observation['Observation.DocumentReference.submitter_id'],
                         "use": "official"})
-                identifiers.append(orjson.loads(read_groups_submitter_id.json()))
+                identifiers.append(orjson.loads(read_groups_submitter_id.model_dump_json()))
 
-            identifiers.append(orjson.loads(observation_identifier.json()))
+            identifiers.append(orjson.loads(observation_identifier.model_dump_json()))
             docref_observation['identifier'] = identifiers
             docref_observation['focus'] = [
-                orjson.loads(Reference(**{"reference": "/".join(["DocumentReference", document.id])}).json())]
-            docref_observation['subject'] = orjson.loads(doc_subject_reference[0].json())
+                orjson.loads(Reference(**{"reference": "/".join(["DocumentReference", document.id])}).model_dump_json())]
+            docref_observation['subject'] = orjson.loads(doc_subject_reference[0].model_dump_json())
 
             obs_components = []
             if 'Observation.DocumentReference.adapter_name' in observation.keys() and observation[
@@ -2332,7 +2333,7 @@ def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose):
         if obj['group']:
             all_groups.append(obj['group'])
 
-    doc_refs = [orjson.loads(fhir_file.json()) for fhir_file in all_fhir_file_obj]
+    doc_refs = [orjson.loads(fhir_file.model_dump_json()) for fhir_file in all_fhir_file_obj]
     groups = [orjson.loads(group.json()) for group in all_groups]
 
     observations_list = []
@@ -2413,7 +2414,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                 for identifier in cl["name-list"]:
                     if identifier["type"] == "identifier":
                         patient_identifer = identifier["value"]
-                        ident_identifier = Identifier.construct()
+                        ident_identifier = Identifier.model_construct()
                         ident_identifier.value = patient_identifer
                         ident_identifier.system = "https://www.cellosaurus.org/name-list"
                         ident_identifier.use = "secondary"
@@ -2421,7 +2422,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                 for xref in cl["xref-list"]:
                     if xref["database"] == "DepMap":
-                        depmap_identifier = Identifier.construct()
+                        depmap_identifier = Identifier.model_construct()
                         depmap_identifier.value = xref["accession"]
                         # dep_map_url = xref["url"] # ex. https://depmap.org/portal/cell_line/ACH-000035"
                         depmap_identifier.system = "https://depmap.org/cell_line"
@@ -2429,7 +2430,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                         ident_list.append(depmap_identifier)
 
                     if xref["database"] == "Cosmic":
-                        cosmic_identifier = Identifier.construct()
+                        cosmic_identifier = Identifier.model_construct()
                         cosmic_identifier.value = xref["accession"]
                         cosmic_identifier.system = "https://cancer.sanger.ac.uk/cosmic/cell_line"
                         cosmic_identifier.use = "secondary"
@@ -2456,7 +2457,7 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
 
                             if "terminology" in disease_annotation.keys() and disease_annotation[
                                 "terminology"] == "NCIt":
-                                condition_clinicalstatus_code = CodeableConcept.construct()
+                                condition_clinicalstatus_code = CodeableConcept.model_construct()
                                 condition_clinicalstatus_code.coding = [
                                     {"system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
                                      "display": "unknown", "code": "unknown"}]
@@ -2478,13 +2479,13 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                 mondo = [d["mondo_id"] for d in ncit2mondo if
                                          d["ncit_id"] == disease_annotation["accession"]]
                                 if mondo:
-                                    mondo_code = mondo[0]
+                                    mondo_code = str(mondo[0])
                                     mondo_display = display
                                     mondo_coding = {'system': "https://www.ebi.ac.uk/ols4/ontologies/mondo",
                                                     'display': mondo_display, 'code': mondo_code}
                                     disease_coding.append(mondo_coding)
 
-                                cc = CodeableConcept.construct()
+                                cc = CodeableConcept.model_construct()
                                 cc.coding = disease_coding
 
                                 onset_age = None
@@ -2537,11 +2538,11 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
                                                           project_id=project_id,
                                                           namespace=NAMESPACE_CELLOSAURUS)
 
-                                parent_id_identifier = Identifier.construct()
+                                parent_id_identifier = Identifier.model_construct()
                                 parent_id_identifier.value = "/".join(["Specimen", parent_cell["accession"]])
                                 parent_id_identifier.system = "https://www.cellosaurus.org/"
 
-                                parent_identifier = Identifier.construct()
+                                parent_identifier = Identifier.model_construct()
                                 parent_identifier.value = "/".join(["Specimen",parent_cell["value"]])
                                 parent_identifier.system = "https://www.cellosaurus.org/"
                                 parent_identifier.use = "official"
