@@ -64,113 +64,66 @@ file_observation = utils._read_json(
     str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'gdc_resources'
              / 'content_annotations' / 'files' / 'output_file_observation.json')))
 
-
-def assign_fhir_for_project(project, disease_types=disease_types):
+def create_researchstudy(project_data) -> tuple[ResearchStudy | None]:
+    """Creates FHIR ResearchStudy"""
     project_id = "GDC"
     NAMESPACE_GDC = uuid3(NAMESPACE_DNS, 'gdc.cancer.gov')
+    _rs_parent = None
+    status = "active"
+    value = project_data['ResearchStudy.id']
+    assert value, "Can't create a ResearchStudy. GDC project id is missing."
 
-    # create ResearchStudy
-    rs = ResearchStudy.model_construct()
-    """
-    if 'ResearchStudyProgressStatus.actual' in project.keys() and project['ResearchStudyProgressStatus.actual']:
-        rs.status = "-".join([project['ResearchStudy.status'], "released"])
-    else:
-        rs.status = project['ResearchStudy.status']
-    """
-    rs.status = "active"  # temp harmonization
-    pl = []
-    if 'ResearchStudy.id' in project.keys() and project['ResearchStudy.id'] in ["EXCEPTIONAL_RESPONDERS-ER",
-                                                                                "CDDP_EAGLE-1"]:
-        pr_ident = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "program_id"]),
-                                 "value": project['ResearchStudy']['ResearchStudy.id'],
-                                 "use": "official"})
-        pl.append(pr_ident)
-        rs.identifier = [pr_ident]
-        rs.id = utils.mint_id(
-            identifier=pr_ident,
-            resource_type="ResearchStudy",
-            project_id=project_id,
-            namespace=NAMESPACE_GDC)
+    research_study_identifiers = []
+    rs_identifier = Identifier(value=value, system="/".join(["https://gdc.cancer.gov", "project"]), use="official")
+    rs_id = utils.mint_id(identifier=rs_identifier, resource_type="ResearchStudy", project_id=project_id,
+                         namespace=NAMESPACE_GDC)
+    research_study_identifiers.append(rs_identifier)
 
-    else:
-        p_ident = Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "project_id"]),
-                                "value": project['ResearchStudy.id'],
-                                "use": "official"})
-        rs.identifier = [p_ident]
-        rs.id = utils.mint_id(
-            identifier=p_ident,
-            resource_type="ResearchStudy",
-            project_id=project_id,
-            namespace=NAMESPACE_GDC)
-        pl.append(p_ident)
+    if 'ResearchStudy.dbgap_accession_number' in project_data.keys() and project_data[
+        'ResearchStudy.dbgap_accession_number']:
+        rs_dbgap_identifier = Identifier(value=project_data['ResearchStudy.dbgap_accession_number'],
+                                                       system="/".join(["https://gdc.cancer.gov", "dbgap_accession_number"]),
+                                                       use='secondary')
+        research_study_identifiers.append(rs_dbgap_identifier)
 
-    rs.name = project['ResearchStudy.name']
-    rs.title = project['ResearchStudy.name']
+    name = None
+    if 'ResearchStudy.name' in project_data.keys() and project_data['ResearchStudy.name']:
+        name = project_data['ResearchStudy.name']
 
-    if 'ResearchStudy.identifier' in project.keys() and project['ResearchStudy.identifier']:
-        ident = Identifier.model_construct()
-        ident.value = project['ResearchStudy.identifier']
-        ident.system = "".join(["https://gdc.cancer.gov/", "project"])
-        ident.use = "official"
-        pl.append(ident)
-        rs.identifier = pl
+    condition = []
+    if 'ResearchStudy.condition' in project_data.keys() and project_data['ResearchStudy.condition']:
+        for c in project_data['ResearchStudy.condition']:
+            for d in disease_types:
+                if c in d['value']:
+                    if d['sctid']:
+                        code = None
+                        if not isinstance(d['sctid'], str):
+                            code = str(d['sctid'])
+                            display = str(d['value'])
+                        else:
+                            code = d['sctid']
+                            display = d['value']
 
-    l = []
-    for c in project['ResearchStudy.condition']:
-        for d in disease_types:
-            if c in d['value']:
-                if d['sctid']:
-                    l.append({'system': "http://snomed.info/sct", 'display': d['value'], 'code': d['sctid']})
+                        condition_code = CodeableConcept(**{"coding": [{'system': 'http://snomed.info/sct',
+                                                                        'display': display,
+                                                                        'code': code}]})
+                        if condition_code:
+                            condition.append(condition_code)
 
-    if l:
-        cc = CodeableConcept.model_construct()
-        # syntax
-        # cc.coding = [{'system': "http://snomed.info/sct", 'code': "115219005", 'display': "Acinar Cell Neoplasms"}]
-        cc.coding = l
-        rs.condition = [cc]
+    parent_reference = []
+    if 'ResearchStudy' in project_data.keys() and project_data['ResearchStudy']:
+        _rs_parent, _ = create_researchstudy(project_data=project_data['ResearchStudy'])
+        parent_reference = [Reference(**{"reference": f"ResearchStudy/{_rs_parent.id}"})]
 
-    # create ResearchStudy -- partOf --> ResearchStudy
-    rs_parent = ResearchStudy.model_construct()
+    rs = ResearchStudy(**{"id": rs_id,
+                          "identifier": research_study_identifiers,
+                          "status": status,
+                          "name": name,
+                          "title": name,
+                          "partOf": parent_reference,
+                          "condition": condition})
 
-    # assign required fields first
-    rs_parent.status = project['ResearchStudy.status']  # child's status?
-    rs_parent.id = utils.mint_id(
-        identifier=Identifier(**{"system": "".join(["https://gdc.cancer.gov/", "program_id"]),
-                                 "value": project['ResearchStudy']['ResearchStudy.id'],
-                                 "use": "official"}),
-        resource_type="ResearchStudy",
-        project_id=project_id,
-        namespace=NAMESPACE_GDC)
-
-    rs_parent.name = project['ResearchStudy']['ResearchStudy.name']
-    rs_parent.title = project['ResearchStudy']['ResearchStudy.name']
-
-    if 'ResearchStudy.identifier' in project['ResearchStudy'].keys() and project['ResearchStudy'][
-        'ResearchStudy.identifier']:
-        ident_parent = Identifier.model_construct()
-        ident_parent.value = project['ResearchStudy']['ResearchStudy.identifier']
-        ident_parent.system = "".join(["https://gdc.cancer.gov/", "project"])
-        ident_parent.use = "official"
-        rs_parent.identifier = [ident_parent]
-
-    if 'summary' in project.keys():
-        rsr = ResearchStudyRecruitment.model_construct()
-        rsr.actualNumber = project['summary']['ResearchStudyRecruitment.actualNumber']
-        rs.recruitment = rsr
-
-        e = Extension.model_construct()
-        e.valueUnsignedInt = project['summary'][
-            'Extension.valueUnsignedInt']  # total documentReference Count - better association?
-        rs.extension = [e]
-
-    ref = Reference(**{"reference": "/".join(["ResearchStudy", rs_parent.id])})
-    rs.partOf = [ref]
-
-    #  condition -- subject --> patient <--subject-- researchsubject -- study --> researchstudy -- partOf --> researchstudy
-
-    return {'ResearchStudy': rs.model_dump_json(), "ResearchStudy.partOf": rs_parent.model_dump_json(), 'ResearchStudy_obj': rs,
-            "ResearchStudy.partOf_obj": rs_parent}
-
+    return rs, _rs_parent  # only two hierarchy in GDC
 
 # projects_path="./tests/fixtures/project/project_key.ndjson"
 
@@ -223,23 +176,6 @@ def add_specimen(dat, name, id_key, has_parent, parent, patient, all_fhir_specim
                     fhir_specimen.parent = [Reference(**{"reference": "/".join(["Specimen", parent.id])})]
                 if fhir_specimen not in all_fhir_specimens:
                     all_fhir_specimens.append(fhir_specimen)
-
-
-def project_gdc_to_fhir_ndjson(out_dir, name, projects_path, convert, verbose):
-    # projects = utils.load_ndjson(projects_path)
-    out_path = os.path.join(out_dir, os.pardir, "".join([name, "_keys.ndjson"])) if convert else None
-    projects = mapping.convert_maps(in_path=projects_path, out_path=out_path, name=name, convert=convert,
-                                    verbose=verbose)
-
-    all_rs = [assign_fhir_for_project(project=p, disease_types=disease_types) for p in projects]
-    research_study = [orjson.loads(rs['ResearchStudy_obj'].model_dump_json()) for rs in all_rs]
-    research_study_parent = [orjson.loads(rs['ResearchStudy.partOf_obj'].model_dump_json()) for rs in all_rs]
-    rs_e2f = research_study + list(
-        unique_everseen(research_study_parent))  # ResearchStudy -- *...1  partOf -> ResearchStudy
-
-    with open("".join([out_dir, "/ResearchStudy.ndjson"]), 'w') as file:
-        file.write('\n'.join(map(json.dumps, rs_e2f)))
-    print("Successfully converted GDC projetcs/programs to FHIR's models ndjson file!")
 
 
 # Case ---------------------------------------------------------------
@@ -352,7 +288,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if case['demographic']['Patient.extension.age']:
             age_at_index = case['demographic']['Patient.extension.age']
             age = {"url": "http://hl7.org/fhir/SearchParameter/patient-extensions-Patient-age",
-                   'valueQuantity': {"value": age_at_index}}
+                   'valueQuantity': {"value": int(age_at_index)}}
             if age not in race_ethnicity_sex:
                 race_ethnicity_sex.append(age)
 
@@ -360,8 +296,12 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         patient.extension = race_ethnicity_sex
 
     # gdc project for patient
-    project_relations = assign_fhir_for_project(project=case['ResearchStudy'], disease_types=disease_types)
-    study_ref = Reference(**{"reference": "/".join(["ResearchStudy", project_relations['ResearchStudy_obj'].id])})
+    research_studies = []
+    rs, rs_parent = create_researchstudy(project_data=case['ResearchStudy'])
+    research_studies.append(rs)
+    research_studies.append(rs_parent)
+
+    study_ref = Reference(**{"reference": "/".join(["ResearchStudy", rs.id])})
     subject_ref = Reference(**{"reference": "/".join(["Patient", patient.id])})
 
     # create researchSubject to link Patient --> ResearchStudy
@@ -409,10 +349,16 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     if 'demographic' in case.keys() and 'Observation.survey.days_to_death' in case['demographic'].keys() and \
             case['demographic'][
                 'Observation.survey.days_to_death']:
-        observation_days_to_death_identifier = Identifier(
-            **{"system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
-               "value": case['demographic']['Observation.survey.days_to_death'],
-               "use": "official"})
+
+        days_to_death = case['demographic'].get('Observation.survey.days_to_death', None)
+        if days_to_death is not None:
+            observation_days_to_death_identifier = Identifier(
+                **{
+                    "system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
+                    "value": str(days_to_death),
+                    "use": "official"
+                }
+            )
         observation_days_to_death_id = utils.mint_id(
             identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
             project_id=project_id,
@@ -1672,27 +1618,36 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         sample_list = all_samples + all_portions + all_aliquots + all_analytes
         specimen_observations = sample_observations + portion_observations + slides_observations + analyte_observations + aliquot_observations
 
-    all_observations = condition_observations + smoking_observation + alcohol_observation + obs_survey + specimen_observations + staging_observations
+    def combine_observations(*observation_lists):
+        """
+        combines multiple lists of observations in a valid FHIR Observation object using model_validate.
+        """
+        combined = []
+        for obs_list in observation_lists:
+            for obs in obs_list:
+                if isinstance(obs, dict):
+                    try:
+                        validated_obs = Observation.model_validate(obs)
+                        combined.append(validated_obs)
+                    except Exception as e:
+                        print(f"Failed to validate observation: {obs}, Error: {e}")
+                elif isinstance(obs, Observation):
+                    combined.append(obs)
+                else:
+                    print(f"Skipping invalid observation: {type(obs)} -> {obs}")
+        return combined
+
+    all_observations = combine_observations(condition_observations,smoking_observation, alcohol_observation, obs_survey, specimen_observations, staging_observations)
+    all_observations = list({obs.id: obs for obs in all_observations if isinstance(obs, Observation) and obs.id}.values())
+
+    for obs in all_observations:
+        if not isinstance(obs, Observation):
+            print(f"Non-Observation object found: {type(obs)} -> {obs}")
 
     return {'patient': patient, 'encounter': encounter, 'observations': all_observations, 'condition': condition,
-            'project_relations': project_relations, 'research_subject': research_subject, 'specimens': sample_list,
+            'research_studies': research_studies, 'research_subject': research_subject, 'specimens': sample_list,
             'imaging_study': slide_list, "procedures": procedures, "med_admin": treatments_medadmin,
             "med": treatments_med, "body_structure": body_structure}
-
-
-def remove_duplicates(entities):
-    seen = set()
-    unique_entities = []
-    for e in entities:
-        if isinstance(e, dict):
-            print(e)
-            fhir_model = e
-        else:
-            fhir_model = json.dumps(e.model_dump_json(), sort_keys=True)
-        if fhir_model not in seen:
-            seen.add(fhir_model)
-            unique_entities.append(e)
-    return unique_entities
 
 
 def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
@@ -1703,111 +1658,54 @@ def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
     all_fhir_case_obj = []
     [all_fhir_case_obj.append(assign_fhir_for_case(c)) for c in cases]
 
-    patients = [orjson.loads(fhir_case['patient'].model_dump_json()) for fhir_case in all_fhir_case_obj]
-    encounters = [orjson.loads(fhir_case['encounter'].model_dump_json()) for fhir_case in all_fhir_case_obj if
-                  'encounter' in fhir_case.keys() and fhir_case['encounter']]
-    encounters = list({v['id']: v for v in encounters}.values())
-    #   observations = [orjson.loads(fhir_case['observations'].model_dump_json()) for fhir_case in all_fhir_case_obj if
-    #                    'observations' in fhir_case.keys() and fhir_case['observations']]
-    conditions = [orjson.loads(fhir_case['condition'].model_dump_json()) for fhir_case in all_fhir_case_obj if
-                  'condition' in fhir_case.keys() and fhir_case['condition']]
-    research_subjects = [orjson.loads(fhir_case['research_subject'].model_dump_json()) for fhir_case in all_fhir_case_obj]
-    projects = [orjson.loads(fhir_case['project_relations']["ResearchStudy_obj"].model_dump_json()) for fhir_case in
-                all_fhir_case_obj]
+    def deduplicate_entities(_entities):
+        return list({v['id']: v for v in _entities}.values())
 
-    programs = list(unique_everseen(
-        [orjson.loads(fhir_case['project_relations']["ResearchStudy.partOf_obj"].model_dump_json()) for fhir_case in
-         all_fhir_case_obj]))
+    def load_list_entities(_all_fhir_case_obj, _key):
+        entity_list = []
+        for fhir_case in _all_fhir_case_obj:
+            if fhir_case[_key]:
+                for entity in fhir_case[_key]:
+                    if entity:
+                        e = orjson.loads(entity.model_dump_json())
+                        entity_list.append(e)
+        return deduplicate_entities(entity_list)
 
-    body_structure = [orjson.loads(fhir_case['body_structure'].model_dump_json()) for fhir_case in all_fhir_case_obj if
-                      'body_structure' in fhir_case.keys() and fhir_case['body_structure']]
+    patients = [orjson.loads(fhir_case['patient'].model_dump_json()) for fhir_case in all_fhir_case_obj if 'patient' in fhir_case.keys() and fhir_case['patient']]
+    encounters = deduplicate_entities([orjson.loads(fhir_case['encounter'].model_dump_json()) for fhir_case in all_fhir_case_obj if 'encounter' in fhir_case.keys() and fhir_case['encounter']])
+    conditions = deduplicate_entities([orjson.loads(fhir_case['condition'].model_dump_json()) for fhir_case in all_fhir_case_obj if 'condition' in fhir_case.keys() and fhir_case['condition']])
+    research_subjects = deduplicate_entities([orjson.loads(fhir_case['research_subject'].model_dump_json()) for fhir_case in all_fhir_case_obj if 'research_subject' in fhir_case.keys() and fhir_case['research_subject']])
+    body_structure = deduplicate_entities([orjson.loads(fhir_case['body_structure'].model_dump_json()) for fhir_case in all_fhir_case_obj if 'body_structure' in fhir_case.keys() and fhir_case['body_structure']])
+    research_studies = load_list_entities(all_fhir_case_obj, "research_studies")
 
-    specimens = []
-    for fhir_case in all_fhir_case_obj:
-        if fhir_case["specimens"]:
-            for specimen in fhir_case["specimens"]:
-                s = orjson.loads(specimen.model_dump_json())
-                # if 'parent' in s.keys():
-                #     s['parent'] = s['parent'][0]
-                specimens.append(s)
+    specimens = load_list_entities(all_fhir_case_obj, "specimens")
+    observations = load_list_entities(all_fhir_case_obj, "observations")
+    procedures = load_list_entities(all_fhir_case_obj, "procedures")
+    imaging_study = load_list_entities(all_fhir_case_obj, "imaging_study")
+    med_admins = load_list_entities(all_fhir_case_obj, "med_admin")
+    meds = load_list_entities(all_fhir_case_obj, "med")
 
-    observations = []
-    for fhir_case in all_fhir_case_obj:
-        if fhir_case["observations"]:
-            for obs in fhir_case["observations"]:
-                if isinstance(obs, dict):
-                    observations.append(obs)
-                else:
-                    observations.append(orjson.loads(obs.model_dump_json()))
-    observations = list({v['id']: v for v in observations}.values())
+    out_dir = out_dir if out_dir.endswith("/") else f"{out_dir}/"
 
-    procedures = []
-    for fhir_case in all_fhir_case_obj:
-        if fhir_case["procedures"]:
-            for procedure in fhir_case["procedures"]:
-                procedures.append(orjson.loads(procedure.model_dump_json()))
+    entity_map = {
+        "Specimen": specimens,
+        "Patient": patients,
+        "Encounter": encounters,
+        "Observation": observations,
+        "Condition": conditions,
+        "ResearchSubject": research_subjects,
+        "ResearchStudy": research_studies,
+        "ImagingStudy": imaging_study,
+        "Procedure": procedures,
+        "BodyStructure": body_structure,
+        "MedicationAdministration": med_admins,
+        "Medication": meds,
+    }
 
-    imaging_study = []
-    for fhir_case in all_fhir_case_obj:
-        if fhir_case["imaging_study"]:
-            for img in fhir_case["imaging_study"]:
-                imaging_study.append(orjson.loads(img.model_dump_json()))
-    imaging_study = list({v['id']: v for v in imaging_study}.values())
-
-    if "/" not in out_dir[-1]:
-        out_dir = out_dir + "/"
-
-    if specimens:
-        utils.fhir_ndjson(specimens, "".join([out_dir, "Specimen.ndjson"]))
-        print("Successfully converted GDC case sample to FHIR's Specimen ndjson file!")
-    if patients:
-        utils.fhir_ndjson(patients, "".join([out_dir, "Patient.ndjson"]))
-        print("Successfully converted GDC case patient to FHIR's Patient ndjson file!")
-    if encounters:
-        utils.fhir_ndjson(encounters, "".join([out_dir, "Encounter.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's Encounter ndjson file!")
-    if observations:
-        utils.fhir_ndjson(observations, "".join([out_dir, "Observation.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's Observation ndjson file!")
-    if conditions:
-        utils.fhir_ndjson(conditions, "".join([out_dir, "Condition.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's Condition ndjson file!")
-    if research_subjects:
-        utils.fhir_ndjson(research_subjects, "".join([out_dir, "ResearchSubject.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's ResearchSubject ndjson file!")
-    if projects:
-        rs = projects + programs
-        rs = list({v['id']: v for v in rs}.values())
-        utils.fhir_ndjson(rs, "".join([out_dir, "ResearchStudy.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's ResearchStudy ndjson file!")
-    if imaging_study:
-        utils.fhir_ndjson(imaging_study, "".join([out_dir, "ImagingStudy.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's ImagingStudy ndjson file!")
-    if procedures:
-        utils.fhir_ndjson(procedures, "".join([out_dir, "Procedure.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's Procedure ndjson file!")
-    if body_structure:
-        utils.fhir_ndjson(body_structure, "".join([out_dir, "BodyStructure.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's BodyStructure ndjson file!")
-
-    med_admins = []
-    for fhir_case in all_fhir_case_obj:
-        if fhir_case["med_admin"]:
-            for med_admin in fhir_case["med_admin"]:
-                med_admins.append(orjson.loads(med_admin.model_dump_json()))
-    if med_admins:
-        utils.fhir_ndjson(med_admins, "".join([out_dir, "MedicationAdministration.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's MedicationAdministration ndjson file!")
-
-    meds = []
-    for fhir_case in all_fhir_case_obj:
-        if fhir_case["med"]:
-            for med in fhir_case["med"]:
-                meds.append(orjson.loads(med.model_dump_json()))
-    if meds:
-        utils.fhir_ndjson(meds, "".join([out_dir, "Medication.ndjson"]))
-        print("Successfully converted GDC case info to FHIR's Medication ndjson file!")
-
+    for entity_name, entities in entity_map.items():
+        if entities:
+            utils.fhir_ndjson(entities, f"{out_dir}{entity_name}.ndjson")
+            print(f"Successfully converted GDC case info to FHIR's {entity_name} ndjson file!")
 
 # File ---------------------------------------------------------------
 # load file mapped key values
@@ -1966,7 +1864,7 @@ def assign_fhir_for_file(file):
     if 'Attachment.hash' in file.keys() and file['Attachment.hash']:
         attachment.hash = file['Attachment.hash']
     if 'Attachment.size' in file.keys() and file['Attachment.size']:
-        attachment.size = file['Attachment.size']
+        attachment.size = file['Attachment.size'] // (1024 * 1024)  # converting size from bytes to MB to surpass 2GB min file-size in  (Pydantic 2.10 - FHIR 8.0.0 requirement)
 
     profile = None
     if 'DocumentReference.content.profile' in file.keys() and file['DocumentReference.content.profile']:
