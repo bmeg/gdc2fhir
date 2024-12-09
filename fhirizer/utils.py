@@ -16,6 +16,9 @@ import importlib
 from pathlib import Path
 from fhir.resources.identifier import Identifier
 from fhir.resources import get_fhir_model_class
+from fhir.resources.group import Group, GroupMember
+from fhir.resources.reference import Reference
+from fhir.resources.codeableconcept import CodeableConcept
 from uuid import uuid5, UUID
 
 DATA_DICT_PATH = "".join(
@@ -1234,3 +1237,16 @@ def get_chembl_compound_info(db_file_path: str, drug_names: list, limit: int) ->
     conn.close()
 
     return rows
+
+
+def create_researchstudy_group(patient_references: list, study_name:str, study_identifier:str) -> Group:
+    """Creates a research study group based on:
+    https://nih-ncpi.github.io/ncpi-fhir-ig-2/StructureDefinition-research-study-group.html
+    """
+    code = CodeableConcept(**{"coding": [{"code": "C142710",
+                                   "system": "http://purl.obolibrary.org/obo/ncit.owl",
+                                   "display": "Study Participant"}]})
+    patient_members = [GroupMember(**{'entity': p}) for p in patient_references]
+    study_group = Group(**{"code": code, "membership": "definitional", "type": "person", "member": patient_members})
+    return study_group
+
