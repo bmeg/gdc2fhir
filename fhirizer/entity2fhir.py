@@ -765,7 +765,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                                     project_id=project_id,
                                                                     namespace=NAMESPACE_GDC)
                     # assign as parent even if main stage was not defined
-                    stage_obs_references = [{"reference": f"Observation/{s.id}"} for s in staging_observations]
+                    stage_obs_references = [Reference(**{"reference": f"Observation/{s.id}"}) for s in staging_observations]
                     parent_stage_observation.hasMember = stage_obs_references
                     staging_observations.append(parent_stage_observation)
 
@@ -900,7 +900,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                                      namespace=NAMESPACE_GDC)
                 staging_observations.append(grade_observation)
                 if parent_stage_observation.valueCodeableConcept:
-                    parent_stage_observation.hasMember.append({"reference": f"Observation/{grade_observation.id}"})
+                    parent_stage_observation.hasMember.append(Reference(**{"reference": f"Observation/{grade_observation.id}"}))
 
             condition.stage = staging_list
             observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])}), subject_ref]
