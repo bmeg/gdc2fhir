@@ -227,5 +227,22 @@ def validate(debug: bool, path):
             raise
 
 
+@cli.command('study_group')
+@click.option("-p", '--path', required=True,
+              default='./META',
+              show_default=True,
+              help='Directory path to META folder.')
+@click.option("-o", '--output_path', required=True,
+              show_default=True,
+              help='Directory path to folder to save the Group.ndjson file.')
+def study_group(path, output_path):
+    """Adds a FHIR ndjson Group file as a post-processing metadata that captures ResearchSubject or Participants to a
+    ResearchStudy."""
+    assert Path(path).is_dir(), f"Path {path} is not a valid directory path."
+    assert Path(output_path).is_dir(), f"Path {output_path} is not a valid directory path."
+
+    utils.study_groups(meta_path=path, out_path=output_path)
+
+
 if __name__ == '__main__':
     cli()
