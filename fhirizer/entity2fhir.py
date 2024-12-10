@@ -63,6 +63,9 @@ aliquot = utils._read_json(str(Path(importlib.resources.files(
 file_observation = utils._read_json(
     str(Path(importlib.resources.files('fhirizer').parent / 'resources' / 'gdc_resources'
              / 'content_annotations' / 'files' / 'output_file_observation.json')))
+diagnosis_survey = utils._read_json(str(Path(importlib.resources.files(
+    'fhirizer').parent / 'resources' / 'gdc_resources' / 'content_annotations' / 'case' / 'diagnosis_survey.json')))
+
 
 def create_researchstudy(project_data) -> tuple[ResearchStudy | None]:
     """Creates FHIR ResearchStudy"""
@@ -204,6 +207,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     procedure = None
     observations = []
     condition_observations = []
+    obs_survey = []
 
     if 'Patient.identifier' in case.keys() and case['Patient.identifier'] and re.match(r"^[A-Za-z0-9\-.]+$",
                                                                                        case['Patient.identifier']):
@@ -217,9 +221,44 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         patient.identifier = [patient_id_identifier]
 
     if 'demographic' in case.keys() and 'Patient.birthDate' in case['demographic']:
-        # converted to https://build.fhir.org/datatypes.html#date / NOTE: month and day missing in GDC
         if case['demographic']['Patient.birthDate']:
-            patient.birthDate = datetime(int(case['demographic']['Patient.birthDate']), 1, 1)
+            birth_year_observation = copy.deepcopy(diagnosis_survey)
+            birth_year_observation_identifier = Identifier(
+                **{
+                    "system": "".join(["https://gdc.cancer.gov/", "year_of_birth"]),
+                    "value": "/".join([patient.id, str(case['demographic']['Patient.birthDate'])]),
+                    "use": "official"
+                }
+            )
+            birth_year_observation_id = utils.mint_id(
+                identifier=[birth_year_observation_identifier, patient_id_identifier], resource_type="Observation",
+                project_id=project_id,
+                namespace=NAMESPACE_GDC)
+
+            birth_year_observation["id"] = birth_year_observation_id
+            birth_year_observation["identifier"] = [birth_year_observation_identifier]
+            birth_year_observation["code"] = {
+                    "coding": [
+                        {
+                            "system": "https://ontobee.org/",
+                            "code": "NCIT_C83164",
+                            "display": "Year of Birth"
+                        }
+                    ]
+                }
+            birth_year_observation["subject"] = {
+                    "reference": "/".join(["Patient", patient.id])
+                }
+            birth_year_observation["focus"] = [{
+                    "reference": "/".join(["Patient", patient.id])
+                }]
+            birth_year_observation["valueQuantity"] = {
+                    "value": int(case['demographic']['Patient.birthDate']),
+                    "unit": "year",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "a"
+            }
+            obs_survey.append(birth_year_observation)
 
     patient_gender = None
     if 'demographic' in case.keys() and 'Patient.gender' in case['demographic']:
@@ -238,15 +277,53 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             race_ethnicity_sex.append(female)
         elif patient_gender == 'male':
             race_ethnicity_sex.append(male)
-    #TODO: add observation for days_to and years and if any indicate deceased add the boolean status.
+
+    if 'demographic' in case.keys() and 'Patient.deceasedBoolean' in case['demographic']:
+        if case['demographic']['Patient.deceasedBoolean'] == "Alive":
+            patient.deceasedBoolean = False
+        elif case['demographic']['Patient.deceasedBoolean'] == "Dead":
+            patient.deceasedBoolean = True
+
     if 'demographic' in case.keys() and 'Patient.deceasedDateTime' in case['demographic']:
-        patient.deceasedDateTime = case['demographic']['Patient.deceasedDateTime']
-    else:
-        if 'demographic' in case.keys() and 'Patient.deceasedBoolean' in case['demographic']:
-            if case['demographic']['Patient.deceasedBoolean'] == "Alive":
-                patient.deceasedBoolean = False
-            elif case['demographic']['Patient.deceasedBoolean'] == "Dead":
-                patient.deceasedBoolean = True
+        year_of_death = case['demographic']['Patient.deceasedDateTime']
+        if year_of_death:
+            year_of_death_observation = copy.deepcopy(diagnosis_survey)
+            year_of_death_identifier = Identifier(
+                **{
+                    "system": "".join(["https://gdc.cancer.gov/", "year_of_death"]),
+                    "value": "/".join([patient.id, str(year_of_death)]),
+                    "use": "official"
+                }
+            )
+            year_of_death_observation_id = utils.mint_id(
+                identifier=[year_of_death_identifier, patient_id_identifier], resource_type="Observation",
+                project_id=project_id,
+                namespace=NAMESPACE_GDC)
+
+            year_of_death_observation["id"] = year_of_death_observation_id
+            year_of_death_observation["identifier"] = [year_of_death_identifier]
+            year_of_death_observation["code"] = {
+                "coding": [
+                    {
+                        "system": "https://ontobee.org/",
+                        "code": "NCIT_C156426",
+                        "display": "Year of Death"
+                    }
+                ]
+            }
+            year_of_death_observation["subject"] = {
+                "reference": "/".join(["Patient", patient.id])
+            }
+            year_of_death_observation["focus"] = [{
+                "reference": "/".join(["Patient", patient.id])
+            }]
+            year_of_death_observation["valueQuantity"] = {
+                "value": int(year_of_death),
+                "unit": "year",
+                "system": "http://unitsofmeasure.org",
+                "code": "a"
+            }
+            obs_survey.append(year_of_death_observation)
 
     if 'demographic' in case.keys() and 'Extension.extension:USCoreRaceExtension' in case['demographic'].keys():
         #  race and ethnicity
@@ -344,8 +421,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     condition_codes_list = []
     staging_observations = []
 
-    obs_survey = []
-
     if 'demographic' in case.keys() and 'Observation.survey.days_to_death' in case['demographic'].keys() and \
             case['demographic'][
                 'Observation.survey.days_to_death']:
@@ -355,54 +430,86 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             observation_days_to_death_identifier = Identifier(
                 **{
                     "system": "".join(["https://gdc.cancer.gov/", "days_to_death"]),
-                    "value": str(days_to_death),
+                    "value": "/".join([patient.id, str(days_to_death)]),
                     "use": "official"
                 }
             )
-        observation_days_to_death_id = utils.mint_id(
-            identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
-            project_id=project_id,
-            namespace=NAMESPACE_GDC)
+            observation_days_to_death_id = utils.mint_id(
+                identifier=[observation_days_to_death_identifier, patient_id_identifier], resource_type="Observation",
+                project_id=project_id,
+                namespace=NAMESPACE_GDC)
 
-        days_to_death = {
-            "resourceType": "Observation",
-            "id": observation_days_to_death_id,
-            "status": "final",
-            "category": [
-                {
+            days_to_death_obervation = copy.deepcopy(diagnosis_survey)
+            days_to_death_obervation["id"] = observation_days_to_death_id
+            days_to_death_obervation["identifier"] = [observation_days_to_death_identifier]
+            days_to_death_obervation["code"] = {
                     "coding": [
                         {
-                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                            "code": "survey",
-                            "display": "survey"
+                            "system": "https://ontobee.org/",
+                            "code": "NCIT_C156419",
+                            "display": "Days between Diagnosis and Death"
                         }
                     ]
                 }
-            ],
-            "code": {
-                "coding": [
-                    {
-                        "system": "https://ontobee.org/",
-                        "code": "NCIT_C156419",
-                        "display": "Days between Diagnosis and Death"
-                    }
-                ]
-            },
-            "subject": {
-                "reference": "/".join(["Patient", patient.id])
-            },
-            "focus": [{
-                "reference": "/".join(["Patient", patient.id])
-            }],
-            "valueQuantity": {
-                "value": int(case['demographic'][
-                                 'Observation.survey.days_to_death']),
-                "unit": "days",
-                "system": "http://unitsofmeasure.org",
-                "code": "d"
+            days_to_death_obervation["subject"] = {
+                    "reference": "/".join(["Patient", patient.id])
+                }
+            days_to_death_obervation["focus"] = [{
+                    "reference": "/".join(["Patient", patient.id])
+                }]
+            days_to_death_obervation["valueQuantity"] = {
+                    "value": int(case['demographic'][
+                                     'Observation.survey.days_to_death']),
+                    "unit": "days",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "d"
             }
-        }
-        obs_survey.append(days_to_death)
+
+            obs_survey.append(days_to_death_obervation)
+
+    if 'demographic' in case.keys() and 'Observation.survey.days_to_birth' in case['demographic'].keys():
+        days_to_birth = case['demographic'].get('Observation.survey.days_to_birth', None)
+
+        if days_to_birth is not None:
+            days_to_birth_identifier = Identifier(
+                **{
+                    "system": "".join(["https://gdc.cancer.gov/", "days_to_birth"]),
+                    "value": "/".join([patient.id, str(days_to_birth)]),
+                    "use": "official"
+                }
+            )
+            days_to_birth_id = utils.mint_id(
+                identifier=[days_to_birth_identifier, patient_id_identifier], resource_type="Observation",
+                project_id=project_id,
+                namespace=NAMESPACE_GDC)
+
+            days_to_birth_obervation = copy.deepcopy(diagnosis_survey)
+            days_to_birth_obervation["id"] = days_to_birth_id
+            days_to_birth_obervation["identifier"] = [days_to_birth_identifier]
+            days_to_birth_obervation["code"] = {
+                    "coding": [
+                        {
+                            "system": "https://ontobee.org/",
+                            "code": "NCIT_C156418",
+                            "display": "Days Between Birth and Diagnosis"
+                        }
+                    ]
+                }
+            days_to_birth_obervation["subject"] = {
+                    "reference": "/".join(["Patient", patient.id])
+                }
+            days_to_birth_obervation["focus"] = [{
+                    "reference": "/".join(["Patient", patient.id])
+                }]
+            days_to_birth_obervation["valueQuantity"] = {
+                    "value": case['demographic'][
+                                     'Observation.survey.days_to_birth'],
+                    "unit": "days",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "d"
+            }
+
+            obs_survey.append(days_to_birth_obervation)
 
     if 'diagnoses' in case.keys() and isinstance(case['diagnoses'], list):
         case['diagnoses'] = {k: v for d in case['diagnoses'] for k, v in d.items()}
@@ -420,6 +527,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                        project_id=project_id,
                                        namespace=NAMESPACE_GDC)
 
+        observation.identifier = [observation_identifier]
         observation.subject = subject_ref
         observation.category = [{
             "coding": [
@@ -489,56 +597,130 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
     if 'diagnoses' in case.keys() and 'Observation.survey.days_to_last_follow_up' in case['diagnoses'].keys() and \
             case['diagnoses'][
                 'Observation.survey.days_to_last_follow_up']:
+        if case['diagnoses']['Observation.survey.days_to_last_follow_up']:
+            observation_days_to_last_follow_up_identifier = Identifier(
+                **{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_follow_up"]),
+                   "value": str(case['diagnoses']['Observation.survey.days_to_last_follow_up']),
+                   "use": "official"})
+            observation_days_to_last_follow_up_id = utils.mint_id(
+                identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier],
+                resource_type="Observation",
+                project_id=project_id,
+                namespace=NAMESPACE_GDC)
 
-        observation_days_to_last_follow_up_identifier = Identifier(
-            **{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_follow_up"]),
-               "value": str(case['diagnoses']['Observation.survey.days_to_last_follow_up']),
-               "use": "official"})
-        observation_days_to_last_follow_up_id = utils.mint_id(
-            identifier=[observation_days_to_last_follow_up_identifier, patient_id_identifier],
-            resource_type="Observation",
-            project_id=project_id,
-            namespace=NAMESPACE_GDC)
-        days_to_last_follow_up = {
-            "resourceType": "Observation",
-            "id": observation_days_to_last_follow_up_id,
-            "status": "final",
-            "category": [
-                {
+            days_to_last_follow_up = copy.deepcopy(diagnosis_survey)
+            days_to_last_follow_up["category"][0]["coding"][0]["code"] = "exam"
+            days_to_last_follow_up["category"][0]["coding"][0]["display"] = "exam"
+            days_to_last_follow_up["id"] = observation_days_to_last_follow_up_id
+            days_to_last_follow_up["code"] = {
                     "coding": [
                         {
-                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                            "code": "survey",
-                            "display": "survey"
+                            "system": "https://ontobee.org/",
+                            "code": "NCIT_C181065",
+                            "display": "Number of Days Between Index Date and Last Follow Up"
                         }
                     ]
                 }
-            ],
-            "code": {
-                "coding": [
-                    {
-                        "system": "https://ontobee.org/",
-                        "code": "NCIT_C181065",
-                        "display": "Number of Days Between Index Date and Last Follow Up"
-                    }
-                ]
-            },
-            "subject": {
-                "reference": "/".join(["Patient", patient.id])
-            },
-            "focus": [{
-                "reference": "/".join(["Patient", patient.id])
-            }],
-            "valueQuantity": {
-                "value": int(case['diagnoses']['Observation.survey.days_to_last_follow_up']),
-                "unit": "days",
-                "system": "http://unitsofmeasure.org",
-                "code": "d"
-            }
-        }
-        if survey_updated_datetime_component:
-            days_to_last_follow_up['component'] = [survey_updated_datetime_component]
-        obs_survey.append(days_to_last_follow_up)
+            days_to_last_follow_up["subject"] = {
+                    "reference": "/".join(["Patient", patient.id])
+                }
+            days_to_last_follow_up["focus"] = [{
+                    "reference": "/".join(["Patient", patient.id])
+                }]
+            days_to_last_follow_up["valueQuantity"] = {
+                    "value": int(case['diagnoses']['Observation.survey.days_to_last_follow_up']),
+                    "unit": "days",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "d"
+                }
+
+            if survey_updated_datetime_component:
+                days_to_last_follow_up['component'] = [survey_updated_datetime_component]
+            obs_survey.append(days_to_last_follow_up)
+
+    if 'diagnoses' in case.keys() and 'Observation.survey.days_to_last_known_disease_status' in case['diagnoses'].keys() and \
+            case['diagnoses'][
+                'Observation.survey.days_to_last_known_disease_status']:
+        if case['diagnoses']['Observation.survey.days_to_last_known_disease_status']:
+            days_to_last_known_disease_status_identifier = Identifier(
+                **{"system": "".join(["https://gdc.cancer.gov/", "days_to_last_known_disease_status"]),
+                   "value": str(case['diagnoses']['Observation.survey.days_to_last_known_disease_status']),
+                   "use": "official"})
+            days_to_last_follow_up_id = utils.mint_id(
+                identifier=[days_to_last_known_disease_status_identifier, patient_id_identifier],
+                resource_type="Observation",
+                project_id=project_id,
+                namespace=NAMESPACE_GDC)
+
+            days_to_last_known_disease_status_observation = copy.deepcopy(diagnosis_survey)
+            days_to_last_known_disease_status_observation["category"][0]["coding"][0]["code"] = "exam"
+            days_to_last_known_disease_status_observation["category"][0]["coding"][0]["display"] = "exam"
+            days_to_last_known_disease_status_observation["id"] = days_to_last_follow_up_id
+            days_to_last_known_disease_status_observation["code"] = {
+                    "coding": [
+                        {
+                            "system": "https://ontobee.org/",
+                            "code": "NCIT_C181066",
+                            "display": "Number of Days to Last Known Disease Status"
+                        }
+                    ]
+                }
+            days_to_last_known_disease_status_observation["subject"] = {
+                    "reference": "/".join(["Patient", patient.id])
+                }
+            days_to_last_known_disease_status_observation["focus"] = [{
+                    "reference": "/".join(["Patient", patient.id])
+                }]
+            days_to_last_known_disease_status_observation["valueQuantity"] = {
+                    "value": int(case['diagnoses']['Observation.survey.days_to_last_known_disease_status']),
+                    "unit": "days",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "d"
+                }
+
+            obs_survey.append(days_to_last_known_disease_status_observation)
+
+    if 'diagnoses' in case.keys() and 'Observation.survey.days_to_diagnosis' in case['diagnoses'].keys() and \
+            case['diagnoses'][
+                'Observation.survey.days_to_diagnosis']:
+        if case['diagnoses']['Observation.survey.days_to_diagnosis']:
+            days_to_diagnosis_identifier = Identifier(
+                **{"system": "".join(["https://gdc.cancer.gov/", "days_to_diagnosis"]),
+                   "value": str(case['diagnoses']['Observation.survey.days_to_diagnosis']),
+                   "use": "official"})
+            days_to_diagnosis_id = utils.mint_id(
+                identifier=[days_to_diagnosis_identifier, patient_id_identifier],
+                resource_type="Observation",
+                project_id=project_id,
+                namespace=NAMESPACE_GDC)
+
+            days_to_diagnosis_observation = copy.deepcopy(diagnosis_survey)
+            days_to_diagnosis_observation["category"][0]["coding"][0]["code"] = "exam"
+            days_to_diagnosis_observation["category"][0]["coding"][0]["display"] = "exam"
+            days_to_diagnosis_observation["id"] = days_to_diagnosis_id
+            days_to_diagnosis_observation["code"] = {
+                    "coding": [
+                        {
+                            "system": "https://ontobee.org/",
+                            "code": "NCIT_C181061",
+                            "display": "Number of Days Between Index Date and Diagnosis"
+                        }
+                    ]
+                }
+            days_to_diagnosis_observation["subject"] = {
+                    "reference": "/".join(["Patient", patient.id])
+                }
+            days_to_diagnosis_observation["focus"] = [{
+                    "reference": "/".join(["Patient", patient.id])
+                }]
+            days_to_diagnosis_observation["valueQuantity"] = {
+                    "value": int(case['diagnoses']['Observation.survey.days_to_diagnosis']),
+                    "unit": "days",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "d"
+                }
+
+            obs_survey.append(days_to_diagnosis_observation)
 
     condition = None  # normal tissue don't/shouldn't  have diagnoses or condition
     body_structure = None
@@ -1637,7 +1819,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     print(f"Skipping invalid observation: {type(obs)} -> {obs}")
         return combined
 
-    all_observations = combine_observations(condition_observations,smoking_observation, alcohol_observation, obs_survey, specimen_observations, staging_observations)
+    all_observations = combine_observations(condition_observations, smoking_observation, alcohol_observation, obs_survey, specimen_observations, staging_observations)
     all_observations = list({obs.id: obs for obs in all_observations if isinstance(obs, Observation) and obs.id}.values())
 
     for obs in all_observations:

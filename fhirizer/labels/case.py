@@ -408,6 +408,15 @@ case_maps = [Map(
 
     Map(
         source=Source(
+            name='demographic.days_to_birth'
+        ),
+        destination=Destination(
+            name='Observation.survey.days_to_birth'
+        )
+    ),
+
+    Map(
+        source=Source(
             name='demographic.race',
             description=data_dict["clinical"]["demographic"]["properties"]["race"]["description"],
             category=data_dict["clinical"]["demographic"]["category"],
@@ -1224,6 +1233,24 @@ case_maps = [Map(
         ),
         destination=Destination(
             name='Observation.survey.days_to_last_follow_up'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.days_to_diagnosis'
+        ),
+        destination=Destination(
+            name='Observation.survey.days_to_diagnosis'
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='diagnoses.days_to_last_known_disease_status'
+        ),
+        destination=Destination(
+            name='Observation.survey.days_to_last_known_disease_status'
         )
     ),
 
