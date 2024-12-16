@@ -1886,6 +1886,21 @@ def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
 
     for entity_name, entities in entity_map.items():
         if entities:
+            # cleaned_resource = []
+            # for resource in entities:
+            #     cleaned_resource_dict = utils.remove_empty_dicts(orjson.loads(resource))
+            #     try:
+            #         validated_resource = utils.validate_fhir_resource_from_type(entity_name,
+            #                                                               cleaned_resource_dict).model_dump_json()
+            #     except ValueError as e:
+            #         print(f"Validation failed for {entity_name}: {e}")
+            #         continue
+            #     # handle pydantic Decimal cases
+            #     validated_resource = utils.convert_decimal_to_float(orjson.loads(validated_resource))
+            #     validated_resource = utils.convert_value_to_float(validated_resource)
+            #     validated_resource = orjson.dumps(validated_resource).decode("utf-8")
+            #     cleaned_resource.append(validated_resource)
+
             utils.fhir_ndjson(entities, f"{out_dir}{entity_name}.ndjson")
             print(f"Successfully converted GDC case info to FHIR's {entity_name} ndjson file!")
 
@@ -2033,10 +2048,11 @@ def assign_fhir_for_file(file):
         group_id = utils.mint_id(identifier=group_identifier, resource_type="Group",
                                  project_id=project_id,
                                  namespace=NAMESPACE_GDC)
-        group = Group(**{'id': group_id, "identifier": [group_identifier], "membership": 'definitional',
-                         'member': specimen_members, "type": "specimen"})
+        if specimen_members:
+            group = Group(**{'id': group_id, "identifier": [group_identifier], "membership": 'definitional',
+                             'member': specimen_members, "type": "specimen"})
 
-        document.subject = Reference(**{"reference": "/".join(["Group", group.id])})
+            document.subject = Reference(**{"reference": "/".join(["Group", group.id])})
 
     attachment = Attachment.model_construct()
     attachment.url = "https://api.gdc.cancer.gov/data/{}".format(file['DocumentReference.id'])
