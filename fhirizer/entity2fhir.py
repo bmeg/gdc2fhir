@@ -2121,7 +2121,6 @@ def assign_fhir_for_file(file):
 
     docref_observations = []
     if 'read_groups' in file.keys() and file['read_groups']:
-        print("made it")
         docref_observation = copy.deepcopy(file_observation)
         for observation in file['read_groups']:
             observation_identifier = Identifier(
@@ -2149,7 +2148,6 @@ def assign_fhir_for_file(file):
                 orjson.loads(
                     Reference(**{"reference": "/".join(["DocumentReference", document.id])}).model_dump_json())]
             docref_observation['subject'] = orjson.loads(doc_subject_reference[0].model_dump_json())
-            print(docref_observation)
             obs_components = []
             obs_component_fields = {
                 "adapter_name": "string",
@@ -2192,7 +2190,7 @@ def assign_fhir_for_file(file):
                 "days_to_sequencing": "int",
                 "single_cell_library": "string",
                 "multiplex_barcode": "string",
-                "fragment_standard_deviation_length": "int",
+                "fragment_standard_deviation_length": "float",
                 "fragment_mean_length": "float",
                 "fragment_minimum_length": "int",
                 "fragment_maximum_length": "float",
@@ -2203,7 +2201,6 @@ def assign_fhir_for_file(file):
             for key, comp_type in obs_component_fields.items():
                 field_key = f"Observation.DocumentReference.{key}"
                 if field_key in observation.keys() and observation[field_key]:
-                    print(field_key)
                     obs_component = utils.get_component(
                         key=key,
                         value=observation[field_key],
