@@ -834,6 +834,29 @@
                 "reference": null
             }
         },
+                {
+            "source": {
+                "name": "cases.submitter_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "cases_submitter_id",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
         {
             "source": {
                 "name": "cases.samples.portions.analytes.aliquots.aliquot_id",

@@ -102,6 +102,15 @@ file_maps = [
 
     Map(
         source=Source(
+            name='cases.submitter_id',
+        ),
+        destination=Destination(
+            name='cases_submitter_id',
+        )
+    ),
+
+    Map(
+        source=Source(
             name='cases.samples.portions.analytes.aliquots.aliquot_id',
         ),
         destination=Destination(
