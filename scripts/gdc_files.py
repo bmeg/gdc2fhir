@@ -42,7 +42,7 @@ def query_gdc(endpoint, params):
         while True:
             try:
                 req = client.get(URL_BASE + endpoint, params=params, headers=headers)
-                data = req.model_dump_json()
+                data = req.json()
 
                 if 'data' not in data:
                     print("Bad return %s" % (data))
@@ -74,7 +74,7 @@ def query_gdc(endpoint, params):
 
 def scrapeFiles(outfile):
     parameters = {'expand': ",".join(
-        ["cases", "cases.aliquot_ids", "cases.project", "cases.samples.portions.analytes.aliquots", "index_files", "analysis.metadata.read_groups"]),
+        ["cases", "cases.aliquot_ids", "cases.project", "cases.samples.portions.analytes.aliquots", "index_files", "analysis.metadata.read_groups", "cases.portion_ids", "cases.submitter_portion_ids", "cases.slide_ids", "cases.slide_ids", "cases.submitter_slide_ids", "cases.sample_ids", "cases.submitter_sample_ids"]),
         'filters': {
             "op": "in",
             "content": {
