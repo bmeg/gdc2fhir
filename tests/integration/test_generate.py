@@ -49,8 +49,8 @@ def medication_administration():
 
 def test_case_gdc_to_fhir(patient, condition, research_study, research_subject, observation, specimen,
                           medication, medication_administration, body_structure, name='case', out_dir='./tests/fixtures/case/META',
-                          cases_path="./tests/fixtures/case/cases.ndjson"):
-    entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, name=name, cases_path=cases_path, convert=False, verbose=False)
+                          cases_path="./tests/fixtures/case/cases.ndjson", spinner=None):
+    entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, name=name, cases_path=cases_path, convert=False, verbose=False, spinner=spinner)
     assert patient == utils.load_ndjson("./tests/fixtures/case/META/Patient.ndjson")
     assert condition == utils.load_ndjson("./tests/fixtures/case/META/Condition.ndjson")
     assert research_study == utils.load_ndjson("./tests/fixtures/case/META/ResearchStudy.ndjson")

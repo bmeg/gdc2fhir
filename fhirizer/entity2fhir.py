@@ -1853,7 +1853,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
             "med": treatments_med, "body_structure": body_structure}
 
 
-def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
+def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose, spinner=None):
     # cases = utils.load_ndjson(cases_path)
     out_path = os.path.join(out_dir, os.pardir, "".join([name, "_keys.ndjson"])) if convert else None
     cases = mapping.convert_maps(in_path=cases_path, out_path=out_path, name=name, convert=convert, verbose=verbose)
@@ -1913,6 +1913,9 @@ def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose):
         "MedicationAdministration": med_admins,
         "Medication": meds,
     }
+
+    if spinner:
+        spinner.stop()
 
     for entity_name, entities in entity_map.items():
         if entities:
@@ -2238,7 +2241,7 @@ def clean_resources(entities):
     return cleaned_resource
 
 
-def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose):
+def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose, spinner=None):
     #  files = utils.load_ndjson(files_path)
     out_path = os.path.join(out_dir, os.pardir, "".join([name, "_keys.ndjson"])) if convert else None
     files = mapping.convert_maps(in_path=files_path, out_path=out_path, name=name, convert=convert, verbose=verbose)
@@ -2271,6 +2274,9 @@ def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose):
 
     if "/" not in out_dir[-1]:
         out_dir = out_dir + "/"
+
+    if spinner:
+        spinner.stop()
 
     if doc_refs:
         cleaned_doc_refs = clean_resources(doc_refs)
@@ -2499,12 +2505,15 @@ def cellosaurus_fhir_mappping(cell_lines, verbose=False):
     return {"patients": patients, "conditions": conditions, "samples": samples}
 
 
-def cellosaurus_to_fhir_ndjson(out_dir, obj):
+def cellosaurus_to_fhir_ndjson(out_dir, obj, spinner):
     patients = [orjson.loads(patient.json()) for patient in obj["patients"]]
     samples = [orjson.loads(sample.json()) for sample in obj["samples"]]
     samples = list({v['id']: v for v in samples}.values())
     conditions = [orjson.loads(condition.json()) for condition in obj["conditions"]]
     conditions = list({v['id']: v for v in conditions}.values())
+
+    if spinner:
+        spinner.stop()
 
     if patients:
         utils.fhir_ndjson(patients, os.path.join(out_dir, "Patient.ndjson"))
@@ -2517,7 +2526,7 @@ def cellosaurus_to_fhir_ndjson(out_dir, obj):
         print("Successfully converted Cellosaurus info to FHIR's Condition ndjson file!")
 
 
-def cellosaurus2fhir(path, out_dir):
+def cellosaurus2fhir(path, out_dir, spinner=None):
     cell_lines = utils.load_ndjson(path=path)
     cellosaurus_fhir_objects = cellosaurus_fhir_mappping(cell_lines)
-    cellosaurus_to_fhir_ndjson(out_dir=out_dir, obj=cellosaurus_fhir_objects)
+    cellosaurus_to_fhir_ndjson(out_dir=out_dir, obj=cellosaurus_fhir_objects, spinner=spinner)

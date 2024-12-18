@@ -7,6 +7,8 @@ import click
 from pathlib import Path
 import importlib.resources
 import warnings
+from halo import Halo
+
 
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 
@@ -167,7 +169,7 @@ def convert(name, in_path, out_path, verbose):
 @click.option('--convert', is_flag=True, help='Boolean indicating to write converted keys to directory')
 @click.option('--verbose', is_flag=True)
 def generate(name, out_dir, entity_path, icgc, has_files, atlas, convert, verbose):
-    name_list = ['project', 'case', 'file', 'cellosaurus', 'icgc', 'htan']
+    name_list = ['case', 'file', 'cellosaurus', 'icgc', 'htan']
     assert name in name_list, f'--name is not in {name_list}.'
     if name != 'htan':
         assert Path(out_dir).is_dir(), f"Path {out_dir} is not a valid directory path."
@@ -175,14 +177,17 @@ def generate(name, out_dir, entity_path, icgc, has_files, atlas, convert, verbos
     else:
         assert Path("./projects/HTAN").is_dir()
 
-    if name in 'project':
-        entity2fhir.project_gdc_to_fhir_ndjson(out_dir=out_dir, projects_path=entity_path, convert=convert, verbose=verbose)
+    spinner = Halo(text="🔥 Transforming data", spinner='dots', placement='right', color='white')
+
     if name in 'case':
-        entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, name=name, cases_path=entity_path, convert=convert, verbose=verbose)
+        spinner.start()
+        entity2fhir.case_gdc_to_fhir_ndjson(out_dir=out_dir, name=name, cases_path=entity_path, convert=convert, verbose=verbose, spinner=spinner)
     if name in 'file':
-        entity2fhir.file_gdc_to_fhir_ndjson(out_dir=out_dir, name=name, files_path=entity_path, convert=convert, verbose=verbose)
+        spinner.start()
+        entity2fhir.file_gdc_to_fhir_ndjson(out_dir=out_dir, name=name, files_path=entity_path, convert=convert, verbose=verbose, spinner=spinner)
     if name in 'cellosaurus':
-        entity2fhir.cellosaurus2fhir(out_dir=out_dir, path=entity_path)
+        spinner.start()
+        entity2fhir.cellosaurus2fhir(out_dir=out_dir, path=entity_path, spinner=spinner)
     if name in 'icgc' and icgc:
         icgc2fhir.icgc2fhir(project_name=icgc, has_files=has_files)
     if name in 'htan':
@@ -194,6 +199,7 @@ def generate(name, out_dir, entity_path, icgc, has_files, atlas, convert, verbos
                 atlas = [atlas]
 
         htan2fhir.htan2fhir(entity_atlas_name=atlas, verbose=verbose)
+
 
 
 @cli.command('validate')
