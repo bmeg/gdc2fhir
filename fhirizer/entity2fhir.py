@@ -2268,15 +2268,16 @@ def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose, spinner
                 if isinstance(obs, dict):
                     observations_list.append(obs)
     observations_list = list({v['id']: v for v in observations_list}.values())
+
+    if spinner:
+        spinner.stop()
+        
     if observations_list:
         utils.create_or_extend(new_items=observations_list, folder_path=out_dir, resource_type='Observation',
                                update_existing=False)
 
     if "/" not in out_dir[-1]:
         out_dir = out_dir + "/"
-
-    if spinner:
-        spinner.stop()
 
     if doc_refs:
         cleaned_doc_refs = clean_resources(doc_refs)
