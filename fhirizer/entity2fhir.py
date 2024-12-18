@@ -1096,7 +1096,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     parent_stage_observation.hasMember.append(Reference(**{"reference": f"Observation/{grade_observation.id}"}))
 
             condition.stage = staging_list
-            observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])}), subject_ref]
+            observation.focus = [Reference(**{"reference": "/".join(["Condition", condition.id])})]
             condition_observations.append(orjson.loads(observation.model_dump_json()))
 
             # create medication administration and medication
