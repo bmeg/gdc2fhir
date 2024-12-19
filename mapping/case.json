@@ -1400,6 +1400,29 @@
                 "reference": null
             }
         },
+                {
+            "source": {
+                "name": "demographic.days_to_birth",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.survey.days_to_birth",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
         {
             "source": {
                 "name": "demographic.race",
@@ -3325,6 +3348,52 @@
         },
         {
             "source": {
+                "name": "diagnoses.days_to_diagnosis",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.survey.days_to_diagnosis",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
+                "name": "diagnoses.days_to_last_known_disease_status",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Observation.survey.days_to_last_known_disease_status",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+        {
+            "source": {
                 "name": "diagnoses.updated_datetime",
                 "description": null,
                 "description_url": null,
@@ -3479,7 +3548,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.identifier",
+                "name": "ResearchStudy.dbgap_accession_number",
                 "description": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "description_url": null,
                 "module": "Administration",
@@ -3606,7 +3675,7 @@
                 "reference": null
             },
             "destination": {
-                "name": "ResearchStudy.identifier",
+                "name": "ResearchStudy.dbgap_accession_number",
                 "description": "Identifiers assigned to this research study by the sponsor or other systems.",
                 "description_url": null,
                 "module": "Administration",

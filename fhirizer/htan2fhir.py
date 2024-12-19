@@ -42,6 +42,7 @@ from fhir.resources.medication import Medication, MedicationIngredient
 from fhir.resources.substance import Substance, SubstanceIngredient
 from fhir.resources.substancedefinition import SubstanceDefinition, SubstanceDefinitionStructure, \
     SubstanceDefinitionStructureRepresentation, SubstanceDefinitionName
+from fhir.resources.group import Group, GroupMember
 from fhir.resources.timing import Timing, TimingRepeat
 from fhir.resources.range import Range
 from fhir.resources.quantity import Quantity
@@ -410,7 +411,7 @@ class HTANTransformer:
                               "specimen": specimen_ref})
 
     def get_patient_id(self, participant_id) -> str:
-        patient_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "value": participant_id, "use": "official"})
+        patient_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "value": str(participant_id), "use": "official"})
         patient_id = self.mint_id(identifier=patient_identifier, resource_type="Patient", project_id=self.project_id,
                                   namespace=self.NAMESPACE_HTAN)
         return patient_id
@@ -435,7 +436,8 @@ class HTANTransformer:
         return representations
 
     def create_substance_definition(self, compound_name: str, representations: list) -> SubstanceDefinition:
-        sub_def_identifier = Identifier(**{"system": self.SYSTEM_chEMBL, "value": compound_name, "use": "official"})
+        sub_def_identifier = Identifier(
+            **{"system": self.SYSTEM_chEMBL, "value": str(compound_name), "use": "official"})
         sub_def_id = self.mint_id(identifier=sub_def_identifier, resource_type="SubstanceDefinition",
                                   project_id=self.project_id,
                                   namespace=self.NAMESPACE_HTAN)
@@ -456,7 +458,7 @@ class HTANTransformer:
                    "reference": Reference(**{"reference": f"SubstanceDefinition/{substance_definition.id}"})})
 
         sub_identifier = Identifier(
-            **{"system": self.SYSTEM_chEMBL, "value": compound_name, "use": "official"})
+            **{"system": self.SYSTEM_chEMBL, "value": str(compound_name), "use": "official"})
         sub_id = self.mint_id(identifier=sub_identifier, resource_type="Substance",
                               project_id=self.project_id,
                               namespace=self.NAMESPACE_HTAN)
@@ -478,21 +480,21 @@ class HTANTransformer:
             if ":" in compound_name:
                 compound_name.replace(":", "_")
             code = CodeableConcept(**{"coding": [
-                {"code": compound_name, "system": "/".join([self.SYSTEM_chEMBL, "compound_name"]),
-                 "display": compound_name}]})
+                {"code": str(compound_name), "system": "/".join([self.SYSTEM_chEMBL, "compound_name"]),
+                 "display": str(compound_name)}]})
 
             med_identifier = Identifier(
-                **{"system": self.SYSTEM_chEMBL, "value": compound_name, "use": "official"})
+                **{"system": self.SYSTEM_chEMBL, "value": str(compound_name), "use": "official"})
         else:
             if ":" in treatment_type:
                 treatment_type.replace(":", "_")
 
             code = CodeableConcept(**{"coding": [
-                {"code": treatment_type, "system": "/".join([self.SYSTEM_HTAN, "treatment_type"]),
-                 "display": treatment_type}]})
+                {"code": str(treatment_type), "system": "/".join([self.SYSTEM_HTAN, "treatment_type"]),
+                 "display": str(treatment_type)}]})
 
             med_identifier = Identifier(
-                **{"system": self.SYSTEM_HTAN, "value": treatment_type, "use": "official"})
+                **{"system": self.SYSTEM_HTAN, "value": str(treatment_type), "use": "official"})
 
         med_id = self.mint_id(identifier=med_identifier, resource_type="Medication",
                               project_id=self.project_id,
@@ -509,10 +511,12 @@ class HTANTransformer:
                              "ingredient": ingredients})
 
     def write_ndjson(self, entities):
-        resource_type = entities[0].resource_type
-        entities = [orjson.loads(entity.json()) for entity in entities]
+        resource_type = entities[0].get_resource_type()
+        entities = [orjson.loads(entity.model_dump_json()) for entity in entities]
         entities = list({v['id']: v for v in entities}.values())
-        utils.fhir_ndjson(entities, "".join([self.out_dir, "/", resource_type, ".ndjson"]))
+        cleaned_entity = utils.clean_resources(entities)
+        utils.fhir_ndjson(cleaned_entity, "".join([self.out_dir, "/", resource_type, ".ndjson"]))
+        print(f"Successfully converted HTAN data to FHIR's {resource_type} ndjson file!")
 
     def transform_medication(self, cases: pd.DataFrame, db_file_path: str) -> pd.DataFrame:
         # create medication placeholder for cases where treatment type is defined ex chemo, but medication is not documented
@@ -602,7 +606,7 @@ class PatientTransformer(HTANTransformer):
         assert use, f"Patient.identifier use is not defined in ./resources/HTAN/cases.json mappings."
 
         patient_identifier = Identifier(
-            **{"system": self.SYSTEM_HTAN, "value": _row['HTAN Participant ID'], "use": use})
+            **{"system": self.SYSTEM_HTAN, "value": str(_row['HTAN Participant ID']), "use": use})
         patient_id = self.mint_id(identifier=patient_identifier, resource_type="Patient", project_id=self.project_id,
                                   namespace=self.NAMESPACE_HTAN)
 
@@ -654,7 +658,7 @@ class PatientTransformer(HTANTransformer):
 
                     components.append(_component)
 
-        observation_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": patient.id})
+        observation_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": str(patient.id)})
         observation_id = self.mint_id(identifier=observation_identifier, resource_type="Observation",
                                       project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
 
@@ -692,7 +696,8 @@ class PatientTransformer(HTANTransformer):
         for field, fhir_map, use, focus in self.get_fields_by_fhir_map(self.cases_mappings(), "ResearchStudy.name"):
             study_field = field
         study_name = _row.get(study_field)
-        researchstudy_identifier = Identifier(**{"system": self.SYSTEM_HTAN, "use": "official", "value": study_name})
+        researchstudy_identifier = Identifier(
+            **{"system": self.SYSTEM_HTAN, "use": "official", "value": str(study_name)})
         researchstudy_id = self.mint_id(identifier=researchstudy_identifier, resource_type="ResearchStudy",
                                         project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
 
@@ -706,7 +711,7 @@ class PatientTransformer(HTANTransformer):
 
     def create_researchsubject(self, patient: Patient, study: ResearchStudy) -> ResearchSubject:
         researchsubject_identifier = Identifier(
-            **{"system": self.SYSTEM_HTAN, "use": "official", "value": patient.identifier[0].value})
+            **{"system": self.SYSTEM_HTAN, "use": "official", "value": str(patient.identifier[0].value)})
         researchsubject_id = self.mint_id(identifier=researchsubject_identifier, resource_type="ResearchSubject",
                                           project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
         return ResearchSubject(**{"id": researchsubject_id,
@@ -740,9 +745,10 @@ class PatientTransformer(HTANTransformer):
         included_structure = []
         if body_structure_value:
             included_structure = [BodyStructureIncludedStructure(**{"structure": CodeableConcept(**{"coding": [
-                {"code": body_structure_value, "system": self.SYSTEM_HTAN, "display": body_structure_value}]})})]
+                {"code": str(body_structure_value), "system": self.SYSTEM_HTAN,
+                 "display": str(body_structure_value)}]})})]
             body_struct_ident = Identifier(
-                **{"system": self.SYSTEM_HTAN, "use": "official", "value": body_structure_value})
+                **{"system": self.SYSTEM_HTAN, "use": "official", "value": str(body_structure_value)})
         return BodyStructure(
             **{"id": utils.mint_id(identifier=[patient.identifier[0].value, body_struct_ident],
                                    resource_type="BodyStructure",
@@ -796,25 +802,25 @@ class PatientTransformer(HTANTransformer):
             "htan_field_value"]
 
         if patient_body_site:
-            patient_body_site_cc = [CodeableConcept(**{"coding": [{"code": patient_body_site,
+            patient_body_site_cc = [CodeableConcept(**{"coding": [{"code": str(patient_body_site),
                                                                    "system": self.SYSTEM_HTAN,
-                                                                   "display": patient_body_site}]})]
+                                                                   "display": str(patient_body_site)}]})]
 
         condition = Condition(**{"id": condition_id,
-                            "identifier": [condition_identifier],
-                            "code": CodeableConcept(**{"coding": [{"code": primary_diagnosis,
-                                                                   "system": self.SYSTEM_HTAN,
-                                                                   "display": primary_diagnosis}]}),
-                            "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
-                            "clinicalStatus": CodeableConcept(**{"coding": [{"code": "active",
-                                                                             "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                                                                             "display": "Active"}]}),
-                            "onsetAge": onset_age,
-                            "recordedDate": recorded_date,
-                            "bodySite": patient_body_site_cc,
-                            # "bodyStructure": patient_body_structure_ref,
-                            "encounter": Reference(**{"reference": f"Encounter/{encounter.id}"})
-                            })
+                                 "identifier": [condition_identifier],
+                                 "code": CodeableConcept(**{"coding": [{"code": str(primary_diagnosis),
+                                                                        "system": self.SYSTEM_HTAN,
+                                                                        "display": str(primary_diagnosis)}]}),
+                                 "subject": Reference(**{"reference": f"Patient/{patient.id}"}),
+                                 "clinicalStatus": CodeableConcept(**{"coding": [{"code": "active",
+                                                                                  "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                                                                  "display": "Active"}]}),
+                                 "onsetAge": onset_age,
+                                 "recordedDate": recorded_date,
+                                 "bodySite": patient_body_site_cc,
+                                 # "bodyStructure": patient_body_structure_ref,
+                                 "encounter": Reference(**{"reference": f"Encounter/{encounter.id}"})
+                                 })
 
         stage_observations_dict = self.create_stage_observation(_row=_row, condition=condition, patient=patient)
 
@@ -852,13 +858,24 @@ class PatientTransformer(HTANTransformer):
             }]})
         else:
             # drug_info_df = pd.DataFrame(self.get_chembl_compound_info(db_file_path="./reources/chemble/chembl_34.db", drug_names=list(_row["Theraputic Agent"])))
-            medication_code = CodeableConcept(**{"coding": [{"code": _row["Therapeutic Agents"],
+            medication_code = CodeableConcept(**{"coding": [{"code": str(_row["Therapeutic Agents"]),
                                                              "system": self.SYSTEM_HTAN,
                                                              "display": _row["Therapeutic Agents"]}]})
 
-        timing = Timing(**{"repeat": TimingRepeat(**{"boundsRange": Range(**{"low": Quantity(**{"value": 0, "high": Quantity(**{"value": 1})})})}) })# place holder - required by FHIR
+        # place holder - required by FHIR
+        timing = Timing(**{
+            "repeat": TimingRepeat(**{
+                "boundsRange": Range(**{
+                    "low": Quantity(**{"value": 0}),
+                    "high": Quantity(**{"value": 1})
+                })
+            })
+        })
+
         if not pd.isnull(_row["Days to Treatment End"]) and not pd.isnull(_row["Days to Treatment Start"]):
-            timing = Timing(**{"repeat": TimingRepeat(**{"boundsRange": Range(**{"low": Quantity(**{"value": int(_row["Days to Treatment Start"])}), "high": Quantity(**{"value": int(_row["Days to Treatment End"])})})})})
+            timing = Timing(**{"repeat": TimingRepeat(**{"boundsRange": Range(
+                **{"low": Quantity(**{"value": int(_row["Days to Treatment Start"])}),
+                   "high": Quantity(**{"value": int(_row["Days to Treatment End"])})})})})
 
         medication_admin_identifier = Identifier(
             **{"system": self.SYSTEM_HTAN, "use": "official",
@@ -870,9 +887,9 @@ class PatientTransformer(HTANTransformer):
                 "identifier": [medication_admin_identifier],
                 "status": status,
                 "occurenceTiming": timing,
-                "category": [CodeableConcept(**{"coding": [{"code": _row["Treatment Type"],
+                "category": [CodeableConcept(**{"coding": [{"code": str(_row["Treatment Type"]),
                                                             "system": "/".join([self.SYSTEM_HTAN, "Treatment_Type"]),
-                                                            "display": _row["Treatment Type"]}]})],
+                                                            "display": str(_row["Treatment Type"])}]})],
                 "medication": CodeableReference(**{"concept": medication_code, "reference": Reference(
                     **{"reference": f"Medication/{_row['Medication_ID']}"})}),
                 "subject": Reference(**{"reference": f"Patient/{patient_id}"})}
@@ -929,9 +946,9 @@ class PatientTransformer(HTANTransformer):
                                   "system": "/".join([self.SYSTEM_HTAN, "_".join(stage_field.lower().split(" "))]),
                                   "display": "_".join(stage_field.lower().split(" "))})
 
-                    summaries.append({"code": _row[stage_field],
+                    summaries.append({"code": str(_row[stage_field]),
                                       "system": "/".join([self.SYSTEM_HTAN, "_".join(stage_field.lower().split(" "))]),
-                                      "display": _row[stage_field]})
+                                      "display": str(_row[stage_field])})
 
                 condition_stage = ConditionStage(
                     **{"summary": CodeableConcept(**{"coding": summaries}),
@@ -973,7 +990,7 @@ class PatientTransformer(HTANTransformer):
                     identifier_value = "-".join([patient.identifier[0].value, condition.id, stage])
                     observation_identifier = Identifier(**{"system": self.SYSTEM_HTAN,
                                                            "use": "official",
-                                                           "value": identifier_value})
+                                                           "value": str(identifier_value)})
                     observation_id = self.mint_id(identifier=observation_identifier, resource_type="Observation",
                                                   project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
 
@@ -981,22 +998,23 @@ class PatientTransformer(HTANTransformer):
                     value_code = None
                     for stage_info in cancer_pathological_staging:
                         if value == stage_info["value"]:
-                            code = CodeableConcept(**{"coding": [{"code": stage_info["stage_type_sctid"],
+                            code = CodeableConcept(**{"coding": [{"code": str(stage_info["stage_type_sctid"]),
                                                                   "system": self.SYSTEM_SNOME,
-                                                                  "display": stage_info["stage_type_sctid_display"]}]})
+                                                                  "display": str(
+                                                                      stage_info["stage_type_sctid_display"])}]})
 
-                            value_code = CodeableConcept(**{"coding": [{"code": stage_info["sctid"],
+                            value_code = CodeableConcept(**{"coding": [{"code": str(stage_info["sctid"]),
                                                                         "system": self.SYSTEM_SNOME,
-                                                                        "display": stage_info["sctid_display"]}]})
+                                                                        "display": str(stage_info["sctid_display"])}]})
                     if not code:
-                        code = CodeableConcept(**{"coding": [{"code": stage,
+                        code = CodeableConcept(**{"coding": [{"code": str(stage),
                                                               "system": "/".join([self.SYSTEM_HTAN, stage]),
-                                                              "display": stage}]})
+                                                              "display": str(stage)}]})
 
-                        value_code = CodeableConcept(**{"coding": [{"code": value,
+                        value_code = CodeableConcept(**{"coding": [{"code": str(value),
                                                                     "system": "/".join(
                                                                         [self.SYSTEM_HTAN, stage]),
-                                                                    "display": value}]})
+                                                                    "display": str(value)}]})
 
                     _stage_observation = Observation(**{"id": observation_id,
                                                         "identifier": [observation_identifier],
@@ -1015,7 +1033,7 @@ class PatientTransformer(HTANTransformer):
                 identifier_value = "-".join([patient.identifier[0].value, condition.id, stage])
                 observation_identifier = Identifier(**{"system": self.SYSTEM_HTAN,
                                                        "use": "official",
-                                                       "value": identifier_value})
+                                                       "value": str(identifier_value)})
                 observation_id = self.mint_id(identifier=observation_identifier, resource_type="Observation",
                                               project_id=self.project_id, namespace=self.NAMESPACE_HTAN)
 
@@ -1023,22 +1041,22 @@ class PatientTransformer(HTANTransformer):
                 value_code = None
                 for stage_info in cancer_pathological_staging:
                     if _row["AJCC Pathologic Stage"] == stage_info["value"]:
-                        code = CodeableConcept(**{"coding": [{"code": stage_info["stage_type_sctid"],
+                        code = CodeableConcept(**{"coding": [{"code": str(stage_info["stage_type_sctid"]),
                                                               "system": self.SYSTEM_SNOME,
-                                                              "display": stage_info["stage_type_sctid_display"]}]})
+                                                              "display": str(stage_info["stage_type_sctid_display"])}]})
 
-                        value_code = CodeableConcept(**{"coding": [{"code": stage_info["sctid"],
+                        value_code = CodeableConcept(**{"coding": [{"code": str(stage_info["sctid"]),
                                                                     "system": self.SYSTEM_SNOME,
-                                                                    "display": stage_info["sctid_display"]}]})
+                                                                    "display": str(stage_info["sctid_display"])}]})
                 if not code:
-                    code = CodeableConcept(**{"coding": [{"code": stage,
+                    code = CodeableConcept(**{"coding": [{"code": str(stage),
                                                           "system": "/".join([self.SYSTEM_HTAN, stage]),
-                                                          "display": stage}]})
+                                                          "display": str(stage)}]})
 
-                    value_code = CodeableConcept(**{"coding": [{"code": _row["AJCC Pathologic Stage"],
+                    value_code = CodeableConcept(**{"coding": [{"code": str(_row["AJCC Pathologic Stage"]),
                                                                 "system": "/".join(
                                                                     [self.SYSTEM_HTAN, stage]),
-                                                                "display": _row["AJCC Pathologic Stage"]}]})
+                                                                "display": str(_row["AJCC Pathologic Stage"])}]})
 
                 _stage_observation = Observation(**{"id": observation_id,
                                                     "identifier": [observation_identifier],
@@ -1068,7 +1086,7 @@ class SpecimenTransformer(HTANTransformer):
         """Transform HTAN biospecimen to FHIR Specimen"""
 
         specimen_identifier = Identifier(
-            **{"system": self.SYSTEM_HTAN, "value": _row['HTAN Biospecimen ID'], "use": "official"})
+            **{"system": self.SYSTEM_HTAN, "value": str(_row['HTAN Biospecimen ID']), "use": "official"})
         specimen_id = self.mint_id(identifier=specimen_identifier, resource_type="Specimen", project_id=self.project_id,
                                    namespace=self.NAMESPACE_HTAN)
 
@@ -1082,7 +1100,7 @@ class SpecimenTransformer(HTANTransformer):
         parent_specimen_reference = []
         if not pd.isnull(_row["HTAN Parent ID"]):
             parent_specimen_identifier = Identifier(
-                **{"system": self.SYSTEM_HTAN, "value": _row['HTAN Biospecimen ID'], "use": "official"})
+                **{"system": self.SYSTEM_HTAN, "value": str(_row['HTAN Biospecimen ID']), "use": "official"})
             parent_specimen_id = self.mint_id(identifier=parent_specimen_identifier, resource_type="Specimen",
                                               project_id=self.project_id,
                                               namespace=self.NAMESPACE_HTAN)
@@ -1096,11 +1114,11 @@ class SpecimenTransformer(HTANTransformer):
         return Specimen(**{"id": specimen_id,
                            "identifier": [specimen_identifier],
                            "type": CodeableConcept(**{"coding": [
-                               {"code": _row["Biospecimen Type"], "system": self.SYSTEM_HTAN,
+                               {"code": str(_row["Biospecimen Type"]), "system": self.SYSTEM_HTAN,
                                 "display": _row["Biospecimen Type"]}]}),
                            "processing": [SpecimenProcessing(**{"method": CodeableConcept(**{"coding": [
-                               {"code": _row["Preservation Method"], "system": self.SYSTEM_HTAN,
-                                "display": _row["Preservation Method"]}]})})],
+                               {"code": str(_row["Preservation Method"]), "system": self.SYSTEM_HTAN,
+                                "display": str(_row["Preservation Method"])}]})})],
                            "parent": parent_specimen_reference,
                            "subject": subject})
 
@@ -1116,18 +1134,19 @@ class DocumentReferenceTransformer(HTANTransformer):
         self.create_observation = self.create_observation
         self.get_patient_id = self.get_patient_id
 
-    def create_document_reference(self, _row: pd.Series, specimen_ids: list) -> DocumentReference:
+    def create_document_reference(self, _row: pd.Series, specimen_ids: list) -> dict:
         """Transform HTAN files to FHIR DocumentReference"""
-
+        # print(f"Specimen List length: {len(specimen_ids)} List: {specimen_ids}")
         document_reference_identifier = Identifier(
-            **{"system": self.SYSTEM_HTAN, "value": _row['HTAN Data File ID'], "use": "official"})
+            **{"system": self.SYSTEM_HTAN, "value": str(_row['HTAN Data File ID']), "use": "official"})
 
         document_reference_synapse_identifier = Identifier(
-            **{"system": self.SYSTEM_HTAN, "value": _row['Synapse Id'], "use": "secondary"})
+            **{"system": self.SYSTEM_HTAN, "value": str(_row['Synapse Id']), "use": "secondary"})
 
         document_reference_id = self.mint_id(identifier=document_reference_identifier,
                                              resource_type="DocumentReference", project_id=self.project_id,
                                              namespace=self.NAMESPACE_HTAN)
+        subject = None
 
         # participant id
         patient_id = None
@@ -1148,35 +1167,27 @@ class DocumentReferenceTransformer(HTANTransformer):
         category = []
         if not pd.isnull(_row['Assay']):
             category.append(CodeableConcept(**{"coding": [
-                {"code": _row['Assay'], "display": _row['Assay'], "system": "/".join([self.SYSTEM_HTAN, "Assay"])}]}))
+                {"code": str(_row['Assay']), "display": str(_row['Assay']),
+                 "system": "/".join([self.SYSTEM_HTAN, "Assay"])}]}))
         if not pd.isnull(_row['Level']):
             category.append(CodeableConcept(**{"coding": [
-                {"code": _row['Level'], "display": _row['Level'], "system": "/".join([self.SYSTEM_HTAN, "Level"])}]}))
+                {"code": str(_row['Level']), "display": str(_row['Level']),
+                 "system": "/".join([self.SYSTEM_HTAN, "Level"])}]}))
 
-        subject = None
+        patient_reference = None
         if patient_id:
-            Reference(**{"reference": f"Patient/{patient_id}"})
-
-        based_on = []
-        if not pd.isnull(_row['Biospecimen']):
-            specimen_identifier = Identifier(
-                **{"system": self.SYSTEM_HTAN, "value": _row['Biospecimen'], "use": "official"})
-            specimen_id = self.mint_id(identifier=specimen_identifier, resource_type="Specimen",
-                                       project_id=self.project_id,
-                                       namespace=self.NAMESPACE_HTAN)
-            if specimen_id in specimen_ids:
-                based_on.append(Reference(**{"reference": f"Specimen/{specimen_id}"}))
+            patient_reference = Reference(**{"reference": f"Patient/{patient_id}"})
 
         security_label = []
         if not pd.isnull(_row['Data Access']):
             security_label.append(CodeableConcept(**{"coding": [
-                {"code": _row['Data Access'], "display": _row['Data Access'],
+                {"code": str(_row['Data Access']), "display": str(_row['Data Access']),
                  "system": "/".join([self.SYSTEM_HTAN, "Data_Access"])}]}))
 
         parent_data_file = []
         if not pd.isnull(_row["Parent Data File ID"]):
             parent_document_reference_identifier = Identifier(
-                **{"system": self.SYSTEM_HTAN, "value": _row["Parent Data File ID"], "use": "official"})
+                **{"system": self.SYSTEM_HTAN, "value": str(_row["Parent Data File ID"]), "use": "official"})
 
             parent_document_reference_id = self.mint_id(identifier=parent_document_reference_identifier,
                                                         resource_type="DocumentReference", project_id=self.project_id,
@@ -1188,27 +1199,62 @@ class DocumentReferenceTransformer(HTANTransformer):
                                                        "display": "parent_data_file"}]}),
                 "target": Reference(**{"reference": f"Documentreference/{parent_document_reference_id}"})}))
 
-        return DocumentReference(**{"id": document_reference_id,
+        specimen_references = []
+        if not pd.isnull(_row['Biospecimen']):
+            specimen_identifier = Identifier(
+                **{"system": self.SYSTEM_HTAN, "value": str(_row['Biospecimen']), "use": "official"})
+            specimen_id = self.mint_id(identifier=specimen_identifier, resource_type="Specimen",
+                                       project_id=self.project_id,
+                                       namespace=self.NAMESPACE_HTAN)
+            if specimen_id in specimen_ids:
+                specimen_references.append(Reference(**{"reference": f"Specimen/{specimen_id}"}))
+        group = None
+        if specimen_references:
+            if len(specimen_references) == 1:
+                subject = specimen_references[0]
+            if len(specimen_references) > 1:
+                specimen_members = [GroupMember(**{'entity': s}) for s in specimen_references]
+                reference_ids = [s.reference for s in specimen_references]
+                group_identifier = Identifier(
+                    **{"system": "".join([self.SYSTEM_HTAN, "sample_group"]),
+                       "value": "/".join(reference_ids + ["Documentreference/" + document_reference_identifier]),
+                       "use": "official"})
+
+                group_id = utils.mint_id(identifier=group_identifier, resource_type="Group",
+                                         project_id=self.project_id,
+                                         namespace=self.NAMESPACE_HTAN)
+                if specimen_members:
+                    group = Group(**{'id': group_id, "identifier": [group_identifier], "membership": 'definitional',
+                                     'member': specimen_members, "type": "specimen"})
+
+                    subject = Reference(**{"reference": "/".join(["Group", group.id])})
+
+        if patient_reference and not subject:
+            subject = patient_reference
+
+        document_reference = DocumentReference(**{"id": document_reference_id,
                                     "identifier": [document_reference_identifier,
                                                    document_reference_synapse_identifier],
                                     "status": "current",
                                     "docStatus": "final",
-                                    "basedOn": based_on,
                                     "subject": subject,
                                     # "relatesTo": parent_data_file,  # TODO: requires check for file - missing data
                                     "category": category,
                                     "securityLabel": security_label,
                                     "content": [DocumentReferenceContent(
                                         **{"attachment": Attachment(
-                                            **{"title": name, "contentType": _row["mime_type"]}),
-                                            "profile": profiles
-                                        })]
+                                            **{"title": name,
+                                               "contentType": _row["mime_type"]}),
+                                           "profile": profiles
+                                          })]
                                     })
+
+        return {"file": document_reference, "group": group}
 
 
 # 2 Projects that don't have files download or cds manifest SRRS and TNP_TMA (Oct/2024)
 # 12/14 total Atlas
-def htan2fhir(verbose, entity_atlas_name):
+def htan2fhir(verbose, entity_atlas_name, spinner):
     warnings.filterwarnings('ignore')
 
     atlas_names = ["OHSU", "DFCI", "WUSTL", "BU", "CHOP", "Duke", "HMS", "HTAPP", "MSK", "Stanford",
@@ -1265,7 +1311,7 @@ def htan2fhir(verbose, entity_atlas_name):
                     observations.append(patient_obs)
                 if patient:
                     patients.append(patient)
-                    # print(f"HTAN FHIR Patient: {patient.json()}")
+                    # print(f"HTAN FHIR Patient: {patient.model_dump_json()}")
                     # print(f"HTAN FHIR Patient Observation: {patient_obs.json()}")
 
                     research_subject = patient_transformer.create_researchsubject(patient, research_study)
@@ -1276,8 +1322,10 @@ def htan2fhir(verbose, entity_atlas_name):
                                                                      procedure=None)
                     if encounter:
                         encounters.append(encounter)
-                        condition_dict = patient_transformer.create_condition(_row=row, patient=patient, encounter=encounter,
-                                                                         body_structure=None, stage_observation=None)
+                        condition_dict = patient_transformer.create_condition(_row=row, patient=patient,
+                                                                              encounter=encounter,
+                                                                              body_structure=None,
+                                                                              stage_observation=None)
 
                         if condition_dict and condition_dict["condition"]:
                             conditions.append(condition_dict["condition"])
@@ -1342,9 +1390,16 @@ def htan2fhir(verbose, entity_atlas_name):
         specimen_ids = [s.id for s in specimens]
         patient_ids = [p.id for p in patients]
         document_references = []
+        groups = []
         for document_reference_index, document_reference_row in files_drs_meta.iterrows():
-            docref = documentreference_transformer.create_document_reference(_row=document_reference_row,
-                                                                             specimen_ids=specimen_ids)
+            _obj = documentreference_transformer.create_document_reference(_row=document_reference_row,
+                                                                           specimen_ids=specimen_ids)
+
+            group = _obj["group"]
+            if group:
+                groups.append(group)
+
+            docref = _obj["file"]
             if docref:
                 document_references.append(docref)
 
@@ -1355,6 +1410,7 @@ def htan2fhir(verbose, entity_atlas_name):
                         participant_id=document_reference_row['HTAN Participant ID'])
                     if docref_patient in patient_ids:
                         docref_patient_id = docref_patient
+
                 # else:
                 #    print(f"HTAN {name} is missing patient reference in files")
 
@@ -1370,6 +1426,8 @@ def htan2fhir(verbose, entity_atlas_name):
 
                 if document_reference_observation:
                     observations.append(document_reference_observation)
+
+        spinner.stop()
 
         if research_subjects:
             transformer.write_ndjson(research_subjects)
@@ -1387,7 +1445,9 @@ def htan2fhir(verbose, entity_atlas_name):
             transformer.write_ndjson(specimens)
         if document_references:
             transformer.write_ndjson(document_references)
+        if groups:
+            transformer.write_ndjson(groups)
         if med_admins:
             transformer.write_ndjson(med_admins)
 
-# for i in $(ls projects/HTAN); do g3t meta validate projects/HTAN/$i/META; done
+# for i in $(ls projects/HTAN); do fhirizer validate --path projects/HTAN/$i/META; done
