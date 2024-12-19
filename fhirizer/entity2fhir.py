@@ -2221,26 +2221,6 @@ def assign_fhir_for_file(file):
     return {'files': document, 'observations': docref_observations, 'group': group}
 
 
-def clean_resources(entities):
-    cleaned_resource = []
-    for resource in entities:
-        resource_type = resource["resourceType"]
-        cleaned_resource_dict = utils.remove_empty_dicts(resource)
-        try:
-            validated_resource = utils.validate_fhir_resource_from_type(resource_type,
-                                                                        cleaned_resource_dict).model_dump_json()
-        except ValueError as e:
-            print(f"Validation failed for {resource_type}: {e}")
-            continue
-        # handle pydantic Decimal cases
-        validated_resource = utils.convert_decimal_to_float(orjson.loads(validated_resource))
-        validated_resource = utils.convert_value_to_float(validated_resource)
-        validated_resource = orjson.loads(orjson.dumps(validated_resource).decode("utf-8"))
-        cleaned_resource.append(validated_resource)
-
-    return cleaned_resource
-
-
 def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose, spinner=None):
     #  files = utils.load_ndjson(files_path)
     out_path = os.path.join(out_dir, os.pardir, "".join([name, "_keys.ndjson"])) if convert else None
@@ -2280,13 +2260,13 @@ def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose, spinner
         out_dir = out_dir + "/"
 
     if doc_refs:
-        cleaned_doc_refs = clean_resources(doc_refs)
+        cleaned_doc_refs = utils.clean_resources(doc_refs)
         if cleaned_doc_refs:
             utils.fhir_ndjson(cleaned_doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
             print("Successfully converted GDC file info to FHIR's DocumentReference ndjson file!")
 
     if groups:
-        cleaned_groups = clean_resources(groups)
+        cleaned_groups = utils.clean_resources(groups)
         if cleaned_groups:
             utils.fhir_ndjson(groups, "".join([out_dir, "Group.ndjson"]))
             print("Successfully converted GDC file's patients info to FHIR's Group ndjson file!")
@@ -2517,15 +2497,15 @@ def cellosaurus_to_fhir_ndjson(out_dir, obj, spinner):
         spinner.stop()
 
     if patients:
-        cleaned_patients = clean_resources(patients)
+        cleaned_patients = utils.clean_resources(patients)
         utils.fhir_ndjson(cleaned_patients, os.path.join(out_dir, "Patient.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Patient ndjson file!")
     if samples:
-        cleaned_samples = clean_resources(samples)
+        cleaned_samples = utils.clean_resources(samples)
         utils.fhir_ndjson(cleaned_samples, os.path.join(out_dir, "Specimen.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Specimen ndjson file!")
     if conditions:
-        cleaned_conditions = clean_resources(conditions)
+        cleaned_conditions = utils.clean_resources(conditions)
         utils.fhir_ndjson(cleaned_conditions, os.path.join(out_dir, "Condition.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Condition ndjson file!")
 
