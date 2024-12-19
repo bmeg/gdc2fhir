@@ -2271,7 +2271,7 @@ def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose, spinner
 
     if spinner:
         spinner.stop()
-        
+
     if observations_list:
         utils.create_or_extend(new_items=observations_list, folder_path=out_dir, resource_type='Observation',
                                update_existing=False)
@@ -2517,13 +2517,16 @@ def cellosaurus_to_fhir_ndjson(out_dir, obj, spinner):
         spinner.stop()
 
     if patients:
-        utils.fhir_ndjson(patients, os.path.join(out_dir, "Patient.ndjson"))
+        cleaned_patients = clean_resources(patients)
+        utils.fhir_ndjson(cleaned_patients, os.path.join(out_dir, "Patient.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Patient ndjson file!")
     if samples:
-        utils.fhir_ndjson(samples, os.path.join(out_dir, "Specimen.ndjson"))
+        cleaned_samples = clean_resources(samples)
+        utils.fhir_ndjson(cleaned_samples, os.path.join(out_dir, "Specimen.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Specimen ndjson file!")
     if conditions:
-        utils.fhir_ndjson(conditions, os.path.join(out_dir, "Condition.ndjson"))
+        cleaned_conditions = clean_resources(conditions)
+        utils.fhir_ndjson(cleaned_conditions, os.path.join(out_dir, "Condition.ndjson"))
         print("Successfully converted Cellosaurus info to FHIR's Condition ndjson file!")
 
 
