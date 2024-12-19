@@ -191,6 +191,7 @@ def generate(name, out_dir, entity_path, icgc, has_files, atlas, convert, verbos
     if name in 'icgc' and icgc:
         icgc2fhir.icgc2fhir(project_name=icgc, has_files=has_files)
     if name in 'htan':
+
         if isinstance(atlas, str):
             if "," in atlas:
                 atlas = atlas.split(",")
@@ -198,7 +199,8 @@ def generate(name, out_dir, entity_path, icgc, has_files, atlas, convert, verbos
             else:
                 atlas = [atlas]
 
-        htan2fhir.htan2fhir(entity_atlas_name=atlas, verbose=verbose)
+        spinner.start()
+        htan2fhir.htan2fhir(entity_atlas_name=atlas, verbose=verbose, spinner=spinner)
 
 
 
