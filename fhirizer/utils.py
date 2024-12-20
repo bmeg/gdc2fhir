@@ -1218,7 +1218,7 @@ def get_chembl_compound_info(db_file_path: str, drug_names: list, limit: int) ->
     if len(drug_names) == 1:
         _drug_names = f"('{drug_names[0].upper()}')"
     else:
-        _drug_names = ", ".join(f"'{name.upper()}'" for name in drug_names)
+        _drug_names = tuple([x.upper() for x in drug_names])
 
     query = f"""
     SELECT DISTINCT 
