@@ -1,0 +1,58 @@
+# Ignore Python cache files and folders
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore version control directories
+.git/
+.gitignore
+
+# Ignore temporary files created by text editors or the OS
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Ignore virtual environments
+venv/
+env/
+*.egg-info/
+.eggs/
+
+# Ignore test files and directories
+tests/
+test/
+*.log
+
+# Ignore documentation and example files
+docs/
+examples/
+
+# Ignore data or temporary files that are not part of the app
+data/raw/
+data/intermediate/
+data/temp/
+*.ndjson
+*.csv
+*.tsv
+
+# Ignore large, unnecessary files
+*.tar.gz
+*.zip
+*.pdf
+
+# Ignore build artifacts
+build/
+dist/
+*.whl
+
+# Ignore IDE settings and files
+.vscode/
+.idea/
+
+
+# Data in projects folder
+fhirizer/projects/*
+projects/*
+fhirizer/resources/chembel_resources
+resources/chembel_resources
