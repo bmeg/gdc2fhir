@@ -843,7 +843,7 @@ class PatientTransformer(HTANTransformer):
         # if Days to Treatment End, then status -> completed, else status unknown
         # if Therapeutic Agents is null, then Medication.code -> snomed_code: Unknown 261665006
         # Medication.ingredient.item -> Substance.code -> SubstanceDefination
-
+        # TODO: create medicationAdministration regimen for combinatorial drug therapy syntax "medication A + medication B"
         status = None
         substance_definition = None
         substance = None
@@ -1273,8 +1273,9 @@ def htan2fhir(verbose, entity_atlas_name, spinner):
         'fhirizer').parent / 'resources' / 'chembl_resources' / 'chembl_34.db').is_file(), f"chEMBL db file chembl_34.db does not exist."
 
     for name in entity_atlas_name:
-        if verbose:
-            print(f"Transforming {name}")
+        if len(entity_atlas_name) > 1:
+            spinner.stop()
+            print(f"\nTransforming {name}\n")
 
         transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=verbose)
         patient_transformer = PatientTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
