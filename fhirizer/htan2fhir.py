@@ -620,8 +620,17 @@ class PatientTransformer(HTANTransformer):
         deceasedBoolean = {"Dead": True}.get(vital_status, False if vital_status else None)
 
         # TODO: us-core-ethnicity and race resource
+        patient_extension = []
         ethnicity = _row.get("Ethnicity")
         race = _row.get("Race")
+
+        if ethnicity and isinstance(ethnicity, str):
+            patient_extension.append({"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity",
+                                         "valueString": ethnicity})
+        if race and isinstance(race, str):
+            patient_extension.append({"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race",
+                                         "valueString": race})
+
 
         address_country = _row.get("Country of Residence")
         address = [Address(**{"country": address_country})] if not pd.isna(address_country) else []
@@ -629,11 +638,7 @@ class PatientTransformer(HTANTransformer):
         return Patient(**{"id": patient_id,
                           "identifier": [patient_identifier],
                           "deceasedBoolean": deceasedBoolean,
-                          "extension": [{"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity",
-                                         "valueString": ethnicity},
-                                        {"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race",
-                                         "valueString": race}
-                                        ],
+                          "extension": patient_extension,
                           "address": address})
 
     def patient_observation(self, patient: Patient, _row: pd.Series) -> Observation:
