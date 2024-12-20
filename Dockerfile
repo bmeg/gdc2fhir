@@ -1,10 +1,19 @@
-FROM python:3.12
+FROM python:3.13
 
-RUN pip3 install --upgrade pip
+RUN apt-get update && apt-get install -y \
+    libfreetype6-dev \
+    libpng-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    && apt-get clean
+
+RUN pip install --upgrade pip
 
 COPY . /app
 WORKDIR /app
+
 RUN pip install .
 
-ENV PYTHONPATH="$PYTHONPATH:/app"
+ENV PYTHONPATH="/app"
+
 ENTRYPOINT ["/bin/bash"]

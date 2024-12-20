@@ -620,8 +620,17 @@ class PatientTransformer(HTANTransformer):
         deceasedBoolean = {"Dead": True}.get(vital_status, False if vital_status else None)
 
         # TODO: us-core-ethnicity and race resource
+        patient_extension = []
         ethnicity = _row.get("Ethnicity")
         race = _row.get("Race")
+
+        if ethnicity and isinstance(ethnicity, str):
+            patient_extension.append({"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity",
+                                         "valueString": ethnicity})
+        if race and isinstance(race, str):
+            patient_extension.append({"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race",
+                                         "valueString": race})
+
 
         address_country = _row.get("Country of Residence")
         address = [Address(**{"country": address_country})] if not pd.isna(address_country) else []
@@ -629,11 +638,7 @@ class PatientTransformer(HTANTransformer):
         return Patient(**{"id": patient_id,
                           "identifier": [patient_identifier],
                           "deceasedBoolean": deceasedBoolean,
-                          "extension": [{"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity",
-                                         "valueString": ethnicity},
-                                        {"url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race",
-                                         "valueString": race}
-                                        ],
+                          "extension": patient_extension,
                           "address": address})
 
     def patient_observation(self, patient: Patient, _row: pd.Series) -> Observation:
@@ -838,7 +843,7 @@ class PatientTransformer(HTANTransformer):
         # if Days to Treatment End, then status -> completed, else status unknown
         # if Therapeutic Agents is null, then Medication.code -> snomed_code: Unknown 261665006
         # Medication.ingredient.item -> Substance.code -> SubstanceDefination
-
+        # TODO: create medicationAdministration regimen for combinatorial drug therapy syntax "medication A + medication B"
         status = None
         substance_definition = None
         substance = None
@@ -1268,8 +1273,9 @@ def htan2fhir(verbose, entity_atlas_name, spinner):
         'fhirizer').parent / 'resources' / 'chembl_resources' / 'chembl_34.db').is_file(), f"chEMBL db file chembl_34.db does not exist."
 
     for name in entity_atlas_name:
-        if verbose:
-            print(f"Transforming {name}")
+        if len(entity_atlas_name) > 1:
+            spinner.stop()
+            print(f"\nTransforming {name}\n")
 
         transformer = HTANTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META", verbose=verbose)
         patient_transformer = PatientTransformer(subprogram_name=name, out_dir=f"./projects/HTAN/{name}/META",
