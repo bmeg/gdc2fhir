@@ -1213,7 +1213,12 @@ def create_or_extend(new_items, folder_path='META', resource_type='Observation',
 
 def get_chembl_compound_info(db_file_path: str, drug_names: list, limit: int) -> list:
     """Query Chembl COMPOUND_RECORDS by COMPOUND_NAME to make FHIR Substance"""
-    drug_names_tuple = tuple([x.upper() for x in drug_names])
+    assert drug_names, "The drug_names list is empty. Please provide at least one drug name."
+
+    if len(drug_names) == 1:
+        _drug_names = f"('{drug_names[0].upper()}')"
+    else:
+        _drug_names = ", ".join(f"'{name.upper()}'" for name in drug_names)
 
     query = f"""
     SELECT DISTINCT 
@@ -1231,9 +1236,10 @@ def get_chembl_compound_info(db_file_path: str, drug_names: list, limit: int) ->
         compound_records as cr ON a.MOLREGNO = cr.MOLREGNO
     LEFT JOIN
         source as sr ON cr.SRC_ID = sr.SRC_ID
-    WHERE cr.COMPOUND_NAME IN {drug_names_tuple}
+    WHERE cr.COMPOUND_NAME IN {_drug_names}
     LIMIT {limit};
     """
+
     conn = sqlite3.connect(db_file_path)
     cursor = conn.cursor()
     cursor.execute(query)
