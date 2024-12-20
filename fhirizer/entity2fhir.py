@@ -343,7 +343,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
         race_ext = Extension.model_construct()
         race_ext.url = "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
-        race_ext.valueString = case['demographic']['Extension.extension:USCoreRaceExtension']
+        race_ext.valueString = str(case['demographic']['Extension.extension:USCoreRaceExtension'])
 
         race_code = ""
         race_display = ""
@@ -351,7 +351,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         for r in race:
             if r['value'] in case['demographic']['Extension.extension:USCoreRaceExtension'] and re.match(
                     r"[ \r\n\t\S]+", r['ombCategory-code']):
-                race_ext.valueString = r['value']
+                race_ext.valueString = str(r['value'])
 
         if race_ext not in race_ethnicity_sex:
             race_ethnicity_sex.append(race_ext)
@@ -365,7 +365,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         ethnicity_system = ""
         for e in ethnicity:
             if e['value'] in case['demographic']['Extension:extension.USCoreEthnicity']:
-                ethnicity_ext.valueString = e['value']
+                ethnicity_ext.valueString = str(e['value'])
 
         if ethnicity_ext not in race_ethnicity_sex:
             race_ethnicity_sex.append(ethnicity_ext)
@@ -1251,7 +1251,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
             al_obs['subject'] = {"reference": "".join(["Patient/", patient.id])}
             al_obs['focus'] = [{"reference": "".join(["Patient/", patient.id])}]
-            al_obs['valueString'] = case['exposures'][0]['Observation.patient.alcohol_history']
+            al_obs['valueString'] = str(case['exposures'][0]['Observation.patient.alcohol_history'])
             alcohol_observation.append(al_obs)
 
     # create specimen
