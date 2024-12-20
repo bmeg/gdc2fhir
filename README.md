@@ -108,12 +108,12 @@ for all available atlases under ./projects/HTAN/<Atlas name>
   ```
 or for one or more: 
 ```commandline
-fhirizer generate --name htan --atlas "OHSU,DFCI,WUSTL,BU,CHOP"
+fhirizer generate --name htan --atlas "BU,CHOP,DFCI,Duke,HMS,HTAPP,MSK,OHSU,Stanford,TNP_SARDANA,Vanderbilt,WUSTL"
 ```
 
 G3T validate FHIRized ndjson files: 
 ```commandline
-for i in $(ls projects/HTAN); do echo $i && g3t meta validate projects/HTAN/$i/META; done
+for i in $(ls projects/HTAN); do echo $i && fhirizer validate --path projects/HTAN/$i/META; done
 ```
 
 ### Constructing GDC maps cli cmds 
