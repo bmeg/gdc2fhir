@@ -1,5 +1,32 @@
 [
     {
+        "value": "Renal cell carcinoma, NOS",
+        "description": "",
+        "description_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "702391001"
+    },
+    {
+        "value": "Adenocarcinoma, NOS",
+        "description": "",
+        "description_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "443961001"
+    },
+    {
+        "value": "Adenocarcinoma with mixed subtypes",
+        "description": "",
+        "description_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "128662002"
+    },
+    {
         "value": "Acinar Cell Neoplasms",
         "description": "",
         "description_url": "",
@@ -52,6 +79,15 @@
         "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
         "ontology_url": "",
         "sctid": ""
+    },
+    {
+        "value": "Clear cell adenocarcinoma, NOS",
+        "description": "",
+        "description_url": "",
+        "annotation_type": "caDSR",
+        "annotation_url": "https://cadsr.cancer.gov/onedata/dmdirect/NIH/NCI/CO/CDEDD?filter=CDEDD.ITEM_ID=6161017%20and%20ver_nr=1.0",
+        "ontology_url": "",
+        "sctid": "30546008"
     },
     {
         "value": "Complex Epithelial Neoplasms",
