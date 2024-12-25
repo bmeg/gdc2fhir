@@ -1139,17 +1139,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                 for treatment in case['diagnoses']['treatments']:
                     # https://build.fhir.org/ig/HL7/fhir-mCODE-ig/artifacts.html
-                    med = Medication.model_construct()
-                    med_identifier = Identifier(
-                        **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
-                           "value": treatment['MedicationAdministration.id'],
-                           "use": "official"})
-                    med.identifier = [med_identifier]
-                    med.id = utils.mint_id(identifier=med_identifier, resource_type="Medication",
-                                           project_id=project_id,
-                                           namespace=NAMESPACE_GDC)
-
-                    treatments_med.append(med)
 
                     if 'Medication.code' in treatment.keys() and treatment['Medication.code']:
                         therapeutic_agents_display = treatment['Medication.code']
@@ -1167,9 +1156,26 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                         'code': theraputic_agents_code}]
 
                     med_cr = CodeableReference.model_construct()
-                    med_cr.reference = Reference(**{"reference": "/".join(["Medication", med.id])})
-                    med_cr.concept = med_code
-                    med.code = med_code
+
+                    if therapeutic_agents_display != "Unknown":
+                        """Medication name exists - create medication and add to MEdicationAdministration.medication.CodeableReference.reference"""
+                        med = Medication.model_construct()
+                        med_identifier = Identifier(
+                            **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
+                               "value": treatment['MedicationAdministration.id'],
+                               "use": "official"})
+                        med.identifier = [med_identifier]
+                        med.id = utils.mint_id(identifier=med_identifier, resource_type="Medication",
+                                               project_id=project_id,
+                                               namespace=NAMESPACE_GDC)
+
+                        med_cr.reference = Reference(**{"reference": "/".join(["Medication", med.id])})
+                        med.code = med_code
+                        treatments_med.append(med)
+                        med_cr.concept = med_code
+
+                    elif therapeutic_agents_display == "Unknown":
+                        med_cr.concept = med_code
 
                     if treatment_content_bool:
                         log_output = f"Medication codableConcept display for patient-id: {patient.id} doesn't exist or was not found!\n"
