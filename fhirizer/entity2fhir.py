@@ -1158,7 +1158,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     med_cr = CodeableReference.model_construct()
 
                     if therapeutic_agents_display != "Unknown":
-                        """Medication name exists - create medication and add to MEdicationAdministration.medication.CodeableReference.reference"""
+                        """Medication name exists - create medication and add it to MedicationAdministration.medication.CodeableReference.reference"""
                         med = Medication.model_construct()
                         med_identifier = Identifier(
                             **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
