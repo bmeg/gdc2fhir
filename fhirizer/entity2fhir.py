@@ -590,6 +590,9 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
         if 'Condition.code_primary_diagnosis' in case['diagnoses'].keys() and case['diagnoses'][
             'Condition.code_primary_diagnosis']:
             diagnosis_code = case['diagnoses']['Condition.code_primary_diagnosis']
+            condition_codes_list.append({"code": diagnosis_code,
+                                         "display": diagnosis_code,
+                                         "system": "".join(["https://gdc.cancer.gov/", "primary_diagnosis"])})
 
             if case['diagnoses']['Condition.code_primary_diagnosis'] in \
                     data_dict["clinical"]["diagnosis"]["properties"]["primary_diagnosis"]["enumDef"].keys():
@@ -612,10 +615,10 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                                     'code': mondo_code}
                     condition_codes_list.append(mondo_coding)
 
-        # required placeholder
         if not condition_codes_list:
-            loinc_annotation = {'system': "https://loinc.org/", 'display': "replace-me", 'code': "000000"}
-            condition_codes_list.append(loinc_annotation)
+            log_output_diag = f"Diagnosis for {patient.identifier} doesn't exist!\n"
+            with open('output.log', 'a') as f:
+                f.write(log_output_diag)
 
         observation_code.coding = condition_codes_list
         observation.code = observation_code
@@ -1157,13 +1160,17 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                     med_cr = CodeableReference.model_construct()
 
-                    if therapeutic_agents_display != "Unknown":
+                    if therapeutic_agents_display and isinstance(therapeutic_agents_display, str) and therapeutic_agents_display not in ["Unknown", "Not Reported", "Other", "Chemotherapy", "Not otherwise specified"]:
                         """Medication name exists - create medication and add it to MedicationAdministration.medication.CodeableReference.reference"""
                         med = Medication.model_construct()
                         med_identifier = Identifier(
-                            **{"system": "".join(["https://gdc.cancer.gov/", "treatment_id"]),
-                               "value": treatment['MedicationAdministration.id'],
+                            **{"system": "".join(["https://gdc.cancer.gov/", "therapeutic_agents"]),
+                               "value": therapeutic_agents_display.upper(),
                                "use": "official"})
+                        """
+                        # TODO: fetch from chembl - not fetched via query
+                        ['NAB-PACLITAXEL','THERAPEUTIC HYDROCORTISONE','LIPOSOMAL IRINOTECAN']
+                        """
                         med.identifier = [med_identifier]
                         med.id = utils.mint_id(identifier=med_identifier, resource_type="Medication",
                                                project_id=project_id,
@@ -1173,14 +1180,13 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         med.code = med_code
                         treatments_med.append(med)
                         med_cr.concept = med_code
-
-                    elif therapeutic_agents_display == "Unknown":
+                    else:
                         med_cr.concept = med_code
 
-                    if treatment_content_bool:
-                        log_output = f"Medication codableConcept display for patient-id: {patient.id} doesn't exist or was not found!\n"
-                        with open('output.log', 'a') as f:
-                            f.write(log_output)
+                    # if treatment_content_bool:
+                    #     log_output = f"Medication codableConcept display for patient-id: {patient.id} doesn't exist or was not found!\n"
+                    #     with open('output.log', 'a') as f:
+                    #         f.write(log_output)
 
                     # if treatment['treatment_or_therapy'] == "yes" then completed, no "not-done"
                     status = "unknown"
