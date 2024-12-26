@@ -1184,11 +1184,6 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                     else:
                         med_cr.concept = med_code
 
-                    # if treatment_content_bool:
-                    #     log_output = f"Medication codableConcept display for patient-id: {patient.id} doesn't exist or was not found!\n"
-                    #     with open('output.log', 'a') as f:
-                    #         f.write(log_output)
-
                     # if treatment['treatment_or_therapy'] == "yes" then completed, no "not-done"
                     status = "unknown"
                     if 'treatment_or_therapy' in treatment.keys() and treatment['treatment_or_therapy']:
