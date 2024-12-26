@@ -1160,7 +1160,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
 
                     med_cr = CodeableReference.model_construct()
 
-                    if therapeutic_agents_display and isinstance(therapeutic_agents_display, str) and therapeutic_agents_display not in ["Unknown", "Not Reported", "Other", "Chemotherapy", "Not otherwise specified"]:
+                    if therapeutic_agents_display and isinstance(therapeutic_agents_display, str) and therapeutic_agents_display.upper() not in ["UNKNOWN", "NOT REPORTED", "OTHER", "CHEMOTHERAPY", "NOT OTHERWISE SPECIFIED"]:
                         """Medication name exists - create medication and add it to MedicationAdministration.medication.CodeableReference.reference"""
                         med = Medication.model_construct()
                         med_identifier = Identifier(
@@ -1170,6 +1170,7 @@ def assign_fhir_for_case(case, disease_types=disease_types, primary_sites=primar
                         """
                         # TODO: fetch from chembl - not fetched via query
                         ['NAB-PACLITAXEL','THERAPEUTIC HYDROCORTISONE','LIPOSOMAL IRINOTECAN']
+                        [Nab-paclitaxel (Abraxane), HYDROCORTISONE, "IRINOTECAN LIPOSOMAL"]
                         """
                         med.identifier = [med_identifier]
                         med.id = utils.mint_id(identifier=med_identifier, resource_type="Medication",
