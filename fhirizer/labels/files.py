@@ -114,7 +114,16 @@ file_maps = [
             name='cases.samples.portions.analytes.aliquots.aliquot_id',
         ),
         destination=Destination(
-            name='Specimen.id',
+            name='Specimen.id.aliquots',
+        )
+    ),
+
+    Map(
+        source=Source(
+            name='cases.samples.sample_id',
+        ),
+        destination=Destination(
+            name='Specimen.id.samples',
         )
     ),
 

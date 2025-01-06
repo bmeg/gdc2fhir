@@ -870,7 +870,30 @@
                 "reference": null
             },
             "destination": {
-                "name": "Specimen.id",
+                "name": "Specimen.id.aliquots",
+                "description": null,
+                "description_url": null,
+                "module": null,
+                "title": null,
+                "type": null,
+                "format": null,
+                "reference": null
+            }
+        },
+                {
+            "source": {
+                "name": "cases.samples.sample_id",
+                "description": null,
+                "description_url": null,
+                "category": null,
+                "type": null,
+                "format": null,
+                "enums": null,
+                "content_annotation": null,
+                "reference": null
+            },
+            "destination": {
+                "name": "Specimen.id.samples",
                 "description": null,
                 "description_url": null,
                 "module": null,

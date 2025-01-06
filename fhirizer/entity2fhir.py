@@ -2026,6 +2026,7 @@ def assign_fhir_for_file(file):
 
     document.identifier = identifiers
 
+    data_category = None
     category = []
     category_keys = {
         "data_category": "data_category",
@@ -2046,6 +2047,8 @@ def assign_fhir_for_file(file):
                 "code": str(file[field])
             }]
             category.append(cc)
+            if key == "data_category":
+                data_category = file[field]
 
     if category:
         document.category = category
@@ -2058,6 +2061,7 @@ def assign_fhir_for_file(file):
 
     patients = []
     sample_ref = []
+    # print(f"Data Category: {data_category}\n")
     if 'cases' in file.keys() and file['cases']:
         for case in file['cases']:
             patient_id_identifier = Identifier.model_construct()
@@ -2072,11 +2076,23 @@ def assign_fhir_for_file(file):
 
             if 'samples' in case.keys():
                 for sample in case['samples']:
-                    if 'Specimen.id' in sample['portions'][0]['analytes'][0]['aliquots'][0].keys() and \
-                            sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']:
+                    if 'portions' in sample.keys() and 'Specimen.id.aliquots' in sample['portions'][0]['analytes'][0]['aliquots'][0].keys() and \
+                            sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id.aliquots']:
                         specimen_identifier = Identifier(
                             **{"system": "".join(["https://gdc.cancer.gov/", "aliquot_id"]),
-                               "value": sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id']})
+                               "value": sample['portions'][0]['analytes'][0]['aliquots'][0]['Specimen.id.aliquots']})
+
+                        specimen_id = utils.mint_id(identifier=specimen_identifier, resource_type="Specimen",
+                                                    project_id=project_id,
+                                                    namespace=NAMESPACE_GDC)
+
+                        sample_ref.append(Reference(**{"reference": "/".join(["Specimen", specimen_id])}))
+
+                    elif data_category in ['Clinical', 'Biospecimen'] and 'Specimen.id.samples' in sample.keys() and sample['Specimen.id.samples']:
+                        # print(sample['Specimen.id.samples'], document.category, "\n")
+                        specimen_identifier = Identifier(
+                            **{"system": "".join(["https://gdc.cancer.gov/", "sample_id"]),
+                               "value": sample['Specimen.id.samples']})
 
                         specimen_id = utils.mint_id(identifier=specimen_identifier, resource_type="Specimen",
                                                     project_id=project_id,
