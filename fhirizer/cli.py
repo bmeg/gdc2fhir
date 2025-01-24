@@ -144,7 +144,7 @@ def convert(name, in_path, out_path, verbose):
     assert name in ['project', 'case', 'file', 'cellosaurus', 'icgc'], f'--name is not in {name_list}.'
     assert Path(in_path).is_file(), f"Path {in_path} is not a valid file path."
 
-    mapping.convert_maps(name=name, in_path=in_path, out_path=out_path, verbose=verbose)
+    mapping.convert_maps(name=name, in_path=in_path, out_path=out_path, convert=True, verbose=verbose)
 
 
 @cli.command('generate')
