@@ -110,3 +110,15 @@ if subtype_observations:
     observations_list = list({v['id']: v for v in observations_list}.values())
     if observations_list:
         utils.create_or_extend(new_items=observations_list, folder_path=out_dir, resource_type='Observation', update_existing=False)
+
+"""
+import pandas as pd
+import sys
+import gripql
+
+conn = gripql.Connection("http://localhost:8201")
+G = conn.graph("gdc_brca")
+# subtypes = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.code", "NCIT_C185941")).execute() # or by display 
+subtypes = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.display", "Disease Molecular Subtype Qualifier")).execute()
+subtypes_patients = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.code", "NCIT_C185941")).out("focus_Patient").execute()
+"""
