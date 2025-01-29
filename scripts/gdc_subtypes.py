@@ -1,5 +1,6 @@
 import orjson
 import pandas as pd
+import numpy as np
 import importlib.resources
 from pathlib import Path
 from fhirizer import utils
@@ -112,6 +113,8 @@ if subtype_observations:
         utils.create_or_extend(new_items=observations_list, folder_path=out_dir, resource_type='Observation', update_existing=False)
 
 """
+# subtypes - query FHIRized data via grip and build a df for downstream analysis 
+
 import pandas as pd
 import sys
 import gripql
@@ -121,4 +124,55 @@ G = conn.graph("gdc_brca")
 # subtypes = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.code", "NCIT_C185941")).execute() # or by display 
 subtypes = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.display", "Disease Molecular Subtype Qualifier")).execute()
 subtypes_patients = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.code", "NCIT_C185941")).out("focus_Patient").execute()
+patient_data = subtypes_patients[0]['data']
+
+def expand_metadata(patient_data) -> dict:
+    if 'extension' in patient_data.keys():
+        race = next((ext['valueString'] for ext in patient_data['extension'] if 'us-core-race' in ext['url']), None)
+        ethnicity = next((ext['valueString'] for ext in patient_data['extension'] if 'us-core-ethnicity' in ext['url']), None)
+        age = next((ext['valueQuantity']['value'] for ext in patient_data['extension'] if 'Patient-age' in ext['url']), None)
+    else:
+        race = None
+        ethnicity = None
+        age = None
+
+    if "identifier" in patient_data:
+        secondary_identifier = next((iden['value'] for iden in patient_data['identifier'] if iden['use'] == 'secondary'), None)
+        official_identifier = next((iden['value'] for iden in patient_data['identifier'] if iden['use'] == 'official'), None)
+    else:
+        secondary_identifier = None
+        official_identifier = None
+
+    if "gender" in patient_data.keys():
+        gender = patient_data['gender']
+    else:
+        gender = None
+
+    if 'deceasedBoolean' in patient_data.keys():
+        deseased = patient_data['deceasedBoolean']
+    else:
+        deseased = None
+
+    expanded_info = {
+        'id': patient_data['id'],
+        'gender': gender,
+        'race': race,
+        'ethnicity': ethnicity,
+        'age': age,
+        'secondary_identifier': secondary_identifier,
+        'official_identifier': official_identifier,
+        'deceased': deseased
+    }
+    return expanded_info
+
+df = pd.DataFrame([expand_metadata(dat['data']) for dat in subtypes_patients])
+df['age']= df['age'].fillna(0).astype(np.int64)
+
+l = []
+for item in subtypes:
+    if 'valueString' in item['data'].keys():
+        l.append(item['data']['valueString'])
+
+df['subtype'] = l
+df.to_csv("subtypes_df.csv", index=False)
 """
