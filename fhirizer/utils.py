@@ -1318,7 +1318,7 @@ def study_groups(meta_path: str, out_path: str) -> List[Group]:
 
     json_groups = deduplicate_entities(json_groups)
     fhir_ndjson(json_groups, f"{out_path}/Group.ndjson")
-    print(f"Successfully converted GDC case info to FHIR's ResearchSubject's Group ndjson file!")
+    print(f"Successfully transformed GDC case info to FHIR's ResearchSubject's Group ndjson file!")
 
     return groups
 

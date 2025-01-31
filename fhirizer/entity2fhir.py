@@ -2030,7 +2030,7 @@ def case_gdc_to_fhir_ndjson(out_dir, name, cases_path, convert, verbose, spinner
                 cleaned_resource.append(validated_resource)
             if cleaned_resource:
                 utils.fhir_ndjson(cleaned_resource, f"{out_dir}{entity_name}.ndjson")
-                print(f"Successfully converted GDC case info to FHIR's {entity_name} ndjson file!")
+                print(f"Successfully transformed GDC case info to {len(cleaned_resource)} FHIR {entity_name}(s) @ {out_dir}{entity_name}.ndjson!")
 
 
 # File ---------------------------------------------------------------
@@ -2377,13 +2377,13 @@ def file_gdc_to_fhir_ndjson(out_dir, name, files_path, convert, verbose, spinner
         cleaned_doc_refs = utils.clean_resources(doc_refs)
         if cleaned_doc_refs:
             utils.fhir_ndjson(cleaned_doc_refs, "".join([out_dir, "DocumentReference.ndjson"]))
-            print("Successfully converted GDC file info to FHIR's DocumentReference ndjson file!")
+            print("Successfully transformed GDC file info to FHIR's DocumentReference ndjson file!")
 
     if groups:
         cleaned_groups = utils.clean_resources(groups)
         if cleaned_groups:
             utils.fhir_ndjson(groups, "".join([out_dir, "Group.ndjson"]))
-            print("Successfully converted GDC file's patients info to FHIR's Group ndjson file!")
+            print("Successfully transformed GDC file's patients info to FHIR's Group ndjson file!")
 
 
 # Cellosaurus ---------------------------------------------------------------
@@ -2613,15 +2613,15 @@ def cellosaurus_to_fhir_ndjson(out_dir, obj, spinner):
     if patients:
         cleaned_patients = utils.clean_resources(patients)
         utils.fhir_ndjson(cleaned_patients, os.path.join(out_dir, "Patient.ndjson"))
-        print("Successfully converted Cellosaurus info to FHIR's Patient ndjson file!")
+        print("Successfully transformed Cellosaurus info to FHIR's Patient ndjson file!")
     if samples:
         cleaned_samples = utils.clean_resources(samples)
         utils.fhir_ndjson(cleaned_samples, os.path.join(out_dir, "Specimen.ndjson"))
-        print("Successfully converted Cellosaurus info to FHIR's Specimen ndjson file!")
+        print("Successfully transformed Cellosaurus info to FHIR's Specimen ndjson file!")
     if conditions:
         cleaned_conditions = utils.clean_resources(conditions)
         utils.fhir_ndjson(cleaned_conditions, os.path.join(out_dir, "Condition.ndjson"))
-        print("Successfully converted Cellosaurus info to FHIR's Condition ndjson file!")
+        print("Successfully transformed Cellosaurus info to FHIR's Condition ndjson file!")
 
 
 def cellosaurus2fhir(path, out_dir, spinner=None):
