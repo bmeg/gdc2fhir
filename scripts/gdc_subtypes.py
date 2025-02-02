@@ -121,10 +121,11 @@ import gripql
 
 conn = gripql.Connection("http://localhost:8201")
 G = conn.graph("gdc_brca")
-# subtypes = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.code", "NCIT_C185941")).execute() # or by display 
-subtypes = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.display", "Disease Molecular Subtype Qualifier")).execute()
-subtypes_patients = G.query().V().hasLabel("Patient").as_("patient").in_("focus_Patient").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.code", "NCIT_C185941")).out("focus_Patient").execute()
+
+subtypes = G.query().V().hasLabel("Observation").as_("observation").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.code", "NCIT_C185941")).execute()
+subtypes_patients = G.query().V().hasLabel("Observation").as_("observation").unwind("$.code").unwind("$.code.coding").has(gripql.eq("$.code.coding.code", "NCIT_C185941")).out("focus_Patient").execute()
 patient_data = subtypes_patients[0]['data']
+
 
 def expand_metadata(patient_data) -> dict:
     if 'extension' in patient_data.keys():
